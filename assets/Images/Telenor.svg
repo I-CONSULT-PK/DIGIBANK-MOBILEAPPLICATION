@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="33" height="23" fill="none" viewBox="0 0 33 23">
+  <mask id="a" width="17" height="23" x="0" y="0" maskUnits="userSpaceOnUse" style="mask-type:luminance">
+    <path fill="#fff" d="M0 0h16.418v22.837H0V0Z"/>
+  </mask>
+  <g mask="url(#a)">
+    <mask id="b" width="17" height="23" x="0" y="0" maskUnits="userSpaceOnUse" style="mask-type:luminance">
+      <path fill="#fff" d="M10.458 19.91c2.68 5.613 5.597 2.965 4.222-3.292-.938-4.275-3.275-7.55-5.468-9.22l.29-1.147c1.78-1.262 4.225-1.453 6.05-2.724 2.04-1.421.898-3.658-1.451-3.501-3.06.2-4.782 2.679-5.402 6.658l-.304.367c-2.415-.249-4.549.694-6.505 2.733-.847.886-1.661 1.918-1.832 3.505-.201 1.867.637 3.31 1.997 2.807.622-.233.938-.517 1.323-1.233.297-.558.594-1.11.891-1.648.793-1.452 1.584-2.8 2.36-3.778.723-.962 1.405-1.364 2.018-.79-.188 3.848.152 7.78 1.811 11.262Z"/>
+    </mask>
+    <g mask="url(#b)">
+      <mask id="c" width="17" height="23" x="0" y="0" maskUnits="userSpaceOnUse" style="mask-type:luminance">
+        <path fill="#fff" d="M10.458 19.91c2.68 5.613 5.597 2.965 4.222-3.292-.938-4.275-3.275-7.55-5.468-9.22l.29-1.147c1.78-1.262 4.225-1.453 6.05-2.724 2.04-1.421.898-3.658-1.451-3.501-3.06.2-4.782 2.679-5.402 6.658l-.304.367c-2.415-.249-4.549.694-6.505 2.733-.847.886-1.661 1.918-1.832 3.505-.201 1.867.637 3.31 1.997 2.807.622-.233.938-.517 1.323-1.233.297-.558.594-1.11.891-1.648.793-1.452 1.584-2.8 2.36-3.778.723-.962 1.405-1.364 2.018-.79-.188 3.848.152 7.78 1.811 11.262Z"/>
+      </mask>
+      <g mask="url(#c)">
+        <path fill="url(#d)" d="M0 0h16.637v23H0z" transform="matrix(1 0 0 -1 0 23)"/>
+      </g>
+    </g>
+  </g>
+  <path fill="#006AB3" fill-rule="evenodd" d="m8.705 7.092.01-.303.79-.554-.3 1.166-.5-.31Zm.515.408c-.137.669-.12 1.625-.047 2.23C8.73 8.226 7.9 7.853 6.852 9.137l.857-1.35L9.22 7.5Z" clip-rule="evenodd"/>
+  <defs>
+    <pattern id="d" width="1" height="1" patternContentUnits="objectBoundingBox">
+      <use href="#e" transform="scale(.00658 .0071)"/>
+    </pattern>
+    <image id="e" width="152" height="141" data-name="image5.png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAJgAAACNCAIAAADEuyReAAAABmJLR0QA/wD/AP+gvaeTAAABoUlEQVR4nO3RQQ6CMBRAQer1vZjHciFgIaZxPXmTIMSG/pQ3tudr+xjbOG5j/2eM79K5vF/Hw23p/LlucHltWhnz2PXQc4v10DFNvw697fz7yIuh85EXQ+cj/zn0186L73wd+rk9thAKiSgkopCIQiIKiSgkopCIQiIKiSgkopCIQiIKiSgkopCIQiIKiSgkopCIQiIKiSgkopCIQiIKiSgkopCIQiIKiSgkopCIQiIKiSgkopCIQiIKiSgkopCIQiIKiSgkopCIQiIKiSgkopCIQiIKiSgkopCIQiIKiSgkopCIQiIKiSgkopCIQiIKiSgkopCIQiIKiSgkopCIQiIKiSgkopCIQiIKiSgkopCIQiIKiSgkopCIQiIKiSgkopCIQiIKiSgkopCIQiIKiSgkopCIQiIKiSgkopCIQiIKiSgkopCIQiIKiSgkopCIQiIKiSgkopCIQiIKiSgkopCIQiIKiSgkopCIQiIKiSgkopCIQiIKiSgkopCIQiIKiSgkopCIQiIKiSgkopCIQiIKiSgkopCIQiIKiSgkopCINzt+AvhLdLt3AAAAAElFTkSuQmCC"/>
+  </defs>
+</svg>

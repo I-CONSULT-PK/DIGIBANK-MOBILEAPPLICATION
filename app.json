@@ -1,0 +1,40 @@
+{
+  "expo": {
+    "name": "zanbeel-ui",
+    "slug": "zanbeel-ui",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#ffffff"
+      },
+      "package": "com.ibrahim52.zanbeelui"
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "27b15474-4a56-4533-a5a4-e58a6a1d73d5"
+      }
+    },
+    "plugins": [
+      "expo-font"
+    ]
+  },
+  "name": "zanbeel-ui"
+}
