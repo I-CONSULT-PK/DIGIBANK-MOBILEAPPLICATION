@@ -847,28 +847,9 @@ const HomeScreen = () => {
             onPress={handlePress}
           >
             {/* The content inside the Accordion */}
-            <View className="bg-white rounded-lg px-5 mt-6">
-              <View className="flex flex-col">
-                <View className="flex flex-row items-center justify-between">
-                  <View className="flex flex-row items-center">
-                    <Entypo
-                      name="credit-card"
-                      size={30}
-                      className="mr-1"
-                      style={{ color: Color.PrimaryWebOrient }}
-                    />
-                    <View className="flex flex-col ml-4">
-                      <Text className="text-sm font-semibold text-gray-800">
-                        Credit Card
-                      </Text>
-                      <Text className="text-xs font-medium text-neutral-500">
-                        5669996****7989
-                      </Text>
-                    </View>
-                  </View>
-                </View>
-              </View>
-            </View>
+            <View   className="justify-center items-center mr-8">
+          <ListSectionCard width={400} />
+        </View>
 
             <Divider />
             {/* Add more sections here if needed */}
