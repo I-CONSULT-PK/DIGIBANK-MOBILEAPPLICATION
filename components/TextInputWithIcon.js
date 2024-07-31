@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { View, TouchableOpacity } from "react-native";
-import { AntDesign } from "@expo/vector-icons";
+import { Feather } from "@expo/vector-icons";
 import { TextInput } from "react-native-paper";
 import { Color } from "../GlobalStyles";
 
@@ -46,12 +46,12 @@ const InputWithIcon = ({ isPassword, value, onChange, placeholder, disable, outl
       {isPassword && (
         <TouchableOpacity
           onPress={togglePasswordVisibility}
-          style={{ position: "absolute", right: 10 }}
+          style={{ position: "absolute", right: 19 }}
         >
-          <AntDesign
-            name={showPassword ? "eye" : "eyeo"}
-            size={20}
-            color={Color.PrimaryWebOrient}
+          <Feather
+            name={showPassword ? "eye" : "eye-off"}
+            size={18}
+            color="#A5A7A8"
           />
         </TouchableOpacity>
       )}

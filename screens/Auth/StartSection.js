@@ -1,55 +1,69 @@
-import React from 'react'
-import { View, Image, ScrollView, Text, TouchableOpacity } from 'react-native'
-import { SafeAreaView } from "react-native-safe-area-context";
+import React from 'react';
+import { View, Image, Text, TouchableOpacity } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
-import { StatusBar } from "expo-status-bar";
+import { StatusBar } from 'expo-status-bar';
 
-const StartSection = ({navigation}) => {
+const StartSection = ({ navigation }) => {
     return (
-        <SafeAreaView className="flex-1 h-full">
+        <SafeAreaView className="h-full flex-1">
             <LinearGradient
                 colors={['#1DBBD8', '#8EEDFF']}
                 style={{ flex: 1 }}
             >
-                <ScrollView contentContainerStyle={{ height: "100%" }}>
+                <View style={{ flexGrow: 1 }}>
+                    <View className="flex-1 justify-between">
 
-                    <View className="flex flex-col justify-between h-full">
-
-                        <View className="w-full flex justify-center items-center mt-2">
-                            <Image source={require('../../assets/logo.png')} resizeMode='contain' className="w-40 h-40 left-2" />
+                        <View className="flex-1 justify-center items-center">
+                            <Image
+                                source={require('../../assets/logo.png')}
+                                resizeMode='contain'
+                                style={{ width: '45%', height: undefined, aspectRatio: 1 }}
+                                className="left-2"
+                            />
                         </View>
 
                         <View>
-                            <View className="w-full flex justify-center items-center">
-                                <Image source={require('../../assets/mobile.png')} resizeMode='contain' className="w-[340px] h-[340px]" />
+                            <View className="flex justify-center items-center">
+                                <Image
+                                    source={require('../../assets/mobile.png')}
+                                    resizeMode='contain'
+                                    style={{ width: '80%', height: undefined, aspectRatio: 1 }}
+                                />
                             </View>
 
-                            <View className="w-full bg-white rounded-t-3xl py-8">
-                                <View className="px-16">
-                                    <Text className="text-center text-2xl font-InterBold">Welcome in Digi-Bank</Text>
-                                    <Text className="text-center text-base font-InterRegular text-gray-500 mt-4">Get sending, spending and saving with your contactless card.</Text>
+                            <View className="w-full bg-white rounded-t-[30px] py-6 px-8 shadow-2xl">
+                                <View className="mb-4">
+                                    <Text className="text-center text-2xl font-bold font-InterBold">Welcome to Digi-Bank</Text>
+                                    <Text className="text-center text-base text-gray-500 mt-3 font-InterRegular">
+                                        Get sending, spending, and saving with your contactless card.
+                                    </Text>
                                 </View>
 
-                                <View className="mt-10 flex flex-row justify-between px-16">
-                                    <TouchableOpacity className="border border-solid border-primary py-3 px-8 rounded-lg" onPress={() => navigation.navigate("Login")}>
-                                        <Text className="text-base font-InterMedium text-primary">Login</Text>
+                                <View className="flex-row justify-between mt-4 mb-2">
+                                    <TouchableOpacity
+                                        className="border border-[#1DBBD8] py-3 w-[35%] rounded-lg"
+                                        onPress={() => navigation.navigate("Login")}
+                                    >
+                                        <Text className="text-base text-[#1DBBD8] font-medium text-center font-InterSemiBold">Login</Text>
                                     </TouchableOpacity>
 
-                                    <TouchableOpacity className="py-3 px-12 bg-[#1DBBD8] rounded-lg" onPress={() => navigation.navigate("SignUp")}>
-                                        <Text className="text-base font-InterMedium text-white">Get Started</Text>
+                                    <TouchableOpacity
+                                        className="py-3 w-[60%] bg-[#1DBBD8] rounded-lg"
+                                        onPress={() => navigation.navigate("SignUp")}
+                                    >
+                                        <Text className="text-base text-white font-medium text-center font-InterSemiBold">Get Started</Text>
                                     </TouchableOpacity>
                                 </View>
                             </View>
                         </View>
-
                     </View>
-                    
-                </ScrollView>
+                </View>
             </LinearGradient>
 
             <StatusBar backgroundColor="#1DBBD8" style="light" />
         </SafeAreaView>
-    )
+    );
 }
 
-export default StartSection
+export default StartSection;

@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   Alert,
   Dimensions,
+  ScrollView
 } from "react-native";
 import LoaderComponent from "../../components/LoaderComponent";
 import CustomButton from "../../components/Button";
@@ -14,6 +15,10 @@ import { Color } from "../../GlobalStyles";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const { width, height } = Dimensions.get("window");
+import Input from "../../components/TextInput";
+
+import { SafeAreaView } from "react-native-safe-area-context";
+import AntDesign from '@expo/vector-icons/AntDesign';
 
 const OTP = ({ navigation, route }) => {
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
@@ -207,61 +212,115 @@ const OTP = ({ navigation, route }) => {
     // }, [userEmail, userNumber]);
   };
 
+  const otpLength = 5;
+  const inputs = useRef([]);
+
+  const handleChange = (text, index) => {
+    if (text.length === 1 && index < otpLength - 1) {
+      inputs.current[index + 1].focus();
+    }
+  };
+
   return (
-    <View
-      style={{ flex: 1, backgroundColor: "white", justifyContent: "center" }}
-    >
-      <LoaderComponent visible={isLoading} />
+    // <View
+    //   style={{ flex: 1, backgroundColor: "white", justifyContent: "center" }}
+    // >
+    //   <LoaderComponent visible={isLoading} />
 
-      <View className="flex justify-center items-center p-4">
-        <Text className="font-bold text-2xl">Verification</Text>
-        <Text className="font-semibold text-base text-center">
-          Enter the code we just sent to you on your Email address
-        </Text>
-        <View className="flex flex-row items-center mt-10">
-          {otp.map((digit, index) => (
-            <TextInput
-              key={index}
-              ref={(ref) => (otpInputs.current[index] = ref)}
-              className="border border-gray-300 rounded-xl  text-lg text-center mx-2"
-              style={{
-                width: width * 0.1,
-                height: height * 0.07,
-                fontSize: 20,
-                borderRadius: 5,
-              }}
-              maxLength={1}
-              keyboardType="numeric"
-              value={digit}
-              onChangeText={(value) => handleOtpChange(index, value)}
-            />
-          ))}
+    //   <View className="flex justify-center items-center p-4">
+    //     <Text className="font-bold text-2xl">Verification</Text>
+    //     <Text className="font-semibold text-base text-center">
+    //       Enter the code we just sent to you on your Email address
+    //     </Text>
+    //     <View className="flex flex-row items-center mt-10">
+    //       {otp.map((digit, index) => (
+    //         <TextInput
+    //           key={index}
+    //           ref={(ref) => (otpInputs.current[index] = ref)}
+    //           className="border border-gray-300 rounded-xl  text-lg text-center mx-2"
+    //           style={{
+    //             width: width * 0.1,
+    //             height: height * 0.07,
+    //             fontSize: 20,
+    //             borderRadius: 5,
+    //           }}
+    //           maxLength={1}
+    //           keyboardType="numeric"
+    //           value={digit}
+    //           onChangeText={(value) => handleOtpChange(index, value)}
+    //         />
+    //       ))}
+    //     </View>
+    //   </View>
+
+    //   <View style={{ padding: 16, alignItems: "center" }}>
+    //     <Text style={{ fontFamily: "InterMedium", color: "gray" }}>
+    //       Didn't receive a code?
+    //     </Text>
+    //     <TouchableOpacity
+    //       onPress={() => handleResend(savedEmail, savedMobileNumber)}
+    //       disabled={isResendDisabled}
+    //     >
+    //       <Text
+    //         style={{
+    //           fontFamily: "InterSemiBold",
+    //           color: Color.PrimaryWebOrientTxtColor,
+    //         }}
+    //       >
+    //         RESEND
+    //       </Text>
+    //     </TouchableOpacity>
+    //   </View>
+
+    //   <View style={{ padding: 16 }}>
+    //     <CustomButton Text={"Verify"} onPress={handleVerify} />
+    //   </View>
+    // </View>
+
+    <SafeAreaView className="h-full flex-1 bg-white">
+      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+
+        <View className="flex-row items-center p-4 mt-2">
+          <TouchableOpacity onPress={() => navigation.goBack()}>
+            <AntDesign name="arrowleft" size={20} color="black" />
+          </TouchableOpacity>
+          <Text className="text-black font-semibold text-lg ml-4 font-InterSemiBold">OTP</Text>
         </View>
-      </View>
 
-      <View style={{ padding: 16, alignItems: "center" }}>
-        <Text style={{ fontFamily: "InterMedium", color: "gray" }}>
-          Didn't receive a code?
-        </Text>
-        <TouchableOpacity
-          onPress={() => handleResend(savedEmail, savedMobileNumber)}
-          disabled={isResendDisabled}
-        >
-          <Text
-            style={{
-              fontFamily: "InterSemiBold",
-              color: Color.PrimaryWebOrientTxtColor,
-            }}
-          >
-            RESEND
-          </Text>
-        </TouchableOpacity>
-      </View>
+        <View className="flex-1 mt-4 px-5 justify-center -top-14">
+          <View className="bg-white rounded-xl w-full shadow-xl shadow-slate-500 px-5 pt-5 pb-4">
 
-      <View style={{ padding: 16 }}>
-        <CustomButton Text={"Verify"} onPress={handleVerify} />
-      </View>
-    </View>
+            <View className="mb-6">
+              <Text className="text-sm mb-4 font-InterRegular">Enter Your OTP*</Text>
+
+              <View className="flex-row justify-between items-center">
+                {Array.from({ length: otpLength }).map((_, index) => (
+                  <TextInput
+                    key={index}
+                    ref={(input) => inputs.current[index] = input}
+                    className="w-12 h-12 text-center text-xl bg-[#F4F5F9] border border-gray-300 rounded-md font-InterSemiBold"
+                    keyboardType="numeric"
+                    maxLength={1}
+                    onChangeText={(text) => handleChange(text, index)}
+                    returnKeyType={index === otpLength - 1 ? "done" : "next"}
+                  />
+                ))}
+              </View>
+            </View>
+
+            <View className="px-2 mb-7">
+              <Text className="text-sm font-InterMedium text-[#1DBBD8]">We have sent a code to <Text className="text-cyan-600">( *****@mail.com )</Text> Enter code here to verify your identity</Text>
+            </View>
+
+            <TouchableOpacity className="bg-[#1DBBD8] py-3 rounded-lg mb-4">
+              <Text className="text-white text-base text-center font-medium font-InterSemiBold">Verify</Text>
+            </TouchableOpacity>
+
+          </View>
+        </View>
+
+      </ScrollView>
+    </SafeAreaView>
   );
 };
 

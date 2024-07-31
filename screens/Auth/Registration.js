@@ -385,89 +385,99 @@ const Registration = () => {
     //   </View>
     // </TouchableWithoutFeedback>
 
-    <SafeAreaView className="flex-1 h-full">
+    <SafeAreaView className="h-full flex-1">
       <LinearGradient
         colors={['#1DBBD8', '#8EEDFF']}
         style={{ flex: 1 }}
       >
-        <ScrollView contentContainerStyle={{ flex: 1 }}>
-
-          <View className="w-full flex flex-row justify-start items-center pl-5 mt-4">
+        <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+          <View className="flex-row items-center p-4 mt-2">
             <TouchableOpacity onPress={() => {
               setMain(true);
-              main === true && navigation.goBack();
+              main && navigation.goBack();
             }}>
               <AntDesign name="arrowleft" size={20} color="white" />
             </TouchableOpacity>
-            <Text className="text-white font-InterMedium text-base ml-4">Sign-Up</Text>
+            <Text className="text-white text-lg font-semibold ml-4 font-InterSemiBold">Register yourself</Text>
           </View>
 
-          <View className="w-full h-full bg-white mt-5 rounded-t-3xl">
+          <View className="flex-1 bg-white mt-2 rounded-t-[30px] px-7 pt-7 shadow-2xl">
+            {main ? (
+              <View className="flex-1 justify-between">
+                <View>
+                  <View className="mb-7 w-[80%]">
+                    <Text className="text-2xl font-bold font-InterBold">Get started with your account!</Text>
+                  </View>
 
-            {main ? (<View className="flex flex-col justify-between h-[75%]">
-              <View>
-                <View className="pl-12 pr-32 py-10">
-                  <Text className="text-2xl font-InterBold">Get started with your account!</Text>
-                </View>
-
-                <View className="px-10">
                   <View>
-                    <Text className="text-sm font-InterRegular mb-2">First Name*</Text>
-                    <Input placeholder="Enter your first name" />
-                  </View>
-
-                  <View className="mt-5">
-                    <Text className="text-sm font-InterRegular mb-2">Last Name*</Text>
-                    <Input placeholder="Enter your last name" />
-                  </View>
-
-                  <View className="mt-5">
-                    <Text className="text-sm font-InterRegular mb-2">Email Address*</Text>
-                    <Input placeholder="Enter your email" />
-                  </View>
-                </View>
-              </View>
-
-              <View className="px-10">
-                <TouchableOpacity className="py-3 px-12 bg-[#1DBBD8] rounded-lg" onPress={() => setMain(false)}>
-                  <Text className="text-base text-center font-InterMedium text-white">Next</Text>
-                </TouchableOpacity>
-              </View>
-            </View>) : (
-                <View className="flex flex-col justify-between h-[75%]">
-                  <View>
-                    <View className="pl-12 pr-32 py-10">
-                      <Text className="text-2xl font-InterBold">Get started with your account!</Text>
+                    <View className="mb-5">
+                      <Text className="text-sm mb-2 font-InterRegular">First Name*</Text>
+                      <Input placeholder="Enter your first name" />
                     </View>
 
-                    <View className="px-10">
-                      <View>
-                        <Text className="text-sm font-InterRegular mb-2">CNIC Number*</Text>
-                        <Input placeholder="Enter your CNIC" />
-                      </View>
+                    <View className="mb-5">
+                      <Text className="text-sm mb-2 font-InterRegular">Last Name*</Text>
+                      <Input placeholder="Enter your last name" />
+                    </View>
 
-                      <View className="mt-5">
-                        <Text className="text-sm font-InterRegular mb-2">Mobile Number*</Text>
-                        <Input placeholder="Enter your mobile number" />
-                      </View>
-
-                      <View className="mt-5">
-                        <Text className="text-sm font-InterRegular mb-2">Account Number*</Text>
-                        <Input placeholder="Enter 14 digits Acc No." />
-                      </View>
+                    <View className="mb-5">
+                      <Text className="text-sm mb-2 font-InterRegular">Email Address*</Text>
+                      <Input placeholder="Enter your email" />
                     </View>
                   </View>
+                </View>
 
-                  <View className="px-10">
-                    <TouchableOpacity className="py-3 px-12 bg-[#1DBBD8] rounded-lg">
-                      <Text className="text-base text-center font-InterMedium text-white">Sign Up</Text>
+                <View className="mb-5">
+                  <TouchableOpacity className="bg-[#1DBBD8] py-4 rounded-lg mb-4" onPress={() => setMain(false)}>
+                    <Text className="text-white text-base text-center font-medium font-InterSemiBold">Next</Text>
+                  </TouchableOpacity>
+                  <View className="flex-row justify-center">
+                    <Text className="text-sm font-InterRegular">Already have an account? </Text>
+                    <TouchableOpacity onPress={() => navigation.navigate("Login")}>
+                      <Text className="text-sm text-[#1DBBD8] font-InterSemiBold">Login</Text>
                     </TouchableOpacity>
                   </View>
                 </View>
-              )}
+              </View>
+            ) : (
+              <View className="flex-1 justify-between">
+                <View>
+                  <View className="mb-7">
+                    <Text className="text-2xl font-bold font-InterBold">Get started with your account!</Text>
+                  </View>
 
+                  <View>
+                    <View className="mb-5">
+                      <Text className="text-sm mb-2 font-InterRegular">CNIC Number*</Text>
+                      <Input placeholder="Enter your CNIC" />
+                    </View>
+
+                    <View className="mb-5">
+                      <Text className="text-sm mb-2 font-InterRegular">Mobile Number*</Text>
+                      <Input placeholder="Enter your mobile number" />
+                    </View>
+
+                    <View className="mb-5">
+                      <Text className="text-sm mb-2 font-InterRegular">Account Number*</Text>
+                      <Input placeholder="Enter 14 digits Acc No." />
+                    </View>
+                  </View>
+                </View>
+
+                <View className="mb-5">
+                  <TouchableOpacity className="bg-[#1DBBD8] py-4 rounded-lg mb-4">
+                    <Text className="text-white text-base text-center font-medium font-InterSemiBold">Sign up</Text>
+                  </TouchableOpacity>
+                  <View className="flex-row justify-center">
+                    <Text className="text-sm font-InterRegular">Already have an account? </Text>
+                    <TouchableOpacity onPress={() => navigation.navigate("Login")}>
+                      <Text className="text-sm text-[#1DBBD8] font-InterSemiBold">Login</Text>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              </View>
+            )}
           </View>
-
         </ScrollView>
       </LinearGradient>
     </SafeAreaView>

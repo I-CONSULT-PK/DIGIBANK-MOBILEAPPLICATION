@@ -7,7 +7,9 @@ import {
   StyleSheet,
   View,
   Alert,
-  TextInput
+  TextInput,
+  Image,
+  KeyboardAvoidingView,
 } from "react-native";
 import {
   widthPercentageToDP as wp,
@@ -80,6 +82,22 @@ const Login = ({ navigation }) => {
     // }
     setPinCodeModalVisible(true);
   };
+
+  const securityImages1 = [
+    require('../../assets/security-img-1.png'),
+    require('../../assets/security-img-2.png'),
+    require('../../assets/security-img-3.png'),
+    require('../../assets/security-img-4.png'),
+    require('../../assets/security-img-5.png'),
+  ];
+
+  const securityImages2 = [
+    require('../../assets/security-img-6.png'),
+    require('../../assets/security-img-7.png'),
+    require('../../assets/security-img-8.png'),
+    require('../../assets/security-img-9.png'),
+    require('../../assets/security-img-10.png'),
+  ];
 
   return (
     // <ScrollView style={{ backgroundColor: "white" }}>
@@ -184,62 +202,101 @@ const Login = ({ navigation }) => {
     //   </View>
     // </ScrollView>
 
-    <SafeAreaView className="flex-1 h-full">
+    <SafeAreaView className="h-full flex-1">
       <LinearGradient
         colors={['#1DBBD8', '#8EEDFF']}
         style={{ flex: 1 }}
       >
-        <ScrollView contentContainerStyle={{ height: "100%" }}>
+        <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
 
-          <View className="w-full flex flex-row justify-start items-center pl-5 mt-4">
-            <TouchableOpacity onPress={() => navigation.goBack()}>
-              <AntDesign name="arrowleft" size={20} color="white" />
-            </TouchableOpacity>
-            <Text className="text-white font-InterMedium text-base ml-4">Login</Text>
-          </View>
+            <View className="flex-row items-center p-4 mt-2">
+              <TouchableOpacity onPress={() => navigation.goBack()}>
+                <AntDesign name="arrowleft" size={20} color="white" />
+              </TouchableOpacity>
+              <Text className="text-white font-semibold text-lg ml-4 font-InterSemiBold">Login</Text>
+            </View>
 
-          <View className="w-full h-full bg-white mt-5 rounded-t-3xl">
+            <View className="flex-1 bg-white mt-2 rounded-t-[30px] px-7 pt-7 shadow-2xl">
+              <View className="flex-1 justify-between">
+                <View>
+                  <View className="mb-7 w-[80%]">
+                    <Text className="text-2xl font-bold leading-8 font-InterBold">Get started with DigiBank!</Text>
+                  </View>
 
-            <View className="flex flex-col justify-between h-[80%]">
-              <View>
-                <View className="pl-12 pr-32 py-10">
-                  <Text className="text-2xl font-InterBold">Get started with your account!</Text>
-                </View>
-
-                <View className="px-10">
                   <View>
-                    <Text className="text-sm font-InterRegular mb-2">User Name*</Text>
-                    <Input placeholder="Enter your username" />
-                    <View className="flex flex-row justify-end">
-                      <TouchableOpacity><Text className="text-right mt-3 text-xs text-[#1DBBD8] underline">Forgot Username?</Text></TouchableOpacity>
+                    <View>
+                      <Text className="text-sm mb-2 font-InterRegular">User Name*</Text>
+                      <Input placeholder="Enter your username" />
+                      <View className="items-end mt-2">
+                        <TouchableOpacity onPress={() => navigation.navigate('ForgetPassword', { source: 'username' })}>
+                          <Text className="text-xs text-[#1DBBD8] underline font-InterSemiBold">Forgot Username?</Text>
+                        </TouchableOpacity>
+                      </View>
                     </View>
-                  </View>
 
-                  <View className="mt-1">
-                    <Text className="text-sm font-InterRegular mb-2">Password*</Text>
-                    <Input placeholder="Enter your password" />
-                    <View className="flex flex-row justify-end">
-                      <TouchableOpacity><Text className="text-right mt-3 text-xs text-[#1DBBD8] underline">Forgot Password?</Text></TouchableOpacity>
+                    <View className="mt-1">
+                      <Text className="text-sm mb-2 font-InterRegular">Password*</Text>
+                      <InputWithIcon placeholder="Enter your password" isPassword />
+                      <View className="items-end mt-2">
+                        <TouchableOpacity onPress={() => navigation.navigate('ForgetPassword', { source: 'password' })}>
+                          <Text className="text-xs text-[#1DBBD8] underline font-InterSemiBold">Forgot Password?</Text>
+                        </TouchableOpacity>
+                      </View>
                     </View>
                   </View>
                 </View>
-              </View>
 
-              <View className="px-10">
-                <TouchableOpacity className="py-3 px-12 bg-[#1DBBD8] rounded-lg">
-                  <Text className="text-base text-center font-InterMedium text-white">Login</Text>
-                </TouchableOpacity>
-                <View className="flex-row justify-center mt-3">
-                  <Text className="text-center font-InterRegular">Don't have an account? </Text>
-                  <TouchableOpacity onPress={() => navigation.navigate("SignUp")}>
-                    <Text className="text-blue-500 font-InterRegular">Sign up</Text>
+                {/* -----| Security Image Start |----- */}
+
+                {/* <View className="-top-2">
+                  <Text className="text-center font-medium text-sm mb-4 font-InterMedium">Select Security Image</Text>
+
+                  <View className="flex-row justify-around items-center">
+                    {securityImages1.map((image, index) => (
+                      <TouchableOpacity
+                        key={index}
+                        className="p-3 rounded shadow-md shadow-slate-600 justify-center items-center bg-white"
+                      >
+                        <Image
+                          source={image}
+                          resizeMode="contain"
+                          className="w-6 h-6"
+                        />
+                      </TouchableOpacity>
+                    ))}
+                  </View>
+
+                  <View className="flex-row justify-around items-center mt-3.5">
+                    {securityImages2.map((image, index) => (
+                      <TouchableOpacity
+                        key={index}
+                        className="p-3 rounded shadow-md shadow-slate-600 justify-center items-center bg-white"
+                      >
+                        <Image
+                          source={image}
+                          resizeMode="contain"
+                          className="w-6 h-6"
+                        />
+                      </TouchableOpacity>
+                    ))}
+                  </View>
+                </View> */}
+
+                {/* -----| Security Image End |----- */}
+
+                <View className="mb-5">
+                  <TouchableOpacity className="bg-[#1DBBD8] py-4 rounded-lg mb-4">
+                    <Text className="text-white text-base text-center font-medium font-InterSemiBold">Login</Text>
                   </TouchableOpacity>
+                  <View className="flex-row justify-center">
+                    <Text className="text-sm font-InterRegular">Don't have an account? </Text>
+                    <TouchableOpacity onPress={() => navigation.navigate("SignUp")}>
+                      <Text className="text-sm text-[#1DBBD8] font-InterSemiBold">Sign up</Text>
+                    </TouchableOpacity>
+                  </View>
                 </View>
               </View>
             </View>
-
-          </View>
-
         </ScrollView>
       </LinearGradient>
     </SafeAreaView>
