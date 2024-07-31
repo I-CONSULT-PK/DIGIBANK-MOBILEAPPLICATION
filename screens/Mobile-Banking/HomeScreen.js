@@ -80,7 +80,7 @@
 //   };
 
 //   const Item = ({ title }) => (
-//     <View className="mr-3 bg-background w-20 h-24 space-y-2 justify-center items-center rounded-xl">
+//     <View className="mr-3 bg-background w-20 h-36 space-y-2 justify-center items-center rounded-xl">
 //       <UserAddIcon />
 //       <Text className="font-InterMedium text-xs">{title}</Text>
 //     </View>
@@ -377,7 +377,7 @@
 //                 <View className="flex-row space-x-3">
 //                   <TouchableOpacity onPress={handleAddNewClick}>
 //                     <View
-//                       className=" w-20 h-24 space-y-2 justify-center items-center rounded-xl"
+//                       className=" w-20 h-36 space-y-2 justify-center items-center rounded-xl"
 //                       style={{ backgroundColor: Color.PrimaryWebOrient }}
 //                     >
 //                       <UserAddIcon />
@@ -468,8 +468,7 @@
 // export default HomeScreen;
 
 import { LinearGradient } from "expo-linear-gradient";
-// import React, { useState, useEffect } from "react";
-import * as React from "react";
+import React, { useState, useEffect } from "react";
 import {
   FlatList,
   ScrollView,
@@ -485,12 +484,30 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation } from "@react-navigation/native";
 import { TouchableOpacity } from "react-native";
 import { Entypo, FontAwesome } from "@expo/vector-icons";
-import { Avatar } from "react-native-paper";
+import { Avatar, List, Divider } from "react-native-paper";
 import NewCard from "../../assets/Images/NewCard.svg";
+import Statment from "../../assets/Images/Statment.svg";
+import Utility from "../../assets/Images/UtilityPay.svg";
+import QR from "../../assets/Images/QR.svg";
+import Discount from "../../assets/Images/Discount.svg";
+import Topup from "../../assets/Images/Top-Up.svg";
+import Cards from "../../assets/Images/Cards.svg";
+import Payment from "../../assets/Images/Payment.svg";
+import Account from "../../assets/Images/Account.svg";
+import Transfer from "../../assets/Images/Transfer.svg";
+import ListSectionCard from "../../assets/Images/ListSectionCard.svg";
+import Footer from "../../components/Footer";
 
 const HomeScreen = () => {
+  const navigation = useNavigation();
+  const [expanded, setExpanded] = useState(false);
+  const [expanded1, setExpanded1] = useState(false);
+
+  const handlePress = () => setExpanded(!expanded);
+  const handlePress1 = () => setExpanded1(!expanded1);
+
   return (
-    <SafeAreaView style={styles.container} className="h-full">
+    <SafeAreaView style={styles.container} className="h-full bg-[#f9fafc]">
       <View className="flex flex-row items-center justify-between px-4 pt-6 pb-3">
         {/* Menu Icon */}
         <Entypo
@@ -519,71 +536,387 @@ const HomeScreen = () => {
           style={{ color: Color.PrimaryWebOrient }}
         />
       </View>
-      <View className="justify-center items-center">
-        <NewCard width={400} />
-      </View>
+      <ScrollView>
+        <View className="justify-center items-center">
+          <NewCard width={400} />
+        </View>
 
-      <View className="flex flex-col px-5 pt-5">
-        <Text className="font-bold text-black text-lg">Activity</Text>
-      </View>
-      <View className="flex justify-center items-center">
-        <View className="flex flex-col justify-center items-center">
-          {/* First Row */}
-          <View className="flex-row justify-between mb-4">
-            <View style={styles.box}>
-              <Text>Transfer</Text>
+        <View className="flex flex-col px-5 pt-5">
+          <Text className="font-bold text-black text-lg">Activity</Text>
+        </View>
+        <View className="flex justify-center items-center">
+          <View className="flex flex-col justify-center items-center">
+            {/* First Row */}
+            <View className="flex-row justify-between mb-4">
+              <TouchableOpacity>
+                <View
+                  className="w-24 h-24 bg-white m-2.5 rounded-lg flex justify-center items-center"
+                  style={styles.box}
+                >
+                  <Transfer style={styles.icon} />
+                  <Text className="text-center font-semibold">Transfer</Text>
+                </View>
+              </TouchableOpacity>
+              <TouchableOpacity>
+                <View
+                  className="w-24 h-24 bg-white m-2.5 rounded-lg flex justify-center items-center"
+                  style={[
+                    styles.box,
+                    { backgroundColor: Color.PrimaryWebOrient },
+                  ]}
+                >
+                  <Payment style={styles.icon} />
+                  <Text className="text-center font-semibold text-white">
+                    Payment
+                  </Text>
+                </View>
+              </TouchableOpacity>
+              <TouchableOpacity>
+                <View
+                  className="w-24 h-24 bg-white m-2.5 rounded-lg flex justify-center items-center"
+                  style={styles.box}
+                >
+                  <Account style={styles.icon} />
+                  <Text className="text-center font-semibold"> Accounts</Text>
+                </View>
+              </TouchableOpacity>
             </View>
-            <View style={styles.box}>
-              <Text>Payment</Text>
-            </View>
-            <View style={styles.box}>
-              <Text>Accounts</Text>
-            </View>
-          </View>
 
-          {/* Second Row */}
-          <View className="flex-row justify-between mb-4">
-            <View style={styles.box}>
-              <Text>Cards</Text>
+            {/* Second Row */}
+            <View className="flex-row justify-between mb-4">
+              <TouchableOpacity onPress={() => navigation.navigate("Card")}>
+                <View
+                  className="w-24 h-24 bg-white m-2.5 rounded-lg flex justify-center items-center"
+                  style={styles.box}
+                >
+                  <Cards style={styles.icon} />
+                  <Text className="text-center font-semibold">Cards</Text>
+                </View>
+              </TouchableOpacity>
+              <TouchableOpacity>
+                <View
+                  className="w-24 h-24 bg-white m-2.5 rounded-lg flex justify-center items-center"
+                  style={styles.box}
+                >
+                  <Topup style={styles.icon} />
+                  <Text className="text-center font-semibold">Top up</Text>
+                </View>
+              </TouchableOpacity>
+              <TouchableOpacity>
+                <View
+                  className="w-24 h-24 bg-white m-2.5 rounded-lg flex justify-center items-center"
+                  style={styles.box}
+                >
+                  <Discount style={styles.icon} />
+                  <Text className="text-center font-semibold">Discount</Text>
+                </View>
+              </TouchableOpacity>
             </View>
-            <View style={styles.box}>
-              <Text>Top up</Text>
-            </View>
-            <View style={styles.box}>
-              <Text>Discount</Text>
-            </View>
-          </View>
 
-          {/* Third Row */}
-          <View className="flex-row justify-between mb-4">
-            <View style={styles.box}>
-              <Text>QR Payments</Text>
-            </View>
-            <View style={styles.box}>
-              <Text>Utilty Pay</Text>
-            </View>
-            <View style={styles.box}>
-              <Text>Statment</Text>
+            {/* Third Row */}
+            <View className="flex-row justify-between mb-4">
+              <TouchableOpacity>
+                <View
+                  className="w-24 h-24 bg-white m-2.5 rounded-lg flex justify-center items-center"
+                  style={styles.box}
+                >
+                  <QR style={styles.icon} />
+                  <Text className="text-center font-semibold">QR Payments</Text>
+                </View>
+              </TouchableOpacity>
+              <TouchableOpacity>
+                <View
+                  className="w-24 h-24 bg-white m-2.5 rounded-lg flex justify-center items-center"
+                  style={styles.box}
+                >
+                  <Utility style={styles.icon} />
+                  <Text className="text-center font-semibold">Utilty Pay</Text>
+                </View>
+              </TouchableOpacity>
+              <TouchableOpacity>
+                <View
+                  className="w-24 h-24 bg-white m-2.5 rounded-lg flex justify-center items-center"
+                  style={styles.box}
+                >
+                  <Statment style={styles.icon} />
+                  <Text className="text-center font-semibold">Statment</Text>
+                </View>
+              </TouchableOpacity>
             </View>
           </View>
         </View>
-      </View>
+        <View className="flex-row justify-between px-5">
+          <Text className="text-base font-semibold text-black">My Payees</Text>
+          <Text className="text-xs font-medium text-gray-800 underline">
+            View All
+          </Text>
+        </View>
+        <ScrollView
+          className="pt-1"
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.scrollContainer}
+        >
+          <View className="w-24 h-36 bg-white m-2 rounded-lg shadow-lg justify-center items-center">
+            <View
+              className="w-20 h-20 bg-primary mt-3 rounded-lg shadow-lg justify-center items-center"
+              style={{ backgroundColor: "#3b82f6" }}
+            >
+              <Text className="text-center text-4xl text-white font-bold">
+                M
+              </Text>
+            </View>
+            <View className="font-medium">
+              <Text className="text-sm text-center font-bold mt-1">Maha</Text>
+              <Text className="text-xs text-gray-600 font-semibold">
+                Meezan Bank
+              </Text>
+            </View>
+          </View>
+          <View className="w-24 h-36 bg-white m-2 rounded-lg shadow-lg justify-center items-center">
+            <View
+              className="w-20 h-20 bg-primary mt-3 rounded-lg shadow-lg justify-center items-center"
+              style={{ backgroundColor: "#FECC81" }}
+            >
+              <Text className="text-center font text-3xl text-white font-bold">
+                F
+              </Text>
+            </View>
+            <View className="font-medium">
+              <Text className="text-sm text-center font-bold mt-1">Faiz</Text>
+              <Text className="text-xs text-center text-gray-600 font-semibold">
+                Bank Alfalah
+              </Text>
+            </View>
+          </View>
+          <View className="w-24 h-36 bg-white m-2 rounded-lg shadow-lg justify-center items-center">
+            <View
+              className="w-20 h-20 bg-primary mt-3 rounded-lg shadow-lg justify-center items-center"
+              style={{ backgroundColor: "#9683E4" }}
+            >
+              <Text className="text-center font text-3xl text-white font-bold">
+                B
+              </Text>
+            </View>
+            <View className="font-medium">
+              <Text className="text-sm text-center font-bold mt-1">Bushra</Text>
+              <Text className="text-xs text-center text-gray-600 font-semibold">
+                Bank Alfalah
+              </Text>
+            </View>
+          </View>
+          <View className="w-24 h-36 bg-white m-2 rounded-lg shadow-lg justify-center items-center">
+            <View
+              className="w-20 h-20 bg-primary mt-3 rounded-lg shadow-lg justify-center items-center"
+              style={{ backgroundColor: "#5CCAA9" }}
+            >
+              <Text className="text-center font text-3xl text-white font-bold">
+                T
+              </Text>
+            </View>
+            <View className="font-medium">
+              <Text className="text-sm text-center font-bold mt-1">Tasbih</Text>
+              <Text className="text-xs text-center text-gray-600 font-semibold">
+                Bank HBL
+              </Text>
+            </View>
+          </View>
+          <View className="w-24 h-36 bg-white m-2 rounded-lg shadow-lg justify-center items-center">
+            <View
+              className="w-20 h-20 bg-primary mt-3 rounded-lg shadow-lg justify-center items-center"
+              style={{ backgroundColor: Color.PrimaryWebOrient }}
+            >
+              <Text className="text-center font text-3xl text-white font-bold">
+                A
+              </Text>
+            </View>
+            <View className="font-medium">
+              <Text className="text-sm text-center font-bold mt-1">
+                Abdullah
+              </Text>
+              <Text className="text-xs text-center text-gray-600 font-semibold">
+                Askari Bank
+              </Text>
+            </View>
+          </View>
+        </ScrollView>
+        <View className="flex-row justify-between px-5 mt-5">
+          <Text className="text-base font-semibold text-black">Quick Pay</Text>
+          <Text className="text-xs font-medium text-gray-800 underline">
+            View All
+          </Text>
+        </View>
+        <ScrollView
+          className="pt-1"
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.scrollContainer}
+        >
+          <View className="m-2">
+            <View
+              className="w-20 h-20 bg-primary  rounded-lg shadow-lg justify-center items-center"
+              style={{ backgroundColor: Color.PrimaryWebOrient }}
+            >
+              <Text className="text-center text-4xl text-white font-bold">
+                F
+              </Text>
+            </View>
+            <View className="font-medium">
+              <Text className="text-sm text-center font-bold mt-1">Fatima</Text>
+            </View>
+          </View>
+          <View className="m-2">
+            <View
+              className="w-20 h-20 bg-primary  rounded-lg shadow-lg justify-center items-center"
+              style={{ backgroundColor: "#20798C" }}
+            >
+              <Text className="text-center font text-3xl text-white font-bold">
+                B
+              </Text>
+            </View>
+            <View className="font-medium">
+              <Text className="text-sm text-center font-bold mt-1">Bisma</Text>
+            </View>
+          </View>
+          <View className="m-2">
+            <View
+              className="w-20 h-20 bg-primary  rounded-lg shadow-lg justify-center items-center"
+              style={{ backgroundColor: "#2E76B7" }}
+            >
+              <Text className="text-center font text-3xl text-white font-bold">
+                S
+              </Text>
+            </View>
+            <View className="font-medium">
+              <Text className="text-sm text-center font-bold mt-1">Sameer</Text>
+            </View>
+          </View>
+          <View className="m-2">
+            <View
+              className="w-20 h-20 bg-primary  rounded-lg shadow-lg justify-center items-center"
+              style={{ backgroundColor: "#9683E4" }}
+            >
+              <Text className="text-center font text-3xl text-white font-bold">
+                A
+              </Text>
+            </View>
+            <View className="font-medium">
+              <Text className="text-sm text-center font-bold mt-1">Amina</Text>
+            </View>
+          </View>
+          <View className="m-2">
+            <View
+              className="w-20 h-20 bg-primary  rounded-lg shadow-lg justify-center items-center"
+              style={{ backgroundColor: "#E983CC" }}
+            >
+              <Text className="text-center font text-3xl text-white font-bold">
+                S
+              </Text>
+            </View>
+            <View className="font-medium">
+              <Text className="text-sm text-center font-bold mt-1">Sidra</Text>
+            </View>
+          </View>
+        </ScrollView>
+        <View className="px-5 mt-5">
+          <Text className="text-base font-semibold text-black">Cards</Text>
+        </View>
+        <List.Section className="bg-white rounded-lg ml-5 mr-5">
+          <List.Accordion
+            className="font-InterRegular m-0 text-base bg-white"
+            title={
+              <View className="flex flex-row items-center">
+                <Entypo
+                  name="credit-card"
+                  size={30}
+                  className="mr-1"
+                  style={{ color: Color.PrimaryWebOrient }}
+                />
+                <View className="flex flex-col ml-4">
+                  <Text className="text-sm font-semibold text-gray-800">
+                    Credit Card
+                  </Text>
+                  <Text className="text-xs font-medium text-neutral-500">
+                    5669996****7989
+                  </Text>
+                </View>
+              </View>
+            }
+            left={(props) => <List.Icon {...props} />}
+            expanded={expanded}
+            onPress={handlePress}
+          >
+            {/* The content inside the Accordion */}
+            <View className="bg-white rounded-lg px-5 mt-6">
+              <View className="flex flex-col">
+                <View className="flex flex-row items-center justify-between">
+                  <View className="flex flex-row items-center">
+                    <Entypo
+                      name="credit-card"
+                      size={30}
+                      className="mr-1"
+                      style={{ color: Color.PrimaryWebOrient }}
+                    />
+                    <View className="flex flex-col ml-4">
+                      <Text className="text-sm font-semibold text-gray-800">
+                        Credit Card
+                      </Text>
+                      <Text className="text-xs font-medium text-neutral-500">
+                        5669996****7989
+                      </Text>
+                    </View>
+                  </View>
+                </View>
+              </View>
+            </View>
+
+            <Divider />
+            {/* Add more sections here if needed */}
+          </List.Accordion>
+        </List.Section>
+
+        <List.Section className="bg-white rounded-lg ml-5 mr-5">
+      <List.Accordion
+        className="font-InterRegular m-0 text-base bg-white"
+        title={
+          <View className="flex flex-row items-center">
+            <Entypo
+              name="credit-card"
+              size={30}
+              className="mr-1"
+              style={{ color: Color.PrimaryWebOrient }}
+            />
+            <View className="flex flex-col ml-4">
+              <Text className="text-sm font-semibold text-gray-800">
+                Credit Card
+              </Text>
+              <Text className="text-xs font-medium text-neutral-500">
+                5669996****7989
+              </Text>
+            </View>
+          </View>
+        }
+        left={(props) => <List.Icon {...props} />}
+        expanded={expanded1}
+        onPress={handlePress1}
+      >
+        <View   className="justify-center items-center mr-8">
+          <ListSectionCard width={400} />
+        </View>
+      </List.Accordion>
+    </List.Section>
+      </ScrollView>
+      <Footer />
     </SafeAreaView>
   );
 };
 const styles = StyleSheet.create({
-  container: {
-    backgroundColor: "#f9fafc",
-  },
-
   box: {
-    width: 100,
-    height: 100,
-    backgroundColor: "white",
-    margin: 10,
-    borderRadius: 5,
     shadowColor: "#000",
     elevation: 10,
+  },
+  icon: {
+    marginBottom: 8,
   },
 });
 export default HomeScreen;
