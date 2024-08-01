@@ -32,14 +32,9 @@ export const Color = {
   colorDarkgray_200: "#9f9f9f",
   // -----------------------------------------------------------------------------------------------------------------
   //Primary Theme Color Variable
-  PrimaryWebOrient:"#1EBBD7",
-  PrimaryWebOrientLayer2:"#0F98B0",
+  PrimaryWebOrient:"#1DBBD8",
+  PrimaryWebOrientLayer2:"#8EEDFF",
   PrimaryWebOrientTxtColor:"#1EBBD7",
-
-  // New App Default Colors
-  primary: '#1DBBD8',
-  secondary: '#8EEDFF',
-  
 };
 
 /* border radiuses */
@@ -49,3 +44,4 @@ export const Border = {
   br_sm: 14,
   br_xs: 12,
 };
+

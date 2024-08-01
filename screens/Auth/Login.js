@@ -1,3 +1,4 @@
+
 import React, { useState, useContext } from "react";
 import {
   Dimensions,
@@ -204,51 +205,51 @@ const Login = ({ navigation }) => {
 
     <SafeAreaView className="h-full flex-1">
       <LinearGradient
-        colors={['#1DBBD8', '#8EEDFF']}
+        colors={[Color.PrimaryWebOrient, Color.PrimaryWebOrientLayer2]}
         style={{ flex: 1 }}
       >
         <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
 
-            <View className="flex-row items-center p-4 mt-2">
-              <TouchableOpacity onPress={() => navigation.goBack()}>
-                <AntDesign name="arrowleft" size={20} color="white" />
-              </TouchableOpacity>
-              <Text className="text-white font-semibold text-lg ml-4 font-InterSemiBold">Login</Text>
-            </View>
+          <View className="flex-row items-center p-4 mt-2">
+            <TouchableOpacity onPress={() => navigation.goBack()}>
+              <AntDesign name="arrowleft" size={20} color="white" />
+            </TouchableOpacity>
+            <Text className="text-white font-semibold text-lg ml-4 font-InterSemiBold">Login</Text>
+          </View>
 
-            <View className="flex-1 bg-white mt-2 rounded-t-[30px] px-7 pt-7 shadow-2xl">
-              <View className="flex-1 justify-between">
+          <View className="flex-1 bg-white mt-2 rounded-t-[30px] px-7 pt-7 shadow-2xl">
+            <View className="flex-1 justify-between">
+              <View>
+                <View className="mb-8 w-[80%]">
+                  <Text className="text-2xl font-bold leading-8 font-InterBold">Get started with DigiBank!</Text>
+                </View>
+
                 <View>
-                  <View className="mb-8 w-[80%]">
-                    <Text className="text-2xl font-bold leading-8 font-InterBold">Get started with DigiBank!</Text>
+                  <View>
+                    <Text className="text-sm mb-2 font-InterMedium">User Name*</Text>
+                    <Input placeholder="Enter your username" />
+                    <View className="items-end mt-2">
+                      <TouchableOpacity onPress={() => navigation.navigate('ForgetPassword', { source: 'username' })}>
+                        <Text className="text-xs underline font-InterSemiBold" style={{color: Color.PrimaryWebOrient}}>Forgot Username?</Text>
+                      </TouchableOpacity>
+                    </View>
                   </View>
 
-                  <View>
-                    <View>
-                      <Text className="text-sm mb-2 font-InterMedium">User Name*</Text>
-                      <Input placeholder="Enter your username" />
-                      <View className="items-end mt-2">
-                        <TouchableOpacity onPress={() => navigation.navigate('ForgetPassword', { source: 'username' })}>
-                          <Text className="text-xs text-[#1DBBD8] underline font-InterSemiBold">Forgot Username?</Text>
-                        </TouchableOpacity>
-                      </View>
-                    </View>
-
-                    <View className="mt-1">
-                      <Text className="text-sm mb-2 font-InterMedium">Password*</Text>
-                      <InputWithIcon placeholder="Enter your password" isPassword />
-                      <View className="items-end mt-2">
-                        <TouchableOpacity onPress={() => navigation.navigate('ForgetPassword', { source: 'password' })}>
-                          <Text className="text-xs text-[#1DBBD8] underline font-InterSemiBold">Forgot Password?</Text>
-                        </TouchableOpacity>
-                      </View>
+                  <View className="mt-1">
+                    <Text className="text-sm mb-2 font-InterMedium">Password*</Text>
+                    <InputWithIcon placeholder="Enter your password" isPassword />
+                    <View className="items-end mt-2">
+                      <TouchableOpacity onPress={() => navigation.navigate('ForgetPassword', { source: 'password' })}>
+                        <Text className="text-xs underline font-InterSemiBold" style={{color: Color.PrimaryWebOrient}}>Forgot Password?</Text>
+                      </TouchableOpacity>
                     </View>
                   </View>
                 </View>
+              </View>
 
-                {/* -----| Security Image Start |----- */}
+              {/* -----| Security Image Start |----- */}
 
-                {/* <View className="-top-2">
+              {/* <View className="-top-2">
                   <Text className="text-center font-medium text-sm mb-4 font-InterMedium">Select Security Image</Text>
 
                   <View className="flex-row justify-around items-center">
@@ -282,21 +283,21 @@ const Login = ({ navigation }) => {
                   </View>
                 </View> */}
 
-                {/* -----| Security Image End |----- */}
+              {/* -----| Security Image End |----- */}
 
-                <View className="mb-5">
-                  <TouchableOpacity className="bg-[#1DBBD8] py-4 rounded-lg mb-4" onPress={() => navigation.navigate('Home')}>
-                    <Text className="text-white text-base text-center font-medium font-InterSemiBold">Login</Text>
+              <View className="mb-5">
+                <TouchableOpacity className="py-4 rounded-lg mb-4" style={{backgroundColor: Color.PrimaryWebOrient}} onPress={() => navigation.navigate('Home')}>
+                  <Text className="text-white text-base text-center font-medium font-InterSemiBold">Login</Text>
+                </TouchableOpacity>
+                <View className="flex-row justify-center">
+                  <Text className="text-sm font-InterRegular">Don't have an account? </Text>
+                  <TouchableOpacity onPress={() => navigation.navigate("SignUp")}>
+                    <Text className="text-sm font-InterSemiBold" style={{color: Color.PrimaryWebOrient}}>Sign up</Text>
                   </TouchableOpacity>
-                  <View className="flex-row justify-center">
-                    <Text className="text-sm font-InterRegular">Don't have an account? </Text>
-                    <TouchableOpacity onPress={() => navigation.navigate("SignUp")}>
-                      <Text className="text-sm text-[#1DBBD8] font-InterSemiBold">Sign up</Text>
-                    </TouchableOpacity>
-                  </View>
                 </View>
               </View>
             </View>
+          </View>
         </ScrollView>
       </LinearGradient>
     </SafeAreaView>

@@ -10,7 +10,7 @@ const StartSection = ({ navigation }) => {
     return (
         <SafeAreaView className="h-full flex-1">
             <LinearGradient
-                colors={[Color.primary, Color.secondary]}
+                colors={[Color.PrimaryWebOrient, Color.PrimaryWebOrientLayer2]}
                 style={{ flex: 1 }}
             >
                 <View style={{ flexGrow: 1 }}>
@@ -44,14 +44,14 @@ const StartSection = ({ navigation }) => {
 
                                 <View className="flex-row justify-between mt-4 mb-2">
                                     <TouchableOpacity
-                                        className="border border-[#1DBBD8] py-3 w-[35%] rounded-lg"
+                                        className="border border-primary py-3 w-[35%] rounded-lg" style={{border: Color.PrimaryWebOrient}}
                                         onPress={() => navigation.navigate("Login")}
                                     >
-                                        <Text className="text-base text-[#1DBBD8] font-medium text-center font-InterSemiBold">Login</Text>
+                                        <Text className="text-base font-medium text-center font-InterSemiBold" style={{color: Color.PrimaryWebOrient}}>Login</Text>
                                     </TouchableOpacity>
 
                                     <TouchableOpacity
-                                        className="py-3 w-[60%] bg-[#1DBBD8] rounded-lg"
+                                        className="py-3 w-[60%] rounded-lg" style={{backgroundColor: Color.PrimaryWebOrient}}
                                         onPress={() => navigation.navigate("SignUp")}
                                     >
                                         <Text className="text-base text-white font-medium text-center font-InterSemiBold">Get Started</Text>
@@ -63,7 +63,7 @@ const StartSection = ({ navigation }) => {
                 </View>
             </LinearGradient>
 
-            <StatusBar backgroundColor="#1DBBD8" style="light" />
+            <StatusBar backgroundColor={Color.primary} style="light" />
         </SafeAreaView>
     );
 }

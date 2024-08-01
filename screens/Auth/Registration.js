@@ -387,7 +387,7 @@ const Registration = () => {
 
     <SafeAreaView className="h-full flex-1">
       <LinearGradient
-        colors={['#1DBBD8', '#8EEDFF']}
+        colors={[Color.PrimaryWebOrient, Color.PrimaryWebOrientLayer2]}
         style={{ flex: 1 }}
       >
         <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
@@ -428,13 +428,13 @@ const Registration = () => {
                 </View>
 
                 <View className="mb-5">
-                  <TouchableOpacity className="bg-[#1DBBD8] py-4 rounded-lg mb-4" onPress={() => setMain(false)}>
+                  <TouchableOpacity className="py-4 rounded-lg mb-4" style={{backgroundColor: Color.PrimaryWebOrient}} onPress={() => setMain(false)}>
                     <Text className="text-white text-base text-center font-medium font-InterSemiBold">Next</Text>
                   </TouchableOpacity>
                   <View className="flex-row justify-center">
                     <Text className="text-sm font-InterRegular">Already have an account? </Text>
                     <TouchableOpacity onPress={() => navigation.navigate("Login")}>
-                      <Text className="text-sm text-[#1DBBD8] font-InterSemiBold">Login</Text>
+                      <Text className="text-sm font-InterSemiBold" style={{color: Color.PrimaryWebOrient}}>Login</Text>
                     </TouchableOpacity>
                   </View>
                 </View>
@@ -465,13 +465,13 @@ const Registration = () => {
                 </View>
 
                 <View className="mb-5">
-                  <TouchableOpacity className="bg-[#1DBBD8] py-4 rounded-lg mb-4">
+                  <TouchableOpacity className="py-4 rounded-lg mb-4" style={{backgroundColor: Color.PrimaryWebOrient}}>
                     <Text className="text-white text-base text-center font-medium font-InterSemiBold">Sign up</Text>
                   </TouchableOpacity>
                   <View className="flex-row justify-center">
                     <Text className="text-sm font-InterRegular">Already have an account? </Text>
                     <TouchableOpacity onPress={() => navigation.navigate("Login")}>
-                      <Text className="text-sm text-[#1DBBD8] font-InterSemiBold">Login</Text>
+                      <Text className="text-sm font-InterSemiBold" style={{color: Color.PrimaryWebOrient}}>Login</Text>
                     </TouchableOpacity>
                   </View>
                 </View>

@@ -108,7 +108,7 @@ const ForgetPassword = () => {
                             <InputWithIcon placeholder="Confirm your password" isPassword />
                         </View>
 
-                        <TouchableOpacity className="bg-[#1DBBD8] py-3 rounded-lg mb-4" onPress={() => navigation.navigate("Login")}>
+                        <TouchableOpacity className="py-3 rounded-lg mb-4" style={{backgroundColor: Color.PrimaryWebOrient}} onPress={() => navigation.navigate("Login")}>
                             <Text className="text-white text-base text-center font-medium font-InterSemiBold">Change Password</Text>
                         </TouchableOpacity>
 
