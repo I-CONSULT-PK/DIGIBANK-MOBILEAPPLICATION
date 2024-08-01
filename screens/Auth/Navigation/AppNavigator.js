@@ -34,6 +34,8 @@ import NewPassword from "../NewPassword";
 import MyQRCode from "../../MyQrCode";
 import OTPverification from "../../../components/OTPverification";
 import NewCard from "../../Mobile-Banking/My-Cards/NewCard";
+import ApplyCard from "../../Mobile-Banking/My-Cards/ApplyCard";
+import CardManagement from "../../Mobile-Banking/My-Cards/Card-Management";
 const Stack = createStackNavigator();
 
 const AppNavigator = () => {
@@ -51,6 +53,8 @@ const AppNavigator = () => {
         <Stack.Screen name="Card" component={Card} />
         <Stack.Screen name="NewCard" component={NewCard} />
         <Stack.Screen name="SelectCards" component={SelectCards} />
+        <Stack.Screen name="ApplyCard" component={ApplyCard} />
+        <Stack.Screen name="CardManagement" component={CardManagement} />
 
         <Stack.Screen name="AccountSetting" component={AccountSetting} />
 

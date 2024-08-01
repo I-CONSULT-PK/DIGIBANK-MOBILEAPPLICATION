@@ -136,7 +136,7 @@ const NewCard = () => {
             <View className="px-10 mt-16">
               <TouchableOpacity className="py-3 px-12 bg-[#1DBBD8] rounded-lg">
                 <Text className="text-base text-center font-InterMedium text-white">
-                  Sign Up
+                Add Now
                 </Text>
               </TouchableOpacity>
             </View>
