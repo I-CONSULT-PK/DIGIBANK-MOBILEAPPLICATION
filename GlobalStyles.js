@@ -32,9 +32,9 @@ export const Color = {
   colorDarkgray_200: "#9f9f9f",
   // -----------------------------------------------------------------------------------------------------------------
   //Primary Theme Color Variable
-  PrimaryWebOrient:"red",
-  PrimaryWebOrientLayer2:"red",
-  PrimaryWebOrientTxtColor:"red",
+  PrimaryWebOrient:"#1EBBD7",
+  PrimaryWebOrientLayer2:"#0F98B0",
+  PrimaryWebOrientTxtColor:"#1EBBD7",
   
 };
 
