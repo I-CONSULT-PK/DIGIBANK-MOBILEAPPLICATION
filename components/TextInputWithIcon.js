@@ -25,6 +25,7 @@ const InputWithIcon = ({ isPassword, value, onChange, placeholder, disable, outl
           flex: 1,
           backgroundColor: "#F4F5F9",
           fontSize: 15,
+          paddingRight: 35
         }}
         placeholder={placeholder}
         activeOutlineColor="#A5A7A8"

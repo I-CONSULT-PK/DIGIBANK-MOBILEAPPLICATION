@@ -212,14 +212,22 @@ const OTP = ({ navigation, route }) => {
     // }, [userEmail, userNumber]);
   };
 
+  const { source } = route.params;
+
   const otpLength = 5;
   const inputs = useRef([]);
 
   const handleChange = (text, index) => {
-    if (text.length === 1 && index < otpLength - 1) {
+    // Allow only numeric values
+    const sanitizedText = text.replace(/[^0-9]/g, '');
+    if (sanitizedText.length === 1 && index < otpLength - 1) {
+      inputs.current[index].setNativeProps({ text: sanitizedText });
       inputs.current[index + 1].focus();
+    } else {
+      inputs.current[index].setNativeProps({ text: sanitizedText });
     }
   };
+
 
   return (
     // <View
@@ -287,11 +295,11 @@ const OTP = ({ navigation, route }) => {
           <Text className="text-black font-semibold text-lg ml-4 font-InterSemiBold">OTP</Text>
         </View>
 
-        <View className="flex-1 mt-4 px-5 justify-center -top-14">
+        <View className="flex-1 mt-4 px-4 justify-center -top-14">
           <View className="bg-white rounded-xl w-full shadow-xl shadow-slate-500 px-5 pt-5 pb-4">
 
             <View className="mb-6">
-              <Text className="text-sm mb-4 font-InterRegular">Enter Your OTP*</Text>
+              <Text className="text-sm mb-4 font-InterMedium">Enter Your OTP*</Text>
 
               <View className="flex-row justify-between items-center">
                 {Array.from({ length: otpLength }).map((_, index) => (
@@ -299,7 +307,7 @@ const OTP = ({ navigation, route }) => {
                     key={index}
                     ref={(input) => inputs.current[index] = input}
                     className="w-12 h-12 text-center text-xl bg-[#F4F5F9] border border-gray-300 rounded-md font-InterSemiBold"
-                    keyboardType="numeric"
+                    keyboardType="number-pad"
                     maxLength={1}
                     onChangeText={(text) => handleChange(text, index)}
                     returnKeyType={index === otpLength - 1 ? "done" : "next"}
@@ -309,10 +317,12 @@ const OTP = ({ navigation, route }) => {
             </View>
 
             <View className="px-2 mb-7">
-              <Text className="text-sm font-InterMedium text-[#1DBBD8]">We have sent a code to <Text className="text-cyan-600">( *****@mail.com )</Text> Enter code here to verify your identity</Text>
+              <Text className="text-sm font-InterMedium text-[#1DBBD8]">We have sent a code to <Text className="text-slate-500">( *****@mail.com )</Text> Enter code here to verify your identity</Text>
             </View>
 
-            <TouchableOpacity className="bg-[#1DBBD8] py-3 rounded-lg mb-4">
+            <TouchableOpacity className="bg-[#1DBBD8] py-3 rounded-lg mb-4" onPress={() => {
+              source === 'username' ? navigation.navigate('Login') : navigation.navigate('NewPassword');
+            }}>
               <Text className="text-white text-base text-center font-medium font-InterSemiBold">Verify</Text>
             </TouchableOpacity>
 

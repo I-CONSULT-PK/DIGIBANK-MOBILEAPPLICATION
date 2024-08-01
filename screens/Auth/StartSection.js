@@ -4,11 +4,13 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import { StatusBar } from 'expo-status-bar';
 
+import { Color } from '../../GlobalStyles';
+
 const StartSection = ({ navigation }) => {
     return (
         <SafeAreaView className="h-full flex-1">
             <LinearGradient
-                colors={['#1DBBD8', '#8EEDFF']}
+                colors={[Color.primary, Color.secondary]}
                 style={{ flex: 1 }}
             >
                 <View style={{ flexGrow: 1 }}>

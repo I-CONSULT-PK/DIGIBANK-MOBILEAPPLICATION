@@ -405,23 +405,23 @@ const Registration = () => {
             {main ? (
               <View className="flex-1 justify-between">
                 <View>
-                  <View className="mb-7 w-[80%]">
+                  <View className="mb-8 w-[80%]">
                     <Text className="text-2xl font-bold font-InterBold">Get started with your account!</Text>
                   </View>
 
                   <View>
                     <View className="mb-5">
-                      <Text className="text-sm mb-2 font-InterRegular">First Name*</Text>
+                      <Text className="text-sm mb-2 font-InterMedium">First Name*</Text>
                       <Input placeholder="Enter your first name" />
                     </View>
 
                     <View className="mb-5">
-                      <Text className="text-sm mb-2 font-InterRegular">Last Name*</Text>
+                      <Text className="text-sm mb-2 font-InterMedium">Last Name*</Text>
                       <Input placeholder="Enter your last name" />
                     </View>
 
                     <View className="mb-5">
-                      <Text className="text-sm mb-2 font-InterRegular">Email Address*</Text>
+                      <Text className="text-sm mb-2 font-InterMedium">Email Address*</Text>
                       <Input placeholder="Enter your email" />
                     </View>
                   </View>
@@ -442,23 +442,23 @@ const Registration = () => {
             ) : (
               <View className="flex-1 justify-between">
                 <View>
-                  <View className="mb-7">
+                  <View className="mb-8 w-[80%]">
                     <Text className="text-2xl font-bold font-InterBold">Get started with your account!</Text>
                   </View>
 
                   <View>
                     <View className="mb-5">
-                      <Text className="text-sm mb-2 font-InterRegular">CNIC Number*</Text>
+                      <Text className="text-sm mb-2 font-InterMedium">CNIC Number*</Text>
                       <Input placeholder="Enter your CNIC" />
                     </View>
 
                     <View className="mb-5">
-                      <Text className="text-sm mb-2 font-InterRegular">Mobile Number*</Text>
+                      <Text className="text-sm mb-2 font-InterMedium">Mobile Number*</Text>
                       <Input placeholder="Enter your mobile number" />
                     </View>
 
                     <View className="mb-5">
-                      <Text className="text-sm mb-2 font-InterRegular">Account Number*</Text>
+                      <Text className="text-sm mb-2 font-InterMedium">Account Number*</Text>
                       <Input placeholder="Enter 14 digits Acc No." />
                     </View>
                   </View>

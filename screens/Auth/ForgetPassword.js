@@ -175,16 +175,16 @@ const ForgetPassword = ({ route }) => {
           <Text className="text-black font-semibold text-lg ml-4 font-InterSemiBold">{source === 'username' ? 'Forgot username' : 'Forgot password'}</Text>
         </View>
 
-        <View className="flex-1 mt-4 px-5">
+        <View className="flex-1 mt-4 px-4">
           <View className="bg-white rounded-xl w-full shadow-xl shadow-slate-500 px-5 pt-5 pb-4">
 
             <View className="mb-5">
-              <Text className="text-sm mb-2 font-InterRegular">CNIC Number*</Text>
+              <Text className="text-sm mb-2 font-InterMedium">CNIC Number*</Text>
               <Input placeholder="Enter your CNIC" />
             </View>
 
             <View className="mb-6">
-              <Text className="text-sm mb-2 font-InterRegular">Account Number*</Text>
+              <Text className="text-sm mb-2 font-InterMedium">Account Number*</Text>
               <Input placeholder="Enter 14 digits Acc No." />
             </View>
 
@@ -192,7 +192,7 @@ const ForgetPassword = ({ route }) => {
               <Text className="text-sm font-InterMedium text-[#1DBBD8]">A verification code will be sent to email address linked with this account number.</Text>
             </View>
 
-            <TouchableOpacity className="bg-[#1DBBD8] py-3 rounded-lg mb-4" onPress={() => navigation.navigate("OTP")}>
+            <TouchableOpacity className="bg-[#1DBBD8] py-3 rounded-lg mb-4" onPress={() => navigation.navigate("OTP", { source: source })}>
               <Text className="text-white text-base text-center font-medium font-InterSemiBold">Next</Text>
             </TouchableOpacity>
 

@@ -35,6 +35,10 @@ export const Color = {
   PrimaryWebOrient:"#1EBBD7",
   PrimaryWebOrientLayer2:"#0F98B0",
   PrimaryWebOrientTxtColor:"#1EBBD7",
+
+  // New App Default Colors
+  primary: '#1DBBD8',
+  secondary: '#8EEDFF',
   
 };
 

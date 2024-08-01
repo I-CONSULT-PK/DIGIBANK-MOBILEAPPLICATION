@@ -219,13 +219,13 @@ const Login = ({ navigation }) => {
             <View className="flex-1 bg-white mt-2 rounded-t-[30px] px-7 pt-7 shadow-2xl">
               <View className="flex-1 justify-between">
                 <View>
-                  <View className="mb-7 w-[80%]">
+                  <View className="mb-8 w-[80%]">
                     <Text className="text-2xl font-bold leading-8 font-InterBold">Get started with DigiBank!</Text>
                   </View>
 
                   <View>
                     <View>
-                      <Text className="text-sm mb-2 font-InterRegular">User Name*</Text>
+                      <Text className="text-sm mb-2 font-InterMedium">User Name*</Text>
                       <Input placeholder="Enter your username" />
                       <View className="items-end mt-2">
                         <TouchableOpacity onPress={() => navigation.navigate('ForgetPassword', { source: 'username' })}>
@@ -235,7 +235,7 @@ const Login = ({ navigation }) => {
                     </View>
 
                     <View className="mt-1">
-                      <Text className="text-sm mb-2 font-InterRegular">Password*</Text>
+                      <Text className="text-sm mb-2 font-InterMedium">Password*</Text>
                       <InputWithIcon placeholder="Enter your password" isPassword />
                       <View className="items-end mt-2">
                         <TouchableOpacity onPress={() => navigation.navigate('ForgetPassword', { source: 'password' })}>
@@ -285,7 +285,7 @@ const Login = ({ navigation }) => {
                 {/* -----| Security Image End |----- */}
 
                 <View className="mb-5">
-                  <TouchableOpacity className="bg-[#1DBBD8] py-4 rounded-lg mb-4">
+                  <TouchableOpacity className="bg-[#1DBBD8] py-4 rounded-lg mb-4" onPress={() => navigation.navigate('Home')}>
                     <Text className="text-white text-base text-center font-medium font-InterSemiBold">Login</Text>
                   </TouchableOpacity>
                   <View className="flex-row justify-center">
