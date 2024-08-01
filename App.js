@@ -11,6 +11,8 @@ import OTP from "./screens/Auth/OTP";
 import SplashScreen from "./screens/Auth/SplashScreen";
 import Sidebar from "./screens/Mobile-Banking/Account-Setting/Sidebar";
 import Card from "./screens/Mobile-Banking/Card/Card";
+import NewCard from "./screens/Mobile-Banking/My-Cards/NewCard";
+import SelectCards from "./screens/Mobile-Banking/My-Cards/SelectCards";
 import AccountSetting from "./screens/E-Wallet/Account-Setting/AccountSetting";
 import PersonalWallet from "./screens//E-Wallet/Wallet";
 import NameChange from "./screens/E-Wallet/Account-Setting/Namechange";
@@ -105,6 +107,16 @@ export default function App() {
         <Stack.Screen
           name="Card"
           component={Card}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="NewCard"
+          component={NewCard}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="SelectCards"
+          component={SelectCards}
           options={{ headerShown: false }}
         />
         <Stack.Screen
@@ -370,6 +382,16 @@ export default function App() {
             <Stack.Screen
               name="Receive"
               component={Receive}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="NewCard"
+              component={NewCard}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="SelectCards"
+              component={SelectCards}
               options={{ headerShown: false }}
             />
             <Stack.Screen

@@ -226,7 +226,7 @@ const Login = ({ navigation }) => {
               </View>
 
               <View className="px-10">
-                <TouchableOpacity className="py-3 px-12 bg-[#1DBBD8] rounded-lg">
+                <TouchableOpacity className="py-3 px-12 bg-[#1DBBD8] rounded-lg" onPress={() => navigation.navigate("Home")}>
                   <Text className="text-base text-center font-InterMedium text-white">Login</Text>
                 </TouchableOpacity>
                 <View className="flex-row justify-center mt-3">

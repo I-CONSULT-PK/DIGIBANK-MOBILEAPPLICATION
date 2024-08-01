@@ -275,7 +275,7 @@ const Sidebar = () => {
           
             <View className=" p-2  justify-center items-center">
           <TouchableOpacity
-                // onPress={() => navigation.navigate("Card")}
+                onPress={() => navigation.navigate("SelectCards")}
                 style={styles.menuItemContainer}
               >
                 <Entypo

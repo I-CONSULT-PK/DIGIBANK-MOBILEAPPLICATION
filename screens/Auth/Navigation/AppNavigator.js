@@ -5,10 +5,11 @@ import HomeScreen from "../../HomeScreen";
 import OTP from "../OTP";
 import Login from "../Login";
 import Registration from "../Registration";
-import Sidebar from "../../Sidebar";
+import Sidebar from "../../Mobile-Banking/Account-Setting/Sidebar";
 import Card from "../../Card";
 import AccountSetting from "../../AccountSetting";
 import NameChange from "../../Namechange";
+import SelectCards from "../../Mobile-Banking/My-Cards/SelectCards";
 import PasswordChange from "../../PasswordChange";
 import EmailChange from "../../EmailChange";
 import MobNoChange from "../../Mob_NoChange";
@@ -32,6 +33,7 @@ import ForgetPassword from "../ForgetPassword";
 import NewPassword from "../NewPassword";
 import MyQRCode from "../../MyQrCode";
 import OTPverification from "../../../components/OTPverification";
+import NewCard from "../../Mobile-Banking/My-Cards/NewCard";
 const Stack = createStackNavigator();
 
 const AppNavigator = () => {
@@ -47,6 +49,9 @@ const AppNavigator = () => {
         <Stack.Screen name="HomeScreen" component={HomeScreen} />
         <Stack.Screen name="Sidebar" component={Sidebar} />
         <Stack.Screen name="Card" component={Card} />
+        <Stack.Screen name="NewCard" component={NewCard} />
+        <Stack.Screen name="SelectCards" component={SelectCards} />
+
         <Stack.Screen name="AccountSetting" component={AccountSetting} />
 
         <Stack.Screen name="NumberChange" component={NameChange} />
