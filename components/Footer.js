@@ -121,10 +121,12 @@
 // export default Footer;
 import React from "react";
 import { View, Text, TouchableOpacity } from "react-native";
+import { useNavigation } from "@react-navigation/native";
 import { Entypo } from "@expo/vector-icons";
 import { Color } from "../GlobalStyles";
 
 const Footer = () => {
+  const navigation = useNavigation();
   return (
     <View className="bg-white py-4">
       <View className="flex flex-row justify-between items-center mx-4">
@@ -150,7 +152,10 @@ const Footer = () => {
         </TouchableOpacity>
 
         {/* Cards */}
-        <TouchableOpacity className="flex items-center">
+        <TouchableOpacity
+          className="flex items-center"
+          onPress={() => navigation.navigate("ApplyForCard")}
+        >
           <Entypo name="credit-card" size={30} />
           <Text className=" mt-1 text-xs font-semibold">Cards</Text>
         </TouchableOpacity>

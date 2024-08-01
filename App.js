@@ -41,6 +41,7 @@ import NewPassword from "./screens/Auth/NewPassword";
 import MyQRCode from "./components/QR/MyQrCode";
 import Footer from "./components/Footer";
 import OTPverification from "./components/OTPverification";
+import ApplyForCard from "./screens/Mobile-Banking/My-Cards/ApplyForCard";
 
 const Stack = createNativeStackNavigator();
 
@@ -99,6 +100,11 @@ export default function App() {
         <Stack.Screen
           name="Card"
           component={Card}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="ApplyForCard"
+          component={ApplyForCard}
           options={{ headerShown: false }}
         />
         <Stack.Screen
@@ -227,11 +233,11 @@ export default function App() {
           component={Footer}
           options={{ headerShown: false }}
         />
-         <Stack.Screen
-              name="OTPverification"
-              component={OTPverification}
-              options={{ headerShown: false }}
-            />
+        <Stack.Screen
+          name="OTPverification"
+          component={OTPverification}
+          options={{ headerShown: false }}
+        />
       </Stack.Navigator>
     );
   };
@@ -394,6 +400,11 @@ export default function App() {
             <Stack.Screen
               name="Footer"
               component={Footer}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="ApplyForCard"
+              component={ApplyForCard}
               options={{ headerShown: false }}
             />
           </Stack.Navigator>

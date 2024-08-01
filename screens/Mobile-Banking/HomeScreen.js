@@ -507,7 +507,7 @@ const HomeScreen = () => {
   const handlePress1 = () => setExpanded1(!expanded1);
 
   return (
-    <SafeAreaView style={styles.container} className="h-full bg-[#f9fafc]">
+    <SafeAreaView className="h-full bg-[#f9fafc]">
       <View className="flex flex-row items-center justify-between px-4 pt-6 pb-3">
         {/* Menu Icon */}
         <Entypo
