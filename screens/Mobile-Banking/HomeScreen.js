@@ -468,7 +468,7 @@
 // export default HomeScreen;
 
 import { LinearGradient } from "expo-linear-gradient";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   FlatList,
   ScrollView,
@@ -477,6 +477,9 @@ import {
   Image,
   Text,
   Pressable,
+  Modal,
+  Animated,
+  Easing,
   TextInput,
 } from "react-native";
 import { Color } from "../../GlobalStyles";
@@ -497,23 +500,81 @@ import Account from "../../assets/Images/Account.svg";
 import Transfer from "../../assets/Images/Transfer.svg";
 import ListSectionCard from "../../assets/Images/ListSectionCard.svg";
 import Footer from "../../components/Footer";
+import Sidebar from "./Account-Setting/Sidebar";
 
 const HomeScreen = () => {
   const navigation = useNavigation();
   const [expanded, setExpanded] = useState(false);
   const [expanded1, setExpanded1] = useState(false);
+  const [isSidebarVisible, setSidebarVisible] = useState(false);
+  const sidebarAnim = useRef(new Animated.Value(-300)).current;
+  const modalAnim = useRef(new Animated.Value(0)).current;
+
+  const toggleSidebar = () => {
+    setSidebarVisible(!isSidebarVisible);
+  };
+
+  useEffect(() => {
+    Animated.timing(sidebarAnim, {
+      toValue: isSidebarVisible ? 0 : -300,
+      duration: 300,
+      easing: Easing.out(Easing.ease),
+      useNativeDriver: true,
+    }).start();
+
+    Animated.timing(modalAnim, {
+      toValue: isSidebarVisible ? 1 : 0,
+      duration: 300,
+      easing: Easing.out(Easing.ease),
+      useNativeDriver: true,
+    }).start();
+  }, [isSidebarVisible]);
 
   const handlePress = () => setExpanded(!expanded);
   const handlePress1 = () => setExpanded1(!expanded1);
 
   return (
     <SafeAreaView style={styles.container} className="h-full bg-[#f9fafc]">
+      <Modal
+        transparent={true}
+        animationType="none"
+        visible={isSidebarVisible}
+        onRequestClose={toggleSidebar}
+      >
+        <View style={styles.modalContainer}>
+          <Animated.View
+            style={[
+              styles.sidebarContainer,
+              {
+                transform: [
+                  {
+                    translateX: sidebarAnim,
+                  },
+                ],
+              },
+            ]}
+          >
+            <Sidebar />
+          </Animated.View>
+          <Animated.View
+            style={[
+              styles.overlay,
+              {
+                opacity: modalAnim,
+              },
+            ]}
+          >
+            <TouchableOpacity style={styles.overlay} onPress={toggleSidebar} />
+          </Animated.View>
+        </View>
+      </Modal>
       <View className="flex flex-row items-center justify-between px-4 pt-6 pb-3">
         {/* Menu Icon */}
         <Entypo
           name="menu"
           size={30}
           style={{ color: Color.PrimaryWebOrient }}
+          onPress={toggleSidebar}
         />
 
         {/* Avatar Image */}
@@ -847,9 +908,9 @@ const HomeScreen = () => {
             onPress={handlePress}
           >
             {/* The content inside the Accordion */}
-            <View   className="justify-center items-center mr-8">
-          <ListSectionCard width={400} />
-        </View>
+            <View className="justify-center items-center mr-8">
+              <ListSectionCard width={400} />
+            </View>
 
             <Divider />
             {/* Add more sections here if needed */}
@@ -857,35 +918,35 @@ const HomeScreen = () => {
         </List.Section>
 
         <List.Section className="bg-white rounded-lg ml-5 mr-5">
-      <List.Accordion
-        className="font-InterRegular m-0 text-base bg-white"
-        title={
-          <View className="flex flex-row items-center">
-            <Entypo
-              name="credit-card"
-              size={30}
-              className="mr-1"
-              style={{ color: Color.PrimaryWebOrient }}
-            />
-            <View className="flex flex-col ml-4">
-              <Text className="text-sm font-semibold text-gray-800">
-                Credit Card
-              </Text>
-              <Text className="text-xs font-medium text-neutral-500">
-                5669996****7989
-              </Text>
+          <List.Accordion
+            className="font-InterRegular m-0 text-base bg-white"
+            title={
+              <View className="flex flex-row items-center">
+                <Entypo
+                  name="credit-card"
+                  size={30}
+                  className="mr-1"
+                  style={{ color: Color.PrimaryWebOrient }}
+                />
+                <View className="flex flex-col ml-4">
+                  <Text className="text-sm font-semibold text-gray-800">
+                    Credit Card
+                  </Text>
+                  <Text className="text-xs font-medium text-neutral-500">
+                    5669996****7989
+                  </Text>
+                </View>
+              </View>
+            }
+            left={(props) => <List.Icon {...props} />}
+            expanded={expanded1}
+            onPress={handlePress1}
+          >
+            <View className="justify-center items-center mr-8">
+              <ListSectionCard width={400} />
             </View>
-          </View>
-        }
-        left={(props) => <List.Icon {...props} />}
-        expanded={expanded1}
-        onPress={handlePress1}
-      >
-        <View   className="justify-center items-center mr-8">
-          <ListSectionCard width={400} />
-        </View>
-      </List.Accordion>
-    </List.Section>
+          </List.Accordion>
+        </List.Section>
       </ScrollView>
       <Footer />
     </SafeAreaView>
@@ -898,6 +959,19 @@ const styles = StyleSheet.create({
   },
   icon: {
     marginBottom: 8,
+    color: Color.PrimaryWebOrient,
+  },
+  modalContainer: {
+    flex: 1,
+    flexDirection: "row",
+  },
+  sidebarContainer: {
+    width: "70%",
+    backgroundColor: "#f9fafc",
+  },
+  overlay: {
+    flex: 1,
+    backgroundColor: "rgba(0,0,0,0.5)",
   },
 });
 export default HomeScreen;
