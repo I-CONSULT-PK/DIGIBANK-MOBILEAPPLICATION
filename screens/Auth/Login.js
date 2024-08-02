@@ -230,7 +230,7 @@ const Login = ({ navigation }) => {
                     <Input placeholder="Enter your username" />
                     <View className="items-end mt-2">
                       <TouchableOpacity onPress={() => navigation.navigate('ForgetPassword', { source: 'username' })}>
-                        <Text className="text-xs underline font-InterSemiBold" style={{color: Color.PrimaryWebOrient}}>Forgot Username?</Text>
+                        <Text className="text-xs underline font-InterSemiBold" style={{color: Color.PrimaryWebOrientTxtColor}}>Forgot Username?</Text>
                       </TouchableOpacity>
                     </View>
                   </View>
@@ -240,7 +240,7 @@ const Login = ({ navigation }) => {
                     <InputWithIcon placeholder="Enter your password" isPassword />
                     <View className="items-end mt-2">
                       <TouchableOpacity onPress={() => navigation.navigate('ForgetPassword', { source: 'password' })}>
-                        <Text className="text-xs underline font-InterSemiBold" style={{color: Color.PrimaryWebOrient}}>Forgot Password?</Text>
+                        <Text className="text-xs underline font-InterSemiBold" style={{color: Color.PrimaryWebOrientTxtColor}}>Forgot Password?</Text>
                       </TouchableOpacity>
                     </View>
                   </View>
@@ -292,7 +292,7 @@ const Login = ({ navigation }) => {
                 <View className="flex-row justify-center">
                   <Text className="text-sm font-InterRegular">Don't have an account? </Text>
                   <TouchableOpacity onPress={() => navigation.navigate("SignUp")}>
-                    <Text className="text-sm font-InterSemiBold" style={{color: Color.PrimaryWebOrient}}>Sign up</Text>
+                    <Text className="text-sm font-InterSemiBold" style={{color: Color.PrimaryWebOrientTxtColor}}>Sign up</Text>
                   </TouchableOpacity>
                 </View>
               </View>

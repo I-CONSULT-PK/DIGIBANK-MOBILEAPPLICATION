@@ -47,7 +47,7 @@ const StartSection = ({ navigation }) => {
                                         className="border border-primary py-3 w-[35%] rounded-lg" style={{border: Color.PrimaryWebOrient}}
                                         onPress={() => navigation.navigate("Login")}
                                     >
-                                        <Text className="text-base font-medium text-center font-InterSemiBold" style={{color: Color.PrimaryWebOrient}}>Login</Text>
+                                        <Text className="text-base font-medium text-center font-InterSemiBold" style={{color: Color.PrimaryWebOrientTxtColor}}>Login</Text>
                                     </TouchableOpacity>
 
                                     <TouchableOpacity

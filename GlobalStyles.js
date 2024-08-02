@@ -34,7 +34,7 @@ export const Color = {
   //Primary Theme Color Variable
   PrimaryWebOrient:"#1DBBD8",
   PrimaryWebOrientLayer2:"#8EEDFF",
-  PrimaryWebOrientTxtColor:"#1EBBD7",
+  PrimaryWebOrientTxtColor:"#1DBBD8",
 };
 
 /* border radiuses */

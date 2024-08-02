@@ -434,7 +434,7 @@ const Registration = () => {
                   <View className="flex-row justify-center">
                     <Text className="text-sm font-InterRegular">Already have an account? </Text>
                     <TouchableOpacity onPress={() => navigation.navigate("Login")}>
-                      <Text className="text-sm font-InterSemiBold" style={{color: Color.PrimaryWebOrient}}>Login</Text>
+                      <Text className="text-sm font-InterSemiBold" style={{color: Color.PrimaryWebOrientTxtColor}}>Login</Text>
                     </TouchableOpacity>
                   </View>
                 </View>
@@ -471,7 +471,7 @@ const Registration = () => {
                   <View className="flex-row justify-center">
                     <Text className="text-sm font-InterRegular">Already have an account? </Text>
                     <TouchableOpacity onPress={() => navigation.navigate("Login")}>
-                      <Text className="text-sm font-InterSemiBold" style={{color: Color.PrimaryWebOrient}}>Login</Text>
+                      <Text className="text-sm font-InterSemiBold" style={{color: Color.PrimaryWebOrientTxtColor}}>Login</Text>
                     </TouchableOpacity>
                   </View>
                 </View>

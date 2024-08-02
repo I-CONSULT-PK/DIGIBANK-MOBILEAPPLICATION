@@ -189,7 +189,7 @@ const ForgetPassword = ({ route }) => {
             </View>
 
             <View className="px-2 mb-7">
-              <Text className="text-sm font-InterMediu" style={{color: Color.PrimaryWebOrient}}>A verification code will be sent to email address linked with this account number.</Text>
+              <Text className="text-sm font-InterMediu" style={{color: Color.PrimaryWebOrientTxtColor}}>A verification code will be sent to email address linked with this account number.</Text>
             </View>
 
             <TouchableOpacity className="py-3 rounded-lg mb-4" style={{backgroundColor: Color.PrimaryWebOrient}} onPress={() => navigation.navigate("OTP", { source: source })}>

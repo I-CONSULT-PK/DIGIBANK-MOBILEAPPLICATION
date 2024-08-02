@@ -317,7 +317,7 @@ const OTP = ({ navigation, route }) => {
             </View>
 
             <View className="px-2 mb-7">
-              <Text className="text-sm font-InterMedium" style={{color: Color.PrimaryWebOrient}}>We have sent a code to <Text className="text-slate-500">( *****@mail.com )</Text> Enter code here to verify your identity</Text>
+              <Text className="text-sm font-InterMedium" style={{color: Color.PrimaryWebOrientTxtColor}}>We have sent a code to <Text className="text-slate-500">( *****@mail.com )</Text> Enter code here to verify your identity</Text>
             </View>
 
             <TouchableOpacity className="py-3 rounded-lg mb-4" style={{ backgroundColor: Color.PrimaryWebOrient }} onPress={() => {
