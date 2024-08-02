@@ -38,6 +38,10 @@ import NewCard from "../../Mobile-Banking/My-Cards/NewCard";
 import ApplyCard from "../../Mobile-Banking/My-Cards/ApplyCard";
 import CardManagement from "../../Mobile-Banking/My-Cards/Card-Management";
 import CongCard from "../../Mobile-Banking/My-Cards/CongCard";
+import SelectApplyOptionCard from "../../Mobile-Banking/My-Cards/SelectApplyOptionCard";
+import SupplementaryCard from "../../Mobile-Banking/My-Cards/SupplementaryCard";
+import SupplementaryCardCustomization from "../../Mobile-Banking/My-Cards/SupplementaryCardCustomization";
+import SupplementaryCardLimitSplit from './../../Mobile-Banking/My-Cards/SupplementaryCardLimitSplit';
 const Stack = createStackNavigator();
 
 const AppNavigator = () => {
@@ -60,6 +64,10 @@ const AppNavigator = () => {
         <Stack.Screen name="ApplyCard" component={ApplyCard} />
         <Stack.Screen name="CardManagement" component={CardManagement} />
         <Stack.Screen name="CongCard" component={CongCard} />
+        <Stack.Screen name="SelectApplyOptionCard" component={SelectApplyOptionCard} />
+        <Stack.Screen name="SupplementaryCard" component={SupplementaryCard} />
+        <Stack.Screen name="SupplementaryCardCustomization" component={SupplementaryCardCustomization} />
+        <Stack.Screen name="SupplementaryCardLimitSplit" component={SupplementaryCardLimitSplit} />
 
         <Stack.Screen name="AccountSetting" component={AccountSetting} />
 

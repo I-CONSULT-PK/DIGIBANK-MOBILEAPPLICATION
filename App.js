@@ -48,6 +48,10 @@ import CardManagement from "./screens/Mobile-Banking/My-Cards/Card-Management";
 import CongCard from "./screens/Mobile-Banking/My-Cards/CongCard";
 import NewCard from "./screens/Mobile-Banking/My-Cards/NewCard";
 import SelectCards from "./screens/Mobile-Banking/My-Cards/SelectCards";
+import SelectApplyOptionCard from "./screens/Mobile-Banking/My-Cards/SelectApplyOptionCard";
+import SupplementaryCard from "./screens/Mobile-Banking/My-Cards/SupplementaryCard";
+import SupplementaryCardCustomization from "./screens/Mobile-Banking/My-Cards/SupplementaryCardCustomization";
+import SupplementaryCardLimitSplit from './screens/Mobile-Banking/My-Cards/SupplementaryCardLimitSplit';
 
 const Stack = createNativeStackNavigator();
 
@@ -128,9 +132,29 @@ export default function App() {
           component={CardManagement}
           options={{ headerShown: false }}
         />
-         <Stack.Screen
+        <Stack.Screen
           name="CongCard"
           component={CongCard}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="SelectApplyOptionCard"
+          component={SelectApplyOptionCard}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="SupplementaryCard"
+          component={SupplementaryCard}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="SupplementaryCardCustomization"
+          component={SupplementaryCardCustomization}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="SupplementaryCardLimitSplit"
+          component={SupplementaryCardLimitSplit}
           options={{ headerShown: false }}
         />
         <Stack.Screen
@@ -421,6 +445,26 @@ export default function App() {
             <Stack.Screen
               name="CardManagement"
               component={CardManagement}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="SelectApplyOptionCard"
+              component={SelectApplyOptionCard}
+              options={{ headerShown: false }}
+            />
+             <Stack.Screen
+              name="SupplementaryCard"
+              component={SupplementaryCard}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="SupplementaryCardCustomization"
+              component={SupplementaryCardCustomization}
+              options={{ headerShown: false }}
+            />
+             <Stack.Screen
+              name="SupplementaryCardLimitSplit"
+              component={SupplementaryCardLimitSplit}
               options={{ headerShown: false }}
             />
             <Stack.Screen

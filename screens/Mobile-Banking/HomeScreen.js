@@ -645,12 +645,12 @@ const HomeScreen = () => {
 
             {/* Second Row */}
             <View className="flex-row justify-between mb-4">
-              <TouchableOpacity onPress={() => navigation.navigate("Card")}>
+              <TouchableOpacity onPress={() => navigation.navigate("SelectCards")}>
                 <View
                   className="w-24 h-24 bg-white m-2.5 rounded-lg flex justify-center items-center"
                   style={styles.box}
                 >
-                  <Cards style={styles.icon} onPress={() => navigation.navigate("SelectCards")} />
+                  <Cards style={styles.icon} />
                   <Text className="text-center font-semibold">Cards</Text>
                 </View>
               </TouchableOpacity>
