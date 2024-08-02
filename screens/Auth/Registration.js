@@ -528,17 +528,17 @@ const Registration = ({ route }) => {
                   <View>
                     <View className="mb-5">
                       <Text className="text-sm mb-2 font-InterMedium">First Name*</Text>
-                      <Input placeholder="Enter your first name" value={returnedData.firstName} disable />
+                      <Input placeholder="Enter your first name" value={returnedData.firstName} />
                     </View>
 
                     <View className="mb-5">
                       <Text className="text-sm mb-2 font-InterMedium">Last Name*</Text>
-                      <Input placeholder="Enter your last name" value={returnedData.lastName} disable />
+                      <Input placeholder="Enter your last name" value={returnedData.lastName} />
                     </View>
 
                     <View className="mb-5">
                       <Text className="text-sm mb-2 font-InterMedium">Email Address*</Text>
-                      <Input placeholder="Enter your email" value={returnedData.email} disable />
+                      <Input placeholder="Enter your email" value={returnedData.email} />
                     </View>
                   </View>
                 </View>
