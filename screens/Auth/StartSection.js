@@ -63,7 +63,7 @@ const StartSection = ({ navigation }) => {
                 </View>
             </LinearGradient>
 
-            <StatusBar backgroundColor={Color.primary} style="light" />
+            <StatusBar backgroundColor={Color.PrimaryWebOrient} style="light" />
         </SafeAreaView>
     );
 }
