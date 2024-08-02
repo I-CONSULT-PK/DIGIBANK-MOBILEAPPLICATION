@@ -17,7 +17,7 @@ const SelectCards = () => {
     <SafeAreaView className=" bg-[#f9fafc]" style={{ flex: 1 }}>
       <ScrollView>
         <View className=" flex-1">
-          <TouchableOpacity onPress={() => navigation.navigate("Sidebar")}>
+          <TouchableOpacity onPress={() => navigation.navigate("Home")}>
             <Entypo
               name="chevron-left"
               size={wp("8%")}
