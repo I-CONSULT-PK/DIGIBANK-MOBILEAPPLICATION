@@ -63,14 +63,17 @@ const ApplyCard = () => {
                       Upload Your National ID
                     </Text>
                     <Text className="text-sm text-gray-500">
-                      Max file size is 5MB (JPEG, PNG, PDF){" "}
+                      Max file size is 5MB (JPEG, PNG, PDF)
                     </Text>
                   </View>
                 </TouchableOpacity>
               </View>
             </View>
             <View className="px-10 mt-16">
-              <TouchableOpacity className="py-3 px-12 bg-[#1DBBD8] rounded-lg" onPress={() => navigation.navigate("ApplyForCard")}>
+              <TouchableOpacity
+                className="py-3 px-12 bg-[#1DBBD8] rounded-lg"
+                onPress={() => navigation.navigate("ApplyForCard")}
+              >
                 <Text className="text-base text-center font-InterMedium text-white">
                   Next
                 </Text>

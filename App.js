@@ -43,6 +43,12 @@ import Footer from "./components/Footer";
 import OTPverification from "./components/OTPverification";
 import ApplyForCard from "./screens/Mobile-Banking/My-Cards/ApplyForCard";
 import NameOnTheCard from "./screens/Mobile-Banking/My-Cards/NameOnTheCard";
+import ApplyCard from "./screens/Mobile-Banking/My-Cards/ApplyCard";
+import CardManagement from "./screens/Mobile-Banking/My-Cards/Card-Management";
+import CongCard from "./screens/Mobile-Banking/My-Cards/CongCard";
+import NewCard from "./screens/Mobile-Banking/My-Cards/NewCard";
+import SelectCards from "./screens/Mobile-Banking/My-Cards/SelectCards";
+
 const Stack = createNativeStackNavigator();
 
 export default function App() {
@@ -110,6 +116,21 @@ export default function App() {
         <Stack.Screen
           name="NameOnTheCard"
           component={NameOnTheCard}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="ApplyCard"
+          component={ApplyCard}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="CardManagement"
+          component={CardManagement}
+          options={{ headerShown: false }}
+        />
+         <Stack.Screen
+          name="CongCard"
+          component={CongCard}
           options={{ headerShown: false }}
         />
         <Stack.Screen
@@ -375,6 +396,31 @@ export default function App() {
             <Stack.Screen
               name="Receive"
               component={Receive}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="NewCard"
+              component={NewCard}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="SelectCards"
+              component={SelectCards}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="CongCard"
+              component={CongCard}
+              options={{ headerShown: false }}
+            />
+             <Stack.Screen
+              name="ApplyCard"
+              component={ApplyCard}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="CardManagement"
+              component={CardManagement}
               options={{ headerShown: false }}
             />
             <Stack.Screen
