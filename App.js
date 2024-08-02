@@ -4,6 +4,7 @@ import HomeScreen from "./screens/Mobile-Banking/HomeScreen";
 import { useFonts } from "expo-font";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import StartSection from "./screens/Auth/StartSection";
 import Login from "./screens/Auth/Login";
 import Registration from "./screens/Auth/Registration";
 import OTP from "./screens/Auth/OTP";
@@ -55,7 +56,12 @@ export default function App() {
 
   const Auth = () => {
     return (
-      <Stack.Navigator initialRouteName="LoginScreen">
+      <Stack.Navigator initialRouteName="StartScreen">
+        <Stack.Screen
+          name="Start"
+          component={StartSection}
+          options={{ headerShown: false }}
+        />
         <Stack.Screen
           name="Login"
           component={Login}
