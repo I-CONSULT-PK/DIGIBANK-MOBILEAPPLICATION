@@ -46,6 +46,7 @@ import Footer from "./components/Footer";
 import OTPverification from "./components/OTPverification";
 import ApplyCard from "./screens/Mobile-Banking/My-Cards/ApplyCard";
 import CardManagement from "./screens/Mobile-Banking/My-Cards/Card-Management";
+import CongCard from "./screens/Mobile-Banking/My-Cards/CongCard";
 
 const Stack = createNativeStackNavigator();
 
@@ -121,16 +122,21 @@ export default function App() {
           component={SelectCards}
           options={{ headerShown: false }}
         />
-         <Stack.Screen
+        <Stack.Screen
           name="ApplyCard"
           component={ApplyCard}
           options={{ headerShown: false }}
         />
         <Stack.Screen
-              name="CardManagement"
-              component={CardManagement}
-              options={{ headerShown: false }}
-            />
+          name="CardManagement"
+          component={CardManagement}
+          options={{ headerShown: false }}
+        />
+         <Stack.Screen
+          name="CongCard"
+          component={CongCard}
+          options={{ headerShown: false }}
+        />
         <Stack.Screen
           name="AccountSetting"
           component={AccountSetting}
@@ -257,11 +263,11 @@ export default function App() {
           component={Footer}
           options={{ headerShown: false }}
         />
-         <Stack.Screen
-              name="OTPverification"
-              component={OTPverification}
-              options={{ headerShown: false }}
-            />
+        <Stack.Screen
+          name="OTPverification"
+          component={OTPverification}
+          options={{ headerShown: false }}
+        />
       </Stack.Navigator>
     );
   };
@@ -404,6 +410,11 @@ export default function App() {
             <Stack.Screen
               name="SelectCards"
               component={SelectCards}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="CongCard"
+              component={CongCard}
               options={{ headerShown: false }}
             />
              <Stack.Screen

@@ -36,6 +36,7 @@ import OTPverification from "../../../components/OTPverification";
 import NewCard from "../../Mobile-Banking/My-Cards/NewCard";
 import ApplyCard from "../../Mobile-Banking/My-Cards/ApplyCard";
 import CardManagement from "../../Mobile-Banking/My-Cards/Card-Management";
+import CongCard from "../../Mobile-Banking/My-Cards/CongCard";
 const Stack = createStackNavigator();
 
 const AppNavigator = () => {
@@ -55,6 +56,7 @@ const AppNavigator = () => {
         <Stack.Screen name="SelectCards" component={SelectCards} />
         <Stack.Screen name="ApplyCard" component={ApplyCard} />
         <Stack.Screen name="CardManagement" component={CardManagement} />
+        <Stack.Screen name="CongCard" component={CongCard} />
 
         <Stack.Screen name="AccountSetting" component={AccountSetting} />
 
