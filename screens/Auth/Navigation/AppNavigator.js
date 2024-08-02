@@ -37,6 +37,11 @@ import NameOnTheCard from "../../Mobile-Banking/My-Cards/NameOnTheCard";
 import NewCard from "../../Mobile-Banking/My-Cards/NewCard";
 import ApplyCard from "../../Mobile-Banking/My-Cards/ApplyCard";
 import CardManagement from "../../Mobile-Banking/My-Cards/Card-Management";
+import CashUpCard from "../../Mobile-Banking/My-Cards/CashUpCard";
+import CardActivation from "../../Mobile-Banking/My-Cards/CardActivation";
+import SetCardPin from "../../Mobile-Banking/My-Cards/SetCardPin";
+import CardActivated from "../../Mobile-Banking/My-Cards/CardActivated";
+
 import CongCard from "../../Mobile-Banking/My-Cards/CongCard";
 const Stack = createStackNavigator();
 
@@ -59,7 +64,11 @@ const AppNavigator = () => {
         <Stack.Screen name="SelectCards" component={SelectCards} />
         <Stack.Screen name="ApplyCard" component={ApplyCard} />
         <Stack.Screen name="CardManagement" component={CardManagement} />
+        <Stack.Screen name="CashUpCard" component={CashUpCard} />
         <Stack.Screen name="CongCard" component={CongCard} />
+        <Stack.Screen name="CardActivation" component={CardActivation} />
+        <Stack.Screen name="SetCardPin" component={SetCardPin} />
+        <Stack.Screen name="CardActivated" component={CardActivated} />
 
         <Stack.Screen name="AccountSetting" component={AccountSetting} />
 
@@ -81,16 +90,24 @@ const AppNavigator = () => {
 
         <Stack.Screen name="WalletBeneficiary" component={WalletBeneficiary} />
         <Stack.Screen name="BankBeneficiary" component={BankBeneficiary} />
-        <Stack.Screen name="AddWalletBeneficiary" component={AddWalletBeneficiary} />
-        <Stack.Screen name="AddBankBeneficiary" component={AddBankBeneficiary} />
+        <Stack.Screen
+          name="AddWalletBeneficiary"
+          component={AddWalletBeneficiary}
+        />
+        <Stack.Screen
+          name="AddBankBeneficiary"
+          component={AddBankBeneficiary}
+        />
         {/* <Stack.Screen name="SelectTopUp" component={SelectTopUp} /> */}
         <Stack.Screen name="TopUp" component={TopUp} />
         <Stack.Screen name="Scanner" component={Scanner} />
         <Stack.Screen name="MyQRCode" component={MyQRCode} />
-        <Stack.Screen name="BillPaymentListing" component={BillPaymentListing} />
+        <Stack.Screen
+          name="BillPaymentListing"
+          component={BillPaymentListing}
+        />
         <Stack.Screen name="BillPaymentTopUp" component={BillPaymentTopUp} />
         <Stack.Screen name="OTPverification" component={OTPverification} />
-        
       </Stack.Navigator>
     </NavigationContainer>
   );

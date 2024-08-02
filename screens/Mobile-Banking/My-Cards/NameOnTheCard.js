@@ -60,9 +60,9 @@ const NameOnTheCard = () => {
             </Text>
           </View>
         </View>
-        <View className="flex flex-col px-5 py-7 mt-7 bg-white rounded-xl shadow-lg ">
-          <View className="justify-center items-center ml-4">
-            <ListSectionCard width={400} />
+        <View className="flex flex-col px-5 py-7 mt-7 bg-white rounded-xl shadow-lg max-w-md mx-auto">
+          <View className="justify-center items-center">
+            <ListSectionCard width={300} />
           </View>
           <View>
             <Text className="font-bold text-center">
@@ -83,10 +83,11 @@ const NameOnTheCard = () => {
             <TextInput className="mt-2" placeholder="Enter Here" />
           </View>
         </View>
+
         <View className="p-5">
           <CustomButton
             Text={"Confirm Address "}
-            onPress={() => navigation.navigate("NameOnTheCard")}
+            onPress={() => navigation.navigate("CardActivation")}
           />
         </View>
       </ScrollView>

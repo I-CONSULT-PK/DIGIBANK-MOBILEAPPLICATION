@@ -48,6 +48,10 @@ import CardManagement from "./screens/Mobile-Banking/My-Cards/Card-Management";
 import CongCard from "./screens/Mobile-Banking/My-Cards/CongCard";
 import NewCard from "./screens/Mobile-Banking/My-Cards/NewCard";
 import SelectCards from "./screens/Mobile-Banking/My-Cards/SelectCards";
+import CashUpCard from "./screens/Mobile-Banking/My-Cards/CashUpCard";
+import CardActivation from "./screens/Mobile-Banking/My-Cards/CardActivation";
+import SetCardPin from "./screens/Mobile-Banking/My-Cards/SetCardPin";
+import CardActivated from "./screens/Mobile-Banking/My-Cards/CardActivated";
 
 const Stack = createNativeStackNavigator();
 
@@ -114,6 +118,11 @@ export default function App() {
           options={{ headerShown: false }}
         />
         <Stack.Screen
+          name="CardActivation"
+          component={CardActivation}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
           name="NameOnTheCard"
           component={NameOnTheCard}
           options={{ headerShown: false }}
@@ -128,9 +137,24 @@ export default function App() {
           component={CardManagement}
           options={{ headerShown: false }}
         />
-         <Stack.Screen
+        <Stack.Screen
+          name="CashUpCard"
+          component={CashUpCard}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
           name="CongCard"
           component={CongCard}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="SetCardPin"
+          component={SetCardPin}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="CardActivated"
+          component={CardActivated}
           options={{ headerShown: false }}
         />
         <Stack.Screen
@@ -409,11 +433,16 @@ export default function App() {
               options={{ headerShown: false }}
             />
             <Stack.Screen
+              name="CashUpCard"
+              component={CashUpCard}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
               name="CongCard"
               component={CongCard}
               options={{ headerShown: false }}
             />
-             <Stack.Screen
+            <Stack.Screen
               name="ApplyCard"
               component={ApplyCard}
               options={{ headerShown: false }}
@@ -459,10 +488,25 @@ export default function App() {
               options={{ headerShown: false }}
             />
             <Stack.Screen
-          name="NameOnTheCard"
-          component={NameOnTheCard}
-          options={{ headerShown: false }}
-        />
+              name="NameOnTheCard"
+              component={NameOnTheCard}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="CardActivation"
+              component={CardActivation}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="SetCardPin"
+              component={SetCardPin}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="CardActivated"
+              component={CardActivated}
+              options={{ headerShown: false }}
+            />
           </Stack.Navigator>
           <StatusBar style="auto" />
         </LoaderHOC>
