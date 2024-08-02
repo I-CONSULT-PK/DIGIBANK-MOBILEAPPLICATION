@@ -27,6 +27,11 @@ const CardManagement = () => {
   const [isEnabled, setIsEnabled] = useState(false);
   const toggleSwitch = () => setIsEnabled((previousState) => !previousState);
 
+  const handleOptionChange = (option) => {
+    setSelectedOption(option);
+  };
+  const [selectedOption, setSelectedOption] = useState("Credit Card");
+
   const handlePress1 = () => setExpanded1(!expanded1);
   return (
     <SafeAreaView className=" bg-[#f9fafc]" style={{ flex: 1 }}>
@@ -44,16 +49,45 @@ const CardManagement = () => {
             <Text className="font-InterBold text-2xl ">Cards</Text>
           </View>
           <View className="mt-2">
-            <ButtonGroup
-              onPress={(index) => setSelectedIndex(index)}
-              selectedIndex={selectedIndex}
-              buttons={buttons}
-              containerStyle={(className = "mb-4")}
-              buttonStyle={(className = "p-2")}
-              selectedButtonStyle={styles.selectedButton}
-              textStyle={(className = "text-lg")}
-              innerBorderStyle={{ width: 0 }}
-            />
+          <View className="flex flex-row justify-center w-4/5 h-18 my-5 mx-auto" style={styles.container}>
+          <TouchableOpacity
+              className={`flex-1 p-3 bg-white w-16 h-12 rounded-l-lg ${
+                selectedOption === "Credit Card"
+                  ? "bg-primary shadow-lg"
+                  : "shadow-sm"
+              }`}
+              style={{}}
+              onPress={() => handleOptionChange("Credit Card")}
+            >
+              <Text
+                className={`text-center font-bold ${
+                  selectedOption === "Credit Card" ? "text-white" : "text-black"
+                }`}
+              >
+                Credit Card
+              </Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              className={`flex-1 p-3 bg-white w-16 h-12 rounded-r-lg ${
+                selectedOption === "Debit Card"
+                  ? "bg-primary shadow-lg"
+                  : "shadow-sm"
+              }`}
+              onPress={() => handleOptionChange("Debit Card")}
+            >
+              <Text
+                className={`text-center font-bold ${
+                  selectedOption === "Debit Card"
+                    ? "text-white"
+                    : "text-black"
+                }`}
+              >
+                Debit Card
+              </Text>
+            </TouchableOpacity>
+          </View>
+          
             <List.Section className="bg-white rounded-xl ml-5 mr-5">
               <List.Accordion
                 className="font-InterRegular m-0 text-base bg-white"
@@ -183,6 +217,10 @@ const CardManagement = () => {
 const styles = StyleSheet.create({
   selectedButton: {
     backgroundColor: "#1DBBD8",
+  },
+  container: {
+    shadowColor: "#000",
+    elevation: 10,
   },
 });
 
