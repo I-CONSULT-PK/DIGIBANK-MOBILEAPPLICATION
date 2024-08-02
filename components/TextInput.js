@@ -22,7 +22,7 @@ export default function Input({
       activeOutlineColor="#A5A7A8"
       placeholderTextColor={"#A5A7A8"}
       theme={{
-        fonts: { bodyLarge: { fontFamily: "InterMedium"} },
+        fonts: { bodyLarge: { fontFamily: "InterRegular"} },
         roundness: 10,
         colors: {
           outline: "#F4F5F9",

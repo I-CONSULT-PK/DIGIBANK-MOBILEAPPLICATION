@@ -321,7 +321,9 @@ const OTP = ({ navigation, route }) => {
             </View>
 
             <TouchableOpacity className="py-3 rounded-lg mb-4" style={{ backgroundColor: Color.PrimaryWebOrient }} onPress={() => {
-              source === 'username' ? navigation.navigate('Login') : navigation.navigate('NewPassword');
+              source === 'password' &&  navigation.navigate('NewPassword');
+              source === 'username' && navigation.navigate('Login');
+              source === 'registration' && navigation.navigate('Login');
             }}>
               <Text className="text-white text-base text-center font-medium font-InterSemiBold">Verify</Text>
             </TouchableOpacity>

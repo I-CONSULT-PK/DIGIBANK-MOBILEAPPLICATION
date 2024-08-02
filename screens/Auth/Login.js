@@ -28,6 +28,8 @@ import PinCode from "./PinCode";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { LinearGradient } from 'expo-linear-gradient';
 import AntDesign from '@expo/vector-icons/AntDesign';
+import axios from 'axios';
+import API_BASE_URL from '../../config';
 
 const Login = ({ navigation }) => {
   const [selectedOption, setSelectedOption] = useState("mobile");
@@ -37,51 +39,88 @@ const Login = ({ navigation }) => {
   const [password, setPassword] = useState("");
   const { showLoader, hideLoader } = useContext(AppLoaderContext);
   const [pinCodeModalVisible, setPinCodeModalVisible] = useState(false);
+  // const handleLogin = async () => {
+  //   // // New Work
+  //   // // Validate email and password
+  //   // if (!emailorUsername || !password) {
+  //   //   Alert.alert("Validation Error", "Please enter both email and password");
+  //   //   return;
+  //   // }
+
+  //   // try {
+  //   //   const apiUrl = "http://192.168.0.196:9096/v1/customer/login";
+  //   //   showLoader();
+  //   //   const response = await fetch(apiUrl, {
+  //   //     method: "POST",
+  //   //     headers: {
+  //   //       "Content-Type": "application/json",
+  //   //     },
+  //   //     body: JSON.stringify({
+  //   //       emailorUsername,
+  //   //       password,
+  //   //     }),
+  //   //   });
+
+  //   //   const data = await response.json();
+
+  //   //   if (response.ok && data.success) {
+  //   //     // Successful login
+  //   //     console.log("Login successful", data);
+
+  //   //     // Navigate to the next screen
+  //   // navigation.navigate("OTP");
+  //   //   } else {
+  //   //     // Failed login, display error message
+  //   //     Alert.alert(
+  //   //       "Login Failed",
+  //   //       data.message || "Invalid email or password"
+  //   //     );
+  //   //   }
+  //   // } catch (error) {
+  //   //   console.error("Login error", error.message);
+  //   //   Alert.alert("Error", "An error occurred. Please try again later.");
+  //   // } finally {
+  //   //   // Hide loader
+  //   //   hideLoader();
+  //   // }
+  //   setPinCodeModalVisible(true);
+  // };
+
+  // --------------------------------------------------
+
+  const [form, setForm] = useState({ username: '', password: '' });
+
+  const handleChange = (name, value) => {
+    setForm({
+      ...form,
+      [name]: value,
+    });
+  };
+
   const handleLogin = async () => {
-    // // New Work
-    // // Validate email and password
-    // if (!emailorUsername || !password) {
-    //   Alert.alert("Validation Error", "Please enter both email and password");
-    //   return;
-    // }
+    const loginData = {
+      emailorUsername: form.username,
+      password: form.password,
+      imageVerificationId: 3
+    };
 
-    // try {
-    //   const apiUrl = "http://192.168.0.196:9096/v1/customer/login";
-    //   showLoader();
-    //   const response = await fetch(apiUrl, {
-    //     method: "POST",
-    //     headers: {
-    //       "Content-Type": "application/json",
-    //     },
-    //     body: JSON.stringify({
-    //       emailorUsername,
-    //       password,
-    //     }),
-    //   });
+    try {
+      const response = await axios.post(`${API_BASE_URL.SITE}/v1/customer/login`, loginData);
+      const { message, data } = response.data;
 
-    //   const data = await response.json();
-
-    //   if (response.ok && data.success) {
-    //     // Successful login
-    //     console.log("Login successful", data);
-
-    //     // Navigate to the next screen
-    // navigation.navigate("OTP");
-    //   } else {
-    //     // Failed login, display error message
-    //     Alert.alert(
-    //       "Login Failed",
-    //       data.message || "Invalid email or password"
-    //     );
-    //   }
-    // } catch (error) {
-    //   console.error("Login error", error.message);
-    //   Alert.alert("Error", "An error occurred. Please try again later.");
-    // } finally {
-    //   // Hide loader
-    //   hideLoader();
-    // }
-    setPinCodeModalVisible(true);
+      if (message === 'Invalid Password or Security Image') {
+        console.log('Message:', message);
+        Alert.alert('Login Failed', 'Please check your credentials and try again.');
+      }
+      else {
+        console.log('Message:', message);
+        console.log('Data:', data);
+        navigation.navigate('Home')
+      }  
+    } catch (error) {
+      console.log('Error logging in:', error);
+      Alert.alert('Login Failed', 'Please check your credentials and try again.');
+    }
   };
 
   const securityImages1 = [
@@ -227,7 +266,7 @@ const Login = ({ navigation }) => {
                 <View>
                   <View>
                     <Text className="text-sm mb-2 font-InterMedium">User Name*</Text>
-                    <Input placeholder="Enter your username" />
+                    <Input placeholder="Enter your username" value={form.username} onChange={(text) => handleChange('username', text)} />
                     <View className="items-end mt-2">
                       <TouchableOpacity onPress={() => navigation.navigate('ForgetPassword', { source: 'username' })}>
                         <Text className="text-xs underline font-InterSemiBold" style={{color: Color.PrimaryWebOrientTxtColor}}>Forgot Username?</Text>
@@ -237,7 +276,7 @@ const Login = ({ navigation }) => {
 
                   <View className="mt-1">
                     <Text className="text-sm mb-2 font-InterMedium">Password*</Text>
-                    <InputWithIcon placeholder="Enter your password" isPassword />
+                    <InputWithIcon placeholder="Enter your password" isPassword value={form.password} onChange={(text) => handleChange('password', text)} />
                     <View className="items-end mt-2">
                       <TouchableOpacity onPress={() => navigation.navigate('ForgetPassword', { source: 'password' })}>
                         <Text className="text-xs underline font-InterSemiBold" style={{color: Color.PrimaryWebOrientTxtColor}}>Forgot Password?</Text>
@@ -286,7 +325,7 @@ const Login = ({ navigation }) => {
               {/* -----| Security Image End |----- */}
 
               <View className="mb-5">
-                <TouchableOpacity className="py-4 rounded-lg mb-4" style={{backgroundColor: Color.PrimaryWebOrient}} onPress={() => navigation.navigate('Home')}>
+                <TouchableOpacity className="py-4 rounded-lg mb-4" style={{backgroundColor: Color.PrimaryWebOrient}} onPress={handleLogin}>
                   <Text className="text-white text-base text-center font-medium font-InterSemiBold">Login</Text>
                 </TouchableOpacity>
                 <View className="flex-row justify-center">

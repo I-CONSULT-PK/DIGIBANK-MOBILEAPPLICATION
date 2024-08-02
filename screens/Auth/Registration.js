@@ -411,43 +411,6 @@ const Registration = () => {
 
                   <View>
                     <View className="mb-5">
-                      <Text className="text-sm mb-2 font-InterMedium">First Name*</Text>
-                      <Input placeholder="Enter your first name" />
-                    </View>
-
-                    <View className="mb-5">
-                      <Text className="text-sm mb-2 font-InterMedium">Last Name*</Text>
-                      <Input placeholder="Enter your last name" />
-                    </View>
-
-                    <View className="mb-5">
-                      <Text className="text-sm mb-2 font-InterMedium">Email Address*</Text>
-                      <Input placeholder="Enter your email" />
-                    </View>
-                  </View>
-                </View>
-
-                <View className="mb-5">
-                  <TouchableOpacity className="py-4 rounded-lg mb-4" style={{backgroundColor: Color.PrimaryWebOrient}} onPress={() => setMain(false)}>
-                    <Text className="text-white text-base text-center font-medium font-InterSemiBold">Next</Text>
-                  </TouchableOpacity>
-                  <View className="flex-row justify-center">
-                    <Text className="text-sm font-InterRegular">Already have an account? </Text>
-                    <TouchableOpacity onPress={() => navigation.navigate("Login")}>
-                      <Text className="text-sm font-InterSemiBold" style={{color: Color.PrimaryWebOrientTxtColor}}>Login</Text>
-                    </TouchableOpacity>
-                  </View>
-                </View>
-              </View>
-            ) : (
-              <View className="flex-1 justify-between">
-                <View>
-                  <View className="mb-8 w-[80%]">
-                    <Text className="text-2xl font-bold font-InterBold">Get started with your account!</Text>
-                  </View>
-
-                  <View>
-                    <View className="mb-5">
                       <Text className="text-sm mb-2 font-InterMedium">CNIC Number*</Text>
                       <Input placeholder="Enter your CNIC" />
                     </View>
@@ -465,13 +428,50 @@ const Registration = () => {
                 </View>
 
                 <View className="mb-5">
-                  <TouchableOpacity className="py-4 rounded-lg mb-4" style={{backgroundColor: Color.PrimaryWebOrient}}>
-                    <Text className="text-white text-base text-center font-medium font-InterSemiBold">Sign up</Text>
+                  <TouchableOpacity className="py-4 rounded-lg mb-4" style={{ backgroundColor: Color.PrimaryWebOrient }} onPress={() => setMain(false)}>
+                    <Text className="text-white text-base text-center font-medium font-InterSemiBold">Next</Text>
                   </TouchableOpacity>
                   <View className="flex-row justify-center">
                     <Text className="text-sm font-InterRegular">Already have an account? </Text>
                     <TouchableOpacity onPress={() => navigation.navigate("Login")}>
-                      <Text className="text-sm font-InterSemiBold" style={{color: Color.PrimaryWebOrientTxtColor}}>Login</Text>
+                      <Text className="text-sm font-InterSemiBold" style={{ color: Color.PrimaryWebOrientTxtColor }}>Login</Text>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              </View>
+            ) : (
+              <View className="flex-1 justify-between">
+                <View>
+                  <View className="mb-8 w-[80%]">
+                    <Text className="text-2xl font-bold font-InterBold">Get started with your account!</Text>
+                  </View>
+
+                  <View>
+                    <View className="mb-5">
+                      <Text className="text-sm mb-2 font-InterMedium">First Name*</Text>
+                      <Input placeholder="Enter your first name" />
+                    </View>
+
+                    <View className="mb-5">
+                      <Text className="text-sm mb-2 font-InterMedium">Last Name*</Text>
+                      <Input placeholder="Enter your last name" />
+                    </View>
+
+                    <View className="mb-5">
+                      <Text className="text-sm mb-2 font-InterMedium">Email Address*</Text>
+                      <Input placeholder="Enter your email" />
+                    </View>
+                  </View>
+                </View>
+
+                <View className="mb-5">
+                  <TouchableOpacity className="py-4 rounded-lg mb-4" style={{ backgroundColor: Color.PrimaryWebOrient }} onPress={() => navigation.navigate('OTP', { source: 'registration' })}>
+                    <Text className="text-white text-base text-center font-medium font-InterSemiBold">Next</Text>
+                  </TouchableOpacity>
+                  <View className="flex-row justify-center">
+                    <Text className="text-sm font-InterRegular">Already have an account? </Text>
+                    <TouchableOpacity onPress={() => navigation.navigate("Login")}>
+                      <Text className="text-sm font-InterSemiBold" style={{ color: Color.PrimaryWebOrientTxtColor }}>Login</Text>
                     </TouchableOpacity>
                   </View>
                 </View>
