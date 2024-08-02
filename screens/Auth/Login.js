@@ -27,6 +27,7 @@ import PinCode from "./PinCode";
 
 import { SafeAreaView } from "react-native-safe-area-context";
 import { LinearGradient } from 'expo-linear-gradient';
+import { StatusBar } from 'expo-status-bar';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import axios from 'axios';
 import API_BASE_URL from '../../config';
@@ -339,6 +340,8 @@ const Login = ({ navigation }) => {
           </View>
         </ScrollView>
       </LinearGradient>
+
+      <StatusBar backgroundColor={Color.PrimaryWebOrient} style="light" />
     </SafeAreaView>
   );
 };

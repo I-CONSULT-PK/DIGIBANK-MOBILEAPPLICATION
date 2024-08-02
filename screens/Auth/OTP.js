@@ -18,6 +18,7 @@ const { width, height } = Dimensions.get("window");
 import Input from "../../components/TextInput";
 
 import { SafeAreaView } from "react-native-safe-area-context";
+import { StatusBar } from 'expo-status-bar';
 import AntDesign from '@expo/vector-icons/AntDesign';
 
 const OTP = ({ navigation, route }) => {
@@ -323,7 +324,7 @@ const OTP = ({ navigation, route }) => {
             <TouchableOpacity className="py-3 rounded-lg mb-4" style={{ backgroundColor: Color.PrimaryWebOrient }} onPress={() => {
               source === 'password' &&  navigation.navigate('NewPassword');
               source === 'username' && navigation.navigate('Login');
-              source === 'registration' && navigation.navigate('Login');
+              source === 'registration' && navigation.navigate('Registration', { source: 'OTP' });
             }}>
               <Text className="text-white text-base text-center font-medium font-InterSemiBold">Verify</Text>
             </TouchableOpacity>
@@ -332,6 +333,8 @@ const OTP = ({ navigation, route }) => {
         </View>
 
       </ScrollView>
+
+      <StatusBar backgroundColor="#ffffff" style="dark" />
     </SafeAreaView>
   );
 };
