@@ -104,24 +104,43 @@ const Login = ({ navigation }) => {
       password: form.password,
       imageVerificationId: 3
     };
+      const dto = await axios.post(`${API_BASE_URL.IE}/v1/customer/login`, loginData);
+      const { message, data } = dto.data;
 
-    try {
-      const response = await axios.post(`${API_BASE_URL.SITE}/v1/customer/login`, loginData);
-      const { message, data } = response.data;
-
-      if (message === 'Invalid Password or Security Image') {
-        console.log('Message:', message);
-        Alert.alert('Login Failed', 'Please check your credentials and try again.');
+      if (dto && dto.data && dto.success) {
+        navigation.navigate('Home');
       }
       else {
-        console.log('Message:', message);
-        console.log('Data:', data);
-        navigation.navigate('Home')
-      }  
-    } catch (error) {
-      console.log('Error logging in:', error);
-      Alert.alert('Login Failed', 'Please check your credentials and try again.');
-    }
+        if (dto && dto.data && dto.data.errors && dto.data.errors.length > 0) {
+          Alert.alert(dto.data.errors, error);
+        }
+        else {
+          if (dto && dto.message) {
+            Alert.alert(dto.message, error);
+          }
+          else {
+            Alert.alert("Some Thing Wents Wrong", dto.error);
+          }
+        }
+      }
+
+
+      // if (response && response.message) {
+      //   Alert.alert(response.message, error);
+      // }
+      // else if (response && response.erroObject) {
+
+      // }
+
+      // if (message === 'Invalid Password or Security Image') {
+      //   console.log('Message:', message);
+      //   Alert.alert('Login Failed', error);
+      // }
+      // else {
+      //   console.log('Message:', message);
+      //   console.log('Data:', data);
+      //   navigation.navigate('Home')
+      // }
   };
 
   const securityImages1 = [
@@ -270,7 +289,7 @@ const Login = ({ navigation }) => {
                     <Input placeholder="Enter your username" value={form.username} onChange={(text) => handleChange('username', text)} />
                     <View className="items-end mt-2">
                       <TouchableOpacity onPress={() => navigation.navigate('ForgetPassword', { source: 'username' })}>
-                        <Text className="text-xs underline font-InterSemiBold" style={{color: Color.PrimaryWebOrientTxtColor}}>Forgot Username?</Text>
+                        <Text className="text-xs underline font-InterSemiBold" style={{ color: Color.PrimaryWebOrientTxtColor }}>Forgot Username?</Text>
                       </TouchableOpacity>
                     </View>
                   </View>
@@ -280,7 +299,7 @@ const Login = ({ navigation }) => {
                     <InputWithIcon placeholder="Enter your password" isPassword value={form.password} onChange={(text) => handleChange('password', text)} />
                     <View className="items-end mt-2">
                       <TouchableOpacity onPress={() => navigation.navigate('ForgetPassword', { source: 'password' })}>
-                        <Text className="text-xs underline font-InterSemiBold" style={{color: Color.PrimaryWebOrientTxtColor}}>Forgot Password?</Text>
+                        <Text className="text-xs underline font-InterSemiBold" style={{ color: Color.PrimaryWebOrientTxtColor }}>Forgot Password?</Text>
                       </TouchableOpacity>
                     </View>
                   </View>
@@ -326,13 +345,13 @@ const Login = ({ navigation }) => {
               {/* -----| Security Image End |----- */}
 
               <View className="mb-5">
-                <TouchableOpacity className="py-4 rounded-lg mb-4" style={{backgroundColor: Color.PrimaryWebOrient}} onPress={handleLogin}>
+                <TouchableOpacity className="py-4 rounded-lg mb-4" style={{ backgroundColor: Color.PrimaryWebOrient }} onPress={handleLogin}>
                   <Text className="text-white text-base text-center font-medium font-InterSemiBold">Login</Text>
                 </TouchableOpacity>
                 <View className="flex-row justify-center">
                   <Text className="text-sm font-InterRegular">Don't have an account? </Text>
                   <TouchableOpacity onPress={() => navigation.navigate("SignUp")}>
-                    <Text className="text-sm font-InterSemiBold" style={{color: Color.PrimaryWebOrientTxtColor}}>Sign up</Text>
+                    <Text className="text-sm font-InterSemiBold" style={{ color: Color.PrimaryWebOrientTxtColor }}>Sign up</Text>
                   </TouchableOpacity>
                 </View>
               </View>
