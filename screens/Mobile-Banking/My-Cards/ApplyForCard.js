@@ -7,17 +7,10 @@ import {
   Text,
   View,
 } from "react-native";
-import { Entypo, FontAwesome } from "@expo/vector-icons";
+import { Entypo } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
-import { Divider } from "@rneui/themed";
-import Bank from "../../../assets/Images/bank.svg";
-import AddBank from "../../../assets/Images/AddBank.svg";
-import Remittence from "../../../assets/Images/Remittence.svg";
-import Paypal from "../../../assets/Images/Paypal.svg";
-import WorldRemit from "../../../assets/Images/WorldRemit.svg";
-import RiaMoneyTransfer from "../../../assets/Images/RiaMoneyTransfer.svg";
+import Footer from "../../../components/Footer";
 import { Color } from "../../../GlobalStyles";
-import { Fontisto } from "@expo/vector-icons";
 import TextInput from "../../../components/TextInput";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { SelectList } from "react-native-dropdown-select-list";
@@ -205,7 +198,7 @@ const ApplyForCard = () => {
               </View>
             </View>
             <View className="p-5">
-          <CustomButton Text={"Next"}  />
+          <CustomButton Text={"Next"} onPress={() => navigation.navigate("NameOnTheCard")} />
         </View>
           </View>
         )}
@@ -361,12 +354,13 @@ const ApplyForCard = () => {
               </View>
             </View>
             <View className="p-5">
-          <CustomButton Text={"Next"}  />
+          <CustomButton Text={"Next"}  onPress={() => navigation.navigate("NameOnTheCard")}/>
         </View>
           </View>
         )}
       </View>
       </ScrollView>
+      <Footer />
     </SafeAreaView>
   );
 };
