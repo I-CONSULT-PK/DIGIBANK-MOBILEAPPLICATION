@@ -16,7 +16,7 @@ import { Color } from "../../GlobalStyles";
 import API_BASE_URL from "../../config";
 const { width, height } = Dimensions.get("window");
 
-const OTP = ({ navigation, route }) => {
+const OTP_UserName = ({ navigation, route }) => {
   const [otp, setOtp] = useState(["", "", "", "", ""]);
   const [isResendDisabled, setIsResendDisabled] = useState(false);
   const [userEmail, setUserEmail] = useState("");
@@ -216,4 +216,4 @@ const OTP = ({ navigation, route }) => {
   );
 };
 
-export default OTP;
+export default OTP_UserName;

@@ -52,7 +52,7 @@ const ForgetUserName = ({ route }) => {
           sourceScreen: source
         });
        
-        navigation.navigate("OTP", {
+        navigation.navigate("OTP_UserName", {
           email: responseData.email,
           mobileNumber: responseData.mobileNumber,
           sourceScreen: source
