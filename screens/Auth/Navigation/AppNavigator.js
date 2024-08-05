@@ -47,6 +47,7 @@ import SelectApplyOptionCard from "../../Mobile-Banking/My-Cards/SelectApplyOpti
 import SupplementaryCard from "../../Mobile-Banking/My-Cards/SupplementaryCard";
 import SupplementaryCardCustomization from "../../Mobile-Banking/My-Cards/SupplementaryCardCustomization";
 import SupplementaryCardLimitSplit from './../../Mobile-Banking/My-Cards/SupplementaryCardLimitSplit';
+import ForgetUserName from "../ForgetUserName";
 const Stack = createStackNavigator();
 
 const AppNavigator = () => {
@@ -55,6 +56,7 @@ const AppNavigator = () => {
       <Stack.Navigator>
         <Stack.Screen name="Login" component={Login} />
         <Stack.Screen name="ForgetPassword" component={ForgetPassword} />
+        <Stack.Screen name="ForgetUserName" component={ForgetUserName} />
         <Stack.Screen name="NewPassword" component={NewPassword} />
         <Stack.Screen name="Registration" component={Registration} />
         <Stack.Screen name="OTP" component={OTP} />

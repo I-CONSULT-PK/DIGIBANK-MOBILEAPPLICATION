@@ -56,6 +56,7 @@ import CashUpCard from "./screens/Mobile-Banking/My-Cards/CashUpCard";
 import CardActivation from "./screens/Mobile-Banking/My-Cards/CardActivation";
 import SetCardPin from "./screens/Mobile-Banking/My-Cards/SetCardPin";
 import CardActivated from "./screens/Mobile-Banking/My-Cards/CardActivated";
+import ForgetUserName from "./screens/Auth/ForgetUserName";
 
 const Stack = createNativeStackNavigator();
 
@@ -81,6 +82,11 @@ export default function App() {
           component={ForgetPassword}
           options={{ headerShown: false }}
         />
+         <Stack.Screen
+              name="ForgetUserName"
+              component={ForgetUserName}
+              options={{ headerShown: false }}
+            />
         <Stack.Screen
           name="NewPassword"
           component={NewPassword}
@@ -330,6 +336,11 @@ export default function App() {
             <Stack.Screen
               name="ForgetPassword"
               component={ForgetPassword}
+              options={{ headerShown: false }}
+            />
+             <Stack.Screen
+              name="ForgetUserName"
+              component={ForgetUserName}
               options={{ headerShown: false }}
             />
             <Stack.Screen
