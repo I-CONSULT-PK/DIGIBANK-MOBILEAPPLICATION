@@ -11,13 +11,14 @@ export default function Input({
   outlineColor,
   keyboardType,
   onSubmitEditing,
+  maxLength
 }) {
   return (
     <TextInput
       label={label}
       mode="outlined"
       style={[style]}
-      className="bg-[#F4F5F9] text-[15px] border border-gray-200 rounded-lg pr-1"
+      className={`${!disable && 'border border-gray-200 rounded-lg bg-[#F4F5F9] text-[14.5px] pr-1'} bg-[#F4F5F9] text-[14.5px]`}
       placeholder={placeholder}
       activeOutlineColor="#A5A7A8"
       placeholderTextColor={"#A5A7A8"}
@@ -37,6 +38,7 @@ export default function Input({
       onSubmitEditing={onSubmitEditing}
       blurOnSubmit={false}
       name={label} 
+      maxLength={maxLength}
     />
   );
 }

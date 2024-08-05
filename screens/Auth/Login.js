@@ -11,6 +11,7 @@ import {
   TextInput,
   Image,
   KeyboardAvoidingView,
+  Keyboard
 } from "react-native";
 import {
   widthPercentageToDP as wp,
@@ -30,6 +31,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { StatusBar } from 'expo-status-bar';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import API_BASE_URL from '../../config';
 
 const Login = ({ navigation }) => {
@@ -99,48 +101,58 @@ const Login = ({ navigation }) => {
   };
 
   const handleLogin = async () => {
-    const loginData = {
-      emailorUsername: form.username,
-      password: form.password,
-      imageVerificationId: 3
-    };
-      const dto = await axios.post(`${API_BASE_URL.IE}/v1/customer/login`, loginData);
-      const { message, data } = dto.data;
+    if (form.username === '' || form.password === '') {
+      Alert.alert('Error', 'Username and password can not be null')
+    }
+    else {
+      const loginData = {
+        emailorUsername: form.username,
+        password: form.password
+      };
 
-      if (dto && dto.data && dto.success) {
-        navigation.navigate('Home');
-      }
-      else {
-        if (dto && dto.data && dto.data.errors && dto.data.errors.length > 0) {
-          Alert.alert(dto.data.errors, error);
+      try {
+        const response = await axios.post(`${API_BASE_URL}/v1/customer/login`, loginData);
+        const dto = response.data;
+
+        if (dto && dto.success && dto.data && dto.data.customerId) {
+          const customerId = dto.data.customerId.toString();
+          const token = dto.data.token.toString();
+          const expirationTime = dto.data.expirationTime.toString();
+
+          await AsyncStorage.setItem('customerId', customerId);
+          await AsyncStorage.setItem('token', token);
+          await AsyncStorage.setItem('expirationTime', expirationTime);
+
+          navigation.navigate('Home');
         }
         else {
-          if (dto && dto.message) {
-            Alert.alert(dto.message, error);
+          if (dto.message) {
+            Alert.alert('Error', dto.message);
           }
-          else {
-            Alert.alert("Some Thing Wents Wrong", dto.error);
+          else if (dto.errors && dto.errors.length > 0) {
+            Alert.alert('Error', dto.errors);
           }
         }
+      } catch (error) {
+        if (error.response) {
+          const statusCode = error.response.status;
+
+          if (statusCode === 404) {
+            Alert.alert('Error', 'Server timed out. Try again later!');
+          } else if (statusCode === 503) {
+            Alert.alert('Error', 'Service unavailable. Please try again later.');
+          } else if (statusCode === 400) {
+            Alert.alert('Error', error.response.data.data.errors[0]);
+          } else {
+            Alert.alert('Error', error.message);
+          }
+        } else if (error.request) {
+          Alert.alert('Error', 'No response from the server. Please check your connection.');
+        } else {
+          Alert.alert('Error', error.message);
+        }
       }
-
-
-      // if (response && response.message) {
-      //   Alert.alert(response.message, error);
-      // }
-      // else if (response && response.erroObject) {
-
-      // }
-
-      // if (message === 'Invalid Password or Security Image') {
-      //   console.log('Message:', message);
-      //   Alert.alert('Login Failed', error);
-      // }
-      // else {
-      //   console.log('Message:', message);
-      //   console.log('Data:', data);
-      //   navigation.navigate('Home')
-      // }
+    }
   };
 
   const securityImages1 = [
@@ -286,7 +298,7 @@ const Login = ({ navigation }) => {
                 <View>
                   <View>
                     <Text className="text-sm mb-2 font-InterMedium">User Name*</Text>
-                    <Input placeholder="Enter your username" value={form.username} onChange={(text) => handleChange('username', text)} />
+                    <Input placeholder="Enter your username" value={form.username} onChange={(text) => handleChange('username', text)} onSubmitEditing={Keyboard.dismiss} />
                     <View className="items-end mt-2">
                       <TouchableOpacity onPress={() => navigation.navigate('ForgetPassword', { source: 'username' })}>
                         <Text className="text-xs underline font-InterSemiBold" style={{ color: Color.PrimaryWebOrientTxtColor }}>Forgot Username?</Text>
@@ -294,9 +306,9 @@ const Login = ({ navigation }) => {
                     </View>
                   </View>
 
-                  <View className="mt-1">
+                  <View className="mt-1 mb-8">
                     <Text className="text-sm mb-2 font-InterMedium">Password*</Text>
-                    <InputWithIcon placeholder="Enter your password" isPassword value={form.password} onChange={(text) => handleChange('password', text)} />
+                    <InputWithIcon placeholder="Enter your password" isPassword value={form.password} onChange={(text) => handleChange('password', text)} onSubmitEditing={Keyboard.dismiss} />
                     <View className="items-end mt-2">
                       <TouchableOpacity onPress={() => navigation.navigate('ForgetPassword', { source: 'password' })}>
                         <Text className="text-xs underline font-InterSemiBold" style={{ color: Color.PrimaryWebOrientTxtColor }}>Forgot Password?</Text>

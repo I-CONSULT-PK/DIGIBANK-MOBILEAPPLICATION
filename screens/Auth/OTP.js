@@ -20,9 +20,11 @@ import Input from "../../components/TextInput";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { StatusBar } from 'expo-status-bar';
 import AntDesign from '@expo/vector-icons/AntDesign';
+import axios from "axios";
+import API_BASE_URL from '../../config';
 
 const OTP = ({ navigation, route }) => {
-  const [otp, setOtp] = useState(["", "", "", "", "", ""]);
+  // const [otp, setOtp] = useState(["", "", "", "", "", ""]);
   const [isResendDisabled, setIsResendDisabled] = useState(false);
   const [userEmail, setUserEmail] = useState("");
   const [userNumber, setUserNumber] = useState("");
@@ -213,22 +215,82 @@ const OTP = ({ navigation, route }) => {
     // }, [userEmail, userNumber]);
   };
 
-  const { source } = route.params;
+  const { source, email, mobileNumber, cnic, accountNumber, firstName, lastName } = route.params || {};
 
   const otpLength = 5;
   const inputs = useRef([]);
 
+  const [otp, setOtp] = useState(Array(otpLength).fill(''));
+
   const handleChange = (text, index) => {
-    // Allow only numeric values
     const sanitizedText = text.replace(/[^0-9]/g, '');
+    const newOtp = [...otp];
+    newOtp[index] = sanitizedText;
+
+    setOtp(newOtp);
+
     if (sanitizedText.length === 1 && index < otpLength - 1) {
-      inputs.current[index].setNativeProps({ text: sanitizedText });
       inputs.current[index + 1].focus();
-    } else {
-      inputs.current[index].setNativeProps({ text: sanitizedText });
     }
   };
 
+  const maskEmail = (email, visibleChars = 3) => {
+    if (!email || !email.includes('@')) return email;
+
+    const [localPart, domain] = email.split('@');
+    const maskedLength = Math.max(0, localPart.length - visibleChars);
+    const maskedLocalPart = `${localPart.slice(0, visibleChars)}${'*'.repeat(maskedLength)}`;
+
+    return `${maskedLocalPart}@${domain}`;
+  };
+
+  const verifyOTP = async () => {
+    const enteredOtp = otp.join('');
+
+    if (enteredOtp.length > 0) {
+      const otpData = {
+        mobileNumber: mobileNumber,
+        email: email,
+        emailOtp: enteredOtp
+      };
+
+      try {
+        const response = await axios.post(`${API_BASE_URL}/v1/otp/verifyOTP`, otpData);
+        const dto = response.data;
+
+        if (dto && dto.success) {
+          navigation.navigate('SignUp', { source: 'OTP', email: email, mobileNumber: mobileNumber, cnic: cnic, accountNumber: accountNumber, firstName: firstName, lastName: lastName })
+        }
+        else {
+          if (dto.message) {
+            Alert.alert('Error', dto.message);
+          }
+          else if (dto.errors && dto.errors.length > 0) {
+            Alert.alert('Error', dto.error);
+          }
+        }
+      }
+      catch (error) {
+        if (error.response) {
+          const statusCode = error.response.status;
+
+          if (statusCode === 404) {
+            Alert.alert('Error', 'Server timed out. Try again later!');
+          } else if (statusCode === 503) {
+            Alert.alert('Error', 'Service unavailable. Please try again later.');
+          } else if (statusCode === 400) {
+            Alert.alert('Error', error.response.data.data.errors[0]);
+          } else {
+            Alert.alert('Error', error.message);
+          }
+        } else if (error.request) {
+          Alert.alert('Error', 'No response from the server. Please check your connection.');
+        } else {
+          Alert.alert('Error', error.message);
+        }
+      }
+    }
+  }
 
   return (
     // <View
@@ -308,7 +370,7 @@ const OTP = ({ navigation, route }) => {
                     key={index}
                     ref={(input) => inputs.current[index] = input}
                     className="w-12 h-12 text-center text-xl bg-[#F4F5F9] border border-gray-300 rounded-md font-InterSemiBold"
-                    keyboardType="number-pad"
+                    keyboardType="numeric"
                     maxLength={1}
                     onChangeText={(text) => handleChange(text, index)}
                     returnKeyType={index === otpLength - 1 ? "done" : "next"}
@@ -318,13 +380,13 @@ const OTP = ({ navigation, route }) => {
             </View>
 
             <View className="px-2 mb-7">
-              <Text className="text-sm font-InterMedium" style={{color: Color.PrimaryWebOrientTxtColor}}>We have sent a code to <Text className="text-slate-500">( *****@mail.com )</Text> Enter code here to verify your identity</Text>
+              <Text className="text-sm font-InterMedium" style={{ color: Color.PrimaryWebOrientTxtColor }}>We have sent a code to <Text className="text-slate-500">({maskEmail(email) || '*****@mail.com'})</Text> Enter code here to verify your identity</Text>
             </View>
 
             <TouchableOpacity className="py-3 rounded-lg mb-4" style={{ backgroundColor: Color.PrimaryWebOrient }} onPress={() => {
-              source === 'password' &&  navigation.navigate('NewPassword');
+              source === 'password' && navigation.navigate('NewPassword');
               source === 'username' && navigation.navigate('Login');
-              source === 'registration' && navigation.navigate('Registration', { source: 'OTP' });
+              source === 'registration' && verifyOTP();
             }}>
               <Text className="text-white text-base text-center font-medium font-InterSemiBold">Verify</Text>
             </TouchableOpacity>

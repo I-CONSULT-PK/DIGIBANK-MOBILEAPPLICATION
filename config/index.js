@@ -1,9 +1,20 @@
-import { SITE, IE, ProdE } from '@env';
+import { SITE, IE, ProdE, ENV } from '@env';
 
-const API_BASE_URL = {
-  SITE: SITE,
-  IE: IE,
-  ProdE: ProdE,
-};
+let API_BASE_URL;
 
-export default API_BASE_URL; 
+switch (ENV) {
+  case 'SITE':
+    API_BASE_URL = SITE;
+    break;
+  case 'IE':
+    API_BASE_URL = IE;
+    break;
+  case 'ProdE':
+    API_BASE_URL = ProdE;
+    break;
+  default:
+    API_BASE_URL = IE; 
+    break;
+}
+
+export default API_BASE_URL;
