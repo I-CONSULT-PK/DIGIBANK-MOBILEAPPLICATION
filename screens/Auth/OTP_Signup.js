@@ -23,7 +23,7 @@ import AntDesign from '@expo/vector-icons/AntDesign';
 import axios from "axios";
 import API_BASE_URL from '../../config';
 
-const OTP = ({ navigation, route }) => {
+const OTP_Signup = ({ navigation, route }) => {
   // const [otp, setOtp] = useState(["", "", "", "", "", ""]);
   const [isResendDisabled, setIsResendDisabled] = useState(false);
   const [userEmail, setUserEmail] = useState("");
@@ -401,4 +401,4 @@ const OTP = ({ navigation, route }) => {
   );
 };
 
-export default OTP;
+export default OTP_Signup;

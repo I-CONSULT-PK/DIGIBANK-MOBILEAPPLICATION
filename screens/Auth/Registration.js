@@ -174,7 +174,7 @@ const Registration = ({ route }) => {
         const dto = response.data;
 
         if (dto && dto.success && dto.data) {
-          navigation.navigate('OTP', { source: 'registration', email: returnedData.email, mobileNumber: initialForm.mobile, cnic: initialForm.cnic, accountNumber: initialForm.accountNumber, firstName: returnedData.firstName, lastName: returnedData.lastName });
+          navigation.navigate('OTP_Signup', { source: 'registration', email: returnedData.email, mobileNumber: initialForm.mobile, cnic: initialForm.cnic, accountNumber: initialForm.accountNumber, firstName: returnedData.firstName, lastName: returnedData.lastName });
         }
         else {
           if (dto.message) {

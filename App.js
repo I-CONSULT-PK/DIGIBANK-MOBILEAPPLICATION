@@ -7,7 +7,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import StartSection from "./screens/Auth/StartSection";
 import Login from "./screens/Auth/Login";
 import Registration from "./screens/Auth/Registration";
-import OTP from "./screens/Auth/OTP";
+import OTP_Signup from "./screens/Auth/OTP_Signup";
 import SplashScreen from "./screens/Auth/SplashScreen";
 import Sidebar from "./screens/Mobile-Banking/Account-Setting/Sidebar";
 import Card from "./screens/Mobile-Banking/Card/Card";
@@ -83,8 +83,8 @@ export default function App() {
           options={{ headerShown: false }}
         />
         <Stack.Screen
-          name="OTP"
-          component={OTP}
+          name="OTP_Signup"
+          component={OTP_Signup}
           options={{ headerShown: false }}
         />
         <Stack.Screen
