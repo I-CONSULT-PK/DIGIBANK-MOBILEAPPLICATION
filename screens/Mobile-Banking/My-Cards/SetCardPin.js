@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   Alert,
   Dimensions,
+  Image,
   StyleSheet,
 } from "react-native";
 import CustomButton from "../../../components/Button";
@@ -15,12 +16,12 @@ import { Entypo } from "@expo/vector-icons";
 const { width, height } = Dimensions.get("window");
 
 const SetCardPin = ({ navigation }) => {
-  const [otp, setOtp] = useState(["", "", "", "", ""]);
+  const [otp, setOtp] = useState(["", "", "", ""]);
   const [isPinComplete, setIsPinComplete] = useState(false);
   const [isConfirmationStage, setIsConfirmationStage] = useState(false);
-  const [confirmationOtp, setConfirmationOtp] = useState(["", "", "", "", ""]);
+  const [confirmationOtp, setConfirmationOtp] = useState(["", "", "",""]);
   const otpInputs = useRef([]);
-  const initialOtpRef = useRef(["", "", "", "", ""]);  // Use ref to store the initial OTP
+  const initialOtpRef = useRef(["", "", "", ""]);  // Use ref to store the initial OTP
 
   useEffect(() => {
     // Focus the first input box when the stage changes
@@ -54,8 +55,8 @@ const SetCardPin = ({ navigation }) => {
     if (isPinComplete) {
       setIsConfirmationStage(true);
       initialOtpRef.current = [...otp]; // Save the initial OTP
-      setOtp(["", "", "", "", ""]); 
-      setConfirmationOtp(["", "", "", "", ""]); 
+      setOtp(["", "", "", ""]); 
+      setConfirmationOtp(["", "", "", ""]); 
     } else {
       Alert.alert("Error", "Please enter all digits of the PIN.");
     }
@@ -75,7 +76,10 @@ const SetCardPin = ({ navigation }) => {
 
   return (
     <SafeAreaView className="bg-[#f9fafc]" style={{ flex: 1 }}>
-      <TouchableOpacity className="mt-12 ml-5" onPress={() => navigation.navigate("CardActivation")}>
+      <TouchableOpacity
+        className="mt-12 ml-5"
+        onPress={() => navigation.navigate("CardActivation")}
+      >
         <Entypo name="chevron-left" size={30} color="#090909" />
       </TouchableOpacity>
       <Text className="text-2xl text-center mt-5 font-bold">
@@ -94,34 +98,44 @@ const SetCardPin = ({ navigation }) => {
             style={styles.container}
           >
             <View className="flex justify-center items-center">
+              <Image
+                source={require("../../../assets/pin-icon.png")}
+              
+              />
               <Text className="font-semibold text-base text-center mt-2">
                 {isConfirmationStage ? "Set up Card PIN" : "Set up Card PIN"}
               </Text>
-              <Text className="font-semibold text-base text-center mt-2 text-lime-500">
+              <Text className="font-semibold text-base text-center mt-2 text-cyan-500">
                 Your card has been verified
               </Text>
               <View className="mt-6">
                 <Text className="font-semibold text-base text-center text-gray-500">
-                  {isConfirmationStage ? "Re-enter your PIN" : "Enter Your New PIN*"}
+                  {isConfirmationStage
+                    ? "Re-enter your PIN"
+                    : "Enter Your New PIN*"}
                 </Text>
                 <View className="flex flex-row items-center mt-2">
-                  {(isConfirmationStage ? confirmationOtp : otp).map((digit, index) => (
-                    <TextInput
-                      key={index}
-                      ref={(ref) => (otpInputs.current[index] = ref)}
-                      className="border border-gray-300 rounded-xl text-lg text-center mx-1"
-                      style={{
-                        width: width * 0.14,
-                        height: height * 0.08,
-                        fontSize: 20,
-                        borderRadius: 5,
-                      }}
-                      maxLength={1}
-                      keyboardType="numeric"
-                      value={digit}
-                      onChangeText={(value) => handleOtpChange(index, value, isConfirmationStage)}
-                    />
-                  ))}
+                  {(isConfirmationStage ? confirmationOtp : otp).map(
+                    (digit, index) => (
+                      <TextInput
+                        key={index}
+                        ref={(ref) => (otpInputs.current[index] = ref)}
+                        className="border border-gray-300 rounded-xl text-lg text-center mx-1"
+                        style={{
+                          width: width * 0.14,
+                          height: height * 0.08,
+                          fontSize: 20,
+                          borderRadius: 5,
+                        }}
+                        maxLength={1}
+                        keyboardType="numeric"
+                        value={digit}
+                        onChangeText={(value) =>
+                          handleOtpChange(index, value, isConfirmationStage)
+                        }
+                      />
+                    )
+                  )}
                 </View>
               </View>
             </View>
@@ -130,15 +144,9 @@ const SetCardPin = ({ navigation }) => {
 
         <View className="p-7">
           {!isConfirmationStage ? (
-            <CustomButton
-              Text={"Next"}
-              onPress={handleNextPress}
-            />
+            <CustomButton Text={"Next"} onPress={handleNextPress} />
           ) : (
-            <CustomButton
-              Text={"Confirm"}
-              onPress={handleConfirmPress}
-            />
+            <CustomButton Text={"Confirm"} onPress={handleConfirmPress} />
           )}
         </View>
       </View>

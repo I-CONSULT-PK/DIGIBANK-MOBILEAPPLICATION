@@ -160,108 +160,7 @@ const Login = ({ navigation }) => {
   ];
 
   return (
-    // <ScrollView style={{ backgroundColor: "white" }}>
-    //   <View className="justify-center items-center py-5">
-    //     <MainImage style={{ width: sw - 9, height: sh - 550 }} />
-    //     <Text className="font-InterBold text-3xl">Welcome</Text>
-    //     <Text className="font-InterMedium text-center text-text-gray text-sm">
-    //       to the future bank where you can{" "}
-    //       <Text style={{ color: Color.PrimaryWebOrientTxtColor }}>
-    //         Add, Manage & Track
-    //       </Text>{" "}
-    //       your all financial account only in one app
-    //     </Text>
-    //     <Text className="text-text-gray font-InterMedium text-center text-base mt-4">
-    //       Select login options
-    //     </Text>
-    //     <View className="flex-row justify-between mt-6">
-    //       <TouchableOpacity>
-    //         <View className="flex-row justify-between items-center">
-    //           {/* <View style={[styles.circleContainer, { marginRight: 10 }]}>
-    //             <Entypo
-    //               name="mail"
-    //               size={40}
-    //               style={{
-    //                 color: Color.PrimaryWebOrient,
-    //               }}
-    //             />
-    //           </View> */}
-    //           <TouchableOpacity
-    //             onPress={() =>
-    //               Alert.alert(
-    //                 "Popup",
-    //                 "Place your finger on your phone fingerprint sensor"
-    //               )
-    //             }
-    //           >
-    //             <View
-    //               className="rounded-full w-16 h-16 bg-gray-300 flex justify-center items-center"
-    //               style={{ backgroundColor: "#f4f5f9" }}
-    //             >
-    //               <Entypo
-    //                 name="fingerprint"
-    //                 size={40}
-    //                 style={{
-    //                   color: Color.PrimaryWebOrient,
-    //                 }}
-    //               />
-    //             </View>
-    //           </TouchableOpacity>
-    //         </View>
-    //       </TouchableOpacity>
-    //     </View>
-    //   </View>
-    //   <View className="m-3">
-    //     <View className="mb-5">
-    //       <Input
-    //         placeholder="Email or UserName"
-    //         keyboardType="email-address"
-    //         value={emailorUsername}
-    //         onChange={(text) => setEmail(text)}
-    //       />
-    //     </View>
-    //     <View className="mb-2">
-    //       <InputWithIcon
-    //         isPassword={true}
-    //         value={password}
-    //         onChange={(text) => setPassword(text)}
-    //         placeholder="Password"
-    //       />
-    //     </View>
-    //   </View>
-    //   <CustomButton className="m-2" Text={"Login"} onPress={handleLogin} />
-    //   <PinCode
-    //     visible={pinCodeModalVisible}
-    //     onClose={() => setPinCodeModalVisible(false)}
-    //   />
-
-    //   <View className="m-3 mt-2  flex justify-center items-center">
-    //     <Text
-    //       onPress={() => navigation.navigate("ForgetPassword")}
-    //       style={{
-    //         fontFamily: "InterSemiBold",
-    //         color: Color.PrimaryWebOrientTxtColor,
-    //       }}
-    //     >
-    //       Forget Password?
-    //     </Text>
-    //   </View>
-    //   <View className="items-center">
-    //     <Text className="text-text-gray" style={{ fontFamily: "InterMedium" }}>
-    //       Don’t have an account?{" "}
-    //       <Text
-    //         onPress={() => navigation.navigate("Registration")}
-    //         style={{
-    //           fontFamily: "InterSemiBold",
-    //           color: Color.PrimaryWebOrientTxtColor,
-    //         }}
-    //       >
-    //         Sign up
-    //       </Text>
-    //     </Text>
-    //   </View>
-    // </ScrollView>
-
+    
     <SafeAreaView className="h-full flex-1">
       <LinearGradient
         colors={[Color.PrimaryWebOrient, Color.PrimaryWebOrientLayer2]}
@@ -288,7 +187,7 @@ const Login = ({ navigation }) => {
                     <Text className="text-sm mb-2 font-InterMedium">User Name*</Text>
                     <Input placeholder="Enter your username" value={form.username} onChange={(text) => handleChange('username', text)} />
                     <View className="items-end mt-2">
-                      <TouchableOpacity onPress={() => navigation.navigate('ForgetPassword', { source: 'username' })}>
+                      <TouchableOpacity onPress={() => navigation.navigate('ForgetUserName')}>
                         <Text className="text-xs underline font-InterSemiBold" style={{ color: Color.PrimaryWebOrientTxtColor }}>Forgot Username?</Text>
                       </TouchableOpacity>
                     </View>

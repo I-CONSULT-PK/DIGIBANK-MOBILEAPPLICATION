@@ -26,7 +26,7 @@ const SelectCards = () => {
             />
           </TouchableOpacity>
           <View className="justify-center items-center">
-            <Text className="font-InterBold text-2xl "> Cards</Text>
+            <Text className="font-InterBold text-2xl "> Cards & Loan</Text>
           </View>
           <View className="p-4">
             <TouchableOpacity onPress={() => navigation.navigate("CardManagement")}
@@ -45,11 +45,19 @@ const SelectCards = () => {
               </View>
               <Icon name="chevron-right" size={20} color="gray" />
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => navigation.navigate("ApplyCard")}
+            <TouchableOpacity onPress={() => navigation.navigate("SelectApplyOptionCard")}
              className="flex-row items-center justify-between bg-white p-4 mb-2 rounded-lg shadow-inner">
               <View className="flex-row items-center">
                 <Image source={require('../../../assets/payment.png')}  className="w-6 h-6 mr-3" />
-                <Text className=" text-lg text-black font-InterSemiBold">Apply for Card</Text>
+                <Text className=" text-lg text-black font-InterSemiBold">Apply for Credit Card</Text>
+              </View>
+              <Icon name="chevron-right" size={20} color="gray" />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => navigation.navigate("NameOnTheCard")}
+             className="flex-row items-center justify-between bg-white p-4 mb-2 rounded-lg shadow-inner">
+              <View className="flex-row items-center">
+                <Image source={require('../../../assets/Add-Debit.png')}  className="w-6 h-6 mr-3" />
+                <Text className=" text-lg text-black font-InterSemiBold">Activate Your Card</Text>
               </View>
               <Icon name="chevron-right" size={20} color="gray" />
             </TouchableOpacity>
@@ -63,18 +71,18 @@ const SelectCards = () => {
             <TouchableOpacity className="flex-row items-center justify-between bg-white p-4 mb-2 rounded-lg shadow-inner">
               <View className="flex-row items-center">
                 <Image source={require('../../../assets/card-management.png')}  className="w-6 h-6 mr-3" />
-                <Text className=" text-lg text-black font-InterSemiBold">Await Cash</Text>
+                <Text className=" text-lg text-black font-InterSemiBold">Easy Cash</Text>
               </View>
               <Icon name="chevron-right" size={20} color="gray" />
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => navigation.navigate("CongCard")}
+            {/* <TouchableOpacity onPress={() => navigation.navigate("CongCard")}
              className="flex-row items-center justify-between bg-white p-4 mb-2 rounded-lg shadow-inner">
               <View className="flex-row items-center">
                 <Image source={require('../../../assets/card-management.png')}  className="w-6 h-6 mr-3" />
                 <Text className=" text-lg text-black font-InterSemiBold">Congratulations</Text>
               </View>
               <Icon name="chevron-right" size={20} color="gray" />
-            </TouchableOpacity>
+            </TouchableOpacity> */}
           </View>
         </View>
       </ScrollView>

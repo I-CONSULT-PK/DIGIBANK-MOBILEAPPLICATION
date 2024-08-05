@@ -43,6 +43,12 @@ import SetCardPin from "../../Mobile-Banking/My-Cards/SetCardPin";
 import CardActivated from "../../Mobile-Banking/My-Cards/CardActivated";
 
 import CongCard from "../../Mobile-Banking/My-Cards/CongCard";
+import SelectApplyOptionCard from "../../Mobile-Banking/My-Cards/SelectApplyOptionCard";
+import SupplementaryCard from "../../Mobile-Banking/My-Cards/SupplementaryCard";
+import SupplementaryCardCustomization from "../../Mobile-Banking/My-Cards/SupplementaryCardCustomization";
+import SupplementaryCardLimitSplit from './../../Mobile-Banking/My-Cards/SupplementaryCardLimitSplit';
+import ForgetUserName from "../ForgetUserName";
+import OTP_UserName from "../OTP_UserName";
 const Stack = createStackNavigator();
 
 const AppNavigator = () => {
@@ -51,9 +57,10 @@ const AppNavigator = () => {
       <Stack.Navigator>
         <Stack.Screen name="Login" component={Login} />
         <Stack.Screen name="ForgetPassword" component={ForgetPassword} />
+        <Stack.Screen name="ForgetUserName" component={ForgetUserName} />
         <Stack.Screen name="NewPassword" component={NewPassword} />
         <Stack.Screen name="Registration" component={Registration} />
-        <Stack.Screen name="OTP" component={OTP} />
+        <Stack.Screen name="OTP_UserName" component={OTP_UserName} />
         <Stack.Screen name="EntitySelection" component={EntitySelection} />
         <Stack.Screen name="HomeScreen" component={HomeScreen} />
         <Stack.Screen name="Sidebar" component={Sidebar} />
@@ -69,6 +76,10 @@ const AppNavigator = () => {
         <Stack.Screen name="CardActivation" component={CardActivation} />
         <Stack.Screen name="SetCardPin" component={SetCardPin} />
         <Stack.Screen name="CardActivated" component={CardActivated} />
+        <Stack.Screen name="SelectApplyOptionCard" component={SelectApplyOptionCard} />
+        <Stack.Screen name="SupplementaryCard" component={SupplementaryCard} />
+        <Stack.Screen name="SupplementaryCardCustomization" component={SupplementaryCardCustomization} />
+        <Stack.Screen name="SupplementaryCardLimitSplit" component={SupplementaryCardLimitSplit} />
 
         <Stack.Screen name="AccountSetting" component={AccountSetting} />
 

@@ -650,7 +650,7 @@ const HomeScreen = () => {
                   className="w-24 h-24 bg-white m-2.5 rounded-lg flex justify-center items-center"
                   style={styles.box}
                 >
-                  <Cards style={styles.icon}/>
+                  <Cards style={styles.icon} />
                   <Text className="text-center font-semibold">Cards</Text>
                 </View>
               </TouchableOpacity>

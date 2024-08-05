@@ -40,11 +40,11 @@ const NameOnTheCard = () => {
   return (
     <SafeAreaView className="flex-1 bg-[#f9fafc] h-full">
       <ScrollView>
-        <TouchableOpacity onPress={handleBack} className="mt-12 ml-5">
+        <TouchableOpacity onPress={handleBack} className="mt-5 ml-3">
           <Entypo name="chevron-left" size={30} color="#090909" />
         </TouchableOpacity>
         <Text className="text-2xl text-center mt-5 font-bold">
-          Apply for Card
+          Activate Your Card
         </Text>
         <View className="justify-center items-center mt-5">
           <View className="flex-row items-center px-12 py-5 bg-emerald-50 rounded-md">
@@ -60,7 +60,7 @@ const NameOnTheCard = () => {
             </Text>
           </View>
         </View>
-        <View className="flex flex-col px-5 py-7 mt-7 bg-white rounded-xl shadow-lg max-w-md mx-auto">
+        <View className="flex flex-col px-8 py-7 mt-7 bg-white rounded-xl shadow-lg max-w-md mx-auto">
           <View className="justify-center items-center">
             <ListSectionCard width={300} />
           </View>

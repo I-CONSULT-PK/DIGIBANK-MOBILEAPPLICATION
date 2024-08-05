@@ -169,9 +169,9 @@ const ApplyForCard = () => {
 
                   <View className="flex-row space-x-2 mt-3">
                     {[
-                      { id: 1, label: "1 - 1.5 years" },
-                      { id: 2, label: "2 - 4 years" },
-                      { id: 3, label: "5 - 7 years" },
+                       { id: 1, label: "0 - 1 years" },
+                       { id: 2, label: "1 - 2 years" },
+                       { id: 3, label: "> 6 years" },
                     ].map((option) => (
                       <TouchableOpacity
                         key={option.id}
@@ -222,38 +222,7 @@ const ApplyForCard = () => {
                     Required to access your eligibility
                   </Text>
                 </View>
-                <View className="mt-9">
-                  <Text className="text-sm font-medium text-zinc-600">
-                    Enter your Employer name
-                  </Text>
-                  <TextInput className="mt-2" placeholder="Enter Here" />
-                </View>
-
-                <View className="mt-5">
-                  <Text className="text-sm font-medium text-zinc-600">
-                    Select your Bank
-                  </Text>
-                </View>
-                <View>
-                  <View className="text-sm font-medium text-zinc-600">
-                    <SelectList
-                      setSelected={(val) => setSelected(val)}
-                      data={banks}
-                      save="value"
-                      placeholder="Select your Bank"
-                      boxStyles={{ marginTop: 10 }}
-                      dropdownStyles={{ borderColor: "gray", borderWidth: 1 }}
-                    />
-                  </View>
-                </View>
-                <View className="mt-6">
-                  <Text className="text-sm font-medium text-zinc-600">
-                    Enter your IBAN number
-                  </Text>
-                  <TextInput className="mt-2" placeholder="Enter Here" />
-                </View>
-
-                <View className="py-1 mt-4">
+                <View className="py-1 mt-6">
                   <View>
                     <Text className="text-sm font-medium text-zinc-600">
                       Select your Job type
@@ -321,6 +290,38 @@ const ApplyForCard = () => {
                     </View>
                   </View>
                 </View>
+                <View className="mt-4">
+                  <Text className="text-sm font-medium text-zinc-600">
+                    Enter your Employer name
+                  </Text>
+                  <TextInput className="mt-2" placeholder="Enter Here" />
+                </View>
+
+                <View className="mt-5">
+                  <Text className="text-sm font-medium text-zinc-600">
+                    Select your Bank
+                  </Text>
+                </View>
+                <View>
+                  <View className="text-sm font-medium text-zinc-600">
+                    <SelectList
+                      setSelected={(val) => setSelected(val)}
+                      data={banks}
+                      save="value"
+                      placeholder="Select your Bank"
+                      boxStyles={{ marginTop: 10 }}
+                      dropdownStyles={{ borderColor: "gray", borderWidth: 1 }}
+                    />
+                  </View>
+                </View>
+                <View className="mt-6">
+                  <Text className="text-sm font-medium text-zinc-600">
+                    Enter your IBAN number
+                  </Text>
+                  <TextInput className="mt-2" placeholder="Enter Here" />
+                </View>
+
+                
 
                 <View className="mt-7 rounded-lg">
                   <Text className="text-sm font-medium text-zinc-600">
@@ -329,8 +330,8 @@ const ApplyForCard = () => {
 
                   <View className="flex-row space-x-2 mt-3">
                     {[
-                      { id: 1, label: "1 - 1.5 years" },
-                      { id: 2, label: "2 - 4 years" },
+                      { id: 1, label: "0 - 1 years" },
+                      { id: 2, label: "1 - 2 years" },
                       { id: 3, label: "5 - 7 years" },
                     ].map((option) => (
                       <TouchableOpacity
