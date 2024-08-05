@@ -6,7 +6,7 @@ export default function Input({
   isPassword,
   placeholder,
   value,
-  disable,
+  disabled,
   onChange,
   outlineColor,
   keyboardType,
@@ -16,27 +16,33 @@ export default function Input({
     <TextInput
       label={label}
       mode="outlined"
-      style={[style]}
-      className="bg-[#F4F5F9] text-[15px] border border-gray-200 rounded-lg pr-1"
+      style={[
+        style,
+        {
+          backgroundColor: '#F4F5F9',
+          fontSize: 15,
+          height: 40, 
+          paddingVertical: 12, 
+          lineHeight: 20, 
+        },
+      ]}
       placeholder={placeholder}
       activeOutlineColor="#A5A7A8"
-      placeholderTextColor={"#A5A7A8"}
+      placeholderTextColor="#A5A7A8"
       theme={{
-        fonts: { bodyLarge: { fontFamily: "InterRegular"} },
+        fonts: { bodyLarge: { fontFamily: "InterRegular" } },
         roundness: 10,
         colors: {
-          outline: "#F4F5F9",
+          outline: outlineColor || "#F4F5F9",
         },
       }}
       secureTextEntry={isPassword}
       value={value}
-      disabled={disable}
+      disabled={disabled}
       onChangeText={onChange}
-      outlineColor={outlineColor}
       keyboardType={keyboardType}
       onSubmitEditing={onSubmitEditing}
       blurOnSubmit={false}
-      name={label} 
     />
   );
 }

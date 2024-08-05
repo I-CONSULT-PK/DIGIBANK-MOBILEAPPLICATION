@@ -1,201 +1,181 @@
-import React, { useState, useEffect, useContext } from "react";
-import {
-  Dimensions,
-  ScrollView,
-  Text,
-  View,
-  Alert,
-  StyleSheet,
-  TouchableOpacity
-} from "react-native";
-import Input from "../../components/TextInput";
-import { LinearGradient } from "expo-linear-gradient";
-import Choice from "../../assets/Images/forgetPassword.svg";
-import CustomButton from "../../components/Button";
-import { useNavigation } from "@react-navigation/native";
+import React, { useState, useContext } from "react";
+import { ScrollView, Text, View, Alert, TouchableOpacity, SafeAreaView } from "react-native";
 import { Controller, useForm } from "react-hook-form";
-import { Color } from "../../GlobalStyles";
-import LoaderComponent from "../../components/LoaderComponent";
+import { useNavigation } from "@react-navigation/native";
 import { AppLoaderContext } from "../../components/LoaderHOC";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { StatusBar } from 'expo-status-bar';
-import AntDesign from '@expo/vector-icons/AntDesign';
+import axios from "axios";
+import CustomButton from "../../components/Button";
+import Input from "../../components/TextInput";
+import { StatusBar } from "expo-status-bar";
+import AntDesign from "@expo/vector-icons/AntDesign";
 
 const ForgetPassword = ({ route }) => {
   const navigation = useNavigation();
-  const screenHeight = Dimensions.get("window").height;
   const { showLoader, hideLoader } = useContext(AppLoaderContext);
-  const {
-    control,
-    handleSubmit,
-    formState: { errors },
-  } = useForm();
+  const { control, handleSubmit, formState: { errors }, setValue, clearErrors } = useForm();
+  const { source } = route.params || {};
+  const [isEditable, setIsEditable] = useState(true);
+  const [serverData, setServerData] = useState(null);
+  const [showInputFields, setShowInputFields] = useState(true); 
 
-  const handleNext = async (data) => {
+  // Function to handle API request
+  const handleAPIRequest = async (data) => {
     try {
       showLoader();
 
-      const url = `http://192.168.0.196:9096/v1/customer/getCustomer/2?cnic=${data.cnic}&accountNumber=${data.accountNumber}`;
+      const url = 'http://192.168.0.153:8080/v1/customer/forgetUser';
+      console.log("Constructed URL:", url); // Log the URL
 
-      const response = await fetch(url, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
+      // Send POST request to the server
+      const response = await axios.post(url, data, {
+        headers: { "Content-Type": "application/json" }
       });
 
-      const result = await response.json();
+      // Extract data from the response
+      const { success, message, data: responseData } = response.data;
 
-      console.log("Server response:", result);
+      if (success) {
+        // Process successful response
+        setServerData(responseData);
+        setValue("firstName", responseData.firstName || "");
+        setValue("lastName", responseData.lastName || "");
+        setValue("email", responseData.email || "");
+        setValue("mobileNumber", responseData.mobileNumber || "");
+        setIsEditable(false); 
+        setShowInputFields(false); 
 
-      if (result.success) {
-        if (result.data && result.data.id) {
-          hideLoader();
-
-          // Save customer information in local storage
-          const customerInfo = {
-            customerId: result.data.id,
-            userNumber: result.data.mobileNumber,
-            userEmail: result.data.email,
-          };
-
-          await AsyncStorage.setItem("customerInfo", JSON.stringify(customerInfo));
-
-          navigation.navigate("OTP", {
-            sourceScreen: "ForgetPassword",
-            destinationScreen: "NewPassword",
-          });
-        } else {
-          Alert.alert("Error", "Customer ID not found in the server response");
-        }
+        // Navigate to OTP screen with email, mobile number, cnic, and account number
+        navigation.navigate("OTP", {
+          email: responseData.email,
+          mobileNumber: responseData.mobileNumber,
+          cnic: data.cnic,
+          accountNumber: data.accountNumber,
+          sourceScreen: source,
+        });
+        
       } else {
-        const errorMessageToShow = result.message || result.error;
-        Alert.alert("Error", errorMessageToShow);
+        Alert.alert("Error", message || "An unexpected error occurred.");
       }
     } catch (error) {
-      console.error("Fetch error:", error);
+      console.error("Axios error:", error);
+
+      if (error.response) {
+        console.error("Error Data:", error.response.data);
+      } else if (error.request) {
+        console.error("Error Request:", error.request);
+      } else {
+        console.error("Error Message:", error.message);
+      }
+
       Alert.alert(
         "Error",
-        "Failed to fetch user information. Please try again."
+        error.response?.data?.message || "Failed to fetch user information. Please try again."
       );
     } finally {
-      setTimeout(() => {
-        hideLoader();
-      }, 3000);
+      hideLoader();
     }
   };
 
-  const { source } = route.params;
-
   return (
-    // <SafeAreaView
-    //   style={{ flex: 1, backgroundColor: Color.PrimaryWebOrientLayer2 }}
-    // >
-    //   <ScrollView style={styles.container}>
-    //     <LinearGradient
-    //       colors={[Color.PrimaryWebOrientLayer2, Color.PrimaryWebOrientLayer2]}
-    //       style={[styles.linearGradient, { height: screenHeight }]}
-    //     >
-    //       <Choice
-    //         fill={Color.PrimaryWebOrient}
-    //         style={{ alignSelf: "center", marginTop: 5 }}
-    //       />
-    //       <View style={styles.roundedContainer}>
-    //         <View className="justify-center text-center">
-    //           <Text className="font-InterBold text-center text-2xl">
-    //             Forget Password
-    //           </Text>
-    //           <Text className="text-sm text-center mt-3 font-InterMedium text-text-gray">
-    //             Enter your CNIC and Account number below
-    //           </Text>
-    //         </View>
-    //         <View className="space-y-1">
-    //           <Text className="text-sm font-InterMedium text-text-gray">
-    //             CNIC
-    //           </Text>
-    //           <Controller
-    //             control={control}
-    //             rules={{
-    //               required: true,
-    //             }}
-    //             render={({ field: { onChange, onBlur, value } }) => (
-    //               <Input
-    //                 placeholder="xxxxx-xxxxxxx-x"
-    //                 value={value}
-    //                 onChange={onChange}
-    //                 onBlur={onBlur}
-    //               />
-    //             )}
-    //             name="cnic"
-    //           />
-    //           {errors.cnic && (
-    //             <Text className="text-red-500">This is required.</Text>
-    //           )}
-    //         </View>
-    //         <View className="mt-3 space-y-1">
-    //           <Text className="text-sm font-InterMedium text-text-gray">
-    //             Enter Account No
-    //           </Text>
-    //           <Controller
-    //             control={control}
-    //             rules={{
-    //               required: true,
-    //             }}
-    //             render={({ field: { onChange, onBlur, value } }) => (
-    //               <Input
-    //                 placeholder="PK36SCBL0000001123456702"
-    //                 value={value}
-    //                 onChange={onChange}
-    //                 onBlur={onBlur}
-    //               />
-    //             )}
-    //             name="accountNumber"
-    //           />
-    //           {errors.accountNumber && (
-    //             <Text className="text-red-500">This is required.</Text>
-    //           )}
-    //         </View>
-    //         <View style={{ margin: 8 }}>
-    //           <CustomButton Text={"Next"} onPress={handleSubmit(handleNext)} />
-    //         </View>
-    //       </View>
-    //     </LinearGradient>
-    //   </ScrollView>
-    // </SafeAreaView>
-
-    <SafeAreaView className="h-full flex-1 bg-white">
+    <SafeAreaView className="flex-1 bg-white">
       <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-        
         <View className="flex-row items-center p-4 mt-2">
           <TouchableOpacity onPress={() => navigation.goBack()}>
             <AntDesign name="arrowleft" size={20} color="black" />
           </TouchableOpacity>
-          <Text className="text-black font-semibold text-lg ml-4 font-InterSemiBold">{source === 'username' ? 'Forgot username' : 'Forgot password'}</Text>
+          <Text className="text-black font-semibold text-lg ml-4">
+            {source === "password" ? "Forgot Password" : "Forgot Username"}
+          </Text>
         </View>
 
         <View className="flex-1 mt-4 px-4">
-          <View className="bg-white rounded-xl w-full shadow-xl shadow-slate-500 px-5 pt-5 pb-4">
+          <View className="bg-white rounded-xl shadow-xl shadow-slate-500 px-5 pt-5 pb-4">
+            {showInputFields && (
+              <>
+                <View className="mb-5">
+                  <Text className="text-sm mb-2 font-InterMedium">CNIC Number*</Text>
+                  <Controller
+                    control={control}
+                    name="cnic"
+                    rules={{ required: "CNIC Number is required" }}
+                    render={({ field: { onChange, onBlur, value } }) => (
+                      <Input
+                        placeholder="Enter your CNIC"
+                        onChange={(text) => {
+                          onChange(text);
+                          clearErrors("cnic");
+                        }}
+                        onBlur={onBlur}
+                        value={value}
+                        editable={isEditable}
+                        className="border border-gray-300 rounded-md px-3 py-2"
+                      />
+                    )}
+                  />
+                  {errors.cnic && (
+                    <Text className="text-red-500">{errors.cnic.message}</Text>
+                  )}
+                </View>
 
-            <View className="mb-5">
-              <Text className="text-sm mb-2 font-InterMedium">CNIC Number*</Text>
-              <Input placeholder="Enter your CNIC" />
+                <View className="mb-6">
+                  <Text className="text-sm mb-2 font-InterMedium">Account Number*</Text>
+                  <Controller
+                    control={control}
+                    name="accountNumber"
+                    rules={{ required: "Account Number is required" }}
+                    render={({ field: { onChange, onBlur, value } }) => (
+                      <Input
+                        placeholder="Enter 14 digits Acc No."
+                        onChange={(text) => {
+                          onChange(text);
+                          clearErrors("accountNumber");
+                        }}
+                        onBlur={onBlur}
+                        value={value}
+                        editable={isEditable}
+                        className="border border-gray-300 rounded-md px-3 py-2"
+                      />
+                    )}
+                  />
+                  {errors.accountNumber && (
+                    <Text className="text-red-500">
+                      {errors.accountNumber.message}
+                    </Text>
+                  )}
+                </View>
+              </>
+            )}
+
+            {/* Fields for displaying server data */}
+            {!showInputFields && serverData && (
+              <>
+                <View className="mb-5">
+                  <Text className="text-sm mb-2 font-InterMedium">Email</Text>
+                  <Input
+                    value={serverData.email || ""}
+                    editable={false} 
+                    className="border border-gray-300 rounded-md px-3 py-2 bg-gray-200"
+                  />
+                </View>
+
+                <View className="mb-5">
+                  <Text className="text-sm mb-2 font-InterMedium">Mobile Number</Text>
+                  <Input
+                    value={serverData.mobileNumber || ""}
+                    editable={false} 
+                    className="border border-gray-300 rounded-md px-3 py-2 bg-gray-200"
+                  />
+                </View>
+              </>
+            )}
+
+            <View className="m-5">
+              <CustomButton
+                Text="Next"
+                onPress={handleSubmit(handleAPIRequest)}
+                className="bg-blue-500 text-white rounded-md px-4 py-2"
+              />
             </View>
-
-            <View className="mb-6">
-              <Text className="text-sm mb-2 font-InterMedium">Account Number*</Text>
-              <Input placeholder="Enter 14 digits Acc No." />
-            </View>
-
-            <View className="px-2 mb-7">
-              <Text className="text-sm font-InterMediu" style={{color: Color.PrimaryWebOrientTxtColor}}>A verification code will be sent to email address linked with this account number.</Text>
-            </View>
-
-            <TouchableOpacity className="py-3 rounded-lg mb-4" style={{backgroundColor: Color.PrimaryWebOrient}} onPress={() => navigation.navigate("OTP", { source: source })}>
-              <Text className="text-white text-base text-center font-medium font-InterSemiBold">Next</Text>
-            </TouchableOpacity>
-
           </View>
         </View>
       </ScrollView>
@@ -204,24 +184,5 @@ const ForgetPassword = ({ route }) => {
     </SafeAreaView>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-  },
-  linearGradient: {
-    width: "100%",
-  },
-  roundedContainer: {
-    backgroundColor: "#fff",
-    height: 0.9 * Dimensions.get("window").height,
-    width: "100%",
-    borderRadius: 20,
-    padding: 20,
-    alignSelf: "center",
-    top: "5%",
-  },
-});
 
 export default ForgetPassword;

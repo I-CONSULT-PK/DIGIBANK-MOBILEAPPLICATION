@@ -4,7 +4,6 @@ import {
   Text,
   View,
   TouchableOpacity,
-  StyleSheet,
   Alert,
 } from "react-native";
 import {
@@ -13,17 +12,13 @@ import {
 } from "react-native-responsive-screen";
 import Input from "../../components/TextInput";
 import InputWithIcon from "../../components/TextInputWithIcon";
-import CustomButton from "../../components/Button";
 import { Controller, useForm } from "react-hook-form";
 import { Color } from "../../GlobalStyles";
-import LoaderComponent from "../../components/LoaderComponent";
 import { useNavigation } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { AppLoaderContext } from "../../components/LoaderHOC";
-
 import { SafeAreaView } from "react-native-safe-area-context";
 import { LinearGradient } from 'expo-linear-gradient';
-import { StatusBar } from 'expo-status-bar';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import axios from "axios";
 import API_BASE_URL from '../../config';
@@ -38,15 +33,13 @@ const Registration = ({ route }) => {
     formState: { errors },
   } = useForm();
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   const handleLoginPress = () => {
-    // Display loader
     showLoader();
     setIsLoading(true);
 
-    // Simulate login process
     setTimeout(async () => {
-      // Hide loader
       hideLoader();
       setIsLoading(false);
 
@@ -102,21 +95,22 @@ const Registration = ({ route }) => {
           email: data.email,
         });
         setMain(false);
+        setError(null);  
       } else {
-        console.log('Message:', message);
-        Alert.alert('Data Not Found', 'Please check your details and try again.');
+        setError(message || 'Data Not Found');
       }
     } catch (error) {
-      console.log('Error logging in:', error);
-      Alert.alert('Login Failed', 'Please check your credentials and try again.');
+      console.log('Error during registration:', error.response?.data || error.message);
+      const serverError = error.response?.data?.message || 'An unexpected error occurred';
+      setError(serverError);
     }
   };
 
   return (
-    <SafeAreaView className="h-full flex-1">
+    <SafeAreaView className="flex-1">
       <LinearGradient
         colors={[Color.PrimaryWebOrient, Color.PrimaryWebOrientLayer2]}
-        style={{ flex: 1 }}
+        className="flex-1"
       >
         <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
           <View className="flex-row items-center p-4 mt-2">
@@ -151,13 +145,13 @@ const Registration = ({ route }) => {
                 </View>
 
                 <View className="mb-5">
-                  <TouchableOpacity className="py-4 rounded-lg mb-4" style={{ backgroundColor: Color.PrimaryWebOrient }}>
+                  <TouchableOpacity className="py-4 rounded-lg mb-4 bg-primary" onPress={handleLoginPress}>
                     <Text className="text-white text-base text-center font-medium font-InterSemiBold">Sign up</Text>
                   </TouchableOpacity>
                   <View className="flex-row justify-center">
                     <Text className="text-sm font-InterRegular">Already have an account? </Text>
                     <TouchableOpacity onPress={() => navigation.navigate("Login")}>
-                      <Text className="text-sm font-InterSemiBold" style={{ color: Color.PrimaryWebOrientTxtColor }}>Login</Text>
+                      <Text className="text-sm font-InterSemiBold text-primary">Login</Text>
                     </TouchableOpacity>
                   </View>
                 </View>
@@ -188,13 +182,13 @@ const Registration = ({ route }) => {
                 </View>
 
                 <View className="mb-5">
-                  <TouchableOpacity className="py-4 rounded-lg mb-4" style={{ backgroundColor: Color.PrimaryWebOrient }} onPress={handleNext}>
+                  <TouchableOpacity className="py-4 rounded-lg mb-4 bg-primary" onPress={handleNext}>
                     <Text className="text-white text-base text-center font-medium font-InterSemiBold">Next</Text>
                   </TouchableOpacity>
                   <View className="flex-row justify-center">
                     <Text className="text-sm font-InterRegular">Already have an account? </Text>
                     <TouchableOpacity onPress={() => navigation.navigate("Login")}>
-                      <Text className="text-sm font-InterSemiBold" style={{ color: Color.PrimaryWebOrientTxtColor }}>Login</Text>
+                      <Text className="text-sm font-InterSemiBold text-primary">Login</Text>
                     </TouchableOpacity>
                   </View>
                 </View>
@@ -225,16 +219,22 @@ const Registration = ({ route }) => {
                 </View>
 
                 <View className="mb-5">
-                  <TouchableOpacity className="py-4 rounded-lg mb-4" style={{ backgroundColor: Color.PrimaryWebOrient }} onPress={handleNext}>
+                  <TouchableOpacity className="py-4 rounded-lg mb-4 bg-primary" onPress={handleNext}>
                     <Text className="text-white text-base text-center font-medium font-InterSemiBold">Next</Text>
                   </TouchableOpacity>
                   <View className="flex-row justify-center">
                     <Text className="text-sm font-InterRegular">Already have an account? </Text>
                     <TouchableOpacity onPress={() => navigation.navigate("Login")}>
-                      <Text className="text-sm font-InterSemiBold" style={{ color: Color.PrimaryWebOrientTxtColor }}>Login</Text>
+                      <Text className="text-sm font-InterSemiBold text-primary">Login</Text>
                     </TouchableOpacity>
                   </View>
                 </View>
+              </View>
+            )}
+
+            {error && (
+              <View className="absolute bottom-0 left-0 right-0 bg-red-100 p-4 items-center">
+                <Text className="text-red-800 text-sm text-center">{error}</Text>
               </View>
             )}
           </View>
