@@ -17,12 +17,12 @@ export default function Input({
       label={label}
       mode="outlined"
       style={[style]}
-      className="bg-[#F4F5F9] text-[15px] border border-gray-200 rounded-lg"
+      className="bg-[#F4F5F9] text-[15px] border border-gray-200 rounded-lg pr-1"
       placeholder={placeholder}
       activeOutlineColor="#A5A7A8"
       placeholderTextColor={"#A5A7A8"}
       theme={{
-        fonts: { bodyLarge: { fontFamily: "InterMedium"} },
+        fonts: { bodyLarge: { fontFamily: "InterRegular"} },
         roundness: 10,
         colors: {
           outline: "#F4F5F9",

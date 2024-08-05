@@ -23,9 +23,11 @@ import { AppLoaderContext } from "../../components/LoaderHOC";
 
 import { SafeAreaView } from "react-native-safe-area-context";
 import { LinearGradient } from 'expo-linear-gradient';
+import { StatusBar } from 'expo-status-bar';
 import AntDesign from '@expo/vector-icons/AntDesign';
+import axios from "axios";
 
-const Registration = () => {
+const Registration = ({ route }) => {
   const navigation = useNavigation();
   const { showLoader, hideLoader } = useContext(AppLoaderContext);
 
@@ -113,7 +115,52 @@ const Registration = () => {
     }, 5000);
   };
 
+  // --------------------------------------
+
+  const { source } = route.params || {};
+
   const [main, setMain] = useState(true);
+  const [initialForm, setInitialForm] = useState({
+    cnic: '',
+    mobile: '',
+    accountNumber: '',
+  });
+  const [returnedData, setReturnedData] = useState({
+    firstName: '',
+    lastName: '',
+    email: '',
+  });
+
+  const handleChange = (name, value) => {
+    setInitialForm({
+      ...initialForm,
+      [name]: value,
+    });
+  };
+
+  const handleNext = async () => {
+    try {
+      // const response = await axios.post(`${API_BASE_URL.SITE}/v1/customer/register`, {
+      //   cnic: initialForm.cnic,
+      //   mobile: initialForm.mobile,
+      //   accountNumber: initialForm.accountNumber,
+      // });
+
+      // const { firstName, lastName, email, message } = response.data;
+
+      // setReturnedData({
+      //   firstName,
+      //   lastName,
+      //   email,
+      // });
+
+      // console.log('Message:', message);
+      setMain(false);
+    } catch (error) {
+      console.log('Error during registration:', error);
+      Alert.alert('Invalid Details', 'Please check your details and try again.');
+    }
+  };
 
   return (
     // <TouchableWithoutFeedback>
@@ -385,91 +432,135 @@ const Registration = () => {
     //   </View>
     // </TouchableWithoutFeedback>
 
-    <SafeAreaView className="flex-1 h-full">
+    <SafeAreaView className="h-full flex-1">
       <LinearGradient
-        colors={['#1DBBD8', '#8EEDFF']}
+        colors={[Color.PrimaryWebOrient, Color.PrimaryWebOrientLayer2]}
         style={{ flex: 1 }}
       >
-        <ScrollView contentContainerStyle={{ flex: 1 }}>
-
-          <View className="w-full flex flex-row justify-start items-center pl-5 mt-4">
+        <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+          <View className="flex-row items-center p-4 mt-2">
             <TouchableOpacity onPress={() => {
               setMain(true);
-              main === true && navigation.goBack();
+              main && navigation.goBack();
             }}>
               <AntDesign name="arrowleft" size={20} color="white" />
             </TouchableOpacity>
-            <Text className="text-white font-InterMedium text-base ml-4">Sign-Up</Text>
+            <Text className="text-white text-lg font-semibold ml-4 font-InterSemiBold">Register yourself</Text>
           </View>
 
-          <View className="w-full h-full bg-white mt-5 rounded-t-3xl">
+          <View className="flex-1 bg-white mt-2 rounded-t-[30px] px-7 pt-7 shadow-2xl">
+            {source === 'OTP' ? (
+              <View className="flex-1 justify-between">
+                <View>
+                  <View className="mb-8 w-[80%]">
+                    <Text className="text-2xl font-bold font-InterBold">Get started with your account!</Text>
+                  </View>
 
-            {main ? (<View className="flex flex-col justify-between h-[75%]">
-              <View>
-                <View className="pl-12 pr-32 py-10">
-                  <Text className="text-2xl font-InterBold">Get started with your account!</Text>
-                </View>
-
-                <View className="px-10">
                   <View>
-                    <Text className="text-sm font-InterRegular mb-2">First Name*</Text>
-                    <Input placeholder="Enter your first name" />
-                  </View>
-
-                  <View className="mt-5">
-                    <Text className="text-sm font-InterRegular mb-2">Last Name*</Text>
-                    <Input placeholder="Enter your last name" />
-                  </View>
-
-                  <View className="mt-5">
-                    <Text className="text-sm font-InterRegular mb-2">Email Address*</Text>
-                    <Input placeholder="Enter your email" />
-                  </View>
-                </View>
-              </View>
-
-              <View className="px-10">
-                <TouchableOpacity className="py-3 px-12 bg-[#1DBBD8] rounded-lg" onPress={() => setMain(false)}>
-                  <Text className="text-base text-center font-InterMedium text-white">Next</Text>
-                </TouchableOpacity>
-              </View>
-            </View>) : (
-                <View className="flex flex-col justify-between h-[75%]">
-                  <View>
-                    <View className="pl-12 pr-32 py-10">
-                      <Text className="text-2xl font-InterBold">Get started with your account!</Text>
+                    <View className="mb-5">
+                      <Text className="text-sm mb-2 font-InterMedium">User Name*</Text>
+                      <Input placeholder="Enter your username" />
                     </View>
 
-                    <View className="px-10">
-                      <View>
-                        <Text className="text-sm font-InterRegular mb-2">CNIC Number*</Text>
-                        <Input placeholder="Enter your CNIC" />
-                      </View>
-
-                      <View className="mt-5">
-                        <Text className="text-sm font-InterRegular mb-2">Mobile Number*</Text>
-                        <Input placeholder="Enter your mobile number" />
-                      </View>
-
-                      <View className="mt-5">
-                        <Text className="text-sm font-InterRegular mb-2">Account Number*</Text>
-                        <Input placeholder="Enter 14 digits Acc No." />
-                      </View>
+                    <View className="mb-5">
+                      <Text className="text-sm mb-2 font-InterMedium">Password*</Text>
+                      <InputWithIcon placeholder="Enter your password" isPassword />
                     </View>
                   </View>
+                </View>
 
-                  <View className="px-10">
-                    <TouchableOpacity className="py-3 px-12 bg-[#1DBBD8] rounded-lg">
-                      <Text className="text-base text-center font-InterMedium text-white">Sign Up</Text>
+                <View className="mb-5">
+                  <TouchableOpacity className="py-4 rounded-lg mb-4" style={{ backgroundColor: Color.PrimaryWebOrient }}>
+                    <Text className="text-white text-base text-center font-medium font-InterSemiBold">Sign up</Text>
+                  </TouchableOpacity>
+                  <View className="flex-row justify-center">
+                    <Text className="text-sm font-InterRegular">Already have an account? </Text>
+                    <TouchableOpacity onPress={() => navigation.navigate("Login")}>
+                      <Text className="text-sm font-InterSemiBold" style={{ color: Color.PrimaryWebOrientTxtColor }}>Login</Text>
                     </TouchableOpacity>
                   </View>
                 </View>
-              )}
+              </View>
+            ) : main ? (
+              <View className="flex-1 justify-between">
+                <View>
+                  <View className="mb-8 w-[80%]">
+                    <Text className="text-2xl font-bold font-InterBold">Get started with your account!</Text>
+                  </View>
 
+                  <View>
+                    <View className="mb-5">
+                      <Text className="text-sm mb-2 font-InterMedium">CNIC Number*</Text>
+                      <Input placeholder="Enter your CNIC" value={initialForm.cnic} onChange={(text) => handleChange('cnic', text)} />
+                    </View>
+
+                    <View className="mb-5">
+                      <Text className="text-sm mb-2 font-InterMedium">Mobile Number*</Text>
+                      <Input placeholder="Enter your mobile number" value={initialForm.mobile} onChange={(text) => handleChange('mobile', text)} />
+                    </View>
+
+                    <View className="mb-5">
+                      <Text className="text-sm mb-2 font-InterMedium">Account Number*</Text>
+                      <Input placeholder="Enter 14 digits Acc No." value={initialForm.accountNumber} onChange={(text) => handleChange('accountNumber', text)} />
+                    </View>
+                  </View>
+                </View>
+
+                <View className="mb-5">
+                  <TouchableOpacity className="py-4 rounded-lg mb-4" style={{ backgroundColor: Color.PrimaryWebOrient }} onPress={handleNext}>
+                    <Text className="text-white text-base text-center font-medium font-InterSemiBold">Next</Text>
+                  </TouchableOpacity>
+                  <View className="flex-row justify-center">
+                    <Text className="text-sm font-InterRegular">Already have an account? </Text>
+                    <TouchableOpacity onPress={() => navigation.navigate("Login")}>
+                      <Text className="text-sm font-InterSemiBold" style={{ color: Color.PrimaryWebOrientTxtColor }}>Login</Text>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              </View>
+            ) : (
+              <View className="flex-1 justify-between">
+                <View>
+                  <View className="mb-8 w-[80%]">
+                    <Text className="text-2xl font-bold font-InterBold">Get started with your account!</Text>
+                  </View>
+
+                  <View>
+                    <View className="mb-5">
+                      <Text className="text-sm mb-2 font-InterMedium">First Name*</Text>
+                      <Input placeholder="Enter your first name" value={returnedData.firstName} />
+                    </View>
+
+                    <View className="mb-5">
+                      <Text className="text-sm mb-2 font-InterMedium">Last Name*</Text>
+                      <Input placeholder="Enter your last name" value={returnedData.lastName} />
+                    </View>
+
+                    <View className="mb-5">
+                      <Text className="text-sm mb-2 font-InterMedium">Email Address*</Text>
+                      <Input placeholder="Enter your email" value={returnedData.email} />
+                    </View>
+                  </View>
+                </View>
+
+                <View className="mb-5">
+                  <TouchableOpacity className="py-4 rounded-lg mb-4" style={{ backgroundColor: Color.PrimaryWebOrient }} onPress={() => navigation.navigate('OTP', { source: 'registration' })}>
+                    <Text className="text-white text-base text-center font-medium font-InterSemiBold">Next</Text>
+                  </TouchableOpacity>
+                  <View className="flex-row justify-center">
+                    <Text className="text-sm font-InterRegular">Already have an account? </Text>
+                    <TouchableOpacity onPress={() => navigation.navigate("Login")}>
+                      <Text className="text-sm font-InterSemiBold" style={{ color: Color.PrimaryWebOrientTxtColor }}>Login</Text>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              </View>
+            )}
           </View>
-
         </ScrollView>
       </LinearGradient>
+
+      <StatusBar backgroundColor={Color.PrimaryWebOrient} style="light" />
     </SafeAreaView>
   );
 };
