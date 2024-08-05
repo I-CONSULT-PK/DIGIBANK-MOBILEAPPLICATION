@@ -8,7 +8,9 @@ import {
   StyleSheet,
   View,
   Alert,
-  TextInput
+  TextInput,
+  Image,
+  KeyboardAvoidingView,
 } from "react-native";
 import {
   widthPercentageToDP as wp,
@@ -25,7 +27,10 @@ import PinCode from "./PinCode";
 
 import { SafeAreaView } from "react-native-safe-area-context";
 import { LinearGradient } from 'expo-linear-gradient';
+import { StatusBar } from 'expo-status-bar';
 import AntDesign from '@expo/vector-icons/AntDesign';
+import axios from 'axios';
+import API_BASE_URL from '../../config';
 
 const Login = ({ navigation }) => {
   const [selectedOption, setSelectedOption] = useState("mobile");
@@ -35,52 +40,124 @@ const Login = ({ navigation }) => {
   const [password, setPassword] = useState("");
   const { showLoader, hideLoader } = useContext(AppLoaderContext);
   const [pinCodeModalVisible, setPinCodeModalVisible] = useState(false);
-  const handleLogin = async () => {
-    // // New Work
-    // // Validate email and password
-    // if (!emailorUsername || !password) {
-    //   Alert.alert("Validation Error", "Please enter both email and password");
-    //   return;
-    // }
+  // const handleLogin = async () => {
+  //   // // New Work
+  //   // // Validate email and password
+  //   // if (!emailorUsername || !password) {
+  //   //   Alert.alert("Validation Error", "Please enter both email and password");
+  //   //   return;
+  //   // }
 
-    // try {
-    //   const apiUrl = "http://192.168.0.196:9096/v1/customer/login";
-    //   showLoader();
-    //   const response = await fetch(apiUrl, {
-    //     method: "POST",
-    //     headers: {
-    //       "Content-Type": "application/json",
-    //     },
-    //     body: JSON.stringify({
-    //       emailorUsername,
-    //       password,
-    //     }),
-    //   });
+  //   // try {
+  //   //   const apiUrl = "http://192.168.0.196:9096/v1/customer/login";
+  //   //   showLoader();
+  //   //   const response = await fetch(apiUrl, {
+  //   //     method: "POST",
+  //   //     headers: {
+  //   //       "Content-Type": "application/json",
+  //   //     },
+  //   //     body: JSON.stringify({
+  //   //       emailorUsername,
+  //   //       password,
+  //   //     }),
+  //   //   });
 
-    //   const data = await response.json();
+  //   //   const data = await response.json();
 
-    //   if (response.ok && data.success) {
-    //     // Successful login
-    //     console.log("Login successful", data);
+  //   //   if (response.ok && data.success) {
+  //   //     // Successful login
+  //   //     console.log("Login successful", data);
 
-    //     // Navigate to the next screen
-    // navigation.navigate("OTP");
-    //   } else {
-    //     // Failed login, display error message
-    //     Alert.alert(
-    //       "Login Failed",
-    //       data.message || "Invalid email or password"
-    //     );
-    //   }
-    // } catch (error) {
-    //   console.error("Login error", error.message);
-    //   Alert.alert("Error", "An error occurred. Please try again later.");
-    // } finally {
-    //   // Hide loader
-    //   hideLoader();
-    // }
-    setPinCodeModalVisible(true);
+  //   //     // Navigate to the next screen
+  //   // navigation.navigate("OTP");
+  //   //   } else {
+  //   //     // Failed login, display error message
+  //   //     Alert.alert(
+  //   //       "Login Failed",
+  //   //       data.message || "Invalid email or password"
+  //   //     );
+  //   //   }
+  //   // } catch (error) {
+  //   //   console.error("Login error", error.message);
+  //   //   Alert.alert("Error", "An error occurred. Please try again later.");
+  //   // } finally {
+  //   //   // Hide loader
+  //   //   hideLoader();
+  //   // }
+  //   setPinCodeModalVisible(true);
+  // };
+
+  // --------------------------------------------------
+
+  const [form, setForm] = useState({ username: '', password: '' });
+
+  const handleChange = (name, value) => {
+    setForm({
+      ...form,
+      [name]: value,
+    });
   };
+
+  const handleLogin = async () => {
+    const loginData = {
+      emailorUsername: form.username,
+      password: form.password,
+      imageVerificationId: 3
+    };
+      const dto = await axios.post(`${API_BASE_URL.IE}/v1/customer/login`, loginData);
+      const { message, data } = dto.data;
+
+      if (dto && dto.data && dto.success) {
+        navigation.navigate('Home');
+      }
+      else {
+        if (dto && dto.data && dto.data.errors && dto.data.errors.length > 0) {
+          Alert.alert(dto.data.errors, error);
+        }
+        else {
+          if (dto && dto.message) {
+            Alert.alert(dto.message, error);
+          }
+          else {
+            Alert.alert("Some Thing Wents Wrong", dto.error);
+          }
+        }
+      }
+
+
+      // if (response && response.message) {
+      //   Alert.alert(response.message, error);
+      // }
+      // else if (response && response.erroObject) {
+
+      // }
+
+      // if (message === 'Invalid Password or Security Image') {
+      //   console.log('Message:', message);
+      //   Alert.alert('Login Failed', error);
+      // }
+      // else {
+      //   console.log('Message:', message);
+      //   console.log('Data:', data);
+      //   navigation.navigate('Home')
+      // }
+  };
+
+  const securityImages1 = [
+    require('../../assets/security-img-1.png'),
+    require('../../assets/security-img-2.png'),
+    require('../../assets/security-img-3.png'),
+    require('../../assets/security-img-4.png'),
+    require('../../assets/security-img-5.png'),
+  ];
+
+  const securityImages2 = [
+    require('../../assets/security-img-6.png'),
+    require('../../assets/security-img-7.png'),
+    require('../../assets/security-img-8.png'),
+    require('../../assets/security-img-9.png'),
+    require('../../assets/security-img-10.png'),
+  ];
 
   return (
     // <ScrollView style={{ backgroundColor: "white" }}>
@@ -185,64 +262,105 @@ const Login = ({ navigation }) => {
     //   </View>
     // </ScrollView>
 
-    <SafeAreaView className="flex-1 h-full">
+    <SafeAreaView className="h-full flex-1">
       <LinearGradient
-        colors={['#1DBBD8', '#8EEDFF']}
+        colors={[Color.PrimaryWebOrient, Color.PrimaryWebOrientLayer2]}
         style={{ flex: 1 }}
       >
-        <ScrollView contentContainerStyle={{ height: "100%" }}>
+        <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
 
-          <View className="w-full flex flex-row justify-start items-center pl-5 mt-4">
+          <View className="flex-row items-center p-4 mt-2">
             <TouchableOpacity onPress={() => navigation.goBack()}>
               <AntDesign name="arrowleft" size={20} color="white" />
             </TouchableOpacity>
-            <Text className="text-white font-InterMedium text-base ml-4">Login</Text>
+            <Text className="text-white font-semibold text-lg ml-4 font-InterSemiBold">Login</Text>
           </View>
 
-          <View className="w-full h-full bg-white mt-5 rounded-t-3xl">
-
-            <View className="flex flex-col justify-between h-[80%]">
+          <View className="flex-1 bg-white mt-2 rounded-t-[30px] px-7 pt-7 shadow-2xl">
+            <View className="flex-1 justify-between">
               <View>
-                <View className="pl-12 pr-32 py-10">
-                  <Text className="text-2xl font-InterBold">Get started with your account!</Text>
+                <View className="mb-8 w-[80%]">
+                  <Text className="text-2xl font-bold leading-8 font-InterBold">Get started with DigiBank!</Text>
                 </View>
 
-                <View className="px-10">
+                <View>
                   <View>
-                    <Text className="text-sm font-InterRegular mb-2">User Name*</Text>
-                    <Input placeholder="Enter your username" />
-                    <View className="flex flex-row justify-end">
-                      <TouchableOpacity><Text className="text-right mt-3 text-xs text-[#1DBBD8] underline">Forgot Username?</Text></TouchableOpacity>
+                    <Text className="text-sm mb-2 font-InterMedium">User Name*</Text>
+                    <Input placeholder="Enter your username" value={form.username} onChange={(text) => handleChange('username', text)} />
+                    <View className="items-end mt-2">
+                      <TouchableOpacity onPress={() => navigation.navigate('ForgetPassword', { source: 'username' })}>
+                        <Text className="text-xs underline font-InterSemiBold" style={{ color: Color.PrimaryWebOrientTxtColor }}>Forgot Username?</Text>
+                      </TouchableOpacity>
                     </View>
                   </View>
 
                   <View className="mt-1">
-                    <Text className="text-sm font-InterRegular mb-2">Password*</Text>
-                    <Input placeholder="Enter your password" />
-                    <View className="flex flex-row justify-end">
-                      <TouchableOpacity><Text className="text-right mt-3 text-xs text-[#1DBBD8] underline">Forgot Password?</Text></TouchableOpacity>
+                    <Text className="text-sm mb-2 font-InterMedium">Password*</Text>
+                    <InputWithIcon placeholder="Enter your password" isPassword value={form.password} onChange={(text) => handleChange('password', text)} />
+                    <View className="items-end mt-2">
+                      <TouchableOpacity onPress={() => navigation.navigate('ForgetPassword', { source: 'password' })}>
+                        <Text className="text-xs underline font-InterSemiBold" style={{ color: Color.PrimaryWebOrientTxtColor }}>Forgot Password?</Text>
+                      </TouchableOpacity>
                     </View>
                   </View>
                 </View>
               </View>
 
-              <View className="px-10">
-                <TouchableOpacity className="py-3 px-12 bg-[#1DBBD8] rounded-lg" onPress={() => navigation.navigate("Home")}>
-                  <Text className="text-base text-center font-InterMedium text-white">Login</Text>
+              {/* -----| Security Image Start |----- */}
+
+              {/* <View className="-top-2">
+                  <Text className="text-center font-medium text-sm mb-4 font-InterMedium">Select Security Image</Text>
+
+                  <View className="flex-row justify-around items-center">
+                    {securityImages1.map((image, index) => (
+                      <TouchableOpacity
+                        key={index}
+                        className="p-3 rounded shadow-md shadow-slate-600 justify-center items-center bg-white"
+                      >
+                        <Image
+                          source={image}
+                          resizeMode="contain"
+                          className="w-6 h-6"
+                        />
+                      </TouchableOpacity>
+                    ))}
+                  </View>
+
+                  <View className="flex-row justify-around items-center mt-3.5">
+                    {securityImages2.map((image, index) => (
+                      <TouchableOpacity
+                        key={index}
+                        className="p-3 rounded shadow-md shadow-slate-600 justify-center items-center bg-white"
+                      >
+                        <Image
+                          source={image}
+                          resizeMode="contain"
+                          className="w-6 h-6"
+                        />
+                      </TouchableOpacity>
+                    ))}
+                  </View>
+                </View> */}
+
+              {/* -----| Security Image End |----- */}
+
+              <View className="mb-5">
+                <TouchableOpacity className="py-4 rounded-lg mb-4" style={{ backgroundColor: Color.PrimaryWebOrient }} onPress={handleLogin}>
+                  <Text className="text-white text-base text-center font-medium font-InterSemiBold">Login</Text>
                 </TouchableOpacity>
-                <View className="flex-row justify-center mt-3">
-                  <Text className="text-center font-InterRegular">Don't have an account? </Text>
+                <View className="flex-row justify-center">
+                  <Text className="text-sm font-InterRegular">Don't have an account? </Text>
                   <TouchableOpacity onPress={() => navigation.navigate("SignUp")}>
-                    <Text className="text-blue-500 font-InterRegular">Sign up</Text>
+                    <Text className="text-sm font-InterSemiBold" style={{ color: Color.PrimaryWebOrientTxtColor }}>Sign up</Text>
                   </TouchableOpacity>
                 </View>
               </View>
             </View>
-
           </View>
-
         </ScrollView>
       </LinearGradient>
+
+      <StatusBar backgroundColor={Color.PrimaryWebOrient} style="light" />
     </SafeAreaView>
   );
 };
