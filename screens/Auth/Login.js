@@ -11,6 +11,7 @@ import {
   TextInput,
   Image,
   KeyboardAvoidingView,
+  Keyboard
 } from "react-native";
 import {
   widthPercentageToDP as wp,
@@ -27,7 +28,11 @@ import PinCode from "./PinCode";
 
 import { SafeAreaView } from "react-native-safe-area-context";
 import { LinearGradient } from 'expo-linear-gradient';
+import { StatusBar } from 'expo-status-bar';
 import AntDesign from '@expo/vector-icons/AntDesign';
+import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import API_BASE_URL from '../../config';
 
 const Login = ({ navigation }) => {
   const [selectedOption, setSelectedOption] = useState("mobile");
@@ -37,51 +42,117 @@ const Login = ({ navigation }) => {
   const [password, setPassword] = useState("");
   const { showLoader, hideLoader } = useContext(AppLoaderContext);
   const [pinCodeModalVisible, setPinCodeModalVisible] = useState(false);
+  // const handleLogin = async () => {
+  //   // // New Work
+  //   // // Validate email and password
+  //   // if (!emailorUsername || !password) {
+  //   //   Alert.alert("Validation Error", "Please enter both email and password");
+  //   //   return;
+  //   // }
+
+  //   // try {
+  //   //   const apiUrl = "http://192.168.0.196:9096/v1/customer/login";
+  //   //   showLoader();
+  //   //   const response = await fetch(apiUrl, {
+  //   //     method: "POST",
+  //   //     headers: {
+  //   //       "Content-Type": "application/json",
+  //   //     },
+  //   //     body: JSON.stringify({
+  //   //       emailorUsername,
+  //   //       password,
+  //   //     }),
+  //   //   });
+
+  //   //   const data = await response.json();
+
+  //   //   if (response.ok && data.success) {
+  //   //     // Successful login
+  //   //     console.log("Login successful", data);
+
+  //   //     // Navigate to the next screen
+  //   // navigation.navigate("OTP");
+  //   //   } else {
+  //   //     // Failed login, display error message
+  //   //     Alert.alert(
+  //   //       "Login Failed",
+  //   //       data.message || "Invalid email or password"
+  //   //     );
+  //   //   }
+  //   // } catch (error) {
+  //   //   console.error("Login error", error.message);
+  //   //   Alert.alert("Error", "An error occurred. Please try again later.");
+  //   // } finally {
+  //   //   // Hide loader
+  //   //   hideLoader();
+  //   // }
+  //   setPinCodeModalVisible(true);
+  // };
+
+  // --------------------------------------------------
+
+  const [form, setForm] = useState({ username: '', password: '' });
+
+  const handleChange = (name, value) => {
+    setForm({
+      ...form,
+      [name]: value,
+    });
+  };
+
   const handleLogin = async () => {
-    // // New Work
-    // // Validate email and password
-    // if (!emailorUsername || !password) {
-    //   Alert.alert("Validation Error", "Please enter both email and password");
-    //   return;
-    // }
+    if (form.username === '' || form.password === '') {
+      Alert.alert('Error', 'Username and password can not be null')
+    }
+    else {
+      const loginData = {
+        emailorUsername: form.username,
+        password: form.password
+      };
 
-    // try {
-    //   const apiUrl = "http://192.168.0.196:9096/v1/customer/login";
-    //   showLoader();
-    //   const response = await fetch(apiUrl, {
-    //     method: "POST",
-    //     headers: {
-    //       "Content-Type": "application/json",
-    //     },
-    //     body: JSON.stringify({
-    //       emailorUsername,
-    //       password,
-    //     }),
-    //   });
+      try {
+        const response = await axios.post(`${API_BASE_URL}/v1/customer/login`, loginData);
+        const dto = response.data;
 
-    //   const data = await response.json();
+        if (dto && dto.success && dto.data && dto.data.customerId) {
+          const customerId = dto.data.customerId.toString();
+          const token = dto.data.token.toString();
+          const expirationTime = dto.data.expirationTime.toString();
 
-    //   if (response.ok && data.success) {
-    //     // Successful login
-    //     console.log("Login successful", data);
+          await AsyncStorage.setItem('customerId', customerId);
+          await AsyncStorage.setItem('token', token);
+          await AsyncStorage.setItem('expirationTime', expirationTime);
 
-    //     // Navigate to the next screen
-    // navigation.navigate("OTP");
-    //   } else {
-    //     // Failed login, display error message
-    //     Alert.alert(
-    //       "Login Failed",
-    //       data.message || "Invalid email or password"
-    //     );
-    //   }
-    // } catch (error) {
-    //   console.error("Login error", error.message);
-    //   Alert.alert("Error", "An error occurred. Please try again later.");
-    // } finally {
-    //   // Hide loader
-    //   hideLoader();
-    // }
-    setPinCodeModalVisible(true);
+          navigation.navigate('Home');
+        }
+        else {
+          if (dto.message) {
+            Alert.alert('Error', dto.message);
+          }
+          else if (dto.errors && dto.errors.length > 0) {
+            Alert.alert('Error', dto.errors);
+          }
+        }
+      } catch (error) {
+        if (error.response) {
+          const statusCode = error.response.status;
+
+          if (statusCode === 404) {
+            Alert.alert('Error', 'Server timed out. Try again later!');
+          } else if (statusCode === 503) {
+            Alert.alert('Error', 'Service unavailable. Please try again later.');
+          } else if (statusCode === 400) {
+            Alert.alert('Error', error.response.data.data.errors[0]);
+          } else {
+            Alert.alert('Error', error.message);
+          }
+        } else if (error.request) {
+          Alert.alert('Error', 'No response from the server. Please check your connection.');
+        } else {
+          Alert.alert('Error', error.message);
+        }
+      }
+    }
   };
 
   const securityImages1 = [
@@ -101,108 +172,7 @@ const Login = ({ navigation }) => {
   ];
 
   return (
-    // <ScrollView style={{ backgroundColor: "white" }}>
-    //   <View className="justify-center items-center py-5">
-    //     <MainImage style={{ width: sw - 9, height: sh - 550 }} />
-    //     <Text className="font-InterBold text-3xl">Welcome</Text>
-    //     <Text className="font-InterMedium text-center text-text-gray text-sm">
-    //       to the future bank where you can{" "}
-    //       <Text style={{ color: Color.PrimaryWebOrientTxtColor }}>
-    //         Add, Manage & Track
-    //       </Text>{" "}
-    //       your all financial account only in one app
-    //     </Text>
-    //     <Text className="text-text-gray font-InterMedium text-center text-base mt-4">
-    //       Select login options
-    //     </Text>
-    //     <View className="flex-row justify-between mt-6">
-    //       <TouchableOpacity>
-    //         <View className="flex-row justify-between items-center">
-    //           {/* <View style={[styles.circleContainer, { marginRight: 10 }]}>
-    //             <Entypo
-    //               name="mail"
-    //               size={40}
-    //               style={{
-    //                 color: Color.PrimaryWebOrient,
-    //               }}
-    //             />
-    //           </View> */}
-    //           <TouchableOpacity
-    //             onPress={() =>
-    //               Alert.alert(
-    //                 "Popup",
-    //                 "Place your finger on your phone fingerprint sensor"
-    //               )
-    //             }
-    //           >
-    //             <View
-    //               className="rounded-full w-16 h-16 bg-gray-300 flex justify-center items-center"
-    //               style={{ backgroundColor: "#f4f5f9" }}
-    //             >
-    //               <Entypo
-    //                 name="fingerprint"
-    //                 size={40}
-    //                 style={{
-    //                   color: Color.PrimaryWebOrient,
-    //                 }}
-    //               />
-    //             </View>
-    //           </TouchableOpacity>
-    //         </View>
-    //       </TouchableOpacity>
-    //     </View>
-    //   </View>
-    //   <View className="m-3">
-    //     <View className="mb-5">
-    //       <Input
-    //         placeholder="Email or UserName"
-    //         keyboardType="email-address"
-    //         value={emailorUsername}
-    //         onChange={(text) => setEmail(text)}
-    //       />
-    //     </View>
-    //     <View className="mb-2">
-    //       <InputWithIcon
-    //         isPassword={true}
-    //         value={password}
-    //         onChange={(text) => setPassword(text)}
-    //         placeholder="Password"
-    //       />
-    //     </View>
-    //   </View>
-    //   <CustomButton className="m-2" Text={"Login"} onPress={handleLogin} />
-    //   <PinCode
-    //     visible={pinCodeModalVisible}
-    //     onClose={() => setPinCodeModalVisible(false)}
-    //   />
-
-    //   <View className="m-3 mt-2  flex justify-center items-center">
-    //     <Text
-    //       onPress={() => navigation.navigate("ForgetPassword")}
-    //       style={{
-    //         fontFamily: "InterSemiBold",
-    //         color: Color.PrimaryWebOrientTxtColor,
-    //       }}
-    //     >
-    //       Forget Password?
-    //     </Text>
-    //   </View>
-    //   <View className="items-center">
-    //     <Text className="text-text-gray" style={{ fontFamily: "InterMedium" }}>
-    //       Don’t have an account?{" "}
-    //       <Text
-    //         onPress={() => navigation.navigate("Registration")}
-    //         style={{
-    //           fontFamily: "InterSemiBold",
-    //           color: Color.PrimaryWebOrientTxtColor,
-    //         }}
-    //       >
-    //         Sign up
-    //       </Text>
-    //     </Text>
-    //   </View>
-    // </ScrollView>
-
+    
     <SafeAreaView className="h-full flex-1">
       <LinearGradient
         colors={[Color.PrimaryWebOrient, Color.PrimaryWebOrientLayer2]}
@@ -227,20 +197,20 @@ const Login = ({ navigation }) => {
                 <View>
                   <View>
                     <Text className="text-sm mb-2 font-InterMedium">User Name*</Text>
-                    <Input placeholder="Enter your username" />
+                    <Input placeholder="Enter your username" value={form.username} onChange={(text) => handleChange('username', text)} onSubmitEditing={Keyboard.dismiss} />
                     <View className="items-end mt-2">
-                      <TouchableOpacity onPress={() => navigation.navigate('ForgetPassword', { source: 'username' })}>
-                        <Text className="text-xs underline font-InterSemiBold" style={{color: Color.PrimaryWebOrientTxtColor}}>Forgot Username?</Text>
+                      <TouchableOpacity onPress={() => navigation.navigate('ForgetUserName')}>
+                        <Text className="text-xs underline font-InterSemiBold" style={{ color: Color.PrimaryWebOrientTxtColor }}>Forgot Username?</Text>
                       </TouchableOpacity>
                     </View>
                   </View>
 
-                  <View className="mt-1">
+                  <View className="mt-1 mb-8">
                     <Text className="text-sm mb-2 font-InterMedium">Password*</Text>
-                    <InputWithIcon placeholder="Enter your password" isPassword />
+                    <InputWithIcon placeholder="Enter your password" isPassword value={form.password} onChange={(text) => handleChange('password', text)} onSubmitEditing={Keyboard.dismiss} />
                     <View className="items-end mt-2">
                       <TouchableOpacity onPress={() => navigation.navigate('ForgetPassword', { source: 'password' })}>
-                        <Text className="text-xs underline font-InterSemiBold" style={{color: Color.PrimaryWebOrientTxtColor}}>Forgot Password?</Text>
+                        <Text className="text-xs underline font-InterSemiBold" style={{ color: Color.PrimaryWebOrientTxtColor }}>Forgot Password?</Text>
                       </TouchableOpacity>
                     </View>
                   </View>
@@ -286,13 +256,13 @@ const Login = ({ navigation }) => {
               {/* -----| Security Image End |----- */}
 
               <View className="mb-5">
-                <TouchableOpacity className="py-4 rounded-lg mb-4" style={{backgroundColor: Color.PrimaryWebOrient}} onPress={() => navigation.navigate('Home')}>
+                <TouchableOpacity className="py-4 rounded-lg mb-4" style={{ backgroundColor: Color.PrimaryWebOrient }} onPress={handleLogin}>
                   <Text className="text-white text-base text-center font-medium font-InterSemiBold">Login</Text>
                 </TouchableOpacity>
                 <View className="flex-row justify-center">
                   <Text className="text-sm font-InterRegular">Don't have an account? </Text>
                   <TouchableOpacity onPress={() => navigation.navigate("SignUp")}>
-                    <Text className="text-sm font-InterSemiBold" style={{color: Color.PrimaryWebOrientTxtColor}}>Sign up</Text>
+                    <Text className="text-sm font-InterSemiBold" style={{ color: Color.PrimaryWebOrientTxtColor }}>Sign up</Text>
                   </TouchableOpacity>
                 </View>
               </View>
@@ -300,6 +270,8 @@ const Login = ({ navigation }) => {
           </View>
         </ScrollView>
       </LinearGradient>
+
+      <StatusBar backgroundColor={Color.PrimaryWebOrient} style="light" />
     </SafeAreaView>
   );
 };

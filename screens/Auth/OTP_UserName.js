@@ -13,10 +13,10 @@ import { StatusBar } from "expo-status-bar";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import axios from "axios";
 import { Color } from "../../GlobalStyles";
-
+import API_BASE_URL from "../../config";
 const { width, height } = Dimensions.get("window");
 
-const OTP = ({ navigation, route }) => {
+const OTP_UserName = ({ navigation, route }) => {
   const [otp, setOtp] = useState(["", "", "", "", ""]);
   const [isResendDisabled, setIsResendDisabled] = useState(false);
   const [userEmail, setUserEmail] = useState("");
@@ -62,7 +62,7 @@ const OTP = ({ navigation, route }) => {
       console.log("Create OTP Request Data:", { email, mobileNumber });
 
       const response = await axios.post(
-        "http://192.168.0.153:8080/v1/otp/createOTP",
+        `${API_BASE_URL.IE}/v1/otp/createOTP`,
         {
           email,
           mobileNumber,
@@ -95,41 +95,36 @@ const OTP = ({ navigation, route }) => {
         Alert.alert("Error", "Mobile Number and Email are required");
         return;
       }
-  
+
       setIsLoading(true);
-      const enteredOTP = otp.join(""); 
+      const enteredOTP = otp.join("");
       console.log("Entered OTP:", enteredOTP);
-  
+
       const payload = {
-        mobileNumber: userNumber,   
-        email: userEmail,          
-        emailOtp: enteredOTP,      
+        emailOtp: enteredOTP,
+        email: userEmail,
+        mobileNumber: userNumber,
       };
       console.log("Payload being sent:", JSON.stringify(payload));
-  
+
       const response = await axios.post(
         "http://192.168.0.153:8080/v1/otp/verifyOTP",
         payload,
         {
           headers: {
             'Content-Type': 'application/json',
-          },
+          }
         }
       );
-  
+
       const responseData = response.data;
+      console.log("Verify OTP Response:", responseData);
+
       if (responseData.success) {
-        navigation.navigate("PasswordChange", {
-          cnic: route.params.cnic,
-          accountNumber: route.params.accountNumber,
-          sourceScreen: route.params.sourceScreen,
-        });
+        navigation.navigate("Login");
       } else {
         const errors = responseData.data?.errors || [];
-        Alert.alert(
-          "Error",
-          errors.length ? errors.join(", ") : responseData.message || "Something went wrong during OTP verification"
-        );
+        Alert.alert("Error", errors.join(", ") || responseData.message || "Something went wrong during OTP verification");
       }
     } catch (error) {
       console.error("Error during OTP verification:", error);
@@ -138,13 +133,6 @@ const OTP = ({ navigation, route }) => {
       setIsLoading(false);
     }
   };
-  
-  
-  
-  
-  
-  
-  
 
   return (
     <SafeAreaView className="h-full flex-1 bg-white">
@@ -228,4 +216,4 @@ const OTP = ({ navigation, route }) => {
   );
 };
 
-export default OTP;
+export default OTP_UserName;

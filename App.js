@@ -4,10 +4,11 @@ import HomeScreen from "./screens/Mobile-Banking/HomeScreen";
 import { useFonts } from "expo-font";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import StartSection from "./screens/Auth/StartSection";
 import Login from "./screens/Auth/Login";
 import Registration from "./screens/Auth/Registration";
+import OTP_UserName from "./screens/Auth/OTP_UserName";
 import OTP from "./screens/Auth/OTP";
+import OTP_Signup from "./screens/Auth/OTP_Signup";
 import SplashScreen from "./screens/Auth/SplashScreen";
 import Sidebar from "./screens/Mobile-Banking/Account-Setting/Sidebar";
 import Card from "./screens/Mobile-Banking/Card/Card";
@@ -42,7 +43,23 @@ import NewPassword from "./screens/Auth/NewPassword";
 import MyQRCode from "./components/QR/MyQrCode";
 import Footer from "./components/Footer";
 import OTPverification from "./components/OTPverification";
-
+import ApplyForCard from "./screens/Mobile-Banking/My-Cards/ApplyForCard";
+import NameOnTheCard from "./screens/Mobile-Banking/My-Cards/NameOnTheCard";
+import ApplyCard from "./screens/Mobile-Banking/My-Cards/ApplyCard";
+import CardManagement from "./screens/Mobile-Banking/My-Cards/Card-Management";
+import CongCard from "./screens/Mobile-Banking/My-Cards/CongCard";
+import NewCard from "./screens/Mobile-Banking/My-Cards/NewCard";
+import SelectCards from "./screens/Mobile-Banking/My-Cards/SelectCards";
+import SelectApplyOptionCard from "./screens/Mobile-Banking/My-Cards/SelectApplyOptionCard";
+import SupplementaryCard from "./screens/Mobile-Banking/My-Cards/SupplementaryCard";
+import SupplementaryCardCustomization from "./screens/Mobile-Banking/My-Cards/SupplementaryCardCustomization";
+import SupplementaryCardLimitSplit from "./screens/Mobile-Banking/My-Cards/SupplementaryCardLimitSplit";
+import CashUpCard from "./screens/Mobile-Banking/My-Cards/CashUpCard";
+import CardActivation from "./screens/Mobile-Banking/My-Cards/CardActivation";
+import SetCardPin from "./screens/Mobile-Banking/My-Cards/SetCardPin";
+import CardActivated from "./screens/Mobile-Banking/My-Cards/CardActivated";
+import ForgetUserName from "./screens/Auth/ForgetUserName";
+import StartSection from "./screens/Auth/StartSection"; 
 const Stack = createNativeStackNavigator();
 
 export default function App() {
@@ -57,8 +74,8 @@ export default function App() {
   const Auth = () => {
     return (
       <Stack.Navigator initialRouteName="StartScreen">
-        <Stack.Screen
-          name="Start"
+         <Stack.Screen
+          name="StartScreen"
           component={StartSection}
           options={{ headerShown: false }}
         />
@@ -73,6 +90,11 @@ export default function App() {
           options={{ headerShown: false }}
         />
         <Stack.Screen
+          name="ForgetUserName"
+          component={ForgetUserName}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
           name="NewPassword"
           component={NewPassword}
           options={{ headerShown: false }}
@@ -80,6 +102,16 @@ export default function App() {
         <Stack.Screen
           name="SignUp"
           component={Registration}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="OTP_Signup"
+          component={OTP_Signup}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="OTP_UserName"
+          component={OTP_UserName}
           options={{ headerShown: false }}
         />
         <Stack.Screen
@@ -105,6 +137,61 @@ export default function App() {
         <Stack.Screen
           name="Card"
           component={Card}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="ApplyForCard"
+          component={ApplyForCard}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="CardActivation"
+          component={CardActivation}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="NameOnTheCard"
+          component={NameOnTheCard}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="ApplyCard"
+          component={ApplyCard}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="CardManagement"
+          component={CardManagement}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="CashUpCard"
+          component={CashUpCard}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="CongCard"
+          component={CongCard}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="SelectApplyOptionCard"
+          component={SelectApplyOptionCard}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="SupplementaryCard"
+          component={SupplementaryCard}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="SupplementaryCardCustomization"
+          component={SupplementaryCardCustomization}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="CardActivated"
+          component={CardActivated}
           options={{ headerShown: false }}
         />
         <Stack.Screen
@@ -233,11 +320,11 @@ export default function App() {
           component={Footer}
           options={{ headerShown: false }}
         />
-         <Stack.Screen
-              name="OTPverification"
-              component={OTPverification}
-              options={{ headerShown: false }}
-            />
+        <Stack.Screen
+          name="OTPverification"
+          component={OTPverification}
+          options={{ headerShown: false }}
+        />
       </Stack.Navigator>
     );
   };
@@ -266,6 +353,11 @@ export default function App() {
             <Stack.Screen
               name="ForgetPassword"
               component={ForgetPassword}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="ForgetUserName"
+              component={ForgetUserName}
               options={{ headerShown: false }}
             />
             <Stack.Screen
@@ -373,6 +465,57 @@ export default function App() {
               options={{ headerShown: false }}
             />
             <Stack.Screen
+              name="NewCard"
+              component={NewCard}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="SelectCards"
+              component={SelectCards}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="CashUpCard"
+              component={CashUpCard}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="CongCard"
+              component={CongCard}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="ApplyCard"
+              component={ApplyCard}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="CardManagement"
+              component={CardManagement}
+              options={{ headerShown: false }}
+            />
+
+            <Stack.Screen
+              name="SelectApplyOptionCard"
+              component={SelectApplyOptionCard}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="SupplementaryCard"
+              component={SupplementaryCard}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="SupplementaryCardCustomization"
+              component={SupplementaryCardCustomization}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="SupplementaryCardLimitSplit"
+              component={SupplementaryCardLimitSplit}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
               name="Scanner"
               component={Scanner}
               options={{ headerShown: false }}
@@ -400,6 +543,31 @@ export default function App() {
             <Stack.Screen
               name="Footer"
               component={Footer}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="ApplyForCard"
+              component={ApplyForCard}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="NameOnTheCard"
+              component={NameOnTheCard}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="CardActivation"
+              component={CardActivation}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="SetCardPin"
+              component={SetCardPin}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="CardActivated"
+              component={CardActivated}
               options={{ headerShown: false }}
             />
           </Stack.Navigator>

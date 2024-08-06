@@ -2,7 +2,9 @@ import React from "react";
 import { createStackNavigator } from "@react-navigation/stack";
 import { NavigationContainer } from "@react-navigation/native";
 import HomeScreen from "../../HomeScreen";
+import OTP_Signup from "../OTP_Signup";
 import OTP from "../OTP";
+
 import Login from "../Login";
 import Registration from "../Registration";
 import Sidebar from "../../Sidebar";
@@ -32,6 +34,23 @@ import ForgetPassword from "../ForgetPassword";
 import NewPassword from "../NewPassword";
 import MyQRCode from "../../MyQrCode";
 import OTPverification from "../../../components/OTPverification";
+import ApplyForCard from "../../Mobile-Banking/My-Cards/ApplyForCard";
+import NameOnTheCard from "../../Mobile-Banking/My-Cards/NameOnTheCard";
+import NewCard from "../../Mobile-Banking/My-Cards/NewCard";
+import ApplyCard from "../../Mobile-Banking/My-Cards/ApplyCard";
+import CardManagement from "../../Mobile-Banking/My-Cards/Card-Management";
+import CashUpCard from "../../Mobile-Banking/My-Cards/CashUpCard";
+import CardActivation from "../../Mobile-Banking/My-Cards/CardActivation";
+import SetCardPin from "../../Mobile-Banking/My-Cards/SetCardPin";
+import CardActivated from "../../Mobile-Banking/My-Cards/CardActivated";
+
+import CongCard from "../../Mobile-Banking/My-Cards/CongCard";
+import SelectApplyOptionCard from "../../Mobile-Banking/My-Cards/SelectApplyOptionCard";
+import SupplementaryCard from "../../Mobile-Banking/My-Cards/SupplementaryCard";
+import SupplementaryCardCustomization from "../../Mobile-Banking/My-Cards/SupplementaryCardCustomization";
+import SupplementaryCardLimitSplit from './../../Mobile-Banking/My-Cards/SupplementaryCardLimitSplit';
+import ForgetUserName from "../ForgetUserName";
+import OTP_UserName from "../OTP_UserName";
 const Stack = createStackNavigator();
 
 const AppNavigator = () => {
@@ -40,13 +59,32 @@ const AppNavigator = () => {
       <Stack.Navigator>
         <Stack.Screen name="Login" component={Login} />
         <Stack.Screen name="ForgetPassword" component={ForgetPassword} />
+        <Stack.Screen name="ForgetUserName" component={ForgetUserName} />
         <Stack.Screen name="NewPassword" component={NewPassword} />
         <Stack.Screen name="Registration" component={Registration} />
+        <Stack.Screen name="OTP_Signup" component={OTP_Signup} />
         <Stack.Screen name="OTP" component={OTP} />
+<Stack.Screen name="OTP_UserName" component={OTP_UserName} />
         <Stack.Screen name="EntitySelection" component={EntitySelection} />
         <Stack.Screen name="HomeScreen" component={HomeScreen} />
         <Stack.Screen name="Sidebar" component={Sidebar} />
         <Stack.Screen name="Card" component={Card} />
+        <Stack.Screen name="ApplyForCard" component={ApplyForCard} />
+        <Stack.Screen name="NameOnTheCard" component={NameOnTheCard} />
+        <Stack.Screen name="NewCard" component={NewCard} />
+        <Stack.Screen name="SelectCards" component={SelectCards} />
+        <Stack.Screen name="ApplyCard" component={ApplyCard} />
+        <Stack.Screen name="CardManagement" component={CardManagement} />
+        <Stack.Screen name="CashUpCard" component={CashUpCard} />
+        <Stack.Screen name="CongCard" component={CongCard} />
+        <Stack.Screen name="CardActivation" component={CardActivation} />
+        <Stack.Screen name="SetCardPin" component={SetCardPin} />
+        <Stack.Screen name="CardActivated" component={CardActivated} />
+        <Stack.Screen name="SelectApplyOptionCard" component={SelectApplyOptionCard} />
+        <Stack.Screen name="SupplementaryCard" component={SupplementaryCard} />
+        <Stack.Screen name="SupplementaryCardCustomization" component={SupplementaryCardCustomization} />
+        <Stack.Screen name="SupplementaryCardLimitSplit" component={SupplementaryCardLimitSplit} />
+
         <Stack.Screen name="AccountSetting" component={AccountSetting} />
 
         <Stack.Screen name="NumberChange" component={NameChange} />
@@ -67,16 +105,24 @@ const AppNavigator = () => {
 
         <Stack.Screen name="WalletBeneficiary" component={WalletBeneficiary} />
         <Stack.Screen name="BankBeneficiary" component={BankBeneficiary} />
-        <Stack.Screen name="AddWalletBeneficiary" component={AddWalletBeneficiary} />
-        <Stack.Screen name="AddBankBeneficiary" component={AddBankBeneficiary} />
+        <Stack.Screen
+          name="AddWalletBeneficiary"
+          component={AddWalletBeneficiary}
+        />
+        <Stack.Screen
+          name="AddBankBeneficiary"
+          component={AddBankBeneficiary}
+        />
         {/* <Stack.Screen name="SelectTopUp" component={SelectTopUp} /> */}
         <Stack.Screen name="TopUp" component={TopUp} />
         <Stack.Screen name="Scanner" component={Scanner} />
         <Stack.Screen name="MyQRCode" component={MyQRCode} />
-        <Stack.Screen name="BillPaymentListing" component={BillPaymentListing} />
+        <Stack.Screen
+          name="BillPaymentListing"
+          component={BillPaymentListing}
+        />
         <Stack.Screen name="BillPaymentTopUp" component={BillPaymentTopUp} />
         <Stack.Screen name="OTPverification" component={OTPverification} />
-        
       </Stack.Navigator>
     </NavigationContainer>
   );
