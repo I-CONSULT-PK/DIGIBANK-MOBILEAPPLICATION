@@ -70,9 +70,9 @@ const SplashScreen = ({ navigation }) => {
   return (
 
     <LinearGradient
-    className="flex-1 justify-center items-center"
+      className="flex-1 justify-center items-center"
       colors={[Color.PrimaryWebOrient, Color.PrimaryWebOrientLayer2]}
-      start={[0, -0.439]} 
+      start={[0, -0.439]}
       end={[0, 0.439]}
     >
       <View style={styles.logoContainer}>

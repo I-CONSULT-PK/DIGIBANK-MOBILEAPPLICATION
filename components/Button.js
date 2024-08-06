@@ -59,45 +59,69 @@
 //     justifyContent: 'center',
 //   },
 // });
-import { Button } from "react-native-paper";
-import { Color, } from "../GlobalStyles";
-export default function CustomButton({
-  Text,
-  style,
-  icon,
-  onPress,
-  labelStyle,
-  loading,
+// import { Button } from "react-native-paper";
+// import { Color, } from "../GlobalStyles";
+// export default function CustomButton({
+//   Text,
+//   style,
+//   icon,
+//   onPress,
+//   labelStyle,
+//   loading,
 
-}) {
+// }) {
+//   return (
+//     <Button
+//       loading={loading}
+//       mode="contained"
+//       style={[
+//         {
+//           borderRadius: 10,
+//           height: 48,
+//           justifyContent: "center",
+//           backgroundColor: Color.PrimaryWebOrient,
+//         },
+//         style,
+//       ]}
+//       className='bg-primary'
+//       labelStyle={[
+//         {
+//           color: "#ffffff",
+//           fontFamily: "InterSemiBold",
+//           fontSize: 12,
+//           letterSpacing: -0.5,
+//         },
+//         labelStyle,
+//       ]}
+//       uppercase={false}
+//       icon={icon}
+//       onPress={onPress}
+//     >
+//       {Text}
+//     </Button>
+//   );
+// }
+
+
+// ------------------------------------------------------------------------------------
+
+
+import React from 'react'
+import { TouchableOpacity, Text } from 'react-native'
+
+import { Color } from '../GlobalStyles';
+
+const Button = ({ text, styles, textStyles, width, onPress, loading }) => {
   return (
-    <Button
-      loading={loading}
-      mode="contained"
-      style={[
-        {
-          borderRadius: 10,
-          height: 48,
-          justifyContent: "center",
-          backgroundColor: Color.PrimaryWebOrient,
-        },
-        style,
-      ]}
-      className='bg-primary'
-      labelStyle={[
-        {
-          color: "#ffffff",
-          fontFamily: "InterSemiBold",
-          fontSize: 12,
-          letterSpacing: -0.5,
-        },
-        labelStyle,
-      ]}
-      uppercase={false}
-      icon={icon}
+    <TouchableOpacity
+      className={`py-3.5 rounded-lg ${width || 'w-[100%]'} ${styles} ${loading ? 'opacity-70' : ''}`} 
+      style={{ backgroundColor: Color.PrimaryWebOrient }}
       onPress={onPress}
+      activeOpacity={0.7}
     >
-      {Text}
-    </Button>
-  );
+      <Text className={`text-base ${textStyles || 'text-white'} font-medium text-center font-InterSemiBold`}>{text}</Text>
+    </TouchableOpacity>
+  )
 }
+
+export default Button
