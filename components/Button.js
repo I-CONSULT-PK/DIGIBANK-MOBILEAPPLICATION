@@ -60,8 +60,8 @@
 //   },
 // });
 import React from "react";
+import PropTypes from "prop-types";
 import { TouchableOpacity, Text } from "react-native";
-
 import { Color } from "../GlobalStyles";
 
 const Button = ({ text, styles, textStyles, width, onPress, loading }) => {
@@ -72,6 +72,7 @@ const Button = ({ text, styles, textStyles, width, onPress, loading }) => {
       }`}
       style={{ backgroundColor: Color.PrimaryWebOrient }}
       onPress={onPress}
+      disabled={loading}
     >
       <Text
         className={`text-base ${
@@ -84,4 +85,14 @@ const Button = ({ text, styles, textStyles, width, onPress, loading }) => {
   );
 };
 
+Button.propTypes = {
+  text: PropTypes.string.isRequired,
+  styles: PropTypes.string,
+  textStyles: PropTypes.string,
+  width: PropTypes.string,
+  onPress: PropTypes.func.isRequired,
+  loading: PropTypes.bool,
+};
+
 export default Button;
+

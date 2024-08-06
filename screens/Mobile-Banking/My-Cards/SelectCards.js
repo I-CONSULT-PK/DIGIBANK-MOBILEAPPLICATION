@@ -68,7 +68,7 @@ const SelectCards = () => {
               </View>
               <Icon name="chevron-right" size={20} color="gray" />
             </TouchableOpacity>
-            <TouchableOpacity className="flex-row items-center justify-between bg-white p-4 mb-2 rounded-lg shadow-inner">
+            <TouchableOpacity className="flex-row items-center justify-between bg-white p-4 mb-2 rounded-lg shadow-inner" onPress={() => navigation.navigate("AvailCashonCreditCard")}>
               <View className="flex-row items-center">
                 <Image source={require('../../../assets/card-management.png')}  className="w-6 h-6 mr-3" />
                 <Text className=" text-lg text-black font-InterSemiBold">Easy Cash</Text>
