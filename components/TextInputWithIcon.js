@@ -4,7 +4,7 @@ import { Feather } from "@expo/vector-icons";
 import { TextInput } from "react-native-paper";
 import { Color } from "../GlobalStyles";
 
-const InputWithIcon = ({ isPassword, value, onChange, placeholder, disable, outlineColor, keyboardType }) => {
+const InputWithIcon = ({ isPassword, value, onChange, placeholder, disable, outlineColor, keyboardType, onSubmitEditing }) => {
   const [showPassword, setShowPassword] = useState(false);
 
   const togglePasswordVisibility = () => {
@@ -43,6 +43,7 @@ const InputWithIcon = ({ isPassword, value, onChange, placeholder, disable, outl
         onChangeText={onChange}
         outlineColor={outlineColor}
         keyboardType={keyboardType}
+        onSubmitEditing={onSubmitEditing}
       />
       {isPassword && (
         <TouchableOpacity

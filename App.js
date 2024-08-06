@@ -7,6 +7,8 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Login from "./screens/Auth/Login";
 import Registration from "./screens/Auth/Registration";
 import OTP_UserName from "./screens/Auth/OTP_UserName";
+import OTP from "./screens/Auth/OTP";
+import OTP_Signup from "./screens/Auth/OTP_Signup";
 import SplashScreen from "./screens/Auth/SplashScreen";
 import Sidebar from "./screens/Mobile-Banking/Account-Setting/Sidebar";
 import Card from "./screens/Mobile-Banking/Card/Card";
@@ -51,13 +53,13 @@ import SelectCards from "./screens/Mobile-Banking/My-Cards/SelectCards";
 import SelectApplyOptionCard from "./screens/Mobile-Banking/My-Cards/SelectApplyOptionCard";
 import SupplementaryCard from "./screens/Mobile-Banking/My-Cards/SupplementaryCard";
 import SupplementaryCardCustomization from "./screens/Mobile-Banking/My-Cards/SupplementaryCardCustomization";
-import SupplementaryCardLimitSplit from './screens/Mobile-Banking/My-Cards/SupplementaryCardLimitSplit';
+import SupplementaryCardLimitSplit from "./screens/Mobile-Banking/My-Cards/SupplementaryCardLimitSplit";
 import CashUpCard from "./screens/Mobile-Banking/My-Cards/CashUpCard";
 import CardActivation from "./screens/Mobile-Banking/My-Cards/CardActivation";
 import SetCardPin from "./screens/Mobile-Banking/My-Cards/SetCardPin";
 import CardActivated from "./screens/Mobile-Banking/My-Cards/CardActivated";
 import ForgetUserName from "./screens/Auth/ForgetUserName";
-
+import StartSection from "./screens/Auth/StartSection"; 
 const Stack = createNativeStackNavigator();
 
 export default function App() {
@@ -71,7 +73,12 @@ export default function App() {
 
   const Auth = () => {
     return (
-      <Stack.Navigator initialRouteName="LoginScreen">
+      <Stack.Navigator initialRouteName="StartScreen">
+         <Stack.Screen
+          name="StartScreen"
+          component={StartSection}
+          options={{ headerShown: false }}
+        />
         <Stack.Screen
           name="Login"
           component={Login}
@@ -82,11 +89,11 @@ export default function App() {
           component={ForgetPassword}
           options={{ headerShown: false }}
         />
-         <Stack.Screen
-              name="ForgetUserName"
-              component={ForgetUserName}
-              options={{ headerShown: false }}
-            />
+        <Stack.Screen
+          name="ForgetUserName"
+          component={ForgetUserName}
+          options={{ headerShown: false }}
+        />
         <Stack.Screen
           name="NewPassword"
           component={NewPassword}
@@ -98,8 +105,18 @@ export default function App() {
           options={{ headerShown: false }}
         />
         <Stack.Screen
+          name="OTP_Signup"
+          component={OTP_Signup}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
           name="OTP_UserName"
           component={OTP_UserName}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="OTP"
+          component={OTP}
           options={{ headerShown: false }}
         />
         <Stack.Screen
@@ -338,7 +355,7 @@ export default function App() {
               component={ForgetPassword}
               options={{ headerShown: false }}
             />
-             <Stack.Screen
+            <Stack.Screen
               name="ForgetUserName"
               component={ForgetUserName}
               options={{ headerShown: false }}
@@ -477,13 +494,13 @@ export default function App() {
               component={CardManagement}
               options={{ headerShown: false }}
             />
-            
+
             <Stack.Screen
               name="SelectApplyOptionCard"
               component={SelectApplyOptionCard}
               options={{ headerShown: false }}
             />
-             <Stack.Screen
+            <Stack.Screen
               name="SupplementaryCard"
               component={SupplementaryCard}
               options={{ headerShown: false }}
@@ -493,7 +510,7 @@ export default function App() {
               component={SupplementaryCardCustomization}
               options={{ headerShown: false }}
             />
-             <Stack.Screen
+            <Stack.Screen
               name="SupplementaryCardLimitSplit"
               component={SupplementaryCardLimitSplit}
               options={{ headerShown: false }}

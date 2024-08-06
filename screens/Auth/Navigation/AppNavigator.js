@@ -2,7 +2,9 @@ import React from "react";
 import { createStackNavigator } from "@react-navigation/stack";
 import { NavigationContainer } from "@react-navigation/native";
 import HomeScreen from "../../HomeScreen";
+import OTP_Signup from "../OTP_Signup";
 import OTP from "../OTP";
+
 import Login from "../Login";
 import Registration from "../Registration";
 import Sidebar from "../../Sidebar";
@@ -60,7 +62,9 @@ const AppNavigator = () => {
         <Stack.Screen name="ForgetUserName" component={ForgetUserName} />
         <Stack.Screen name="NewPassword" component={NewPassword} />
         <Stack.Screen name="Registration" component={Registration} />
-        <Stack.Screen name="OTP_UserName" component={OTP_UserName} />
+        <Stack.Screen name="OTP_Signup" component={OTP_Signup} />
+        <Stack.Screen name="OTP" component={OTP} />
+<Stack.Screen name="OTP_UserName" component={OTP_UserName} />
         <Stack.Screen name="EntitySelection" component={EntitySelection} />
         <Stack.Screen name="HomeScreen" component={HomeScreen} />
         <Stack.Screen name="Sidebar" component={Sidebar} />
