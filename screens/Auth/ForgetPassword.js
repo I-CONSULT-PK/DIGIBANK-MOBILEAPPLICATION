@@ -10,7 +10,7 @@ import { StatusBar } from "expo-status-bar";
 import API_BASE_URL from "../../config";
 import AntDesign from "@expo/vector-icons/AntDesign";
 
-import Button from "../../components/Button";
+import Button from "../../components/Button"; 
 
 const ForgetPassword = ({ route }) => {
   const navigation = useNavigation();
