@@ -498,6 +498,7 @@ import Cards from "../../assets/Images/Cards.svg";
 import Payment from "../../assets/Images/Payment.svg";
 import Account from "../../assets/Images/Account.svg";
 import Transfer from "../../assets/Images/Transfer.svg";
+import Beneficiary from "../../assets/Images/Beneficiary.svg";
 import ListSectionCard from "../../assets/Images/ListSectionCard.svg";
 import Footer from "../../components/Footer";
 import Sidebar from "./Account-Setting/Sidebar";
@@ -587,7 +588,7 @@ const HomeScreen = () => {
         {/* User Info */}
         <View className="flex flex-col justify-center text-lg font-semibold text-gray-800 mr-20">
           <Text className="text-slate-500 text-sm mb-0">welcome</Text>
-          <Text className="font-bold text-lg mb-0">Mirza Uraib</Text>
+          <Text className="font-bold text-lg mb-0">Mirza Uraib khan</Text>
         </View>
 
         {/* Notification Bell */}
@@ -637,15 +638,17 @@ const HomeScreen = () => {
                   className="w-24 h-24 bg-white m-2.5 rounded-lg flex justify-center items-center"
                   style={styles.box}
                 >
-                  <Account style={styles.icon} />
-                  <Text className="text-center font-semibold"> Accounts</Text>
+                  <Beneficiary style={styles.icon} />
+                  <Text className="text-center font-semibold">Beneficiary</Text>
                 </View>
               </TouchableOpacity>
             </View>
 
             {/* Second Row */}
             <View className="flex-row justify-between mb-4">
-              <TouchableOpacity onPress={() => navigation.navigate("SelectCards")}>
+              <TouchableOpacity
+                onPress={() => navigation.navigate("SelectCards")}
+              >
                 <View
                   className="w-24 h-24 bg-white m-2.5 rounded-lg flex justify-center items-center"
                   style={styles.box}
@@ -668,8 +671,8 @@ const HomeScreen = () => {
                   className="w-24 h-24 bg-white m-2.5 rounded-lg flex justify-center items-center"
                   style={styles.box}
                 >
-                  <Discount style={styles.icon} />
-                  <Text className="text-center font-semibold">Discount</Text>
+                  <Account style={styles.icon} />
+                  <Text className="text-center font-semibold"> Accounts</Text>
                 </View>
               </TouchableOpacity>
             </View>
@@ -701,6 +704,18 @@ const HomeScreen = () => {
                 >
                   <Statment style={styles.icon} />
                   <Text className="text-center font-semibold">Statment</Text>
+                </View>
+              </TouchableOpacity>
+            </View>
+            {/* Fourth Row */}
+            <View className="flex-row justify-between mb-4">
+              <TouchableOpacity>
+                <View
+                  className="w-24 h-24 bg-white m-2.5 rounded-lg flex justify-center items-center"
+                  style={styles.box}
+                >
+                  <Discount style={styles.icon} />
+                  <Text className="text-center font-semibold">Discount</Text>
                 </View>
               </TouchableOpacity>
             </View>
@@ -880,7 +895,7 @@ const HomeScreen = () => {
           </View>
         </ScrollView>
         <View className="px-5 mt-5">
-          <Text className="text-base font-semibold text-black">Cards</Text>
+          <Text className="text-base font-semibold text-black">Credit Cards</Text>
         </View>
         <List.Section className="bg-white rounded-lg ml-5 mr-5">
           <List.Accordion

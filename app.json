@@ -11,9 +11,7 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true
     },
@@ -33,7 +31,11 @@
       }
     },
     "plugins": [
-      "expo-font"
+      [
+        "expo-local-authentication",
+         "expo-font"
+        
+      ]
     ]
   },
   "name": "zanbeel-ui"

@@ -34,6 +34,8 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import API_BASE_URL from '../../config';
 
+import Button from "../../components/Button";
+
 const Login = ({ navigation }) => {
   const [selectedOption, setSelectedOption] = useState("mobile");
   const sw = Dimensions.get("screen").width;
@@ -92,6 +94,7 @@ const Login = ({ navigation }) => {
   // --------------------------------------------------
 
   const [form, setForm] = useState({ username: '', password: '' });
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (name, value) => {
     setForm({
@@ -105,6 +108,8 @@ const Login = ({ navigation }) => {
       Alert.alert('Error', 'Username and password can not be null')
     }
     else {
+      setLoading(true);
+
       const loginData = {
         emailorUsername: form.username,
         password: form.password
@@ -151,6 +156,8 @@ const Login = ({ navigation }) => {
         } else {
           Alert.alert('Error', error.message);
         }
+      } finally {
+        setLoading(false);
       }
     }
   };
@@ -172,7 +179,7 @@ const Login = ({ navigation }) => {
   ];
 
   return (
-    
+
     <SafeAreaView className="h-full flex-1">
       <LinearGradient
         colors={[Color.PrimaryWebOrient, Color.PrimaryWebOrientLayer2]}
@@ -209,7 +216,7 @@ const Login = ({ navigation }) => {
                     <Text className="text-sm mb-2 font-InterMedium">Password*</Text>
                     <InputWithIcon placeholder="Enter your password" isPassword value={form.password} onChange={(text) => handleChange('password', text)} onSubmitEditing={Keyboard.dismiss} />
                     <View className="items-end mt-2">
-                      <TouchableOpacity onPress={() => navigation.navigate('ForgetPassword', { source: 'password' })}>
+                      <TouchableOpacity onPress={() => navigation.navigate('ForgetPassword')}>
                         <Text className="text-xs underline font-InterSemiBold" style={{ color: Color.PrimaryWebOrientTxtColor }}>Forgot Password?</Text>
                       </TouchableOpacity>
                     </View>
@@ -256,9 +263,14 @@ const Login = ({ navigation }) => {
               {/* -----| Security Image End |----- */}
 
               <View className="mb-5">
-                <TouchableOpacity className="py-4 rounded-lg mb-4" style={{ backgroundColor: Color.PrimaryWebOrient }} onPress={handleLogin}>
-                  <Text className="text-white text-base text-center font-medium font-InterSemiBold">Login</Text>
-                </TouchableOpacity>
+                <Button
+                  text='Login'
+                  width='w-[100%]'
+                  styles='mb-4 py-4'
+                  onPress={handleLogin}
+                  loading={loading}
+                />
+
                 <View className="flex-row justify-center">
                   <Text className="text-sm font-InterRegular">Don't have an account? </Text>
                   <TouchableOpacity onPress={() => navigation.navigate("SignUp")}>

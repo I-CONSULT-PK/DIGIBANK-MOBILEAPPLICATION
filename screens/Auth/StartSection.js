@@ -5,6 +5,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { StatusBar } from 'expo-status-bar';
 
 import { Color } from '../../GlobalStyles';
+import Button from '../../components/Button';
 
 const StartSection = ({ navigation }) => {
     return (
@@ -44,18 +45,13 @@ const StartSection = ({ navigation }) => {
 
                                 <View className="flex-row justify-between mt-4 mb-2">
                                     <TouchableOpacity
-                                        className="border border-primary py-3 w-[35%] rounded-lg" style={{border: Color.PrimaryWebOrient}}
+                                        className="border border-primary py-3.5 w-[35%] rounded-lg" style={{border: Color.PrimaryWebOrient}}
                                         onPress={() => navigation.navigate("Login")}
                                     >
                                         <Text className="text-base font-medium text-center font-InterSemiBold" style={{color: Color.PrimaryWebOrientTxtColor}}>Login</Text>
                                     </TouchableOpacity>
 
-                                    <TouchableOpacity
-                                        className="py-3 w-[60%] rounded-lg" style={{backgroundColor: Color.PrimaryWebOrient}}
-                                        onPress={() => navigation.navigate("SignUp")}
-                                    >
-                                        <Text className="text-base text-white font-medium text-center font-InterSemiBold">Get Started</Text>
-                                    </TouchableOpacity>
+                                    <Button text="Get Started" onPress={() => navigation.navigate("SignUp")} width='w-[60%]' />
                                 </View>
                             </View>
                         </View>
