@@ -57,7 +57,8 @@ import CardActivation from "./screens/Mobile-Banking/My-Cards/CardActivation";
 import SetCardPin from "./screens/Mobile-Banking/My-Cards/SetCardPin";
 import CardActivated from "./screens/Mobile-Banking/My-Cards/CardActivated";
 import ForgetUserName from "./screens/Auth/ForgetUserName";
-import StartSection from "./screens/Auth/StartSection"; 
+import StartSection from "./screens/Auth/StartSection";
+import SendBeneficiaryMoney from "./screens/Mobile-Banking/Beneficiary/SendBeneficiaryMoney";
 const Stack = createNativeStackNavigator();
 
 export default function App() {
@@ -72,7 +73,7 @@ export default function App() {
   const Auth = () => {
     return (
       <Stack.Navigator initialRouteName="StartScreen">
-         <Stack.Screen
+        <Stack.Screen
           name="StartScreen"
           component={StartSection}
           options={{ headerShown: false }}
@@ -311,6 +312,11 @@ export default function App() {
         <Stack.Screen
           name="OTPverification"
           component={OTPverification}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="SendBeneficiaryMoney"
+          component={SendBeneficiaryMoney}
           options={{ headerShown: false }}
         />
       </Stack.Navigator>

@@ -49,6 +49,8 @@ import SupplementaryCard from "../../Mobile-Banking/My-Cards/SupplementaryCard";
 import SupplementaryCardCustomization from "../../Mobile-Banking/My-Cards/SupplementaryCardCustomization";
 import SupplementaryCardLimitSplit from './../../Mobile-Banking/My-Cards/SupplementaryCardLimitSplit';
 import ForgetUserName from "../ForgetUserName";
+
+import SendBeneficiaryMoney from "../../Mobile-Banking/Beneficiary/SendBeneficiaryMoney";
 const Stack = createStackNavigator();
 
 const AppNavigator = () => {
@@ -119,6 +121,8 @@ const AppNavigator = () => {
         />
         <Stack.Screen name="BillPaymentTopUp" component={BillPaymentTopUp} />
         <Stack.Screen name="OTPverification" component={OTPverification} />
+
+        <Stack.Screen name="SendBeneficiaryMoney" component={SendBeneficiaryMoney} />
       </Stack.Navigator>
     </NavigationContainer>
   );
