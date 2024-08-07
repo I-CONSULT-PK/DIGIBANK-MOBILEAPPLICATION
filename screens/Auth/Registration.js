@@ -6,7 +6,8 @@ import {
   TouchableOpacity,
   StyleSheet,
   Alert,
-  Keyboard
+  Keyboard,
+  Switch
 } from "react-native";
 import {
   widthPercentageToDP as wp,
@@ -83,6 +84,9 @@ const Registration = ({ route }) => {
   const [nextLoading, setNextLoading] = useState(false);
   const [otpLoading, setOtpLoading] = useState(false);
   const [registerLoading, setRegisterLoading] = useState(false);
+
+  const [isEnabled, setIsEnabled] = useState(false);
+  const toggleSwitch = () => setIsEnabled((previousState) => !previousState);
 
   useFocusEffect(
     React.useCallback(() => {
@@ -370,10 +374,23 @@ const Registration = ({ route }) => {
                       <Input placeholder="Enter your mobile number" value={initialForm.mobile} onChange={(text) => handleChange('mobile', text, setInitialForm)} onSubmitEditing={Keyboard.dismiss} keyboardType='numeric' />
                     </View>
 
-                    <View className="mb-9">
+                    <View className="mb-6">
                       <Text className="text-sm mb-2 font-InterMedium">Account Number*</Text>
                       <Input placeholder="Enter 14 digits Acc No." value={initialForm.accountNumber} onChange={(text) => handleChange('accountNumber', text, setInitialForm)} onSubmitEditing={Keyboard.dismiss} />
                     </View>
+                  </View>
+
+                  <View className="mb-7 d-flex flex-row items-center px-1">
+                    <Text className="text-sm font-InterMedium -top-1">
+                      Set Fingerprint{" "}
+                    </Text>
+                    <Switch
+                      className="ml-auto"
+                      trackColor={{ false: "#767577", true: "#1DBBD8" }}
+                      thumbColor={isEnabled ? "#1DBBD8" : "#f4f3f4"}
+                      onValueChange={toggleSwitch}
+                      value={isEnabled}
+                    />
                   </View>
                 </View>
 
@@ -440,6 +457,8 @@ const Registration = ({ route }) => {
           </View>
         </ScrollView>
       </LinearGradient>
+
+      <StatusBar backgroundColor={Color.PrimaryWebOrient} style="light" />
     </SafeAreaView>
   );
 };
