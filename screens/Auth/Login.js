@@ -34,6 +34,8 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import API_BASE_URL from '../../config';
 
+import Button from "../../components/Button";
+
 const Login = ({ navigation }) => {
   const [selectedOption, setSelectedOption] = useState("mobile");
   const sw = Dimensions.get("screen").width;
@@ -92,6 +94,7 @@ const Login = ({ navigation }) => {
   // --------------------------------------------------
 
   const [form, setForm] = useState({ username: '', password: '' });
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (name, value) => {
     setForm({
@@ -100,60 +103,64 @@ const Login = ({ navigation }) => {
     });
   };
 
-  // const handleLogin = async () => {
-  //   if (form.username === '' || form.password === '') {
-  //     Alert.alert('Error', 'Username and password can not be null')
-  //   }
-  //   else {
-  //     const loginData = {
-  //       emailorUsername: form.username,
-  //       password: form.password
-  //     };
+  const handleLogin = async () => {
+    if (form.username === '' || form.password === '') {
+      Alert.alert('Error', 'Username and password can not be null')
+    }
+    else {
+      setLoading(true);
 
-  //     try {
-  //       const response = await axios.post(`${API_BASE_URL}/v1/customer/login`, loginData);
-  //       const dto = response.data;
+      const loginData = {
+        emailorUsername: form.username,
+        password: form.password
+      };
 
-  //       if (dto && dto.success && dto.data && dto.data.customerId) {
-  //         const customerId = dto.data.customerId.toString();
-  //         const token = dto.data.token.toString();
-  //         const expirationTime = dto.data.expirationTime.toString();
+      try {
+        const response = await axios.post(`${API_BASE_URL}/v1/customer/login`, loginData);
+        const dto = response.data;
 
-  //         await AsyncStorage.setItem('customerId', customerId);
-  //         await AsyncStorage.setItem('token', token);
-  //         await AsyncStorage.setItem('expirationTime', expirationTime);
+        if (dto && dto.success && dto.data && dto.data.customerId) {
+          const customerId = dto.data.customerId.toString();
+          const token = dto.data.token.toString();
+          const expirationTime = dto.data.expirationTime.toString();
 
-  //         navigation.navigate('Home');
-  //       }
-  //       else {
-  //         if (dto.message) {
-  //           Alert.alert('Error', dto.message);
-  //         }
-  //         else if (dto.errors && dto.errors.length > 0) {
-  //           Alert.alert('Error', dto.errors);
-  //         }
-  //       }
-  //     } catch (error) {
-  //       if (error.response) {
-  //         const statusCode = error.response.status;
+          await AsyncStorage.setItem('customerId', customerId);
+          await AsyncStorage.setItem('token', token);
+          await AsyncStorage.setItem('expirationTime', expirationTime);
 
-  //         if (statusCode === 404) {
-  //           Alert.alert('Error', 'Server timed out. Try again later!');
-  //         } else if (statusCode === 503) {
-  //           Alert.alert('Error', 'Service unavailable. Please try again later.');
-  //         } else if (statusCode === 400) {
-  //           Alert.alert('Error', error.response.data.data.errors[0]);
-  //         } else {
-  //           Alert.alert('Error', error.message);
-  //         }
-  //       } else if (error.request) {
-  //         Alert.alert('Error', 'No response from the server. Please check your connection.');
-  //       } else {
-  //         Alert.alert('Error', error.message);
-  //       }
-  //     }
-  //   }
-  // };
+          navigation.navigate('Home');
+        }
+        else {
+          if (dto.message) {
+            Alert.alert('Error', dto.message);
+          }
+          else if (dto.errors && dto.errors.length > 0) {
+            Alert.alert('Error', dto.errors);
+          }
+        }
+      } catch (error) {
+        if (error.response) {
+          const statusCode = error.response.status;
+
+          if (statusCode === 404) {
+            Alert.alert('Error', 'Server timed out. Try again later!');
+          } else if (statusCode === 503) {
+            Alert.alert('Error', 'Service unavailable. Please try again later.');
+          } else if (statusCode === 400) {
+            Alert.alert('Error', error.response.data.data.errors[0]);
+          } else {
+            Alert.alert('Error', error.message);
+          }
+        } else if (error.request) {
+          Alert.alert('Error', 'No response from the server. Please check your connection.');
+        } else {
+          Alert.alert('Error', error.message);
+        }
+      } finally {
+        setLoading(false);
+      }
+    }
+  };
 
   const securityImages1 = [
     require('../../assets/security-img-1.png'),
@@ -172,7 +179,7 @@ const Login = ({ navigation }) => {
   ];
 
   return (
-    
+
     <SafeAreaView className="h-full flex-1">
       <LinearGradient
         colors={[Color.PrimaryWebOrient, Color.PrimaryWebOrientLayer2]}
@@ -209,7 +216,7 @@ const Login = ({ navigation }) => {
                     <Text className="text-sm mb-2 font-InterMedium">Password*</Text>
                     <InputWithIcon placeholder="Enter your password" isPassword value={form.password} onChange={(text) => handleChange('password', text)} onSubmitEditing={Keyboard.dismiss} />
                     <View className="items-end mt-2">
-                      <TouchableOpacity onPress={() => navigation.navigate('ForgetPassword', { source: 'password' })}>
+                      <TouchableOpacity onPress={() => navigation.navigate('ForgetPassword')}>
                         <Text className="text-xs underline font-InterSemiBold" style={{ color: Color.PrimaryWebOrientTxtColor }}>Forgot Password?</Text>
                       </TouchableOpacity>
                     </View>
@@ -256,9 +263,14 @@ const Login = ({ navigation }) => {
               {/* -----| Security Image End |----- */}
 
               <View className="mb-5">
-                <TouchableOpacity className="py-4 rounded-lg mb-4" style={{ backgroundColor: Color.PrimaryWebOrient }} onPress={() => navigation.navigate("Home")} >
-                  <Text className="text-white text-base text-center font-medium font-InterSemiBold">Login</Text>
-                </TouchableOpacity>
+                <Button
+                  text='Login'
+                  width='w-[100%]'
+                  styles='mb-4 py-4'
+                  onPress={handleLogin}
+                  loading={loading}
+                />
+
                 <View className="flex-row justify-center">
                   <Text className="text-sm font-InterRegular">Don't have an account? </Text>
                   <TouchableOpacity onPress={() => navigation.navigate("SignUp")}>

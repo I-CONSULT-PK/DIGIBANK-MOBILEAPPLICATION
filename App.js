@@ -6,9 +6,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Login from "./screens/Auth/Login";
 import Registration from "./screens/Auth/Registration";
-import OTP_UserName from "./screens/Auth/OTP_UserName";
 import OTP from "./screens/Auth/OTP";
-import OTP_Signup from "./screens/Auth/OTP_Signup";
 import SplashScreen from "./screens/Auth/SplashScreen";
 import Sidebar from "./screens/Mobile-Banking/Account-Setting/Sidebar";
 import Card from "./screens/Mobile-Banking/Card/Card";
@@ -59,7 +57,8 @@ import CardActivation from "./screens/Mobile-Banking/My-Cards/CardActivation";
 import SetCardPin from "./screens/Mobile-Banking/My-Cards/SetCardPin";
 import CardActivated from "./screens/Mobile-Banking/My-Cards/CardActivated";
 import ForgetUserName from "./screens/Auth/ForgetUserName";
-import StartSection from "./screens/Auth/StartSection"; 
+import StartSection from "./screens/Auth/StartSection";
+import SendBeneficiaryMoney from "./screens/Mobile-Banking/Beneficiary/SendBeneficiaryMoney";
 const Stack = createNativeStackNavigator();
 
 export default function App() {
@@ -74,7 +73,7 @@ export default function App() {
   const Auth = () => {
     return (
       <Stack.Navigator initialRouteName="StartScreen">
-         <Stack.Screen
+        <Stack.Screen
           name="StartScreen"
           component={StartSection}
           options={{ headerShown: false }}
@@ -102,16 +101,6 @@ export default function App() {
         <Stack.Screen
           name="SignUp"
           component={Registration}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name="OTP_Signup"
-          component={OTP_Signup}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name="OTP_UserName"
-          component={OTP_UserName}
           options={{ headerShown: false }}
         />
         <Stack.Screen
@@ -323,6 +312,11 @@ export default function App() {
         <Stack.Screen
           name="OTPverification"
           component={OTPverification}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="SendBeneficiaryMoney"
+          component={SendBeneficiaryMoney}
           options={{ headerShown: false }}
         />
       </Stack.Navigator>
