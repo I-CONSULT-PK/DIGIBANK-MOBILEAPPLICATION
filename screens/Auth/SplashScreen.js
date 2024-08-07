@@ -43,7 +43,7 @@
 // export default SplashScreen;
 
 import React, { useEffect } from "react";
-import { StyleSheet, View } from "react-native";
+import { View } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Color } from "../../GlobalStyles";
@@ -68,25 +68,15 @@ const SplashScreen = ({ navigation }) => {
   }, [navigation]);
 
   return (
-
     <LinearGradient
       className="flex-1 justify-center items-center"
       colors={[Color.PrimaryWebOrient, Color.PrimaryWebOrientLayer2]}
-      start={[0, -0.439]}
-      end={[0, 0.439]}
     >
-      <View style={styles.logoContainer}>
+      <View className="justify-center items-center w-full h-full">
         <Logo />
       </View>
     </LinearGradient>
   );
 };
-
-const styles = StyleSheet.create({
-  logoContainer: {
-    justifyContent: "center",
-    alignItems: "center",
-  },
-});
 
 export default SplashScreen;
