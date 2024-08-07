@@ -17,7 +17,7 @@ import { Color } from "../../GlobalStyles";
 const { width, height } = Dimensions.get("window");
 
 const OTP = ({ navigation, route }) => {
-  const [otp, setOtp] = useState(["", "", "", "", ""]);
+  const [otp, setOtp] = useState(["", "", "", ""]);
   const [isResendDisabled, setIsResendDisabled] = useState(false);
   const [userEmail, setUserEmail] = useState("");
   const [userNumber, setUserNumber] = useState("");
@@ -139,13 +139,6 @@ const OTP = ({ navigation, route }) => {
     }
   };
   
-  
-  
-  
-  
-  
-  
-
   return (
     <SafeAreaView className="h-full flex-1 bg-white">
       <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
@@ -165,7 +158,7 @@ const OTP = ({ navigation, route }) => {
                 Enter Your OTP*
               </Text>
               <View className="flex-row justify-between items-center">
-                {Array.from({ length: 5 }).map((_, index) => (
+                {Array.from({ length: 4 }).map((_, index) => (
                   <TextInput
                     key={index}
                     ref={(input) => (otpInputs.current[index] = input)}
@@ -174,7 +167,7 @@ const OTP = ({ navigation, route }) => {
                     maxLength={1}
                     onChangeText={(text) => handleOtpChange(index, text)}
                     value={otp[index]}
-                    returnKeyType={index === 4 ? "done" : "next"}
+                    returnKeyType={index === 3 ? "done" : "next"}
                   />
                 ))}
               </View>

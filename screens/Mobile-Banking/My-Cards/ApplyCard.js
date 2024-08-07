@@ -69,7 +69,7 @@ const ApplyCard = () => {
                 </TouchableOpacity>
               </View>
             </View>
-            <View className="px-10 mt-16">
+            <View className="px-10 mt-14">
               <TouchableOpacity
                 className="py-3 px-12 bg-[#1DBBD8] rounded-lg"
                 onPress={() => navigation.navigate("ApplyForCard")}

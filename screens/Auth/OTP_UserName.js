@@ -17,7 +17,7 @@ import API_BASE_URL from "../../config";
 const { width, height } = Dimensions.get("window");
 
 const OTP_UserName = ({ navigation, route }) => {
-  const [otp, setOtp] = useState(["", "", "", "", ""]);
+  const [otp, setOtp] = useState(["", "", "", ""]);
   const [isResendDisabled, setIsResendDisabled] = useState(false);
   const [userEmail, setUserEmail] = useState("");
   const [userNumber, setUserNumber] = useState("");
@@ -62,7 +62,7 @@ const OTP_UserName = ({ navigation, route }) => {
       console.log("Create OTP Request Data:", { email, mobileNumber });
 
       const response = await axios.post(
-        `${API_BASE_URL.IE}/v1/otp/createOTP`,
+        `${API_BASE_URL}/v1/otp/createOTP`,
         {
           email,
           mobileNumber,
@@ -153,7 +153,7 @@ const OTP_UserName = ({ navigation, route }) => {
                 Enter Your OTP*
               </Text>
               <View className="flex-row justify-between items-center">
-                {Array.from({ length: 5 }).map((_, index) => (
+                {Array.from({ length: 4 }).map((_, index) => (
                   <TextInput
                     key={index}
                     ref={(input) => (otpInputs.current[index] = input)}
@@ -162,7 +162,7 @@ const OTP_UserName = ({ navigation, route }) => {
                     maxLength={1}
                     onChangeText={(text) => handleOtpChange(index, text)}
                     value={otp[index]}
-                    returnKeyType={index === 4 ? "done" : "next"}
+                    returnKeyType={index === 3 ? "done" : "next"}
                   />
                 ))}
               </View>

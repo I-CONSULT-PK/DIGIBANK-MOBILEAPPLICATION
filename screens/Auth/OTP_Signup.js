@@ -217,7 +217,7 @@ const OTP_Signup = ({ navigation, route }) => {
 
   const { source, email, mobileNumber, cnic, accountNumber, firstName, lastName } = route.params || {};
 
-  const otpLength = 5;
+  const otpLength = 4;
   const inputs = useRef([]);
 
   const [otp, setOtp] = useState(Array(otpLength).fill(''));

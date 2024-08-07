@@ -24,7 +24,7 @@ const ForgetUserName = ({ route }) => {
     try {
       showLoader();
  
-      const url = `${API_BASE_URL.IE}/v1/customer/forgetUser`;
+      const url = `${API_BASE_URL}/v1/customer/forgetUser`;
       console.log("Constructed URL:", url); // Log the URL
  
       // Send POST request to the server
