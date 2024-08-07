@@ -100,60 +100,60 @@ const Login = ({ navigation }) => {
     });
   };
 
-  const handleLogin = async () => {
-    if (form.username === '' || form.password === '') {
-      Alert.alert('Error', 'Username and password can not be null')
-    }
-    else {
-      const loginData = {
-        emailorUsername: form.username,
-        password: form.password
-      };
+  // const handleLogin = async () => {
+  //   if (form.username === '' || form.password === '') {
+  //     Alert.alert('Error', 'Username and password can not be null')
+  //   }
+  //   else {
+  //     const loginData = {
+  //       emailorUsername: form.username,
+  //       password: form.password
+  //     };
 
-      try {
-        const response = await axios.post(`${API_BASE_URL}/v1/customer/login`, loginData);
-        const dto = response.data;
+  //     try {
+  //       const response = await axios.post(`${API_BASE_URL}/v1/customer/login`, loginData);
+  //       const dto = response.data;
 
-        if (dto && dto.success && dto.data && dto.data.customerId) {
-          const customerId = dto.data.customerId.toString();
-          const token = dto.data.token.toString();
-          const expirationTime = dto.data.expirationTime.toString();
+  //       if (dto && dto.success && dto.data && dto.data.customerId) {
+  //         const customerId = dto.data.customerId.toString();
+  //         const token = dto.data.token.toString();
+  //         const expirationTime = dto.data.expirationTime.toString();
 
-          await AsyncStorage.setItem('customerId', customerId);
-          await AsyncStorage.setItem('token', token);
-          await AsyncStorage.setItem('expirationTime', expirationTime);
+  //         await AsyncStorage.setItem('customerId', customerId);
+  //         await AsyncStorage.setItem('token', token);
+  //         await AsyncStorage.setItem('expirationTime', expirationTime);
 
-          navigation.navigate('Home');
-        }
-        else {
-          if (dto.message) {
-            Alert.alert('Error', dto.message);
-          }
-          else if (dto.errors && dto.errors.length > 0) {
-            Alert.alert('Error', dto.errors);
-          }
-        }
-      } catch (error) {
-        if (error.response) {
-          const statusCode = error.response.status;
+  //         navigation.navigate('Home');
+  //       }
+  //       else {
+  //         if (dto.message) {
+  //           Alert.alert('Error', dto.message);
+  //         }
+  //         else if (dto.errors && dto.errors.length > 0) {
+  //           Alert.alert('Error', dto.errors);
+  //         }
+  //       }
+  //     } catch (error) {
+  //       if (error.response) {
+  //         const statusCode = error.response.status;
 
-          if (statusCode === 404) {
-            Alert.alert('Error', 'Server timed out. Try again later!');
-          } else if (statusCode === 503) {
-            Alert.alert('Error', 'Service unavailable. Please try again later.');
-          } else if (statusCode === 400) {
-            Alert.alert('Error', error.response.data.data.errors[0]);
-          } else {
-            Alert.alert('Error', error.message);
-          }
-        } else if (error.request) {
-          Alert.alert('Error', 'No response from the server. Please check your connection.');
-        } else {
-          Alert.alert('Error', error.message);
-        }
-      }
-    }
-  };
+  //         if (statusCode === 404) {
+  //           Alert.alert('Error', 'Server timed out. Try again later!');
+  //         } else if (statusCode === 503) {
+  //           Alert.alert('Error', 'Service unavailable. Please try again later.');
+  //         } else if (statusCode === 400) {
+  //           Alert.alert('Error', error.response.data.data.errors[0]);
+  //         } else {
+  //           Alert.alert('Error', error.message);
+  //         }
+  //       } else if (error.request) {
+  //         Alert.alert('Error', 'No response from the server. Please check your connection.');
+  //       } else {
+  //         Alert.alert('Error', error.message);
+  //       }
+  //     }
+  //   }
+  // };
 
   const securityImages1 = [
     require('../../assets/security-img-1.png'),
@@ -256,7 +256,7 @@ const Login = ({ navigation }) => {
               {/* -----| Security Image End |----- */}
 
               <View className="mb-5">
-                <TouchableOpacity className="py-4 rounded-lg mb-4" style={{ backgroundColor: Color.PrimaryWebOrient }} onPress={handleLogin}>
+                <TouchableOpacity className="py-4 rounded-lg mb-4" style={{ backgroundColor: Color.PrimaryWebOrient }} onPress={() => navigation.navigate("Home")} >
                   <Text className="text-white text-base text-center font-medium font-InterSemiBold">Login</Text>
                 </TouchableOpacity>
                 <View className="flex-row justify-center">

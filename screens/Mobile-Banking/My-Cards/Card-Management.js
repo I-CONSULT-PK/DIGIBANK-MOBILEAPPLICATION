@@ -37,7 +37,7 @@ const CardManagement = () => {
     <SafeAreaView className=" bg-[#f9fafc]" style={{ flex: 1 }}>
       <ScrollView>
         <View className=" flex-1">
-          <TouchableOpacity onPress={() => navigation.navigate("")}>
+          <TouchableOpacity onPress={() => navigation.navigate("SelectCards")}>
             <Entypo
               name="chevron-left"
               size={wp("8%")}
