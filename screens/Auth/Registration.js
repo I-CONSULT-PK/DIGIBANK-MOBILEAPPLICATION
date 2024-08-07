@@ -6,7 +6,8 @@ import {
   TouchableOpacity,
   StyleSheet,
   Alert,
-  Keyboard
+  Keyboard,
+  Switch
 } from "react-native";
 import {
   widthPercentageToDP as wp,
@@ -18,7 +19,7 @@ import CustomButton from "../../components/Button";
 import { Controller, useForm } from "react-hook-form";
 import { Color } from "../../GlobalStyles";
 import LoaderComponent from "../../components/LoaderComponent";
-import { useNavigation, useFocusEffect  } from "@react-navigation/native";
+import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { AppLoaderContext } from "../../components/LoaderHOC";
 
@@ -28,6 +29,8 @@ import { StatusBar } from 'expo-status-bar';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import axios from "axios";
 import API_BASE_URL from '../../config';
+
+import Button from "../../components/Button";
 
 const Registration = ({ route }) => {
   const navigation = useNavigation();
@@ -78,6 +81,12 @@ const Registration = ({ route }) => {
     password: '',
     confirmPassword: ''
   });
+  const [nextLoading, setNextLoading] = useState(false);
+  const [otpLoading, setOtpLoading] = useState(false);
+  const [registerLoading, setRegisterLoading] = useState(false);
+
+  const [isEnabled, setIsEnabled] = useState(false);
+  const toggleSwitch = () => setIsEnabled((previousState) => !previousState);
 
   useFocusEffect(
     React.useCallback(() => {
@@ -103,6 +112,8 @@ const Registration = ({ route }) => {
     }
 
     else {
+      setNextLoading(true);
+
       const registrationData = {
         globalId: {
           cnicNumber: initialForm.cnic,
@@ -154,6 +165,8 @@ const Registration = ({ route }) => {
         } else {
           Alert.alert('Error', error.message);
         }
+      } finally {
+        setNextLoading(false);
       }
     }
   };
@@ -163,6 +176,8 @@ const Registration = ({ route }) => {
       Alert.alert('Error', 'Unexpected error occured. Try again later')
     }
     else {
+      setOtpLoading(true);
+
       const otpData = {
         mobileNumber: initialForm.mobile,
         email: returnedData.email,
@@ -174,7 +189,7 @@ const Registration = ({ route }) => {
         const dto = response.data;
 
         if (dto && dto.success && dto.data) {
-          navigation.navigate('OTP_Signup', { source: 'registration', email: returnedData.email, mobileNumber: initialForm.mobile, cnic: initialForm.cnic, accountNumber: initialForm.accountNumber, firstName: returnedData.firstName, lastName: returnedData.lastName });
+          navigation.navigate('OTP', { source: 'registration', email: returnedData.email, mobileNumber: initialForm.mobile, cnic: initialForm.cnic, accountNumber: initialForm.accountNumber, firstName: returnedData.firstName, lastName: returnedData.lastName });
         }
         else {
           if (dto.message) {
@@ -203,6 +218,8 @@ const Registration = ({ route }) => {
         } else {
           Alert.alert('Error', error.message);
         }
+      } finally {
+        setOtpLoading(false);
       }
     }
   }
@@ -216,6 +233,8 @@ const Registration = ({ route }) => {
         Alert.alert('Error', 'Password do not match');
       }
       else {
+        setRegisterLoading(true);
+
         const userData = {
           mobileNumber: mobileNumber,
           firstName: firstName,
@@ -252,8 +271,7 @@ const Registration = ({ route }) => {
               Alert.alert('Error', dto.error);
             }
           }
-        }
-        catch (error) {
+        } catch (error) {
           if (error.response) {
             const statusCode = error.response.status;
 
@@ -271,6 +289,8 @@ const Registration = ({ route }) => {
           } else {
             Alert.alert('Error', error.message);
           }
+        } finally {
+          setRegisterLoading(false);
         }
       }
     }
@@ -312,7 +332,7 @@ const Registration = ({ route }) => {
                       <InputWithIcon placeholder="Enter a password" isPassword value={finalForm.password} onChange={(text) => handleChange('password', text, setFinalForm)} onSubmitEditing={Keyboard.dismiss} />
                     </View>
 
-                    <View className="mb-8">
+                    <View className="mb-9">
                       <Text className="text-sm mb-2 font-InterMedium">Confirm Password*</Text>
                       <InputWithIcon placeholder="Confirm your password" isPassword value={finalForm.confirmPassword} onChange={(text) => handleChange('confirmPassword', text, setFinalForm)} onSubmitEditing={Keyboard.dismiss} />
                     </View>
@@ -320,9 +340,14 @@ const Registration = ({ route }) => {
                 </View>
 
                 <View className="mb-5">
-                  <TouchableOpacity className="py-4 rounded-lg mb-4" style={{ backgroundColor: Color.PrimaryWebOrient }} onPress={handleRegister}>
-                    <Text className="text-white text-base text-center font-medium font-InterSemiBold">Sign up</Text>
-                  </TouchableOpacity>
+                  <Button
+                    text='Sign up'
+                    width='w-[100%]'
+                    styles='mb-4 py-4'
+                    onPress={handleRegister}
+                    loading={registerLoading}
+                  />
+
                   <View className="flex-row justify-center">
                     <Text className="text-sm font-InterRegular">Already have an account? </Text>
                     <TouchableOpacity onPress={() => navigation.navigate("Login")}>
@@ -349,17 +374,35 @@ const Registration = ({ route }) => {
                       <Input placeholder="Enter your mobile number" value={initialForm.mobile} onChange={(text) => handleChange('mobile', text, setInitialForm)} onSubmitEditing={Keyboard.dismiss} keyboardType='numeric' />
                     </View>
 
-                    <View className="mb-8">
+                    <View className="mb-6">
                       <Text className="text-sm mb-2 font-InterMedium">Account Number*</Text>
                       <Input placeholder="Enter 14 digits Acc No." value={initialForm.accountNumber} onChange={(text) => handleChange('accountNumber', text, setInitialForm)} onSubmitEditing={Keyboard.dismiss} />
                     </View>
                   </View>
+
+                  <View className="mb-7 d-flex flex-row items-center px-1">
+                    <Text className="text-sm font-InterMedium -top-1">
+                      Set Fingerprint{" "}
+                    </Text>
+                    <Switch
+                      className="ml-auto"
+                      trackColor={{ false: "#767577", true: "#1DBBD8" }}
+                      thumbColor={isEnabled ? "#1DBBD8" : "#f4f3f4"}
+                      onValueChange={toggleSwitch}
+                      value={isEnabled}
+                    />
+                  </View>
                 </View>
 
                 <View className="mb-5">
-                  <TouchableOpacity className="py-4 rounded-lg mb-4" style={{ backgroundColor: Color.PrimaryWebOrient }} onPress={handleNext}>
-                    <Text className="text-white text-base text-center font-medium font-InterSemiBold">Next</Text>
-                  </TouchableOpacity>
+                  <Button
+                    text='Next'
+                    width='w-[100%]'
+                    styles='mb-4 py-4'
+                    onPress={handleNext}
+                    loading={nextLoading}
+                  />
+
                   <View className="flex-row justify-center">
                     <Text className="text-sm font-InterRegular">Already have an account? </Text>
                     <TouchableOpacity onPress={() => navigation.navigate("Login")}>
@@ -386,7 +429,7 @@ const Registration = ({ route }) => {
                       <Input value={returnedData.lastName} disable />
                     </View>
 
-                    <View className="mb-8">
+                    <View className="mb-9">
                       <Text className="text-sm mb-2 font-InterMedium">Email Address*</Text>
                       <Input value={returnedData.email} disable />
                     </View>
@@ -394,9 +437,14 @@ const Registration = ({ route }) => {
                 </View>
 
                 <View className="mb-5">
-                  <TouchableOpacity className="py-4 rounded-lg mb-4" style={{ backgroundColor: Color.PrimaryWebOrient }} onPress={handleOTP}>
-                    <Text className="text-white text-base text-center font-medium font-InterSemiBold">Next</Text>
-                  </TouchableOpacity>
+                  <Button
+                    text='Next'
+                    width='w-[100%]'
+                    styles='mb-4 py-4'
+                    onPress={handleOTP}
+                    loading={otpLoading}
+                  />
+
                   <View className="flex-row justify-center">
                     <Text className="text-sm font-InterRegular">Already have an account? </Text>
                     <TouchableOpacity onPress={() => navigation.navigate("Login")}>
@@ -409,6 +457,8 @@ const Registration = ({ route }) => {
           </View>
         </ScrollView>
       </LinearGradient>
+
+      <StatusBar backgroundColor={Color.PrimaryWebOrient} style="light" />
     </SafeAreaView>
   );
 };
