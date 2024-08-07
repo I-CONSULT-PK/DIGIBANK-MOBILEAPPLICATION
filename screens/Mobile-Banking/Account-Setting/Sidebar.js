@@ -422,7 +422,6 @@ import { Entypo, Ionicons } from "@expo/vector-icons";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Color } from "../../../GlobalStyles";
 
-
 const menuItems = [
   { title: "Person Management", icon: "person" },
   { title: "Transfer", icon: "swap-horizontal" },
@@ -434,6 +433,7 @@ const menuItems = [
   { title: "Locator", icon: "location-outline" },
   { title: "Contact Us", icon: "chatbubbles-outline" },
   { title: "Refer", icon: "people" },
+  { title: "Fingerprint", icon: "people", screen: "Fingerprint" },
 ];
 
 const Sidebar = () => {
@@ -502,7 +502,6 @@ const Sidebar = () => {
 };
 
 const styles = StyleSheet.create({
-
   contentContainer: {
     flexGrow: 1,
   },

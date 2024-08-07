@@ -31,24 +31,23 @@ const AvailCashonCreditCard = () => {
 
   return (
     <SafeAreaView className="flex-1 bg-[#f9fafc]">
-      <ScrollView className="flex-1">
-        <View className="flex-1">
-          <View className="flex flex-col overflow-hidden gap-4 pt-16 pl-6 bg-cyan-500">
-            <TouchableOpacity onPress={() => navigation.navigate("SelectCards")}>
-              <Entypo name="chevron-left" size={30} color="white" />
-            </TouchableOpacity>
-            <View className="flex flex-row items-center mt-8">
-              <Text className="text-3xl font-semibold text-black">
-                {"Avail Cash on\n"}
-                <Text className="text-3xl font-bold text-white">
+      <View>
+        <View className="flex flex-col overflow-hidden gap-4 pt-16 pl-6 bg-cyan-500">
+          <TouchableOpacity onPress={() => navigation.navigate("SelectCards")}>
+            <Entypo name="chevron-left" size={30} color="white" />
+          </TouchableOpacity>
+          <View className="flex flex-row items-center mt-8">
+            <Text className="text-3xl font-semibold text-black">
+              {"Avail Cash on\n"}
+              <Text className="text-3xl font-bold text-white">
                 {"Credit Card"}
-                </Text>
-               
               </Text>
-              <CashUpCardSvg style={{ marginLeft: 40 }} />
-            </View>
+            </Text>
+            <CashUpCardSvg style={{ marginLeft: 40 }} />
           </View>
         </View>
+      </View>
+      <ScrollView className="flex-1">
         <View className="w-auto mx-auto p-6 bg-white rounded-xl shadow-lg mt-6">
           <View className="mt-9">
             <Text className="text-sm font-medium text-zinc-600">
@@ -167,8 +166,7 @@ const AvailCashonCreditCard = () => {
           <CustomButton
             text="Apply"
             onPress={() => {
-              if (checked)
-                navigation.navigate("BeneficiaryAccountDetails");
+              if (checked) navigation.navigate("BeneficiaryAccountDetails");
             }}
             disabled={!checked}
             styles={`mt-4`}

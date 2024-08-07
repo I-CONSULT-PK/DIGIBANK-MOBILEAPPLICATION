@@ -43,7 +43,7 @@ import CashUpCard from "../../Mobile-Banking/My-Cards/CashUpCard";
 import CardActivation from "../../Mobile-Banking/My-Cards/CardActivation";
 import SetCardPin from "../../Mobile-Banking/My-Cards/SetCardPin";
 import CardActivated from "../../Mobile-Banking/My-Cards/CardActivated";
-
+import FingerPrint from "../FingerPrint";
 import CongCard from "../../Mobile-Banking/My-Cards/CongCard";
 import SelectApplyOptionCard from "../../Mobile-Banking/My-Cards/SelectApplyOptionCard";
 import SupplementaryCard from "../../Mobile-Banking/My-Cards/SupplementaryCard";
@@ -53,13 +53,14 @@ import ForgetUserName from "../ForgetUserName";
 import OTP_UserName from "../OTP_UserName";
 import AvailCashonCreditCard from "../../Mobile-Banking/Easy-Cash/AvailCashonCreditCard";
 import BeneficiaryAccountDetails from "../../Mobile-Banking/Easy-Cash/BeneficiaryAccountDetails";
-
+import Summary from "../../Mobile-Banking/Easy-Cash/Summary";
 const Stack = createStackNavigator();
 
 const AppNavigator = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator>
+        <Stack.Screen name="FingerPrint" component={FingerPrint} />
         <Stack.Screen name="Login" component={Login} />
         <Stack.Screen name="ForgetPassword" component={ForgetPassword} />
         <Stack.Screen name="ForgetUserName" component={ForgetUserName} />
@@ -92,12 +93,17 @@ const AppNavigator = () => {
           name="BeneficiaryAccountDetails"
           component={BeneficiaryAccountDetails}
         />
+        <Stack.Screen
+          name="Summary"
+          component={Summary}
+        />
          {/* Easy-Cash Module end*/}
 
         <Stack.Screen
           name="SelectApplyOptionCard"
           component={SelectApplyOptionCard}
         />
+        
         <Stack.Screen name="SupplementaryCard" component={SupplementaryCard} />
         <Stack.Screen
           name="SupplementaryCardCustomization"

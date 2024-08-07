@@ -62,7 +62,7 @@ import ForgetUserName from "./screens/Auth/ForgetUserName";
 import StartSection from "./screens/Auth/StartSection"; 
 import AvailCashonCreditCard  from "./screens/Mobile-Banking/Easy-Cash/AvailCashonCreditCard"; 
 import BeneficiaryAccountDetails  from "./screens/Mobile-Banking/Easy-Cash/BeneficiaryAccountDetails"; 
-
+import Summary from "./screens/Mobile-Banking/Easy-Cash/Summary";
 const Stack = createNativeStackNavigator();
 
 export default function App() {
@@ -172,6 +172,11 @@ export default function App() {
         <Stack.Screen
           name="BeneficiaryAccountDetails"
           component={BeneficiaryAccountDetails}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="Summary"
+          component={Summary}
           options={{ headerShown: false }}
         />
         {/* Easy-Cash Module end */}
