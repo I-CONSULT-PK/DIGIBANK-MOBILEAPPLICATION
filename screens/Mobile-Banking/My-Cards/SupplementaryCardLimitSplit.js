@@ -22,7 +22,7 @@ const SupplementaryCardLimitSplit = () => {
       <View className=" mt-5">
         <TouchableOpacity
           className="py-3 px-14 bg-[#1DBBD8] rounded-lg"
-          onPress={() => navigation.navigate("ApplyForCard")}
+          onPress={() => navigation.navigate("SelectApplyOptionCard")}
         >
           <Text className="text-base text-center font-InterMedium text-white">
             SPLT LIMIT
