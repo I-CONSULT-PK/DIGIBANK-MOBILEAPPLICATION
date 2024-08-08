@@ -503,6 +503,7 @@ import ListSectionCard from "../../assets/Images/ListSectionCard.svg";
 import Footer from "../../components/Footer";
 import Sidebar from "./Account-Setting/Sidebar";
 
+import { StatusBar } from 'expo-status-bar';
 
 const HomeScreen = () => {
   const navigation = useNavigation();
@@ -634,7 +635,7 @@ const HomeScreen = () => {
                   </Text>
                 </View>
               </TouchableOpacity>
-              <TouchableOpacity>
+              <TouchableOpacity onPress={() => navigation.navigate('SendBeneficiaryMoney')}>
                 <View
                   className="w-24 h-24 bg-white m-2.5 rounded-lg flex justify-center items-center"
                   style={styles.box}
@@ -965,6 +966,8 @@ const HomeScreen = () => {
         </List.Section>
       </ScrollView>
       <Footer />
+
+      <StatusBar backgroundColor="transparent" style="dark" translucent={true} />
     </SafeAreaView>
   );
 };
