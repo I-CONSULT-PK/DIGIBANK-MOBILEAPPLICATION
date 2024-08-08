@@ -53,7 +53,8 @@ const Add_Beneficiary = () => {
         </View>
         <View className="px-6 mt-8">
           <CustomButton
-          text={'Add'}/>
+          text={'Add'}
+          onPress={() => navigation.navigate("Fatch_Acc_Beneficiary")}/>
         </View>
       </ScrollView>
     </SafeAreaView>
