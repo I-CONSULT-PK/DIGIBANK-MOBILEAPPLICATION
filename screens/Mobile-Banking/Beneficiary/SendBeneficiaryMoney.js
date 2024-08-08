@@ -9,7 +9,7 @@ import Feather from '@expo/vector-icons/Feather';
 import { Color } from '../../../GlobalStyles';
 import OptionBox from '../../../components/OptionBox';
 
-import BankIcon from '../../../assets/bank-icon.png'
+import BankIcon from '../../../assets/bank-icon.png';
 
 const SendBeneficiaryMoney = ({ navigation }) => {
   return (

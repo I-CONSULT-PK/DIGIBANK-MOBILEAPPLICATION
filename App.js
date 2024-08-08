@@ -60,6 +60,7 @@ import ForgetUserName from "./screens/Auth/ForgetUserName";
 import StartSection from "./screens/Auth/StartSection";
 import SendBeneficiaryMoney from "./screens/Mobile-Banking/Beneficiary/SendBeneficiaryMoney";
 import Add_Beneficiary from "./screens/Mobile-Banking/Beneficiary/Add-Beneficiary";
+import Fatch_Acc_Beneficiary from "./screens/Mobile-Banking/Beneficiary/Fatch_Acc_Beneficiary";
 const Stack = createNativeStackNavigator();
 
 export default function App() {
@@ -325,8 +326,12 @@ export default function App() {
           component={Add_Beneficiary}
           options={{ headerShown: false }}
         />
+        <Stack.Screen
+          name="Fatch_Acc_Beneficiary"
+          component={Fatch_Acc_Beneficiary}
+          options={{ headerShown: false }}
+        />
       </Stack.Navigator>
-      
     );
   };
 
@@ -343,6 +348,11 @@ export default function App() {
              <Stack.Screen
                 name="Add_Beneficiary"
                 component={Add_Beneficiary}
+                options={{ headerShown: false }}
+              />
+                <Stack.Screen
+                name="Fatch_Acc_Beneficiary"
+                component={Fatch_Acc_Beneficiary}
                 options={{ headerShown: false }}
               />
 

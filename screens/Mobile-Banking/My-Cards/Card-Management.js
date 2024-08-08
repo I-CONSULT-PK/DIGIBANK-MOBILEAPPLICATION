@@ -49,45 +49,50 @@ const CardManagement = () => {
             <Text className="font-InterBold text-2xl ">Cards</Text>
           </View>
           <View className="mt-2">
-          <View className="flex flex-row justify-center w-4/5 h-18 my-5 mx-auto" style={styles.container}>
-          <TouchableOpacity
-              className={`flex-1 p-3 bg-white w-16 h-12 rounded-l-lg ${
-                selectedOption === "Credit Card"
-                  ? "bg-primary shadow-lg"
-                  : "shadow-sm"
-              }`}
-              style={{}}
-              onPress={() => handleOptionChange("Credit Card")}
+            <View
+              className="flex flex-row justify-center w-4/5 h-18 my-5 mx-auto"
+              style={styles.container}
             >
-              <Text
-                className={`text-center font-bold ${
-                  selectedOption === "Credit Card" ? "text-white" : "text-black"
+              <TouchableOpacity
+                className={`flex-1 p-3 bg-white w-16 h-12 rounded-l-lg ${
+                  selectedOption === "Credit Card"
+                    ? "bg-primary shadow-lg"
+                    : "shadow-sm"
                 }`}
+                style={{}}
+                onPress={() => handleOptionChange("Credit Card")}
               >
-                Credit Card
-              </Text>
-            </TouchableOpacity>
+                <Text
+                  className={`text-center font-bold ${
+                    selectedOption === "Credit Card"
+                      ? "text-white"
+                      : "text-black"
+                  }`}
+                >
+                  Credit Card
+                </Text>
+              </TouchableOpacity>
 
-            <TouchableOpacity
-              className={`flex-1 p-3 bg-white w-16 h-12 rounded-r-lg ${
-                selectedOption === "Debit Card"
-                  ? "bg-primary shadow-lg"
-                  : "shadow-sm"
-              }`}
-              onPress={() => handleOptionChange("Debit Card")}
-            >
-              <Text
-                className={`text-center font-bold ${
+              <TouchableOpacity
+                className={`flex-1 p-3 bg-white w-16 h-12 rounded-r-lg ${
                   selectedOption === "Debit Card"
-                    ? "text-white"
-                    : "text-black"
+                    ? "bg-primary shadow-lg"
+                    : "shadow-sm"
                 }`}
+                onPress={() => handleOptionChange("Debit Card")}
               >
-                Debit Card
-              </Text>
-            </TouchableOpacity>
-          </View>
-          
+                <Text
+                  className={`text-center font-bold ${
+                    selectedOption === "Debit Card"
+                      ? "text-white"
+                      : "text-black"
+                  }`}
+                >
+                  Debit Card
+                </Text>
+              </TouchableOpacity>
+            </View>
+
             <List.Section className="bg-white rounded-xl ml-5 mr-5">
               <List.Accordion
                 className="font-InterRegular m-0 text-base bg-white"
@@ -127,17 +132,23 @@ const CardManagement = () => {
                       Deactivate Your Card
                     </Text>
                   </View>
-                  <Divider />
+                  <View className="my-2">
+                    <View className="border-t border-gray-300"></View>
+                  </View>
                   <View className="mb-2 flex-row items-center justify-between">
                     <Text className="text-xs text-gray-500">Card Holder</Text>
                     <Text className="text-sm font-medium  ">Mirza Uraib</Text>
                   </View>
-                  <Divider />
+                  <View className="my-2">
+                    <View className="border-t border-gray-300"></View>
+                  </View>
                   <View className="mb-2 flex-row items-center justify-between">
                     <Text className="text-xs text-gray-500">Expire</Text>
                     <Text className="text-sm font-medium  ">12/31</Text>
                   </View>
-                  <Divider />
+                  <View className="my-2">
+                    <View className="border-t border-gray-300"></View>
+                  </View>
                   <View className=" mb-2 flex-row items-center justify-between">
                     <Text className="text-xs text-gray-500">Card Number</Text>
                     <Text className="text-sm font-medium ">
@@ -188,17 +199,23 @@ const CardManagement = () => {
                       Deactivate Your Card
                     </Text>
                   </View>
-                  <Divider />
+                  <View className="my-2">
+                    <View className="border-t border-gray-300"></View>
+                  </View>
                   <View className="mb-2 flex-row items-center justify-between">
                     <Text className="text-xs text-gray-500">Card Holder</Text>
                     <Text className="text-sm font-medium  ">Mirza Uraib</Text>
                   </View>
-                  <Divider />
+                  <View className="my-2">
+                    <View className="border-t border-gray-300"></View>
+                  </View>
                   <View className="mb-2 flex-row items-center justify-between">
                     <Text className="text-xs text-gray-500">Expire</Text>
                     <Text className="text-sm font-medium  ">12/31</Text>
                   </View>
-                  <Divider />
+                  <View className="my-2">
+                    <View className="border-t border-gray-300"></View>
+                  </View>
                   <View className=" mb-2 mt-2 flex-row items-center justify-between">
                     <Text className="text-xs text-gray-500">Card Number</Text>
                     <Text className="text-sm font-medium ">
