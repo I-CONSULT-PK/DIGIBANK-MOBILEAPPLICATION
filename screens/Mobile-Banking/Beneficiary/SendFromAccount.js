@@ -36,7 +36,7 @@ const SendFromAccount = () => {
       <ScrollView className="flex-1">
         <TouchableOpacity
           className="mt-10 ml-4" // Adjust margin for better alignment
-          onPress={() => navigation.navigate("Add_Beneficiary")}
+          onPress={() => navigation.goBack()}
         >
           <Entypo name="chevron-left" size={30} color="black" />
         </TouchableOpacity>

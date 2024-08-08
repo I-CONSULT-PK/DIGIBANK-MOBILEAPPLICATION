@@ -255,9 +255,14 @@ const Login = ({ navigation }) => {
               {/* -----| Security Image End |----- */}
  
               <View className="mb-5">
-                <TouchableOpacity className="py-4 rounded-lg mb-4" style={{ backgroundColor: Color.PrimaryWebOrient }} onPress={() => navigation.navigate("Home")} >
-                  <Text className="text-white text-base text-center font-medium font-InterSemiBold">Login</Text>
-                </TouchableOpacity>
+                <CustomButton
+                  text='Login'
+                  width='w-[100%]'
+                  styles='mb-4 py-4'
+                  onPress={() => navigation.navigate('Home')}
+                
+                />
+
                 <View className="flex-row justify-center">
                   <Text className="text-sm font-InterRegular">Don't have an account? </Text>
                   <TouchableOpacity onPress={() => navigation.navigate("SignUp")}>

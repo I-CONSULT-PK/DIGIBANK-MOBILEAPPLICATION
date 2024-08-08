@@ -36,7 +36,7 @@ const PayNow = () => {
       <ScrollView className="flex-1">
         <TouchableOpacity
           className="mt-10 ml-4" 
-          onPress={() => navigation.navigate("SendFromAccount")}
+          onPress={() => navigation.goBack()}
         >
           <Entypo name="chevron-left" size={30} color="black" />
         </TouchableOpacity>
