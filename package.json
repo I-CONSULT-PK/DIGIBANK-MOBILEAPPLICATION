@@ -33,6 +33,7 @@
     "axios": "^1.7.3",
     "calendar-date-picker-react-native": "^0.0.4",
     "expo": "^51.0.8",
+    "expo-application": "^5.9.1",
     "expo-barcode-scanner": "~13.0.1",
     "expo-calendar": "~13.0.5",
     "expo-device": "~6.0.2",
@@ -55,13 +56,14 @@
     "react-native-calendar-date-picker": "^0.0.5",
     "react-native-camera": "^4.2.1",
     "react-native-datepicker": "^1.7.2",
-    "react-native-device-info": "^10.12.0",
+    "react-native-device-info": "^10.14.0",
     "react-native-dotenv": "^3.4.11",
     "react-native-dropdown-select-list": "^2.0.5",
     "react-native-elements": "^3.4.3",
     "react-native-flexbox-grid": "^0.3.2",
     "react-native-fs": "^2.20.0",
     "react-native-gesture-handler": "~2.16.1",
+    "react-native-imei": "^0.2.0",
     "react-native-linear-gradient": "^2.8.3",
     "react-native-loading-spinner-overlay": "^3.0.1",
     "react-native-modal-datetime-picker": "^17.1.0",
@@ -87,7 +89,8 @@
     "react-native-view-shot": "^3.8.0",
     "react-native-web": "~0.19.6",
     "rn-toggle-switch": "^1.0.2",
-    "tailwindcss": "3.3.2"
+    "tailwindcss": "3.3.2",
+    "uuidv4": "^6.2.13"
   },
   "devDependencies": {
     "@babel/core": "^7.24.0",

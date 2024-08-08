@@ -89,7 +89,7 @@ const BankList = ({ navigation }) => {
                                     text={bank.text}
                                     icon1='arrowright'
                                     iconColor1={Color.PrimaryWebOrient}
-                                    onPress1={() => {}}
+                                    onPress1={() => {navigation.navigate('Add_Beneficiary')}}
                                 />
                                 <View className="my-4 w-full border-b border-gray-300" />
                             </React.Fragment>
