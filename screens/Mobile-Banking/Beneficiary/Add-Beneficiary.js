@@ -19,7 +19,7 @@ const Add_Beneficiary = () => {
     <SafeAreaView className=" bg-[#f9fafc]" style={{ flex: 1 }}>
       <ScrollView>
         <View className=" flex-1">
-          <TouchableOpacity onPress={() => navigation.navigate("SelectCards")}>
+          <TouchableOpacity onPress={() => navigation.goBack()}>
             <Entypo
               name="chevron-left"
               size={wp("8%")}

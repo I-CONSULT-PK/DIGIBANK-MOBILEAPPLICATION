@@ -53,6 +53,9 @@ import ForgetUserName from "../ForgetUserName";
 import SendBeneficiaryMoney from "../../Mobile-Banking/Beneficiary/SendBeneficiaryMoney";
 import Add_Beneficiary from "../../Mobile-Banking/Beneficiary/Add-Beneficiary";
 import Fatch_Acc_Beneficiary from "../../Mobile-Banking/Beneficiary/Fatch_Acc_Beneficiary";
+import BeneficiaryList from "../../Mobile-Banking/Beneficiary/BeneficiaryList";
+import BankList from "../../Mobile-Banking/Beneficiary/BankList";
+
 const Stack = createStackNavigator();
 
 const AppNavigator = () => {
@@ -129,6 +132,8 @@ const AppNavigator = () => {
         <Stack.Screen name="Add_Beneficiary" component={Add_Beneficiary}/>
         <Stack.Screen name="Fatch_Acc_Beneficiary" component={Fatch_Acc_Beneficiary}/>
 
+        <Stack.Screen name="BeneficiaryList" component={BeneficiaryList} />
+        <Stack.Screen name="BankList" component={BankList} />
       </Stack.Navigator>
     </NavigationContainer>
   );

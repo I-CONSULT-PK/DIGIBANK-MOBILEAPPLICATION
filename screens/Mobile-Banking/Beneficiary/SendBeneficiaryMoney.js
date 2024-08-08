@@ -1,15 +1,16 @@
 import React from 'react'
-import { View, Text, ScrollView, TouchableOpacity, Image } from 'react-native'
+import { View, Text, ScrollView, TouchableOpacity } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { StatusBar } from 'expo-status-bar';
 import { LinearGradient } from 'expo-linear-gradient';
 import AntDesign from '@expo/vector-icons/AntDesign';
-import Feather from '@expo/vector-icons/Feather';
 
 import { Color } from '../../../GlobalStyles';
 import OptionBox from '../../../components/OptionBox';
+import Footer from '../../../components/Footer';
 
-import BankIcon from '../../../assets/bank-icon.png';
+import BankIcon from '../../../assets/bank-icon.png'
+import RaastIcon from '../../../assets/raast-icon.png'
 
 const SendBeneficiaryMoney = ({ navigation }) => {
   return (
@@ -22,14 +23,14 @@ const SendBeneficiaryMoney = ({ navigation }) => {
           style={{ height: '12%' }}
         >
           <View className="flex-row items-center justify-center w-full h-full">
-            <TouchableOpacity onPress={() => navigation.navigate("Home")}className="absolute left-5">
+            <TouchableOpacity onPress={() => navigation.goBack()} className="absolute left-5">
               <AntDesign name="arrowleft" size={23} color="white" />
             </TouchableOpacity>
             <Text className="text-white font-semibold text-lg font-InterSemiBold">Send Money</Text>
           </View>
         </LinearGradient>
 
-        <View className="w-full h-full px-6 bg-white">
+        <View className="w-full h-full px-6 bg-[#F5F5F5]">
           <View className="mt-8">
             <Text className="font-InterSemiBold text-base">Select Method</Text>
           </View>
@@ -40,8 +41,19 @@ const SendBeneficiaryMoney = ({ navigation }) => {
               image={BankIcon}
               text="Transfer to Bank"
               subtext="Transfer to all banks & wallets"
-              icon1="arrow-right"
-              onPress1={() => navigation.navigate("Add_Beneficiary")}
+              icon1="arrowright"
+              onPress1={() => navigation.navigate("BeneficiaryList")}
+              iconColor1={Color.PrimaryWebOrient}
+            />
+
+            <View className="my-5 w-full border-b border-gray-300" />
+
+            <OptionBox
+              image={RaastIcon}
+              text="Raast Payment"
+              subtext="Free transfer to mobile number/IBAN/Bank account"
+              icon1="arrowright"
+              iconColor1={Color.PrimaryWebOrient}
             />
 
             <View className="my-5 w-full border-b border-gray-300" />
@@ -50,6 +62,8 @@ const SendBeneficiaryMoney = ({ navigation }) => {
         </View>
 
       </ScrollView>
+
+      <Footer />
 
 
       <StatusBar backgroundColor={Color.PrimaryWebOrient} style="light" />
