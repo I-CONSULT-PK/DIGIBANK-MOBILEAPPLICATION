@@ -61,6 +61,8 @@ import StartSection from "./screens/Auth/StartSection";
 import AvailCashonCreditCard  from "./screens/Mobile-Banking/Easy-Cash/AvailCashonCreditCard"; 
 import BeneficiaryAccountDetails  from "./screens/Mobile-Banking/Easy-Cash/BeneficiaryAccountDetails"; 
 import Summary from "./screens/Mobile-Banking/Easy-Cash/Summary";
+import SendFromAccount from "./screens/Mobile-Banking/Beneficiary/SendFromAccount";
+
 const Stack = createNativeStackNavigator();
 
 export default function App() {
@@ -168,7 +170,11 @@ export default function App() {
           options={{ headerShown: false }}
         />
         {/* Easy-Cash Module end */}
-        
+        <Stack.Screen
+          name="SendFromAccount"
+          component={SendFromAccount}
+          options={{ headerShown: false }}
+        />
         <Stack.Screen
           name="CardManagement"
           component={CardManagement}

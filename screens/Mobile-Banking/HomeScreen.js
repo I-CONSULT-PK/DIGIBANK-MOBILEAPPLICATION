@@ -639,7 +639,7 @@ const HomeScreen = () => {
                   className="w-24 h-24 bg-white m-2.5 rounded-lg flex justify-center items-center"
                   style={styles.box}
                 >
-                  <Beneficiary style={styles.icon} />
+                  <Beneficiary style={styles.icon}   onPress={() => navigation.navigate("SendFromAccount")}/>
                   <Text className="text-center font-semibold">Beneficiary</Text>
                 </View>
               </TouchableOpacity>

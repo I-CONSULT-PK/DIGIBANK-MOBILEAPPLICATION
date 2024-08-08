@@ -54,6 +54,7 @@ import OTP_UserName from "../OTP_UserName";
 import AvailCashonCreditCard from "../../Mobile-Banking/Easy-Cash/AvailCashonCreditCard";
 import BeneficiaryAccountDetails from "../../Mobile-Banking/Easy-Cash/BeneficiaryAccountDetails";
 import Summary from "../../Mobile-Banking/Easy-Cash/Summary";
+import SendFromAccount from "../../Mobile-Banking/Beneficiary/SendFromAccount";
 const Stack = createStackNavigator();
 
 const AppNavigator = () => {
@@ -93,17 +94,14 @@ const AppNavigator = () => {
           name="BeneficiaryAccountDetails"
           component={BeneficiaryAccountDetails}
         />
-        <Stack.Screen
-          name="Summary"
-          component={Summary}
-        />
-         {/* Easy-Cash Module end*/}
-
+        <Stack.Screen name="Summary" component={Summary} />
+        {/* Easy-Cash Module end*/}
+        <Stack.Screen name="SendFromAccount" component={SendFromAccount} />
         <Stack.Screen
           name="SelectApplyOptionCard"
           component={SelectApplyOptionCard}
         />
-        
+
         <Stack.Screen name="SupplementaryCard" component={SupplementaryCard} />
         <Stack.Screen
           name="SupplementaryCardCustomization"
