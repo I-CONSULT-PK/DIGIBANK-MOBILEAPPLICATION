@@ -151,7 +151,7 @@ const PayNow = () => {
         <View className="p-5">
           <CustomButton
             text={"Pay Now"}
-            onPress={() => navigation.navigate("CashUpCard")}
+            // onPress={() => navigation.navigate("CashUpCard")}
           />
         </View>
       </ScrollView>
