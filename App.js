@@ -59,6 +59,8 @@ import CardActivated from "./screens/Mobile-Banking/My-Cards/CardActivated";
 import ForgetUserName from "./screens/Auth/ForgetUserName";
 import StartSection from "./screens/Auth/StartSection";
 import SendBeneficiaryMoney from "./screens/Mobile-Banking/Beneficiary/SendBeneficiaryMoney";
+import BeneficiaryList from "./screens/Mobile-Banking/Beneficiary/BeneficiaryList";
+import BankList from "./screens/Mobile-Banking/Beneficiary/BankList";
 const Stack = createNativeStackNavigator();
 
 export default function App() {
@@ -317,6 +319,16 @@ export default function App() {
         <Stack.Screen
           name="SendBeneficiaryMoney"
           component={SendBeneficiaryMoney}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="BeneficiaryList"
+          component={BeneficiaryList}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="BankList"
+          component={BankList}
           options={{ headerShown: false }}
         />
       </Stack.Navigator>

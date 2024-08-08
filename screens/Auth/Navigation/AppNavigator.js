@@ -51,6 +51,9 @@ import SupplementaryCardLimitSplit from './../../Mobile-Banking/My-Cards/Supplem
 import ForgetUserName from "../ForgetUserName";
 
 import SendBeneficiaryMoney from "../../Mobile-Banking/Beneficiary/SendBeneficiaryMoney";
+import BeneficiaryList from "../../Mobile-Banking/Beneficiary/BeneficiaryList";
+import BankList from "../../Mobile-Banking/Beneficiary/BankList";
+
 const Stack = createStackNavigator();
 
 const AppNavigator = () => {
@@ -123,6 +126,8 @@ const AppNavigator = () => {
         <Stack.Screen name="OTPverification" component={OTPverification} />
 
         <Stack.Screen name="SendBeneficiaryMoney" component={SendBeneficiaryMoney} />
+        <Stack.Screen name="BeneficiaryList" component={BeneficiaryList} />
+        <Stack.Screen name="BankList" component={BankList} />
       </Stack.Navigator>
     </NavigationContainer>
   );
