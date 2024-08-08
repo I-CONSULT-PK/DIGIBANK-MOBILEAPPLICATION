@@ -5,13 +5,13 @@ import { useNavigation } from "@react-navigation/native";
 const CongCard = () => {
   const navigation = useNavigation();
 
-  // useEffect(() => {
-  //   const timer = setTimeout(() => {
-  //     navigation.navigate("NameOnTheCard");
-  //   }, 3000);
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      navigation.navigate("NameOnTheCard");
+    }, 3000);
 
-  //   return () => clearTimeout(timer);
-  // }, [navigation]);
+    return () => clearTimeout(timer);
+  }, [navigation]);
 
   return (
     <View className="flex-1 justify-center items-center">

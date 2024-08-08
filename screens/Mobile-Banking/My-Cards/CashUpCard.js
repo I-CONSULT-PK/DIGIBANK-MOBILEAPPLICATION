@@ -113,7 +113,7 @@ const CashUpCard = () => {
       </ScrollView>
       <View className="p-5">
         <CustomButton
-          Text={"Confirm "}
+          text={"Confirm "}
           onPress={() => navigation.navigate("CongCard")}
         />
       </View>

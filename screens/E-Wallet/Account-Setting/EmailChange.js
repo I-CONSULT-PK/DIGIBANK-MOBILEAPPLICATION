@@ -98,7 +98,7 @@ const EmailChange = () => {
                         )}
                     </View>
                     <View className='p-5 mt-2'>
-                        <CustomButton Text={'Save'} onPress={() => navigation.navigate("AccountSetting")} />
+                        <CustomButton text={'Save'} onPress={() => navigation.navigate("AccountSetting")} />
                     </View>
 
                 </View>

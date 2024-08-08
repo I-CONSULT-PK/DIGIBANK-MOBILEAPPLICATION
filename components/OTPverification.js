@@ -174,7 +174,7 @@ const OTPverification = ({ navigation, route }) => {
         </View>
 
         <View className="m-4">
-          <CustomButton Text={"Verify"} onPress={handleVerify} />
+          <CustomButton text={"Verify"} onPress={handleVerify} />
         </View>
         <View
           className="w-11/12  m-3 rounded-lg ml-4"

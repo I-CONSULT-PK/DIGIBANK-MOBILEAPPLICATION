@@ -344,7 +344,7 @@ const OTP_Signup = ({ navigation, route }) => {
     //   </View>
 
     //   <View style={{ padding: 16 }}>
-    //     <CustomButton Text={"Verify"} onPress={handleVerify} />
+    //     <CustomButton text={"Verify"} onPress={handleVerify} />
     //   </View>
     // </View>
 

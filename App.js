@@ -64,6 +64,7 @@ import AvailCashonCreditCard  from "./screens/Mobile-Banking/Easy-Cash/AvailCash
 import BeneficiaryAccountDetails  from "./screens/Mobile-Banking/Easy-Cash/BeneficiaryAccountDetails"; 
 import Summary from "./screens/Mobile-Banking/Easy-Cash/Summary";
 import SendFromAccount from "./screens/Mobile-Banking/Beneficiary/SendFromAccount";
+import PayNow from "./screens/Mobile-Banking/Beneficiary/PayNow";
 
 const Stack = createNativeStackNavigator();
 
@@ -172,11 +173,29 @@ export default function App() {
           options={{ headerShown: false }}
         />
         {/* Easy-Cash Module end */}
+
+         {/* Beneficiary Module  */}
         <Stack.Screen
           name="SendFromAccount"
           component={SendFromAccount}
           options={{ headerShown: false }}
         />
+        <Stack.Screen
+          name="Add_Beneficiary"
+          component={Add_Beneficiary}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="SendBeneficiaryMoney"
+          component={SendBeneficiaryMoney}
+          options={{ headerShown: false }}
+        />
+         <Stack.Screen
+          name="PayNow"
+          component={PayNow}
+          options={{ headerShown: false }}
+        />
+        {/* Beneficiary Module end */}
         <Stack.Screen
           name="CardManagement"
           component={CardManagement}
@@ -343,16 +362,8 @@ export default function App() {
           component={OTPverification}
           options={{ headerShown: false }}
         />
-        <Stack.Screen
-          name="SendBeneficiaryMoney"
-          component={SendBeneficiaryMoney}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name="Add_Beneficiary"
-          component={Add_Beneficiary}
-          options={{ headerShown: false }}
-        />
+        
+        
       </Stack.Navigator>
       
     );

@@ -103,7 +103,7 @@ const PinCode = ({ visible, onClose }) => {
               ))}
             </View>
             <View className=" mt-10">
-              <CustomButton Text={"Proceed"} onPress={handleProceed} />
+              <CustomButton text={"Proceed"} onPress={handleProceed} />
             </View>
             <View className="flex flex-row justify-between">
               <View>

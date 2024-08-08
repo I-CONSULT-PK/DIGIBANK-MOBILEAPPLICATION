@@ -5,6 +5,7 @@ import {
   ScrollView,
   SafeAreaView,
   TouchableOpacity,
+  StyleSheet,
 } from "react-native";
 import { Entypo } from "@expo/vector-icons";
 import Footer from "../../../components/Footer";
@@ -35,7 +36,7 @@ const SendFromAccount = () => {
       <ScrollView className="flex-1">
         <TouchableOpacity
           className="mt-10 ml-4" // Adjust margin for better alignment
-          onPress={() => navigation.navigate("BeneficiaryAccountDetails")}
+          onPress={() => navigation.navigate("Add_Beneficiary")}
         >
           <Entypo name="chevron-left" size={30} color="black" />
         </TouchableOpacity>
@@ -48,7 +49,10 @@ const SendFromAccount = () => {
           From Account
         </Text>
         <View className="flex justify-center items-center px-3">
-          <View className="flex flex-row items-center p-4 bg-white rounded-lg shadow-md w-96 max-w-md">
+          <View
+            className="flex flex-row items-center p-4 bg-white rounded-lg shadow-md w-96 max-w-md"
+            style={styles.container}
+          >
             {/* DIGI BANK section */}
             <View className="px-3 py-2 text-sm font-medium  text-white bg-cyan-500 rounded-md h-[54px] w-[65px]">
               <Text className="text-center text-white">DIGI {"\n"}BANK</Text>
@@ -70,7 +74,10 @@ const SendFromAccount = () => {
           To Account
         </Text>
         <View className="flex justify-center items-center px-3">
-          <View className="flex flex-row items-center p-4 bg-white rounded-lg shadow-md w-96 max-w-md">
+          <View
+            className="flex flex-row items-center p-4 bg-white rounded-lg shadow-md w-96 max-w-md"
+            style={styles.container}
+          >
             {/* UBL BANK section */}
             <View className="px-3 py-2 text-sm font-medium text-center  bg-blue rounded-md h-[54px] w-[65px]">
               <Text className="text-center text-white">UBL {"\n"}BANK</Text>
@@ -131,7 +138,7 @@ const SendFromAccount = () => {
         <View className="p-5">
           <CustomButton
             text={"Next"}
-            onPress={() => navigation.navigate("CashUpCard")}
+            onPress={() => navigation.navigate("PayNow")}
           />
         </View>
       </ScrollView>
@@ -140,5 +147,12 @@ const SendFromAccount = () => {
     </SafeAreaView>
   );
 };
+const styles = StyleSheet.create({
+  container: {
+    shadowColor: "#000",
+    elevation: 30,
+    borderColor: Color.PrimaryWebOrient,
+  },
+});
 
 export default SendFromAccount;

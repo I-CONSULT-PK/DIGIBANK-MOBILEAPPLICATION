@@ -144,9 +144,9 @@ const SetCardPin = ({ navigation }) => {
 
         <View className="p-7">
           {!isConfirmationStage ? (
-            <CustomButton Text={"Next"} onPress={handleNextPress} />
+            <CustomButton text={"Next"} onPress={handleNextPress} />
           ) : (
-            <CustomButton Text={"Confirm"} onPress={handleConfirmPress} />
+            <CustomButton text={"Confirm"} onPress={handleConfirmPress} />
           )}
         </View>
       </View>
