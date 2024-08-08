@@ -4,7 +4,7 @@ import Feather from '@expo/vector-icons/Feather';
 
 import { Color } from '../GlobalStyles';
 
-const OptionBox = ({ image, text, subtext, icon1, icon2 }) => {
+const OptionBox = ({ image, text, subtext, icon1, icon2,onPress1 }) => {
     return (
         <View className="flex-row justify-between items-center">
             <View className="flex-row items-center flex-1">
@@ -22,7 +22,7 @@ const OptionBox = ({ image, text, subtext, icon1, icon2 }) => {
                     </Text>
                 </View>
             </View>
-            {icon1 && <TouchableOpacity className="ml-2 p-2 rounded-full shadow-lg shadow-gray-500 justify-center items-center bg-white">
+            {icon1 && <TouchableOpacity className="ml-2 p-2 rounded-full shadow-lg shadow-gray-500 justify-center items-center bg-white" onPress={onPress1}>
                 <Feather name={icon1} size={22} color={Color.PrimaryWebOrient} />
             </TouchableOpacity>}
         </View>

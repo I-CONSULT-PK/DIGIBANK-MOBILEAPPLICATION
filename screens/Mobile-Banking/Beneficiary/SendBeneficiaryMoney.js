@@ -22,7 +22,7 @@ const SendBeneficiaryMoney = ({ navigation }) => {
           style={{ height: '12%' }}
         >
           <View className="flex-row items-center justify-center w-full h-full">
-            <TouchableOpacity onPress={() => navigation.goBack()} className="absolute left-5">
+            <TouchableOpacity onPress={() => navigation.navigate("Home")}className="absolute left-5">
               <AntDesign name="arrowleft" size={23} color="white" />
             </TouchableOpacity>
             <Text className="text-white font-semibold text-lg font-InterSemiBold">Send Money</Text>
@@ -41,6 +41,7 @@ const SendBeneficiaryMoney = ({ navigation }) => {
               text="Transfer to Bank"
               subtext="Transfer to all banks & wallets"
               icon1="arrow-right"
+              onPress1={() => navigation.navigate("Add_Beneficiary")}
             />
 
             <View className="my-5 w-full border-b border-gray-300" />

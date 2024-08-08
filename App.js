@@ -59,6 +59,7 @@ import CardActivated from "./screens/Mobile-Banking/My-Cards/CardActivated";
 import ForgetUserName from "./screens/Auth/ForgetUserName";
 import StartSection from "./screens/Auth/StartSection";
 import SendBeneficiaryMoney from "./screens/Mobile-Banking/Beneficiary/SendBeneficiaryMoney";
+import Add_Beneficiary from "./screens/Mobile-Banking/Beneficiary/Add-Beneficiary";
 const Stack = createNativeStackNavigator();
 
 export default function App() {
@@ -319,7 +320,13 @@ export default function App() {
           component={SendBeneficiaryMoney}
           options={{ headerShown: false }}
         />
+        <Stack.Screen
+          name="Add_Beneficiary"
+          component={Add_Beneficiary}
+          options={{ headerShown: false }}
+        />
       </Stack.Navigator>
+      
     );
   };
 
@@ -333,6 +340,11 @@ export default function App() {
               component={SplashScreen}
               options={{ headerShown: false }}
             />
+             <Stack.Screen
+                name="Add_Beneficiary"
+                component={Add_Beneficiary}
+                options={{ headerShown: false }}
+              />
 
             <Stack.Screen
               name="Auth"
