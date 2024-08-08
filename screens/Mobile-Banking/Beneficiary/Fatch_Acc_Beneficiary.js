@@ -21,7 +21,7 @@ const Fatch_Acc_Beneficiary = () => {
     <SafeAreaView className=" bg-[#f9fafc]" style={{ flex: 1 }}>
       <ScrollView>
         <View className=" flex-1">
-          <TouchableOpacity onPress={() => navigation.navigate("SelectCards")}>
+          <TouchableOpacity onPress={() => navigation.goBack()}>
             <Entypo
               name="chevron-left"
               size={wp("8%")}
@@ -86,7 +86,7 @@ const Fatch_Acc_Beneficiary = () => {
           />
         </View>
         <View className="px-6 mt-8">
-          <CustomButton text={"Add"} />
+          <CustomButton text={"Add"} onPress={() => navigation.navigate("SendFromAccount")}/>
         </View>
       </ScrollView>
     </SafeAreaView>

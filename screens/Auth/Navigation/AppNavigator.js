@@ -2,6 +2,7 @@ import React from "react";
 import { createStackNavigator } from "@react-navigation/stack";
 import { NavigationContainer } from "@react-navigation/native";
 import HomeScreen from "../../HomeScreen";
+import OTP_Signup from "../OTP_Signup";
 import OTP from "../OTP";
 
 import Login from "../Login";
@@ -42,16 +43,22 @@ import CashUpCard from "../../Mobile-Banking/My-Cards/CashUpCard";
 import CardActivation from "../../Mobile-Banking/My-Cards/CardActivation";
 import SetCardPin from "../../Mobile-Banking/My-Cards/SetCardPin";
 import CardActivated from "../../Mobile-Banking/My-Cards/CardActivated";
-
+import FingerPrint from "../FingerPrint";
 import CongCard from "../../Mobile-Banking/My-Cards/CongCard";
 import SelectApplyOptionCard from "../../Mobile-Banking/My-Cards/SelectApplyOptionCard";
 import SupplementaryCard from "../../Mobile-Banking/My-Cards/SupplementaryCard";
 import SupplementaryCardCustomization from "../../Mobile-Banking/My-Cards/SupplementaryCardCustomization";
-import SupplementaryCardLimitSplit from './../../Mobile-Banking/My-Cards/SupplementaryCardLimitSplit';
+import SupplementaryCardLimitSplit from "./../../Mobile-Banking/My-Cards/SupplementaryCardLimitSplit";
 import ForgetUserName from "../ForgetUserName";
+import OTP_UserName from "../OTP_UserName";
+import AvailCashonCreditCard from "../../Mobile-Banking/Easy-Cash/AvailCashonCreditCard";
+import BeneficiaryAccountDetails from "../../Mobile-Banking/Easy-Cash/BeneficiaryAccountDetails";
+import Summary from "../../Mobile-Banking/Easy-Cash/Summary";
+import SendFromAccount from "../../Mobile-Banking/Beneficiary/SendFromAccount";
 
 import SendBeneficiaryMoney from "../../Mobile-Banking/Beneficiary/SendBeneficiaryMoney";
 import Add_Beneficiary from "../../Mobile-Banking/Beneficiary/Add-Beneficiary";
+import PayNow from "../../Mobile-Banking/Beneficiary/PayNow";
 import Fatch_Acc_Beneficiary from "../../Mobile-Banking/Beneficiary/Fatch_Acc_Beneficiary";
 import BeneficiaryList from "../../Mobile-Banking/Beneficiary/BeneficiaryList";
 import BankList from "../../Mobile-Banking/Beneficiary/BankList";
@@ -62,12 +69,15 @@ const AppNavigator = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator>
+        <Stack.Screen name="FingerPrint" component={FingerPrint} />
         <Stack.Screen name="Login" component={Login} />
         <Stack.Screen name="ForgetPassword" component={ForgetPassword} />
         <Stack.Screen name="ForgetUserName" component={ForgetUserName} />
         <Stack.Screen name="NewPassword" component={NewPassword} />
         <Stack.Screen name="Registration" component={Registration} />
+        <Stack.Screen name="OTP_Signup" component={OTP_Signup} />
         <Stack.Screen name="OTP" component={OTP} />
+        <Stack.Screen name="OTP_UserName" component={OTP_UserName} />
         <Stack.Screen name="EntitySelection" component={EntitySelection} />
         <Stack.Screen name="HomeScreen" component={HomeScreen} />
         <Stack.Screen name="Sidebar" component={Sidebar} />
@@ -83,7 +93,31 @@ const AppNavigator = () => {
         <Stack.Screen name="CardActivation" component={CardActivation} />
         <Stack.Screen name="SetCardPin" component={SetCardPin} />
         <Stack.Screen name="CardActivated" component={CardActivated} />
+        {/* Easy-Cash Module */}
         <Stack.Screen
+          name="AvailCashonCreditCard"
+          component={AvailCashonCreditCard}
+        />
+        <Stack.Screen
+          name="BeneficiaryAccountDetails"
+          component={BeneficiaryAccountDetails}
+        />
+        <Stack.Screen name="Summary" component={Summary} />
+        {/* Easy-Cash Module end*/}
+
+         {/* Beneficiary Module  */}
+        <Stack.Screen name="SendFromAccount" component={SendFromAccount} />
+        <Stack.Screen name="SendBeneficiaryMoney" component={SendBeneficiaryMoney}/>
+        <Stack.Screen name="Add_Beneficiary" component={Add_Beneficiary}/>
+        <Stack.Screen name="PayNow" component={PayNow}/>
+
+
+         {/* Beneficiary Module  end*/}
+        <Stack.Screen
+          name="SelectApplyOptionCard"
+          component={SelectApplyOptionCard}
+        />
+ <Stack.Screen
           name="SelectApplyOptionCard"
           component={SelectApplyOptionCard}
         />
@@ -128,8 +162,6 @@ const AppNavigator = () => {
         <Stack.Screen name="BillPaymentTopUp" component={BillPaymentTopUp} />
         <Stack.Screen name="OTPverification" component={OTPverification} />
 
-        <Stack.Screen name="SendBeneficiaryMoney" component={SendBeneficiaryMoney}/>
-        <Stack.Screen name="Add_Beneficiary" component={Add_Beneficiary}/>
         <Stack.Screen name="Fatch_Acc_Beneficiary" component={Fatch_Acc_Beneficiary}/>
 
         <Stack.Screen name="BeneficiaryList" component={BeneficiaryList} />
