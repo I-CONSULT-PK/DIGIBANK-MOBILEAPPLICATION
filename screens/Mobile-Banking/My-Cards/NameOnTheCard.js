@@ -14,7 +14,7 @@ import { Color } from "../../../GlobalStyles";
 import TextInput from "../../../components/TextInput";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { SelectList } from "react-native-dropdown-select-list";
-import CustomButton from "../../../components/Button";
+import Button from "../../../components/Button";
 import Icon from "react-native-vector-icons/FontAwesome";
 import ListSectionCard from "../../../assets/Images/ListSectionCard.svg";
 const NameOnTheCard = () => {
@@ -85,8 +85,10 @@ const NameOnTheCard = () => {
         </View>
 
         <View className="p-5">
-          <CustomButton
-            Text={"Confirm Address "}
+          <Button
+            text='Confirm Address'
+            width='w-[100%]'
+            styles='mb-4 py-4'
             onPress={() => navigation.navigate("CardActivation")}
           />
         </View>

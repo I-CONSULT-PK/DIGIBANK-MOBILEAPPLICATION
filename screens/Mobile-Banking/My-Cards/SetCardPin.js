@@ -9,7 +9,7 @@ import {
   Image,
   StyleSheet,
 } from "react-native";
-import CustomButton from "../../../components/Button";
+import Button from "../../../components/Button";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Entypo } from "@expo/vector-icons";
 
@@ -19,7 +19,7 @@ const SetCardPin = ({ navigation }) => {
   const [otp, setOtp] = useState(["", "", "", ""]);
   const [isPinComplete, setIsPinComplete] = useState(false);
   const [isConfirmationStage, setIsConfirmationStage] = useState(false);
-  const [confirmationOtp, setConfirmationOtp] = useState(["", "", "",""]);
+  const [confirmationOtp, setConfirmationOtp] = useState(["", "", "", ""]);
   const otpInputs = useRef([]);
   const initialOtpRef = useRef(["", "", "", ""]);  // Use ref to store the initial OTP
 
@@ -33,7 +33,7 @@ const SetCardPin = ({ navigation }) => {
   const handleOtpChange = (index, value, isConfirmation = false) => {
     const targetOtp = isConfirmation ? confirmationOtp : otp;
     const setTargetOtp = isConfirmation ? setConfirmationOtp : setOtp;
-    
+
     const newOtp = [...targetOtp];
     newOtp[index] = value;
     setTargetOtp(newOtp);
@@ -55,8 +55,8 @@ const SetCardPin = ({ navigation }) => {
     if (isPinComplete) {
       setIsConfirmationStage(true);
       initialOtpRef.current = [...otp]; // Save the initial OTP
-      setOtp(["", "", "", ""]); 
-      setConfirmationOtp(["", "", "", ""]); 
+      setOtp(["", "", "", ""]);
+      setConfirmationOtp(["", "", "", ""]);
     } else {
       Alert.alert("Error", "Please enter all digits of the PIN.");
     }
@@ -100,7 +100,7 @@ const SetCardPin = ({ navigation }) => {
             <View className="flex justify-center items-center">
               <Image
                 source={require("../../../assets/pin-icon.png")}
-              
+
               />
               <Text className="font-semibold text-base text-center mt-2">
                 {isConfirmationStage ? "Set up Card PIN" : "Set up Card PIN"}
@@ -144,9 +144,19 @@ const SetCardPin = ({ navigation }) => {
 
         <View className="p-7">
           {!isConfirmationStage ? (
-            <CustomButton text={"Next"} onPress={handleNextPress} />
+            <Button
+              text='Next'
+              width='w-[100%]'
+              styles='mb-4 py-4'
+              onPress={handleNextPress}
+            />
           ) : (
-            <CustomButton text={"Confirm"} onPress={handleConfirmPress} />
+            <Button
+              text='Confirm'
+              width='w-[100%]'
+              styles='mb-4 py-4'
+              onPress={handleConfirmPress}
+            />
           )}
         </View>
       </View>

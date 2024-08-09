@@ -14,23 +14,23 @@ import {
     widthPercentageToDP as wp,
     heightPercentageToDP as hp,
   } from "react-native-responsive-screen";
+import Footer from "../../../components/Footer";
 
 const Fatch_Acc_Beneficiary = () => {
   const navigation = useNavigation();
   return (
     <SafeAreaView className=" bg-[#f9fafc]" style={{ flex: 1 }}>
       <ScrollView>
-        <View className=" flex-1">
-          <TouchableOpacity onPress={() => navigation.goBack()}>
-            <Entypo
-              name="chevron-left"
-              size={wp("8%")}
-              color="#090909"
-              marginTop={hp("2%")}
-            />
-          </TouchableOpacity>
-          <View className="justify-center items-center">
-            <Text className="font-InterBold text-2xl ">Send Money</Text>
+        
+      <View className="d-flex flex-row justify-center mt-8">
+          <TouchableOpacity
+          className=" ml-2 absolute left-2" 
+          onPress={() => navigation.goBack()}
+        >
+          <Entypo name="chevron-left" size={30} color="black" />
+        </TouchableOpacity>
+          <View className=" ">
+            <Text className="font-InterBold text-2xl text-center">Send Money</Text>
           </View>
         </View>
         <View className="px-6 mt-4">
@@ -89,6 +89,7 @@ const Fatch_Acc_Beneficiary = () => {
           <CustomButton text={"Add"} onPress={() => navigation.navigate("SendFromAccount")}/>
         </View>
       </ScrollView>
+      <Footer />
     </SafeAreaView>
   );
 };

@@ -3,7 +3,7 @@ import { View, Text, ScrollView, TouchableOpacity, Image } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { StatusBar } from 'expo-status-bar';
 import { LinearGradient } from 'expo-linear-gradient';
-import AntDesign from '@expo/vector-icons/AntDesign';
+import { Entypo } from '@expo/vector-icons';
 
 import { Color } from '../../../GlobalStyles';
 import SearchBar from '../../../components/SearchBar';
@@ -85,16 +85,16 @@ const BeneficiaryList = ({ navigation }) => {
     );
 
     return (
-        <SafeAreaView className="h-full flex-1">
+        <SafeAreaView className="h-full flex-1" style={{backgroundColor: Color.PrimaryWebOrient}}>
             <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
 
                 <LinearGradient
                     colors={[Color.PrimaryWebOrient, Color.PrimaryWebOrientLayer2]}
-                    style={{ height: '12%' }}
+                    style={{ height: 100 }}
                 >
                     <View className="flex-row items-center justify-center w-full h-full">
                         <TouchableOpacity onPress={() => navigation.goBack()} className="absolute left-5">
-                            <AntDesign name="arrowleft" size={23} color="white" />
+                            <Entypo name="chevron-left" size={23} color="white" />
                         </TouchableOpacity>
                         <Text className="text-white font-semibold text-lg font-InterSemiBold">Beneficiary</Text>
                     </View>
@@ -111,7 +111,7 @@ const BeneficiaryList = ({ navigation }) => {
                     <View className="mt-7">
 
                         <TouchableOpacity className="flex-row items-center">
-                            <View className="p-3 rounded-lg shadow-lg shadow-gray-500 justify-center items-center bg-[#1DBBD8]">
+                            <View className="p-3 rounded-lg shadow-md shadow-gray-300 justify-center items-center bg-[#1DBBD8]">
                                 <Image
                                     source={require('../../../assets/own-account-icon.png')}
                                     resizeMode="contain"
@@ -126,7 +126,7 @@ const BeneficiaryList = ({ navigation }) => {
                         <View className="my-4 w-full border-b border-gray-300" />
 
                         <TouchableOpacity className="flex-row items-center" onPress={() => navigation.navigate('BankList')}>
-                            <View className="p-3 rounded-lg shadow-lg shadow-gray-500 justify-center items-center bg-[#1DBBD8]">
+                            <View className="p-3 rounded-lg shadow-md shadow-gray-300 justify-center items-center bg-[#1DBBD8]">
                                 <Image
                                     source={require('../../../assets/add-icon.png')}
                                     resizeMode="contain"

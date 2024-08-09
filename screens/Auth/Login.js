@@ -179,7 +179,7 @@ const Login = ({ navigation }) => {
 
   return (
 
-    <SafeAreaView className="h-full flex-1">
+    <SafeAreaView className="h-full flex-1" style={{backgroundColor: Color.PrimaryWebOrient}}>
       <LinearGradient
         colors={[Color.PrimaryWebOrient, Color.PrimaryWebOrientLayer2]}
         style={{ flex: 1 }}

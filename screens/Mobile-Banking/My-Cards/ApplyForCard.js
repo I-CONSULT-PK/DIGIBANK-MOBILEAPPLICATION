@@ -15,7 +15,7 @@ import { Color } from "../../../GlobalStyles";
 import TextInput from "../../../components/TextInput";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { SelectList } from "react-native-dropdown-select-list";
-import CustomButton from "../../../components/Button";
+import Button from "../../../components/Button";
 
 const ApplyForCard = () => {
   const navigation = useNavigation();
@@ -83,37 +83,33 @@ const ApplyForCard = () => {
           </Text>
           <View className="flex flex-row justify-center w-4/5 h-18 my-5 mx-auto" style={styles.container}>
             <TouchableOpacity
-              className={`flex-1 p-3 bg-white w-16 h-12 rounded-l-lg ${
-                selectedOption === "Salaried"
+              className={`flex-1 p-3 bg-white w-16 h-12 rounded-l-lg ${selectedOption === "Salaried"
                   ? "bg-primary shadow-lg"
                   : "shadow-sm"
-              }`}
+                }`}
               style={{}}
               onPress={() => handleOptionChange("Salaried")}
             >
               <Text
-                className={`text-center font-bold ${
-                  selectedOption === "Salaried" ? "text-white" : "text-black"
-                }`}
+                className={`text-center font-bold ${selectedOption === "Salaried" ? "text-white" : "text-black"
+                  }`}
               >
                 Salaried
               </Text>
             </TouchableOpacity>
 
             <TouchableOpacity
-              className={`flex-1 p-3 bg-white w-16 h-12 rounded-r-lg ${
-                selectedOption === "Self-Employed"
+              className={`flex-1 p-3 bg-white w-16 h-12 rounded-r-lg ${selectedOption === "Self-Employed"
                   ? "bg-primary shadow-lg"
                   : "shadow-sm"
-              }`}
+                }`}
               onPress={() => handleOptionChange("Self-Employed")}
             >
               <Text
-                className={`text-center font-bold ${
-                  selectedOption === "Self-Employed"
+                className={`text-center font-bold ${selectedOption === "Self-Employed"
                     ? "text-white"
                     : "text-black"
-                }`}
+                  }`}
               >
                 Self Employed
               </Text>
@@ -169,9 +165,9 @@ const ApplyForCard = () => {
 
                   <View className="flex-row space-x-2 mt-3">
                     {[
-                       { id: 1, label: "0 - 1 years" },
-                       { id: 2, label: "1 - 2 years" },
-                       { id: 3, label: "> 6 years" },
+                      { id: 1, label: "0 - 1 years" },
+                      { id: 2, label: "1 - 2 years" },
+                      { id: 3, label: "> 6 years" },
                     ].map((option) => (
                       <TouchableOpacity
                         key={option.id}
@@ -202,9 +198,11 @@ const ApplyForCard = () => {
                 </View>
               </View>
 
-              <View className="p-5">
-                <CustomButton
-                  Text={"Next"}
+              <View className="p-5 items-center">
+                <Button
+                  text='Next'
+                  width='w-[90%]'
+                  styles='mb-4 py-4'
                   onPress={() => navigation.navigate("CashUpCard")}
                 />
               </View>
@@ -321,7 +319,7 @@ const ApplyForCard = () => {
                   <TextInput className="mt-2" placeholder="Enter Here" />
                 </View>
 
-                
+
 
                 <View className="mt-7 rounded-lg">
                   <Text className="text-sm font-medium text-zinc-600">
@@ -363,9 +361,11 @@ const ApplyForCard = () => {
                 </View>
               </View>
 
-              <View className="p-5">
-                <CustomButton
-                  Text={"Next"}
+              <View className="p-5 items-center">
+                <Button
+                  text='Next'
+                  width='w-[90%]'
+                  styles='mb-4 py-4'
                   onPress={() => navigation.navigate("CashUpCard")}
                 />
               </View>
