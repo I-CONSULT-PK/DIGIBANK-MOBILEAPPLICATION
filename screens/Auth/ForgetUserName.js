@@ -6,9 +6,9 @@ import { AppLoaderContext } from "../../components/LoaderHOC";
 import axios from "axios";
 import CustomButton from "../../components/Button";
 import Input from "../../components/TextInput";
-import { StatusBar } from "expo-status-bar";
-import AntDesign from "@expo/vector-icons/AntDesign"
+import  { StatusBar } from "expo-status-bar";
 import API_BASE_URL from "../../config";
+import { Entypo } from "@expo/vector-icons";
 
 import Button from "../../components/Button";
 
@@ -113,7 +113,7 @@ const ForgetUserName = ({ route }) => {
 
         <View className="flex-row items-center p-4 mt-7">
           <TouchableOpacity onPress={() => navigation.goBack()}>
-            <AntDesign name="arrowleft" size={20} color="black" />
+            <Entypo name="chevron-left" size={22} color="black" />
           </TouchableOpacity>
           <Text className="text-black font-semibold text-lg ml-4 font-InterSemiBold">Forgot username</Text>
         </View>

@@ -43,11 +43,10 @@
 // export default SplashScreen;
 
 import React, { useEffect } from "react";
-import { View } from "react-native";
-import { LinearGradient } from "expo-linear-gradient";
+import { View, Image } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Color } from "../../GlobalStyles";
-import Logo from "../../assets/Images/logo.svg";
+import { StatusBar } from "expo-status-bar";
 
 const SplashScreen = ({ navigation }) => {
   useEffect(() => {
@@ -68,14 +67,16 @@ const SplashScreen = ({ navigation }) => {
   }, [navigation]);
 
   return (
-    <LinearGradient
-      className="flex-1 justify-center items-center"
-      colors={[Color.PrimaryWebOrient, Color.PrimaryWebOrientLayer2]}
-    >
-      <View className="justify-center items-center w-full h-full">
-        <Logo />
+    <>
+      <View className="flex-1 bg-primary h-full items-center justify-center">
+        <Image
+          source={require("../../assets/splash.png")}
+          resizeMode="cover"
+          className="w-full h-full"
+        />
       </View>
-    </LinearGradient>
+      <StatusBar backgroundColor={Color.PrimaryWebOrient} style="light" />
+    </>
   );
 };
 
