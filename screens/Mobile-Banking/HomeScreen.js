@@ -590,7 +590,7 @@ const HomeScreen = () => {
         {/* User Info */}
         <View className="flex flex-col justify-center text-lg font-semibold text-gray-800 mr-20">
           <Text className="text-slate-500 text-sm mb-0">welcome</Text>
-          <Text className="font-bold text-lg mb-0">Mirza Uraib khan</Text>
+          <Text className="font-bold text-lg mb-0">Mirza Uraib</Text>
         </View>
 
         {/* Notification Bell */}
