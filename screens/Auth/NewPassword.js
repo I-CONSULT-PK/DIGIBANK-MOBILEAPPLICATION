@@ -153,7 +153,7 @@ const ForgetPassword = ({ route }) => {
         //                         />
         //                     </View>
         //                     <View style={{ margin: 8 }}>
-        //                         <CustomButton Text={"Reset"} onPress={() => navigation.navigate("Login")} />
+        //                         <CustomButton text={"Reset"} onPress={() => navigation.navigate("Login")} />
         //                     </View>
         //                 </View>
         //             </View>

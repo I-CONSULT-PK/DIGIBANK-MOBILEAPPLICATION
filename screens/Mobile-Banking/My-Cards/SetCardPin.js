@@ -77,12 +77,12 @@ const SetCardPin = ({ navigation }) => {
   return (
     <SafeAreaView className="bg-[#f9fafc]" style={{ flex: 1 }}>
       <TouchableOpacity
-        className="mt-12 ml-5"
+        className="mt-8 ml-2"
         onPress={() => navigation.navigate("CardActivation")}
       >
         <Entypo name="chevron-left" size={30} color="#090909" />
       </TouchableOpacity>
-      <Text className="text-2xl text-center mt-5 font-bold">
+      <Text className="text-2xl text-center  font-bold">
         Card Activation
       </Text>
       <View
@@ -144,9 +144,9 @@ const SetCardPin = ({ navigation }) => {
 
         <View className="p-7">
           {!isConfirmationStage ? (
-            <CustomButton Text={"Next"} onPress={handleNextPress} />
+            <CustomButton text={"Next"} onPress={handleNextPress} />
           ) : (
-            <CustomButton Text={"Confirm"} onPress={handleConfirmPress} />
+            <CustomButton text={"Confirm"} onPress={handleConfirmPress} />
           )}
         </View>
       </View>

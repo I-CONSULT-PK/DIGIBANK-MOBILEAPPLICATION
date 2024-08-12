@@ -9,29 +9,22 @@ import {
   Keyboard,
   Switch,
 } from "react-native";
-import {
-  widthPercentageToDP as wp,
-  heightPercentageToDP as hp,
-} from "react-native-responsive-screen";
 import Input from "../../components/TextInput";
 import InputWithIcon from "../../components/TextInputWithIcon";
-import CustomButton from "../../components/Button";
 import { Controller, useForm } from "react-hook-form";
 import { Color } from "../../GlobalStyles";
 import LoaderComponent from "../../components/LoaderComponent";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { AppLoaderContext } from "../../components/LoaderHOC";
-
 import { SafeAreaView } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
-import { StatusBar } from "expo-status-bar";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import axios from "axios";
 import API_BASE_URL from "../../config";
 import * as LocalAuthentication from "expo-local-authentication";
 import * as Device from "expo-device";
-import { v4 as uuidv4 } from 'uuid'; 
+import { v4 as uuidv4 } from "uuid";
 
 const Registration = ({ route }) => {
   const navigation = useNavigation();
@@ -375,9 +368,15 @@ const Registration = ({ route }) => {
       const isEnrolled = await LocalAuthentication.isEnrolledAsync();
 
       if (!hasHardware) {
-        Alert.alert("Error", "Biometric authentication is not available on this device.");
+        Alert.alert(
+          "Error",
+          "Biometric authentication is not available on this device."
+        );
       } else if (!isEnrolled) {
-        Alert.alert("Error", "No biometric authentication is set up on this device.");
+        Alert.alert(
+          "Error",
+          "No biometric authentication is set up on this device."
+        );
       }
     };
 
@@ -392,7 +391,7 @@ const Registration = ({ route }) => {
           setVisitorId(newVisitorId); // Set the visitor ID in state
 
           // Store the visitor ID locally
-          await AsyncStorage.setItem('visitorId', newVisitorId);
+          await AsyncStorage.setItem("visitorId", newVisitorId);
 
           setIsEnabled(true);
           setBiometricData({
@@ -404,13 +403,12 @@ const Registration = ({ route }) => {
           });
 
           // Console log the device and biometric info
-          console.log('Biometric Data:');
-          console.log('Brand:', Device.brand);
-          console.log('Model Name:', Device.modelName);
-          console.log('OS Name:', Device.osName);
-          console.log('OS Version:', Device.osVersion);
-          console.log('Visitor ID:', newVisitorId);
-
+          console.log("Biometric Data:");
+          console.log("Brand:", Device.brand);
+          console.log("Model Name:", Device.modelName);
+          console.log("OS Name:", Device.osName);
+          console.log("OS Version:", Device.osVersion);
+          console.log("Visitor ID:", newVisitorId);
         } else {
           Alert.alert("Authentication failed", result.error);
         }
@@ -423,10 +421,10 @@ const Registration = ({ route }) => {
       setVisitorId(null);
 
       // Remove the visitor ID from local storage
-      await AsyncStorage.removeItem('visitorId');
+      await AsyncStorage.removeItem("visitorId");
 
       // Console log the biometric data reset
-      console.log('Biometric Data Reset');
+      console.log("Biometric Data Reset");
     }
   };
 
@@ -624,7 +622,7 @@ const Registration = ({ route }) => {
                         value={isEnabled}
                       />
                     </View>
-                    {biometricData && (
+                    {/* {biometricData && (
                       <View>
                         <Text>Device Info:</Text>
                         <Text>Brand: {biometricData.brand}</Text>
@@ -632,7 +630,7 @@ const Registration = ({ route }) => {
                         <Text>OS: {biometricData.osName}</Text>
                         <Text>OS Version: {biometricData.osVersion}</Text>
                       </View>
-                    )}
+                    )} */}
                   </View>
                 </View>
 
@@ -709,7 +707,7 @@ const Registration = ({ route }) => {
                         value={isEnabled}
                       />
                     </View>
-                    {biometricData && (
+                    {/* {biometricData && (
                       <View>
                         <Text>Device Info:</Text>
                         <Text>Brand: {biometricData.brand}</Text>
@@ -717,7 +715,8 @@ const Registration = ({ route }) => {
                         <Text>OS: {biometricData.osName}</Text>
                         <Text>OS Version: {biometricData.osVersion}</Text>
                       </View>
-                    )}
+                    )} */}
+                    
                   </View>
                 </View>
 
