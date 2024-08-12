@@ -3,7 +3,7 @@ import { View, Text, ScrollView, TouchableOpacity } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { StatusBar } from 'expo-status-bar';
 import { LinearGradient } from 'expo-linear-gradient';
-import AntDesign from '@expo/vector-icons/AntDesign';
+import { Entypo } from '@expo/vector-icons';
 
 import { Color } from '../../../GlobalStyles';
 import OptionBox from '../../../components/OptionBox';
@@ -14,17 +14,17 @@ import RaastIcon from '../../../assets/raast-icon.png'
 
 const SendBeneficiaryMoney = ({ navigation }) => {
   return (
-    <SafeAreaView className="h-full flex-1">
+    <SafeAreaView className="h-full flex-1" style={{backgroundColor: Color.PrimaryWebOrient}}>
 
       <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
 
         <LinearGradient
           colors={[Color.PrimaryWebOrient, Color.PrimaryWebOrientLayer2]}
-          style={{ height: '12%' }}
+          style={{ height: 100 }}
         >
           <View className="flex-row items-center justify-center w-full h-full">
             <TouchableOpacity onPress={() => navigation.goBack()} className="absolute left-5">
-              <AntDesign name="arrowleft" size={23} color="white" />
+              <Entypo name="chevron-left" size={23} color="white" />
             </TouchableOpacity>
             <Text className="text-white font-semibold text-lg font-InterSemiBold">Send Money</Text>
           </View>

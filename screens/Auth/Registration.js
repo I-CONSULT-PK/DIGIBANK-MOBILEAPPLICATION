@@ -19,12 +19,13 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { AppLoaderContext } from "../../components/LoaderHOC";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
-import AntDesign from "@expo/vector-icons/AntDesign";
 import axios from "axios";
 import API_BASE_URL from "../../config";
 import * as LocalAuthentication from "expo-local-authentication";
 import * as Device from "expo-device";
+import { Entypo } from "@expo/vector-icons";
 import { v4 as uuidv4 } from "uuid";
+
 
 const Registration = ({ route }) => {
   const navigation = useNavigation();
@@ -382,6 +383,7 @@ const Registration = ({ route }) => {
 
     checkBiometricSupport();
   }, []);
+  
   const toggleSwitch = async () => {
     if (!isEnabled) {
       try {
@@ -429,7 +431,7 @@ const Registration = ({ route }) => {
   };
 
   return (
-    <SafeAreaView className="h-full flex-1">
+    <SafeAreaView className="h-full flex-1" style={{backgroundColor: Color.PrimaryWebOrient}}>
       <LinearGradient
         colors={[Color.PrimaryWebOrient, Color.PrimaryWebOrientLayer2]}
         style={{ flex: 1 }}
@@ -442,7 +444,7 @@ const Registration = ({ route }) => {
                 main && navigation.goBack();
               }}
             >
-              <AntDesign name="arrowleft" size={20} color="white" />
+              <Entypo name="chevron-left" size={22} color="white" />
             </TouchableOpacity>
             <Text className="text-white text-lg font-semibold ml-4 font-InterSemiBold">
               Register yourself
@@ -594,7 +596,7 @@ const Registration = ({ route }) => {
                         keyboardType="numeric"
                       />
                     </View>
-                    <View className="mb-8">
+                    <View className="mb-6">
                       <Text className="text-sm mb-2 font-InterMedium">
                         Account Number*
                       </Text>
@@ -607,9 +609,9 @@ const Registration = ({ route }) => {
                         onSubmitEditing={Keyboard.dismiss}
                       />
                     </View>
-                    <View className="mb-4 d-flex flex-row">
+                    <View className="mb-7 d-flex flex-row items-center">
                       <Text
-                        className="text-lg font-InterMedium"
+                        className="text-base font-InterMedium"
                         style={{ color: Color.PrimaryWebOrientTxtColor }}
                       >
                         Set Fingerprint
@@ -759,6 +761,8 @@ const Registration = ({ route }) => {
           </View>
         </ScrollView>
       </LinearGradient>
+
+      <StatusBar backgroundColor={Color.PrimaryWebOrient} style="light" />
     </SafeAreaView>
   );
 };

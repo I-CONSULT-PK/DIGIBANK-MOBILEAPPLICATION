@@ -194,9 +194,7 @@ const SupplementaryCard = () => {
           </View>
 
           <TouchableOpacity
-            className={`py-3 rounded-lg mt-4 ${
-              checked ? "bg-[#1DBBD8]" : "bg-[#D9D9D9]"
-            }`}
+            className="py-3 rounded-lg mt-4" style={{backgroundColor: checked ? Color.PrimaryWebOrient : '#D9D9D9'}}
             onPress={() => {
               if (checked) navigation.navigate("SupplementaryCardCustomization");
             }}

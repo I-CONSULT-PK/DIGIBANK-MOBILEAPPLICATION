@@ -35,7 +35,7 @@ const PayNow = () => {
     <SafeAreaView className="flex-1 bg-[#f9fafc]">
       <ScrollView className="flex-1">
         <TouchableOpacity
-          className="mt-10 ml-4" 
+          className="mt-10 ml-4"
           onPress={() => navigation.goBack()}
         >
           <Entypo name="chevron-left" size={30} color="black" />
@@ -81,7 +81,9 @@ const PayNow = () => {
             <View className="flex flex-col w-full mb-4">
               <View className="flex flex-row items-center justify-between w-full">
                 <Text className="text-neutral-500">Account Title</Text>
-                <Text className="text-gray-800 font-semibold">Mahrukh Zafar</Text>
+                <Text className="text-gray-800 font-semibold">
+                  Mahrukh Zafar
+                </Text>
               </View>
               <View className="my-2">
                 <View className="border-t border-gray-300" />
@@ -127,7 +129,6 @@ const PayNow = () => {
               </View>
             </View>
 
-            {/* Bank Name Section */}
             <View className="flex flex-col w-full mb-4">
               <View className="flex flex-row items-center justify-between w-full">
                 <Text className="text-neutral-500">Bank Charges</Text>
@@ -138,7 +139,6 @@ const PayNow = () => {
               </View>
             </View>
 
-            {/* Nick Name Section */}
             <View className="flex flex-col w-full">
               <View className="flex flex-row items-center justify-between w-full">
                 <Text className="text-black">Total Amount</Text>

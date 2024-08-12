@@ -7,6 +7,8 @@ import { Entypo } from "@expo/vector-icons";
 import TextInput from "../../../components/TextInput";
 import ListSectionCard from "../../../assets/ListSectionCard.svg";
 
+import Button from "../../../components/Button";
+
 const SupplementaryCardCustomization = () => {
   const navigation = useNavigation();
   return (
@@ -47,13 +49,12 @@ const SupplementaryCardCustomization = () => {
           </View>
         </View>
         <View className="px-10 mt-14">
-          <TouchableOpacity
-            className="py-3 px-12 bg-[#1DBBD8] rounded-lg"
-            onPress={() => navigation.navigate("SupplementaryCardLimitSplit")} >
-            <Text className="text-base text-center font-InterMedium text-white">
-            Confirm and proceed 
-            </Text>
-          </TouchableOpacity>
+          <Button
+            text='Confirm and proceed '
+            width='w-[100%]'
+            styles='mb-4 py-3'
+            onPress={() => navigation.navigate("SupplementaryCardLimitSplit")}
+          />
         </View>
       </ScrollView>
     </SafeAreaView>

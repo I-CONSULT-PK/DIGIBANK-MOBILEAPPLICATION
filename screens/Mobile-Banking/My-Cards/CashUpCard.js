@@ -3,7 +3,7 @@ import { Text, View, ScrollView, SafeAreaView, Image } from "react-native";
 import { Entypo, Ionicons } from "@expo/vector-icons";
 import { Checkbox } from "react-native-paper";
 import CashUpContainer from "../../../assets/Images/CashUpContainer.png";
-import CustomButton from "../../../components/Button";
+import Button from "../../../components/Button";
 import { useNavigation } from "@react-navigation/native";
 import CashUpCardSvg from "../../../assets/Images/CashUpCardSvg.svg";
 
@@ -22,7 +22,7 @@ const CashUpCard = () => {
         <View className="flex-1">
           <View className="flex flex-col overflow-hidden gap-4 pt-16 pl-6 bg-cyan-500">
             <View className="flex items-center p-2.5 rounded-md bg-white bg-opacity-66 h-10 w-10 justify-center">
-              <Ionicons name="close" size={20} color="black" onPress={() => navigation.navigate("ApplyForCard")}/>
+              <Ionicons name="close" size={20} color="black" onPress={() => navigation.navigate("ApplyForCard")} />
             </View>
             <View className="flex flex-row items-center mt-8">
               <Text className="text-3xl font-semibold text-black">
@@ -112,8 +112,10 @@ const CashUpCard = () => {
         </View>
       </ScrollView>
       <View className="p-5">
-        <CustomButton
-          text={"Confirm "}
+        <Button
+          text='Confirm'
+          width='w-[100%]'
+          styles='mb-4 py-4'
           onPress={() => navigation.navigate("CongCard")}
         />
       </View>

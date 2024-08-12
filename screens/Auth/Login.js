@@ -1,4 +1,5 @@
-import React, { useState, useContext,useEffect } from "react";
+
+import React, { useState, useContext, useEffect } from "react";
 import {
   Dimensions,
   ScrollView,
@@ -29,14 +30,15 @@ import { useNavigation } from "@react-navigation/native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { LinearGradient } from 'expo-linear-gradient';
 import { StatusBar } from 'expo-status-bar';
-import AntDesign from '@expo/vector-icons/AntDesign';
 import axios from 'axios';
 import API_BASE_URL from '../../config';
 import * as LocalAuthentication from 'expo-local-authentication'; // Import for Expo
 import * as Device from 'expo-device';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { v4 as uuidv4 } from 'uuid'; // If you are using UUID for visitor ID generation
- 
+
+import Button from "../../components/Button";
+
 const Login = ({ navigation }) => {
   
   const [selectedOption, setSelectedOption] = useState("mobile");
@@ -53,7 +55,7 @@ const Login = ({ navigation }) => {
   //   //   Alert.alert("Validation Error", "Please enter both email and password");
   //   //   return;
   //   // }
- 
+
   //   // try {
   //   //   const apiUrl = "http://192.168.0.196:9096/v1/customer/login";
   //   //   showLoader();
@@ -67,13 +69,13 @@ const Login = ({ navigation }) => {
   //   //       password,
   //   //     }),
   //   //   });
- 
+
   //   //   const data = await response.json();
- 
+
   //   //   if (response.ok && data.success) {
   //   //     // Successful login
   //   //     console.log("Login successful", data);
- 
+
   //   //     // Navigate to the next screen
   //   // navigation.navigate("OTP");
   //   //   } else {
@@ -92,73 +94,77 @@ const Login = ({ navigation }) => {
   //   // }
   //   setPinCodeModalVisible(true);
   // };
- 
-  // --------------------------------------------------
- 
+
+
   const [form, setForm] = useState({ username: '', password: '' });
- 
+  const [loading, setLoading] = useState(false);
+
   const handleChange = (name, value) => {
     setForm({
       ...form,
       [name]: value,
     });
   };
- 
-  // const handleLogin = async () => {
-  //   if (form.username === '' || form.password === '') {
-  //     Alert.alert('Error', 'Username and password can not be null')
-  //   }
-  //   else {
-  //     const loginData = {
-  //       emailorUsername: form.username,
-  //       password: form.password
-  //     };
- 
-  //     try {
-  //       const response = await axios.post(`${API_BASE_URL}/v1/customer/login`, loginData);
-  //       const dto = response.data;
- 
-  //       if (dto && dto.success && dto.data && dto.data.customerId) {
-  //         const customerId = dto.data.customerId.toString();
-  //         const token = dto.data.token.toString();
-  //         const expirationTime = dto.data.expirationTime.toString();
- 
-  //         await AsyncStorage.setItem('customerId', customerId);
-  //         await AsyncStorage.setItem('token', token);
-  //         await AsyncStorage.setItem('expirationTime', expirationTime);
- 
-  //         navigation.navigate('Home');
-  //       }
-  //       else {
-  //         if (dto.message) {
-  //           Alert.alert('Error', dto.message);
-  //         }
-  //         else if (dto.errors && dto.errors.length > 0) {
-  //           Alert.alert('Error', dto.errors);
-  //         }
-  //       }
-  //     } catch (error) {
-  //       if (error.response) {
-  //         const statusCode = error.response.status;
- 
-  //         if (statusCode === 404) {
-  //           Alert.alert('Error', 'Server timed out. Try again later!');
-  //         } else if (statusCode === 503) {
-  //           Alert.alert('Error', 'Service unavailable. Please try again later.');
-  //         } else if (statusCode === 400) {
-  //           Alert.alert('Error', error.response.data.data.errors[0]);
-  //         } else {
-  //           Alert.alert('Error', error.message);
-  //         }
-  //       } else if (error.request) {
-  //         Alert.alert('Error', 'No response from the server. Please check your connection.');
-  //       } else {
-  //         Alert.alert('Error', error.message);
-  //       }
-  //     }
-  //   }
-  // };
- 
+
+  const handleLogin = async () => {
+    if (form.username === '' || form.password === '') {
+      Alert.alert('Error', 'Username and password can not be null')
+    }
+    else {
+      setLoading(true);
+
+      const loginData = {
+        emailorUsername: form.username,
+        password: form.password
+      };
+
+      try {
+        const response = await axios.post(`${API_BASE_URL}/v1/customer/login`, loginData);
+        const dto = response.data;
+
+        if (dto && dto.success && dto.data && dto.data.customerId) {
+          const customerId = dto.data.customerId.toString();
+          const token = dto.data.token.toString();
+          const expirationTime = dto.data.expirationTime.toString();
+
+          await AsyncStorage.setItem('customerId', customerId);
+          await AsyncStorage.setItem('token', token);
+          await AsyncStorage.setItem('expirationTime', expirationTime);
+
+          navigation.navigate('Home');
+        }
+        else {
+          if (dto.message) {
+            Alert.alert('Error', dto.message);
+          }
+          else if (dto.errors && dto.errors.length > 0) {
+            Alert.alert('Error', dto.errors);
+          }
+        }
+      } catch (error) {
+        if (error.response) {
+          const statusCode = error.response.status;
+
+          if (statusCode === 404) {
+            Alert.alert('Error', 'Server timed out. Try again later!');
+          } else if (statusCode === 503) {
+            Alert.alert('Error', 'Service unavailable. Please try again later.');
+          } else if (statusCode === 400) {
+            Alert.alert('Error', error.response.data.data.errors[0]);
+          } else {
+            Alert.alert('Error', error.message);
+          }
+        } else if (error.request) {
+          Alert.alert('Error', 'No response from the server. Please check your connection.');
+        } else {
+          Alert.alert('Error', error.message);
+        }
+      } finally {
+        setLoading(false);
+      }
+    }
+  };
+
   const securityImages1 = [
     require('../../assets/security-img-1.png'),
     require('../../assets/security-img-2.png'),
@@ -166,7 +172,7 @@ const Login = ({ navigation }) => {
     require('../../assets/security-img-4.png'),
     require('../../assets/security-img-5.png'),
   ];
- 
+
   const securityImages2 = [
     require('../../assets/security-img-6.png'),
     require('../../assets/security-img-7.png'),
@@ -250,15 +256,18 @@ const Login = ({ navigation }) => {
   };
  
   return (
-    <SafeAreaView className="h-full flex-1">
+
+    <SafeAreaView className="h-full flex-1" style={{backgroundColor: Color.PrimaryWebOrient}}>
       <LinearGradient
         colors={[Color.PrimaryWebOrient, Color.PrimaryWebOrientLayer2]}
         style={{ flex: 1 }}
       >
         <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+
+
           <View className="flex-row items-center p-4 mt-2">
             <TouchableOpacity onPress={() => navigation.goBack()}>
-              <AntDesign name="arrowleft" size={20} color="white" />
+              <Entypo name="chevron-left" size={22} color="white" />
             </TouchableOpacity>
             <Text className="text-white font-semibold text-lg ml-4 font-InterSemiBold">
               Login
@@ -334,7 +343,7 @@ const Login = ({ navigation }) => {
 
               {/* <View className="-top-2">
                   <Text className="text-center font-medium text-sm mb-4 font-InterMedium">Select Security Image</Text>
- 
+
                   <View className="flex-row justify-around items-center">
                     {securityImages1.map((image, index) => (
                       <TouchableOpacity
@@ -349,7 +358,7 @@ const Login = ({ navigation }) => {
                       </TouchableOpacity>
                     ))}
                   </View>
- 
+
                   <View className="flex-row justify-around items-center mt-3.5">
                     {securityImages2.map((image, index) => (
                       <TouchableOpacity
@@ -369,11 +378,11 @@ const Login = ({ navigation }) => {
               {/* -----| Security Image End |----- */}
 
               <View className="mb-2">
-                <CustomButton
+                <Button
                   text="Login"
                   width="w-[100%]"
                   styles="mb-4 py-4"
-                  onPress={() => navigation.navigate("Home")}
+                  onPress={handleLogin}
                 />
 
                 <View className="flex-row justify-center">
@@ -479,13 +488,12 @@ const Login = ({ navigation }) => {
     </SafeAreaView>
   );
 };
- 
+
 const styles = StyleSheet.create({
   loader: {
     width: wp("20%"),
     height: wp("20%"),
   },
 });
- 
+
 export default Login;
- 

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Icon from "react-native-vector-icons/FontAwesome";
-import { Text, View, Image,TextInput } from "react-native";
+import { Text, View, Image, TextInput } from "react-native";
 import { ScrollView, StyleSheet, Switch } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { TouchableOpacity } from "react-native";
@@ -12,6 +12,8 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
+
+import Button from "../../../components/Button";
 
 const NewCard = () => {
   const navigation = useNavigation();
@@ -89,10 +91,10 @@ const NewCard = () => {
                       <Text className="text-base text-gray-400 bg-gray-100">
                         {selectedDate
                           ? new Date(selectedDate).toLocaleDateString("en-US", {
-                              day: "2-digit",
-                              month: "2-digit",
-                              year: "2-digit",
-                            })
+                            day: "2-digit",
+                            month: "2-digit",
+                            year: "2-digit",
+                          })
                           : "MM/YY"}
                       </Text>
 
@@ -134,11 +136,12 @@ const NewCard = () => {
               </Text>
             </View>
             <View className="px-10 mt-16">
-              <TouchableOpacity className="py-3 px-12 bg-[#1DBBD8] rounded-lg">
-                <Text className="text-base text-center font-InterMedium text-white">
-                Add Now
-                </Text>
-              </TouchableOpacity>
+              <Button
+                text='Add Now'
+                width='w-[100%]'
+                styles='py-3 px-12'
+                onPress={() => {}}
+              />
             </View>
           </View>
         </View>
