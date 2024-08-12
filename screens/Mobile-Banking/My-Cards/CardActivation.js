@@ -41,7 +41,7 @@ const CardActivation = () => {
       <ScrollView>
         <View className=" flex-1">
           <TouchableOpacity
-            onPress={() => navigation.navigate("NameOnTheCard")}
+           onPress={() => navigation.goBack()}
           >
             <Entypo
               name="chevron-left"

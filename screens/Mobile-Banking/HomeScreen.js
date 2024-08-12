@@ -629,18 +629,18 @@ const HomeScreen = () => {
                     { backgroundColor: Color.PrimaryWebOrient },
                   ]}
                 >
-                  <Payment style={styles.icon} />
+                  <Payment style={styles.icon} onPress={() => navigation.navigate("SendBeneficiaryMoney")}/>
                   <Text className="text-center font-semibold text-white">
                     Payment
                   </Text>
                 </View>
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => navigation.navigate('SendBeneficiaryMoney')}>
+              <TouchableOpacity onPress={() => navigation.navigate("SendBeneficiaryMoney")}>
                 <View
                   className="w-24 h-24 bg-white m-2.5 rounded-lg flex justify-center items-center"
                   style={styles.box}
                 >
-                  <Beneficiary style={styles.icon} />
+                  <Beneficiary style={styles.icon}   onPress={() => navigation.navigate("BeneficiaryList")}/>
                   <Text className="text-center font-semibold">Beneficiary</Text>
                 </View>
               </TouchableOpacity>

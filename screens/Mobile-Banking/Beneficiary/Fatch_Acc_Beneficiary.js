@@ -86,7 +86,7 @@ const Fatch_Acc_Beneficiary = () => {
           />
         </View>
         <View className="px-6 mt-8">
-          <CustomButton text={"Add"} onPress={() => navigation.navigate("SendFromAccount")}/>
+          <CustomButton text={"Add"} onPress={() => navigation.navigate("BeneficiaryList")}/>
         </View>
       </ScrollView>
       <Footer />
