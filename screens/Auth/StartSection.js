@@ -29,7 +29,7 @@ const StartSection = ({ navigation }) => {
                         <View>
                             <View className="flex justify-center items-center">
                                 <Image
-                                    source={require('../../assets/mobile.png')}
+                                    source={require('../../assets/iPhone.png')}
                                     resizeMode='contain'
                                     style={{ width: '80%', height: undefined, aspectRatio: 1 }}
                                 />

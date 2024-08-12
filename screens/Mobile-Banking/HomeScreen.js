@@ -974,7 +974,7 @@ const HomeScreen = () => {
 const styles = StyleSheet.create({
   box: {
     shadowColor: "#000",
-    elevation: 10,
+    elevation: 2,
   },
   icon: {
     marginBottom: 8,
