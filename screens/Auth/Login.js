@@ -186,7 +186,6 @@ const Login = ({ navigation }) => {
     const [visitorId, setVisitorId] = useState(null);
     const [modalVisible, setModalVisible] = useState(false);
     
-  
     useEffect(() => {
       const checkBiometricSupport = async () => {
         const hasHardware = await LocalAuthentication.hasHardwareAsync();
@@ -207,6 +206,7 @@ const Login = ({ navigation }) => {
   
       checkBiometricSupport();
     }, []);
+
   const handlePress = async () => {
     if (!isEnabled) {
       try {
@@ -383,6 +383,7 @@ const Login = ({ navigation }) => {
                   width="w-[100%]"
                   styles="mb-4 py-4"
                   onPress={handleLogin}
+                  loading={loading}
                 />
 
                 <View className="flex-row justify-center">
@@ -401,6 +402,7 @@ const Login = ({ navigation }) => {
                   </TouchableOpacity>
                 </View>
               </View>
+
               {/* Centered Touch ID and Face ID buttons */}
               <View className="flex justify-center items-center ">
                 <View className="flex flex-row space-x-4">
@@ -412,7 +414,7 @@ const Login = ({ navigation }) => {
                     <View className="bg-[#1DBBD8] p-4 rounded-lg">
                       <Image
                         source={require("../../assets/finger-icon.png")}
-                        className="h-12 w-12"
+                        className="h-14 w-12"
                       />
                     </View>
                     <Text className="mt-2 mb-4 text-center font-sm ">
@@ -428,7 +430,7 @@ const Login = ({ navigation }) => {
                     <View className="bg-[#1DBBD8] p-4 rounded-lg">
                       <Image
                         source={require("../../assets/Face Icon.png")}
-                        className="h-12 w-12"
+                        className="h-14 w-14"
                       />
                     </View>
                     <Text className="mt-2  mb-4 text-center font-sm">
@@ -442,7 +444,6 @@ const Login = ({ navigation }) => {
         </ScrollView>
       </LinearGradient>
 
-      <StatusBar backgroundColor={Color.PrimaryWebOrient} style="light" />
       <Modal
         transparent={true}
         visible={modalVisible}
@@ -485,6 +486,8 @@ const Login = ({ navigation }) => {
           </View>
         </View>
       </Modal>
+
+      <StatusBar backgroundColor={Color.PrimaryWebOrient} style="light" />
     </SafeAreaView>
   );
 };

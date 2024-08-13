@@ -71,7 +71,7 @@ const BankList = ({ navigation }) => {
                     </View>
                 </LinearGradient>
 
-                <View className="w-full h-full px-6 bg-[#F5F5F5] pb-24">
+                <View className="w-full h-full px-6 bg-[#F5F5F5] pb-10">
                     <View className="mt-6">
                         <SearchBar 
                             placeholder='Search bank name'
