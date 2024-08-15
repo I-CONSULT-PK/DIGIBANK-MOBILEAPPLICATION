@@ -17,7 +17,7 @@ const Footer = () => {
           }`}
           onPress={() => {
             setSelected("home");
-            // navigation.navigate("Home");
+            navigation.navigate("Home");
           }}
         >
           <Entypo
