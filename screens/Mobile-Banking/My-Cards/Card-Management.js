@@ -60,7 +60,7 @@ const CardManagement = () => {
                     : "shadow-sm"
                 }`}
                 style={{}}
-                onPress={() => handleOptionChange("Credit Card")}
+                onPress={() => handleOptionChange("Debit Card")}
               >
                 <Text
                   className={`text-center font-bold ${
@@ -69,7 +69,7 @@ const CardManagement = () => {
                       : "text-black"
                   }`}
                 >
-                  Credit Card
+                  Debit Card
                 </Text>
               </TouchableOpacity>
 
@@ -79,7 +79,7 @@ const CardManagement = () => {
                     ? "bg-primary shadow-lg"
                     : "shadow-sm"
                 }`}
-                onPress={() => handleOptionChange("Debit Card")}
+                onPress={() => handleOptionChange("Credit Card")}
               >
                 <Text
                   className={`text-center font-bold ${
@@ -88,7 +88,7 @@ const CardManagement = () => {
                       : "text-black"
                   }`}
                 >
-                  Debit Card
+                  Credit Card
                 </Text>
               </TouchableOpacity>
             </View>
@@ -104,7 +104,7 @@ const CardManagement = () => {
                     />
                     <View className="flex flex-col ml-4">
                       <Text className="text-lg font-semibold text-gray-800">
-                        Credit Card
+                        Debit Card
                       </Text>
                       <Text className="text-xs font-medium text-neutral-500">
                         5669996****7989
@@ -171,7 +171,7 @@ const CardManagement = () => {
                     />
                     <View className="flex flex-col ml-4">
                       <Text className="text-lg font-semibold text-gray-800">
-                        Credit Card
+                        Debit Card
                       </Text>
                       <Text className="text-xs font-medium text-neutral-500">
                         5669996****7989
