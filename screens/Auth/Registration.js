@@ -387,8 +387,8 @@ const Registration = ({ route }) => {
       try {
         const result = await LocalAuthentication.authenticateAsync();
         if (result.success) {
-          const newVisitorId = uuidv4(); // Generate a new unique ID
-          setVisitorId(newVisitorId); // Set the visitor ID in state
+          const newVisitorId = uuidv4();
+          setVisitorId(newVisitorId);
 
           // Store the visitor ID locally
           await AsyncStorage.setItem("visitorId", newVisitorId);
@@ -716,7 +716,6 @@ const Registration = ({ route }) => {
                         <Text>OS Version: {biometricData.osVersion}</Text>
                       </View>
                     )} */}
-                    
                   </View>
                 </View>
 
@@ -730,7 +729,7 @@ const Registration = ({ route }) => {
                       Next
                     </Text>
                   </TouchableOpacity>
-                  
+
                   <View className="flex-row justify-center">
                     <Text className="text-sm font-InterRegular">
                       Already have an account?{" "}

@@ -433,7 +433,6 @@ const menuItems = [
   { title: "Locator", icon: "location-outline" },
   { title: "Contact Us", icon: "chatbubbles-outline" },
   { title: "Refer", icon: "people" },
-  { title: "Fingerprint", icon: "people", screen: "Fingerprint" },
 ];
 
 const Sidebar = () => {

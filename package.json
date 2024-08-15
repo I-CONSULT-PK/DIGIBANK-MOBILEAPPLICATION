@@ -36,7 +36,9 @@
     "expo-application": "^5.9.1",
     "expo-barcode-scanner": "~13.0.1",
     "expo-calendar": "~13.0.5",
+    "expo-camera": "~15.0.14",
     "expo-device": "~6.0.2",
+    "expo-face-detector": "~12.7.1",
     "expo-font": "~12.0.5",
     "expo-image": "~1.12.9",
     "expo-linear-gradient": "~13.0.2",
@@ -87,12 +89,11 @@
     "react-native-toast-message": "^2.2.0",
     "react-native-vector-icons": "^10.0.3",
     "react-native-view-shot": "^3.8.0",
+    "react-native-vision-camera": "^4.5.1",
     "react-native-web": "~0.19.6",
     "rn-toggle-switch": "^1.0.2",
     "tailwindcss": "3.3.2",
-    "uuidv4": "^6.2.13",
-    "expo-face-detector": "~12.7.1",
-    "expo-camera": "~15.0.14"
+    "uuidv4": "^6.2.13"
   },
   "devDependencies": {
     "@babel/core": "^7.24.0",
