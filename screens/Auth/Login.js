@@ -256,18 +256,16 @@ const Login = ({ navigation }) => {
   };
  
   return (
-
-    <SafeAreaView className="h-full flex-1" style={{backgroundColor: Color.PrimaryWebOrient}}>
+    <SafeAreaView className="h-full flex-1" style={{ backgroundColor: Color.PrimaryWebOrient }}>
       <LinearGradient
         colors={[Color.PrimaryWebOrient, Color.PrimaryWebOrientLayer2]}
         style={{ flex: 1 }}
       >
         <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
 
-
           <View className="flex-row items-center p-4 mt-2">
             <TouchableOpacity onPress={() => navigation.goBack()}>
-              <Entypo name="chevron-left" size={22} color="white" />
+              <Entypo name="chevron-left" size={24} color="white" />
             </TouchableOpacity>
             <Text className="text-white font-semibold text-lg ml-4 font-InterSemiBold">
               Login
@@ -377,7 +375,7 @@ const Login = ({ navigation }) => {
 
               {/* -----| Security Image End |----- */}
 
-              <View className="mb-2">
+              <View>
                 <Button
                   text="Login"
                   width="w-[100%]"
@@ -404,7 +402,7 @@ const Login = ({ navigation }) => {
               </View>
 
               {/* Centered Touch ID and Face ID buttons */}
-              <View className="flex justify-center items-center ">
+              <View className="flex justify-center items-center mb-8">
                 <View className="flex flex-row space-x-4">
                   {/* Touch ID Button */}
                   <TouchableOpacity
@@ -414,10 +412,10 @@ const Login = ({ navigation }) => {
                     <View className="bg-[#1DBBD8] p-4 rounded-lg">
                       <Image
                         source={require("../../assets/finger-icon.png")}
-                        className="h-14 w-12"
+                        className="h-10 w-10"
                       />
                     </View>
-                    <Text className="mt-2 mb-4 text-center font-sm ">
+                    <Text className="mt-2 text-center font-sm ">
                       Login with Touch ID
                     </Text>
                   </TouchableOpacity>
@@ -430,10 +428,10 @@ const Login = ({ navigation }) => {
                     <View className="bg-[#1DBBD8] p-4 rounded-lg">
                       <Image
                         source={require("../../assets/Face Icon.png")}
-                        className="h-14 w-14"
+                        className="h-10 w-10"
                       />
                     </View>
-                    <Text className="mt-2  mb-4 text-center font-sm">
+                    <Text className="mt-2 text-center font-sm">
                       Login with Face ID
                     </Text>
                   </TouchableOpacity>

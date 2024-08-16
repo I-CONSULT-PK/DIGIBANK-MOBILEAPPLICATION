@@ -1,11 +1,13 @@
-import React, { useState } from 'react'
-import { View, Text, ScrollView, TouchableOpacity } from 'react-native'
+import React, { useState, useEffect } from 'react'
+import { View, Text, ScrollView, TouchableOpacity, Alert } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { StatusBar } from 'expo-status-bar';
-import { LinearGradient } from 'expo-linear-gradient';
 import { Entypo } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
 
 import { Color } from '../../../GlobalStyles';
+import API_BASE_URL from '../../../config';
 import SearchBar from '../../../components/SearchBar';
 import OptionBox from '../../../components/OptionBox';
 import Footer from '../../../components/Footer';
@@ -20,77 +22,126 @@ import SoneriLogo from '../../../assets/soneri-logo.png';
 
 const BankList = ({ navigation }) => {
     const [searchQuery, setSearchQuery] = useState('');
+    const [banks, setBanks] = useState([]);
 
-    const banks = [
-        {
-            image: UBLLogo,
-            text: 'United Bank Limited',
-        },
-        {
-            image: AlliedLogo,
-            text: 'Allied Bank Limited',
-        },
-        {
-            image: MCBLogo,
-            text: 'MCB Bank',
-        },
-        {
-            image: HBLLogo,
-            text: 'Habib Bank Limited',
-        },
-        {
-            image: MeezanLogo,
-            text: 'Meezan Bank',
-        },
-        {
-            image: HabibMetroLogo,
-            text: 'Habib Metropolitan Bank Limited',
-        },
-        {
-            image: SoneriLogo,
-            text: 'Soneri Bank',
-        }
-    ];
+    // const banks = [
+    //     {
+    //         image: UBLLogo,
+    //         text: 'United Bank Limited',
+    //     },
+    //     {
+    //         image: AlliedLogo,
+    //         text: 'Allied Bank Limited',
+    //     },
+    //     {
+    //         image: MCBLogo,
+    //         text: 'MCB Bank',
+    //     },
+    //     {
+    //         image: HBLLogo,
+    //         text: 'Habib Bank Limited',
+    //     },
+    //     {
+    //         image: MeezanLogo,
+    //         text: 'Meezan Bank',
+    //     },
+    //     {
+    //         image: HabibMetroLogo,
+    //         text: 'Habib Metropolitan Bank Limited',
+    //     },
+    //     {
+    //         image: SoneriLogo,
+    //         text: 'Soneri Bank',
+    //     }
+    // ];
+
+    useEffect(() => {
+        const fetchBanks = async () => {
+            try {
+                const bearerToken = await AsyncStorage.getItem('token');
+
+                if (bearerToken) {
+                    const dto = await axios.get(`${API_BASE_URL}/v1/customer/fund/getBanks`, {
+                        headers: {
+                            'Authorization': `Bearer ${bearerToken}`,
+                        },
+                    });
+
+                    if (dto && dto.data.success && dto.data) {
+                        setBanks(dto.data.data);
+                    }
+                    else {
+                        if (dto.message) {
+                            Alert.alert('Error', dto.message);
+                        }
+                        else if (dto.errors && dto.errors.length > 0) {
+                            Alert.alert('Error', dto.errors);
+                        }
+                    }
+                } else {
+                    Alert.alert('Error', 'Unexpected error occured. Try again later!');
+                }
+            } catch (error) {
+                if (error.response) {
+                    const statusCode = error.response.status;
+
+                    if (statusCode === 404) {
+                        Alert.alert('Error', 'Server timed out. Try again later!');
+                    } else if (statusCode === 503) {
+                        Alert.alert('Error', 'Service unavailable. Please try again later.');
+                    } else if (statusCode === 400) {
+                        Alert.alert('Error', error.response.data.data.errors[0]);
+                    } else {
+                        Alert.alert('Error', error.message);
+                    }
+                } else if (error.request) {
+                    Alert.alert('Error', 'No response from the server. Please check your connection.');
+                } else {
+                    Alert.alert('Error', error.message);
+                }
+            }
+        };
+
+        fetchBanks();
+    }, []);
 
     const filteredBanks = banks.filter(bank =>
-        bank.text.toLowerCase().includes(searchQuery.toLowerCase())
+        bank.bankName.toLowerCase().includes(searchQuery.toLowerCase())
     );
-    
+
     return (
-        <SafeAreaView className="h-full flex-1" style={{backgroundColor: Color.PrimaryWebOrient}}>
+        <SafeAreaView className="h-full flex-1" style={{ backgroundColor: Color.PrimaryWebOrient }}>
             <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
 
-                <LinearGradient
-                    colors={[Color.PrimaryWebOrient, Color.PrimaryWebOrientLayer2]}
-                    style={{ height: 100 }}>
+                <View style={{ backgroundColor: Color.PrimaryWebOrient, height: 100 }}>
                     <View className="flex-row items-center justify-center w-full h-full">
                         <TouchableOpacity onPress={() => navigation.goBack()} className="absolute left-5">
-                            <Entypo name="chevron-left" size={23} color="white" />
+                            <Entypo name="chevron-left" size={25} color="white" />
                         </TouchableOpacity>
                         <Text className="text-white font-semibold text-lg font-InterSemiBold">Select Bank</Text>
                     </View>
-                </LinearGradient>
+                </View>
 
                 <View className="w-full h-full px-6 bg-[#F5F5F5] pb-10">
                     <View className="mt-6">
-                        <SearchBar 
+                        <SearchBar
                             placeholder='Search bank name'
                             onChangeText={setSearchQuery}
                             value={searchQuery} />
                     </View>
 
-                    <View className="mt-7">
+                    <View className="mt-8">
 
-                    {filteredBanks.map((bank, index) => (
+                        {filteredBanks.map((bank, index) => (
                             <React.Fragment key={index}>
                                 <OptionBox
-                                    image={bank.image}
-                                    text={bank.text}
+                                    image={{ uri: bank.bankLogo }} 
+                                    text={bank.bankName}
                                     icon1='arrowright'
                                     iconColor1={Color.PrimaryWebOrient}
-                                    onPress1={() => {navigation.navigate('Add_Beneficiary')}}
+                                    onPress1={() => { navigation.navigate('Add_Beneficiary', { bankName: bank.bankName, bankLogo: bank.bankLogo }) }}
                                 />
-                                <View className="my-4 w-full border-b border-gray-300" />
+                                <View className="my-3 w-full border-b border-gray-300" />
                             </React.Fragment>
                         ))}
 
