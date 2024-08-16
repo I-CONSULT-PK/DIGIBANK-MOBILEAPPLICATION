@@ -19,7 +19,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { AppLoaderContext } from "../../components/LoaderHOC";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
-import AntDesign from "@expo/vector-icons/AntDesign";
+import { StatusBar } from "expo-status-bar";
 import axios from "axios";
 import API_BASE_URL from "../../config";
 import * as LocalAuthentication from "expo-local-authentication";

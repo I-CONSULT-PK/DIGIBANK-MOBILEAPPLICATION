@@ -172,7 +172,7 @@ const OTP = ({ navigation, route }) => {
 
         <View className="flex-row items-center p-4 mt-2">
           <TouchableOpacity onPress={() => navigation.goBack()}>
-            <Entypo name="chevron-left" size={22} color="black" />
+            <Entypo name="chevron-left" size={24} color="black" />
           </TouchableOpacity>
           <Text className="text-black font-semibold text-lg ml-4 font-InterSemiBold">OTP</Text>
         </View>
