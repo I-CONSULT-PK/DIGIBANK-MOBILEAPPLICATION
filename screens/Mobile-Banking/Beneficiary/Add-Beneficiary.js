@@ -25,7 +25,7 @@ const Add_Beneficiary = ({ route }) => {
   const [accountNumber, setAccountNumber] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const fetchAccountDetails = async () => {
+  const fetchLocalAccountDetails = async () => {
     if (accountNumber === '') {
       Alert.alert('Error', 'Please provide a valid Account number / IBAN');
     }
@@ -128,7 +128,9 @@ const Add_Beneficiary = ({ route }) => {
         <View className="px-6 mt-8">
           <CustomButton
             text={'Add'}
-            onPress={fetchAccountDetails}
+            onPress={() => { 
+              bankName === 'DIGI Bank' && fetchLocalAccountDetails();
+            }}
             loading={loading} />
         </View>
       </ScrollView>
