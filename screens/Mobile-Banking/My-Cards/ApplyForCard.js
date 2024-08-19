@@ -186,8 +186,7 @@ const ApplyForCard = () => {
                               ? Color.PrimaryWebOrient
                               : "gray",
                         }}
-                        className="py-2 px-4 border-2 rounded-lg"
-                      >
+                        className="py-2 px-4 border-2 rounded-lg">
                         <Text
                           style={{
                             color: selectedId === option.id ? "white" : "black",
