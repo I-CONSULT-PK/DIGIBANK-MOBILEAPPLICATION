@@ -118,7 +118,28 @@ const CardManagement = () => {
               >
                 {/* The content inside the Accordion */}
                 <View className="justify-center items-center mr-8">
-                  <ListSectionCard width={400} />
+                  <View className="bg-gray-800 p-4 rounded-lg shadow-md w-80">
+                    <View className="flex-row justify-between items-center mb-4">
+                      <Text className="text-white text-xl font-bold">
+                        Bank Name
+                      </Text>
+                      <Text className="text-white text-lg font-semibold">
+                        •••• •••• •••• 1234
+                      </Text>
+                    </View>
+                    <View className="mb-4">
+                      <Text className="text-gray-400 text-sm">Card Holder</Text>
+                      <Text className="text-white text-lg font-semibold">
+                        John Doe
+                      </Text>
+                    </View>
+                    <View className="flex-row justify-between items-center">
+                      <Text className="text-gray-400 text-sm">Expiry Date</Text>
+                      <Text className="text-white text-lg font-semibold">
+                        12/25
+                      </Text>
+                    </View>
+                  </View>
                 </View>
                 <View className=" p-4 mr-2">
                   <View className="flex-row items-center justify-between ">
@@ -185,7 +206,28 @@ const CardManagement = () => {
               >
                 {/* The content inside the Accordion */}
                 <View className="justify-center items-center mr-8">
-                  <ListSectionCard width={400} />
+                  <View className="bg-gray-800 p-4 rounded-lg shadow-md w-80">
+                    <View className="flex-row justify-between items-center mb-4">
+                      <Text className="text-white text-xl font-bold">
+                        Bank Name
+                      </Text>
+                      <Text className="text-white text-lg font-semibold">
+                        •••• •••• •••• 1234
+                      </Text>
+                    </View>
+                    <View className="mb-4">
+                      <Text className="text-gray-400 text-sm">Card Holder</Text>
+                      <Text className="text-white text-lg font-semibold">
+                        John Doe
+                      </Text>
+                    </View>
+                    <View className="flex-row justify-between items-center">
+                      <Text className="text-gray-400 text-sm">Expiry Date</Text>
+                      <Text className="text-white text-lg font-semibold">
+                        12/25
+                      </Text>
+                    </View>
+                  </View>
                 </View>
                 <View className=" p-4 mr-2">
                   <View className="flex-row items-center justify-between ">
