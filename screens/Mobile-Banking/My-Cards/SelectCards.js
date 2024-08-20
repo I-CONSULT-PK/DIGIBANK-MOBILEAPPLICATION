@@ -41,7 +41,7 @@ const SelectCards = () => {
             className="flex-row items-center justify-between bg-white p-4 mb-2 rounded-lg shadow-inner">
               <View className="flex-row items-center">
                 <Image source={require('../../../assets/Add-Debit.png')}  className="w-6 h-6 mr-3" />
-                <Text className=" text-lg text-black font-InterSemiBold">Add Debit / Credit Card</Text>
+                <Text className=" text-lg text-black font-InterSemiBold">Add Debit Card</Text>
               </View>
               <Icon name="chevron-right" size={20} color="gray" />
             </TouchableOpacity>

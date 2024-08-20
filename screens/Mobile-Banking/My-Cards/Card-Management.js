@@ -227,6 +227,7 @@ const CardManagement = () => {
             </View>
 
             {/* Render Credit Card Section */}
+            
             <List.Section className="bg-white rounded-xl ml-5 mr-5">
               {selectedOption === "Credit Card" ? (
                 cards.filter((card) => card.isCreditCard).length > 0 ? (
