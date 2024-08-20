@@ -3,11 +3,11 @@ import { View, Text, Image, TouchableOpacity } from 'react-native'
 import Feather from '@expo/vector-icons/Feather';
 import AntDesign from '@expo/vector-icons/AntDesign';
 
-const OptionBox = ({ image, text, subtext, payment, icon1, icon2, onPress1, onPress2, iconColor1, iconColor2, beneficiary }) => {
+const OptionBox = ({ image, text, subtext, payment, icon1, icon2, onPress1, onPress2, iconColor1, iconColor2, beneficiary, toggleModal }) => {
     return (
         <View className="flex-row justify-between items-center">
             <View className="flex-row items-center flex-1">
-                {beneficiary ? (<TouchableOpacity className="p-0 rounded-lg shadow-md shadow-gray-300 justify-center items-center bg-white relative">
+                {beneficiary ? (<TouchableOpacity className="p-0 rounded-lg shadow-md shadow-gray-300 justify-center items-center bg-white relative" onPress={toggleModal}>
                     <Image
                         source={image}
                         resizeMode="contain"

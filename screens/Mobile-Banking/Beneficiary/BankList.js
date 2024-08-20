@@ -12,48 +12,9 @@ import SearchBar from '../../../components/SearchBar';
 import OptionBox from '../../../components/OptionBox';
 import Footer from '../../../components/Footer';
 
-import UBLLogo from '../../../assets/ubl-logo.png';
-import AlliedLogo from '../../../assets/allied-logo.png';
-import MCBLogo from '../../../assets/mcb-logo.png';
-import HBLLogo from '../../../assets/hbl-logo.png';
-import MeezanLogo from '../../../assets/meezan-logo.png';
-import HabibMetroLogo from '../../../assets/habib-metro-logo.png';
-import SoneriLogo from '../../../assets/soneri-logo.png';
-
 const BankList = ({ navigation }) => {
     const [searchQuery, setSearchQuery] = useState('');
     const [banks, setBanks] = useState([]);
-
-    // const banks = [
-    //     {
-    //         image: UBLLogo,
-    //         text: 'United Bank Limited',
-    //     },
-    //     {
-    //         image: AlliedLogo,
-    //         text: 'Allied Bank Limited',
-    //     },
-    //     {
-    //         image: MCBLogo,
-    //         text: 'MCB Bank',
-    //     },
-    //     {
-    //         image: HBLLogo,
-    //         text: 'Habib Bank Limited',
-    //     },
-    //     {
-    //         image: MeezanLogo,
-    //         text: 'Meezan Bank',
-    //     },
-    //     {
-    //         image: HabibMetroLogo,
-    //         text: 'Habib Metropolitan Bank Limited',
-    //     },
-    //     {
-    //         image: SoneriLogo,
-    //         text: 'Soneri Bank',
-    //     }
-    // ];
 
     useEffect(() => {
         const fetchBanks = async () => {

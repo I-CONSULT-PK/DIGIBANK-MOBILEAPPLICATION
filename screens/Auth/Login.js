@@ -104,60 +104,63 @@ const Login = ({ navigation }) => {
     });
   };
  
-  // const handleLogin = async () => {
-  //   if (form.username === '' || form.password === '') {
-  //     Alert.alert('Error', 'Username and password can not be null')
-  //   }
-  //   else {
-  //     const loginData = {
-  //       emailorUsername: form.username,
-  //       password: form.password
-  //     };
- 
-  //     try {
-  //       const response = await axios.post(`${API_BASE_URL}/v1/customer/login`, loginData);
-  //       const dto = response.data;
- 
-  //       if (dto && dto.success && dto.data && dto.data.customerId) {
-  //         const customerId = dto.data.customerId.toString();
-  //         const token = dto.data.token.toString();
-  //         const expirationTime = dto.data.expirationTime.toString();
- 
-  //         await AsyncStorage.setItem('customerId', customerId);
-  //         await AsyncStorage.setItem('token', token);
-  //         await AsyncStorage.setItem('expirationTime', expirationTime);
- 
-  //         navigation.navigate('Home');
-  //       }
-  //       else {
-  //         if (dto.message) {
-  //           Alert.alert('Error', dto.message);
-  //         }
-  //         else if (dto.errors && dto.errors.length > 0) {
-  //           Alert.alert('Error', dto.errors);
-  //         }
-  //       }
-  //     } catch (error) {
-  //       if (error.response) {
-  //         const statusCode = error.response.status;
- 
-  //         if (statusCode === 404) {
-  //           Alert.alert('Error', 'Server timed out. Try again later!');
-  //         } else if (statusCode === 503) {
-  //           Alert.alert('Error', 'Service unavailable. Please try again later.');
-  //         } else if (statusCode === 400) {
-  //           Alert.alert('Error', error.response.data.data.errors[0]);
-  //         } else {
-  //           Alert.alert('Error', error.message);
-  //         }
-  //       } else if (error.request) {
-  //         Alert.alert('Error', 'No response from the server. Please check your connection.');
-  //       } else {
-  //         Alert.alert('Error', error.message);
-  //       }
-  //     }
-  //   }
-  // };
+  const handleLogin = async () => {
+    if (form.username === '' || form.password === '') {
+      Alert.alert('Error', 'Username and password cannot be null');
+      return;
+    }
+  
+    const loginData = {
+      emailorUsername: form.username,
+      password: form.password
+    };
+  
+    try {
+      const response = await axios.post(`${API_BASE_URL}/v1/customer/login`, loginData, { timeout: 10000 });
+      const dto = response.data;
+  
+      if (dto && dto.success && dto.data && dto.data.customerId) {
+        const customerId = dto.data.customerId.toString();
+        const token = dto.data.token.toString();
+        const expirationTime = dto.data.expirationTime.toString();
+  
+        await AsyncStorage.setItem('customerId', customerId);
+        await AsyncStorage.setItem('token', token);
+        await AsyncStorage.setItem('expirationTime', expirationTime);
+  
+        navigation.navigate('Home');
+      } else {
+        const message = dto.message || (dto.errors && dto.errors.length > 0 ? dto.errors.join(", ") : "Unknown error");
+        Alert.alert('Error', message);
+      }
+    } catch (error) {
+      console.error("Login error:", error); // Log detailed error
+  
+      if (error.response) {
+        // Server responded with a status code outside the range of 2xx
+        const statusCode = error.response.status;
+        const errorMessage = error.response.data.message || error.message;
+  
+        if (statusCode === 404) {
+          Alert.alert('Error', 'Server timed out. Try again later!');
+        } else if (statusCode === 503) {
+          Alert.alert('Error', 'Service unavailable. Please try again later.');
+        } else if (statusCode === 400) {
+          Alert.alert('Error', errorMessage);
+        } else {
+          Alert.alert('Error', 'An unexpected error occurred: ' + errorMessage);
+        }
+      } else if (error.request) {
+        // Request was made but no response received
+        Alert.alert('Error', 'No response from the server. Please check your connection.');
+      } else {
+        // Something went wrong in setting up the request
+        Alert.alert('Error', 'Error setting up request: ' + error.message);
+      }
+    }
+  };
+  
+  
  
   const securityImages1 = [
     require('../../assets/security-img-1.png'),
@@ -373,7 +376,8 @@ const Login = ({ navigation }) => {
                   text="Login"
                   width="w-[100%]"
                   styles="mb-4 py-4"
-                  onPress={() => navigation.navigate("Home")}
+                  onPress={handleLogin}
+
                 />
 
                 <View className="flex-row justify-center">
