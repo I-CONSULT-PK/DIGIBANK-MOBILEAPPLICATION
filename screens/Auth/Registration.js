@@ -19,7 +19,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { AppLoaderContext } from "../../components/LoaderHOC";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
-import AntDesign from "@expo/vector-icons/AntDesign";
+import { StatusBar } from "expo-status-bar";
 import axios from "axios";
 import API_BASE_URL from "../../config";
 import * as LocalAuthentication from "expo-local-authentication";
@@ -192,7 +192,7 @@ const Registration = ({ route }) => {
         const dto = response.data;
 
         if (dto && dto.success && dto.data) {
-          navigation.navigate("OTP_Signup", {
+          navigation.navigate("OTP", {
             source: "registration",
             email: returnedData.email,
             mobileNumber: initialForm.mobile,
@@ -387,8 +387,8 @@ const Registration = ({ route }) => {
       try {
         const result = await LocalAuthentication.authenticateAsync();
         if (result.success) {
-          const newVisitorId = uuidv4(); 
-          setVisitorId(newVisitorId); 
+          const newVisitorId = uuidv4();
+          setVisitorId(newVisitorId);
 
           // Store the visitor ID locally
           await AsyncStorage.setItem("visitorId", newVisitorId);
@@ -716,7 +716,6 @@ const Registration = ({ route }) => {
                         <Text>OS Version: {biometricData.osVersion}</Text>
                       </View>
                     )} */}
-                    
                   </View>
                 </View>
 
@@ -730,14 +729,7 @@ const Registration = ({ route }) => {
                       Next
                     </Text>
                   </TouchableOpacity>
-                  <TouchableOpacity
-                    className="py-4 rounded-lg mb-4"
-                    style={{ backgroundColor: Color.PrimaryWebOrient }}
-                  >
-                    <Text className="text-white text-base text-center font-medium font-InterSemiBold">
-                      Bio
-                    </Text>
-                  </TouchableOpacity>
+
                   <View className="flex-row justify-center">
                     <Text className="text-sm font-InterRegular">
                       Already have an account?{" "}
