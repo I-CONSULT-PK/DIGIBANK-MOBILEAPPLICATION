@@ -3,25 +3,25 @@ import { View, Text, Image, TouchableOpacity } from 'react-native'
 import Feather from '@expo/vector-icons/Feather';
 import AntDesign from '@expo/vector-icons/AntDesign';
 
-const OptionBox = ({ image, text, subtext, payment, icon1, icon2, onPress1, onPress2, iconColor1, iconColor2, beneficiary }) => {
+const OptionBox = ({ image, text, subtext, payment, icon1, icon2, onPress1, onPress2, iconColor1, iconColor2, beneficiary, toggleModal }) => {
     return (
         <View className="flex-row justify-between items-center">
             <View className="flex-row items-center flex-1">
-                {beneficiary ? (<TouchableOpacity className="p-2 rounded-lg shadow-lg shadow-gray-500 justify-center items-center bg-white relative">
+                {beneficiary ? (<TouchableOpacity className="p-0 rounded-lg shadow-md shadow-gray-300 justify-center items-center bg-white relative" onPress={toggleModal}>
                     <Image
                         source={image}
                         resizeMode="contain"
-                        className="w-9 h-9"
+                        className="w-12 h-12"
                     />
-                    <View className="absolute -bottom-1 -right-1 bg-white p-1 rounded-full shadow-lg shadow-gray-400">
+                    <View className="absolute -bottom-1 -right-1 bg-white p-1 rounded-full shadow-md shadow-gray-400">
                         <Feather name="edit-2" size={11.5} color="black" />
                     </View>
                 </TouchableOpacity>) :
-                    (<View className="p-3 rounded-lg shadow-lg shadow-gray-500 justify-center items-center bg-white">
+                    (<View className="p-1.5 rounded-lg shadow-md shadow-gray-300 justify-center items-center bg-white">
                         <Image
                             source={image}
                             resizeMode="contain"
-                            className="w-7 h-7"
+                            className="w-10 h-10"
                         />
                     </View>)}
                 <View className={`${beneficiary ? 'ml-3' : 'ml-4'} flex-1`}>
@@ -39,10 +39,10 @@ const OptionBox = ({ image, text, subtext, payment, icon1, icon2, onPress1, onPr
                     )}
                 </View>
             </View>
-            {icon1 && <TouchableOpacity className="ml-2 p-2 rounded-full shadow-lg shadow-gray-500 justify-center items-center bg-white" onPress={onPress1}>
+            {icon1 && <TouchableOpacity className="ml-2 p-2 rounded-full shadow-md shadow-gray-300 justify-center items-center bg-white" onPress={onPress1}>
                 <AntDesign name={icon1} size={icon2 ? 19 : 20} color={iconColor1} />
             </TouchableOpacity>}
-            {icon2 && <TouchableOpacity className="ml-2 p-2 rounded-full shadow-lg shadow-gray-500 justify-center items-center bg-white" onPress={onPress2}>
+            {icon2 && <TouchableOpacity className="ml-2 p-2 rounded-full shadow-md shadow-gray-300 justify-center items-center bg-white" onPress={onPress2}>
                 <Feather name={icon2} size={icon2 ? 19 : 20} color={iconColor2} />
             </TouchableOpacity>}
         </View>

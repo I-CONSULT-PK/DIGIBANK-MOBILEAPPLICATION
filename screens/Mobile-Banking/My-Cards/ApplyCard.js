@@ -11,6 +11,8 @@ import {
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
 
+import Button from "../../../components/Button";
+
 const ApplyCard = () => {
   const navigation = useNavigation();
   return (
@@ -70,14 +72,12 @@ const ApplyCard = () => {
               </View>
             </View>
             <View className="px-10 mt-14">
-              <TouchableOpacity
-                className="py-3 px-12 bg-[#1DBBD8] rounded-lg"
-                onPress={() => navigation.navigate("ApplyForCard")}
-              >
-                <Text className="text-base text-center font-InterMedium text-white">
-                  Next
-                </Text>
-              </TouchableOpacity>
+              <Button
+                  text='Next'
+                  width='w-[100%]'
+                  styles='mb-4 py-4'
+                  onPress={() => navigation.navigate("ApplyForCard")}
+                />
             </View>
           </View>
         </View>

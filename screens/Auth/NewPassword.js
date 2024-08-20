@@ -18,7 +18,7 @@ import { Controller, useForm } from "react-hook-form";
 
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
-import AntDesign from '@expo/vector-icons/AntDesign';
+import { Entypo } from '@expo/vector-icons';
 
 import Button from '../../components/Button';
 
@@ -166,7 +166,7 @@ const ForgetPassword = ({ route }) => {
 
                 <View className="flex-row items-center p-4 mt-2">
                     <TouchableOpacity onPress={() => navigation.goBack()}>
-                        <AntDesign name="arrowleft" size={20} color="black" />
+                        <Entypo name="chevron-left" size={24} color="black" />
                     </TouchableOpacity>
                     <Text className="text-black font-semibold text-lg ml-4 font-InterSemiBold">Change password</Text>
                 </View>

@@ -8,7 +8,7 @@ import CustomButton from "../../components/Button";
 import Input from "../../components/TextInput";
 import { StatusBar } from "expo-status-bar";
 import API_BASE_URL from "../../config";
-import AntDesign from "@expo/vector-icons/AntDesign";
+import { Entypo } from "@expo/vector-icons";
 
 import Button from "../../components/Button"; 
 
@@ -116,7 +116,7 @@ const ForgetPassword = ({ route }) => {
       <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
         <View className="flex-row items-center p-4 mt-7">
           <TouchableOpacity onPress={() => navigation.goBack()}>
-            <AntDesign name="arrowleft" size={20} color="black" />
+            <Entypo name="chevron-left" size={24} color="black" />
           </TouchableOpacity>
           <Text className="text-black font-semibold text-lg ml-4">
             Forgot password

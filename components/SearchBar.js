@@ -11,7 +11,7 @@ const SearchBar = ({ placeholder, onChangeText, value }) => {
                 placeholder={placeholder}
                 value={value}
                 onChangeText={onChangeText}
-                className="px-4 py-3 rounded-lg bg-white shadow-xl shadow-gray-500 font-InterRegular pr-10"
+                className="px-4 py-3 rounded-lg bg-white shadow-md shadow-gray-200 font-InterRegular pr-10"
                 style={{ paddingRight: 40 }}
             />
             <TouchableOpacity

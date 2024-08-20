@@ -2,8 +2,7 @@ import React from 'react'
 import { View, Text, ScrollView, TouchableOpacity } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { StatusBar } from 'expo-status-bar';
-import { LinearGradient } from 'expo-linear-gradient';
-import AntDesign from '@expo/vector-icons/AntDesign';
+import { Entypo } from '@expo/vector-icons';
 
 import { Color } from '../../../GlobalStyles';
 import OptionBox from '../../../components/OptionBox';
@@ -14,28 +13,24 @@ import RaastIcon from '../../../assets/raast-icon.png'
 
 const SendBeneficiaryMoney = ({ navigation }) => {
   return (
-    <SafeAreaView className="h-full flex-1">
-
+    <SafeAreaView className="h-full flex-1" style={{ backgroundColor: Color.PrimaryWebOrient }}>
       <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
 
-        <LinearGradient
-          colors={[Color.PrimaryWebOrient, Color.PrimaryWebOrientLayer2]}
-          style={{ height: '12%' }}
-        >
+        <View style={{ backgroundColor: Color.PrimaryWebOrient, height: 100 }}>
           <View className="flex-row items-center justify-center w-full h-full">
             <TouchableOpacity onPress={() => navigation.goBack()} className="absolute left-5">
-              <AntDesign name="arrowleft" size={23} color="white" />
+              <Entypo name="chevron-left" size={25} color="white" />
             </TouchableOpacity>
             <Text className="text-white font-semibold text-lg font-InterSemiBold">Send Money</Text>
           </View>
-        </LinearGradient>
+        </View>
 
         <View className="w-full h-full px-6 bg-[#F5F5F5]">
           <View className="mt-8">
             <Text className="font-InterSemiBold text-base">Select Method</Text>
           </View>
 
-          <View className="mt-7">
+          <View className="mt-8">
 
             <OptionBox
               image={BankIcon}
@@ -46,7 +41,7 @@ const SendBeneficiaryMoney = ({ navigation }) => {
               iconColor1={Color.PrimaryWebOrient}
             />
 
-            <View className="my-5 w-full border-b border-gray-300" />
+            <View className="my-4 w-full border-b border-gray-300" />
 
             <OptionBox
               image={RaastIcon}
@@ -56,7 +51,7 @@ const SendBeneficiaryMoney = ({ navigation }) => {
               iconColor1={Color.PrimaryWebOrient}
             />
 
-            <View className="my-5 w-full border-b border-gray-300" />
+            <View className="my-4 w-full border-b border-gray-300" />
 
           </View>
         </View>

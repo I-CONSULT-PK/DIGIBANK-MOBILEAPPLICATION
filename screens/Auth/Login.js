@@ -11,7 +11,7 @@ import {
   Modal,
   Image,
   KeyboardAvoidingView,
-  Keyboard,
+  Keyboard
 } from "react-native";
 import {
   widthPercentageToDP as wp,
@@ -27,17 +27,19 @@ import { AppLoaderContext } from "../../components/LoaderHOC";
 import PinCode from "./PinCode";
 import { useNavigation } from "@react-navigation/native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { LinearGradient } from "expo-linear-gradient";
-import { StatusBar } from "expo-status-bar";
-import AntDesign from "@expo/vector-icons/AntDesign";
-import axios from "axios";
-import API_BASE_URL from "../../config";
-import * as LocalAuthentication from "expo-local-authentication"; 
-import * as Device from "expo-device";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { v4 as uuidv4 } from "uuid";
-
+import { LinearGradient } from 'expo-linear-gradient';
+import { StatusBar } from 'expo-status-bar';
+import axios from 'axios';
+import API_BASE_URL from '../../config';
+import * as LocalAuthentication from 'expo-local-authentication'; // Import for Expo
+import * as Device from 'expo-device';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { v4 as uuidv4 } from 'uuid'; // If you are using UUID for visitor ID generation
+ 
+import Button from "../../components/Button";
+ 
 const Login = ({ navigation }) => {
+ 
   const [selectedOption, setSelectedOption] = useState("mobile");
   const sw = Dimensions.get("screen").width;
   const sh = Dimensions.get("screen").height;
@@ -52,7 +54,7 @@ const Login = ({ navigation }) => {
   //   //   Alert.alert("Validation Error", "Please enter both email and password");
   //   //   return;
   //   // }
-
+ 
   //   // try {
   //   //   const apiUrl = "http://192.168.0.196:9096/v1/customer/login";
   //   //   showLoader();
@@ -66,13 +68,13 @@ const Login = ({ navigation }) => {
   //   //       password,
   //   //     }),
   //   //   });
-
+ 
   //   //   const data = await response.json();
-
+ 
   //   //   if (response.ok && data.success) {
   //   //     // Successful login
   //   //     console.log("Login successful", data);
-
+ 
   //   //     // Navigate to the next screen
   //   // navigation.navigate("OTP");
   //   //   } else {
@@ -91,116 +93,119 @@ const Login = ({ navigation }) => {
   //   // }
   //   setPinCodeModalVisible(true);
   // };
-
-  // --------------------------------------------------
-
-  const [form, setForm] = useState({ username: "", password: "" });
-
+ 
+ 
+  const [form, setForm] = useState({ username: '', password: '' });
+  const [loading, setLoading] = useState(false);
+ 
   const handleChange = (name, value) => {
     setForm({
       ...form,
       [name]: value,
     });
   };
-
-  // const handleLogin = async () => {
-  //   if (form.username === '' || form.password === '') {
-  //     Alert.alert('Error', 'Username and password can not be null')
-  //   }
-  //   else {
-  //     const loginData = {
-  //       emailorUsername: form.username,
-  //       password: form.password
-  //     };
-
-  //     try {
-  //       const response = await axios.post(`${API_BASE_URL}/v1/customer/login`, loginData);
-  //       const dto = response.data;
-
-  //       if (dto && dto.success && dto.data && dto.data.customerId) {
-  //         const customerId = dto.data.customerId.toString();
-  //         const token = dto.data.token.toString();
-  //         const expirationTime = dto.data.expirationTime.toString();
-
-  //         await AsyncStorage.setItem('customerId', customerId);
-  //         await AsyncStorage.setItem('token', token);
-  //         await AsyncStorage.setItem('expirationTime', expirationTime);
-
-  //         navigation.navigate('Home');
-  //       }
-  //       else {
-  //         if (dto.message) {
-  //           Alert.alert('Error', dto.message);
-  //         }
-  //         else if (dto.errors && dto.errors.length > 0) {
-  //           Alert.alert('Error', dto.errors);
-  //         }
-  //       }
-  //     } catch (error) {
-  //       if (error.response) {
-  //         const statusCode = error.response.status;
-
-  //         if (statusCode === 404) {
-  //           Alert.alert('Error', 'Server timed out. Try again later!');
-  //         } else if (statusCode === 503) {
-  //           Alert.alert('Error', 'Service unavailable. Please try again later.');
-  //         } else if (statusCode === 400) {
-  //           Alert.alert('Error', error.response.data.data.errors[0]);
-  //         } else {
-  //           Alert.alert('Error', error.message);
-  //         }
-  //       } else if (error.request) {
-  //         Alert.alert('Error', 'No response from the server. Please check your connection.');
-  //       } else {
-  //         Alert.alert('Error', error.message);
-  //       }
-  //     }
-  //   }
-  // };
-
-  const securityImages1 = [
-    require("../../assets/security-img-1.png"),
-    require("../../assets/security-img-2.png"),
-    require("../../assets/security-img-3.png"),
-    require("../../assets/security-img-4.png"),
-    require("../../assets/security-img-5.png"),
-  ];
-
-  const securityImages2 = [
-    require("../../assets/security-img-6.png"),
-    require("../../assets/security-img-7.png"),
-    require("../../assets/security-img-8.png"),
-    require("../../assets/security-img-9.png"),
-    require("../../assets/security-img-10.png"),
-  ];
-
-  const [isEnabled, setIsEnabled] = useState(false);
-  const [biometricData, setBiometricData] = useState(null);
-  const [visitorId, setVisitorId] = useState(null);
-  const [modalVisible, setModalVisible] = useState(false);
-
-  const [modalVisible2, setModalVisible2] = useState(false);
-
-  useEffect(() => {
-    const checkBiometricSupport = async () => {
-      const hasHardware = await LocalAuthentication.hasHardwareAsync();
-      const isEnrolled = await LocalAuthentication.isEnrolledAsync();
-
-      if (!hasHardware) {
-        Alert.alert(
-          "Error",
-          "Biometric authentication is not available on this device."
-        );
-      } else if (!isEnrolled) {
-        Alert.alert(
-          "Error",
-          "No biometric authentication is set up on this device."
-        );
+ 
+  const handleLogin = async () => {
+    if (form.username === '' || form.password === '') {
+      Alert.alert('Error', 'Username and password can not be null')
+    }
+    else {
+      setLoading(true);
+ 
+      const loginData = {
+        emailorUsername: form.username,
+        password: form.password
+      };
+ 
+      try {
+        const response = await axios.post(`${API_BASE_URL}/v1/customer/login`, loginData);
+        const dto = response.data;
+ 
+        if (dto && dto.success && dto.data && dto.data.customerId) {
+          const customerId = dto.data.customerId.toString();
+          const token = dto.data.token.toString();
+          const expirationTime = dto.data.expirationTime.toString();
+ 
+          await AsyncStorage.setItem('customerId', customerId);
+          await AsyncStorage.setItem('token', token);
+          await AsyncStorage.setItem('expirationTime', expirationTime);
+ 
+          navigation.navigate('Home');
+        }
+        else {
+          if (dto.message) {
+            Alert.alert('Error', dto.message);
+          }
+          else if (dto.errors && dto.errors.length > 0) {
+            Alert.alert('Error', dto.errors);
+          }
+        }
+      } catch (error) {
+        if (error.response) {
+          const statusCode = error.response.status;
+ 
+          if (statusCode === 404) {
+            Alert.alert('Error', 'Server timed out. Try again later!');
+          } else if (statusCode === 503) {
+            Alert.alert('Error', 'Service unavailable. Please try again later.');
+          } else if (statusCode === 400) {
+            Alert.alert('Error', error.response.data.data.errors[0]);
+          } else {
+            Alert.alert('Error', error.message);
+          }
+        } else if (error.request) {
+          Alert.alert('Error', 'No response from the server. Please check your connection.');
+        } else {
+          Alert.alert('Error', error.message);
+        }
+      } finally {
+        setLoading(false);
       }
-    };
-
-    checkBiometricSupport();
-  }, []);
+    }
+  };
+ 
+  const securityImages1 = [
+    require('../../assets/security-img-1.png'),
+    require('../../assets/security-img-2.png'),
+    require('../../assets/security-img-3.png'),
+    require('../../assets/security-img-4.png'),
+    require('../../assets/security-img-5.png'),
+  ];
+ 
+  const securityImages2 = [
+    require('../../assets/security-img-6.png'),
+    require('../../assets/security-img-7.png'),
+    require('../../assets/security-img-8.png'),
+    require('../../assets/security-img-9.png'),
+    require('../../assets/security-img-10.png'),
+  ];
+ 
+    const [isEnabled, setIsEnabled] = useState(false);
+    const [biometricData, setBiometricData] = useState(null);
+    const [visitorId, setVisitorId] = useState(null);
+    const [modalVisible, setModalVisible] = useState(false);
+   
+    useEffect(() => {
+      const checkBiometricSupport = async () => {
+        const hasHardware = await LocalAuthentication.hasHardwareAsync();
+        const isEnrolled = await LocalAuthentication.isEnrolledAsync();
+ 
+        if (!hasHardware) {
+          Alert.alert(
+            "Error",
+            "Biometric authentication is not available on this device."
+          );
+        } else if (!isEnrolled) {
+          Alert.alert(
+            "Error",
+            "No biometric authentication is set up on this device."
+          );
+        }
+      };
+ 
+      checkBiometricSupport();
+    }, []);
+ 
   const handlePress = async () => {
     if (!isEnabled) {
       try {
@@ -208,10 +213,10 @@ const Login = ({ navigation }) => {
         if (result.success) {
           const newVisitorId = uuidv4(); // Generate a new unique ID
           setVisitorId(newVisitorId); // Set the visitor ID in state
-
+ 
           // Store the visitor ID locally
           await AsyncStorage.setItem("visitorId", newVisitorId);
-
+ 
           setIsEnabled(true);
           setBiometricData({
             brand: Device.brand,
@@ -220,7 +225,7 @@ const Login = ({ navigation }) => {
             osVersion: Device.osVersion,
             visitorId: newVisitorId,
           });
-
+ 
           // Console log the device and biometric info
           console.log("Biometric Data:");
           console.log("Brand:", Device.brand);
@@ -228,8 +233,8 @@ const Login = ({ navigation }) => {
           console.log("OS Name:", Device.osName);
           console.log("OS Version:", Device.osVersion);
           console.log("Visitor ID:", newVisitorId);
-
-          navigation.navigate("Home");
+ 
+          navigation.navigate('Home');
         } else {
           Alert.alert("Authentication failed", result.error);
         }
@@ -240,49 +245,32 @@ const Login = ({ navigation }) => {
       setIsEnabled(false);
       setBiometricData(null);
       setVisitorId(null);
-
+ 
       // Remove the visitor ID from local storage
       await AsyncStorage.removeItem("visitorId");
-
+ 
       // Console log the biometric data reset
       console.log("Biometric Data Reset");
     }
   };
-
-  const handleFaceIDLogin = async () => {
-    const hasHardware = await LocalAuthentication.hasHardwareAsync();
-    const isEnrolled = await LocalAuthentication.isEnrolledAsync();
-
-    if (!hasHardware || !isEnrolled) {
-      // Show some alert that the device doesn't support Face ID or is not configured
-      console.log("Face ID is not supported or not configured on this device.");
-    } else {
-      const result = await LocalAuthentication.authenticateAsync();
-      if (result.success) {
-        // Navigate to the dashboard or proceed with the login
-        console.log("Authenticated successfully!");
-      } else {
-        // Handle failure
-        console.log("Authentication failed!");
-      }
-    }
-  };
-
+ 
   return (
-    <SafeAreaView className="h-full flex-1">
+    <SafeAreaView className="h-full flex-1" style={{ backgroundColor: Color.PrimaryWebOrient }}>
       <LinearGradient
         colors={[Color.PrimaryWebOrient, Color.PrimaryWebOrientLayer2]}
         style={{ flex: 1 }}
       >
         <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+ 
           <View className="flex-row items-center p-4 mt-2">
             <TouchableOpacity onPress={() => navigation.goBack()}>
-              <AntDesign name="arrowleft" size={20} color="white"/>
+              <Entypo name="chevron-left" size={24} color="white" />
             </TouchableOpacity>
             <Text className="text-white font-semibold text-lg ml-4 font-InterSemiBold">
               Login
             </Text>
           </View>
+ 
           <View className="flex-1 bg-white mt-2 rounded-t-[30px] px-7 pt-7 shadow-2xl">
             <View className="flex-1 justify-between">
               <View>
@@ -291,6 +279,7 @@ const Login = ({ navigation }) => {
                     Get started with DigiBank!
                   </Text>
                 </View>
+ 
                 <View>
                   <View>
                     <Text className="text-sm mb-2 font-InterMedium">
@@ -315,7 +304,7 @@ const Login = ({ navigation }) => {
                       </TouchableOpacity>
                     </View>
                   </View>
-
+ 
                   <View className="mt-1 mb-4">
                     <Text className="text-sm mb-2 font-InterMedium">
                       Password*
@@ -346,9 +335,9 @@ const Login = ({ navigation }) => {
                   </View>
                 </View>
               </View>
-
+ 
               {/* -----| Security Image Start |----- */}
-
+ 
               {/* <View className="-top-2">
                   <Text className="text-center font-medium text-sm mb-4 font-InterMedium">Select Security Image</Text>
  
@@ -382,16 +371,18 @@ const Login = ({ navigation }) => {
                     ))}
                   </View>
                 </View> */}
-
+ 
               {/* -----| Security Image End |----- */}
-
-              <View className="mb-2">
-                <CustomButton
+ 
+              <View>
+                <Button
                   text="Login"
                   width="w-[100%]"
                   styles="mb-4 py-4"
-                  onPress={() => navigation.navigate("Home")}
+                  onPress={handleLogin}
+                  loading={loading}
                 />
+ 
                 <View className="flex-row justify-center">
                   <Text className="text-sm font-InterRegular">
                     Don't have an account?{" "}
@@ -408,8 +399,9 @@ const Login = ({ navigation }) => {
                   </TouchableOpacity>
                 </View>
               </View>
+ 
               {/* Centered Touch ID and Face ID buttons */}
-              <View className="flex justify-center items-center ">
+              <View className="flex justify-center items-center mb-8">
                 <View className="flex flex-row space-x-4">
                   {/* Touch ID Button */}
                   <TouchableOpacity
@@ -419,68 +411,36 @@ const Login = ({ navigation }) => {
                     <View className="bg-[#1DBBD8] p-4 rounded-lg">
                       <Image
                         source={require("../../assets/finger-icon.png")}
-                        className="h-12 w-12"
+                        className="h-10 w-10"
                       />
                     </View>
-                    <Text className="mt-2 mb-4 text-center font-sm ">
+                    <Text className="mt-2 text-center font-sm ">
                       Login with Touch ID
                     </Text>
                   </TouchableOpacity>
-
+ 
                   {/* Face ID Button */}
-                  <View>
-                    <TouchableOpacity
-                      className="flex flex-col items-center"
-                      onPress={() => {
-                        setModalVisible(true);
-                        handleFaceIDLogin(); // Trigger Face ID login when pressed
-                      }}
-                    >
-                      <View className="bg-[#1DBBD8] p-4 rounded-lg">
-                        <Image
-                          source={require("../../assets/Face Icon.png")}
-                          className="h-12 w-12"
-                        />
-                      </View>
-                      <Text className="mt-2 mb-4 text-center font-sm">
-                        Login with Face ID
-                      </Text>
-                    </TouchableOpacity>
-                    <Modal
-                      visible={modalVisible}
-                      transparent={true}
-                      animationType="slide"
-                      onRequestClose={() => setModalVisible(false)}
-                    >
-                      {/* Modal content */}
-                      <View className="flex-1 justify-center items-center bg-black bg-opacity-50">
-                        <View className="bg-white p-6 rounded-lg">
-                          <Text className="text-center font-bold text-lg">
-                            Face ID Login
-                          </Text>
-                          <Text className="text-center mt-4">
-                            Please authenticate using Face ID.
-                          </Text>
-                          <TouchableOpacity
-                            className="mt-6 p-4 bg-blue-500 rounded-lg"
-                            onPress={() => setModalVisible(false)}
-                          >
-                            <Text className="text-center text-white">
-                              Close
-                            </Text>
-                          </TouchableOpacity>
-                        </View>
-                      </View>
-                    </Modal>
-                  </View>
+                  <TouchableOpacity
+                    className="flex flex-col items-center"
+                    onPress={() => setModalVisible(true)}
+                  >
+                    <View className="bg-[#1DBBD8] p-4 rounded-lg">
+                      <Image
+                        source={require("../../assets/Face Icon.png")}
+                        className="h-10 w-10"
+                      />
+                    </View>
+                    <Text className="mt-2 text-center font-sm">
+                      Login with Face ID
+                    </Text>
+                  </TouchableOpacity>
                 </View>
               </View>
             </View>
           </View>
         </ScrollView>
       </LinearGradient>
-
-      <StatusBar backgroundColor={Color.PrimaryWebOrient} style="light" />
+ 
       <Modal
         transparent={true}
         visible={modalVisible}
@@ -523,15 +483,17 @@ const Login = ({ navigation }) => {
           </View>
         </View>
       </Modal>
+ 
+      <StatusBar backgroundColor={Color.PrimaryWebOrient} style="light" />
     </SafeAreaView>
   );
 };
-
+ 
 const styles = StyleSheet.create({
   loader: {
     width: wp("20%"),
     height: wp("20%"),
   },
 });
-
+ 
 export default Login;

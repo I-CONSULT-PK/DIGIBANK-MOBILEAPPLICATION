@@ -16,6 +16,8 @@ import {
 } from "react-native-responsive-screen";
 import { useNavigation } from "@react-navigation/native";
 
+import Button from "../../../components/Button";
+
 const CardActivation = () => {
   const navigation = useNavigation();
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
@@ -39,7 +41,7 @@ const CardActivation = () => {
       <ScrollView>
         <View className=" flex-1">
           <TouchableOpacity
-            onPress={() => navigation.navigate("NameOnTheCard")}
+           onPress={() => navigation.goBack()}
           >
             <Entypo
               name="chevron-left"
@@ -97,14 +99,12 @@ const CardActivation = () => {
             </View>
           </View>
           <View className="px-10 mt-16">
-            <TouchableOpacity
-              className="py-3 px-12 bg-[#1DBBD8] rounded-lg"
+            <Button
+              text='Next'
+              width='w-[100%]'
+              styles='py-3 px-12'
               onPress={() => navigation.navigate("SetCardPin")}
-            >
-              <Text className="text-base text-center font-InterMedium text-white">
-                Next
-              </Text>
-            </TouchableOpacity>
+            />
           </View>
         </View>
       </ScrollView>
