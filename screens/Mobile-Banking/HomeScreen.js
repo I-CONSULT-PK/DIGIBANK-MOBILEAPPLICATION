@@ -480,6 +480,7 @@ import {
   Modal,
   Animated,
   Easing,
+  Clipboard,
   TextInput,
 } from "react-native";
 import { Color } from "../../GlobalStyles";
@@ -502,8 +503,9 @@ import Beneficiary from "../../assets/Images/Beneficiary.svg";
 import ListSectionCard from "../../assets/Images/ListSectionCard.svg";
 import Footer from "../../components/Footer";
 import Sidebar from "./Account-Setting/Sidebar";
+import { Ionicons } from "@expo/vector-icons";
 
-import { StatusBar } from 'expo-status-bar';
+import { StatusBar } from "expo-status-bar";
 
 const HomeScreen = () => {
   const navigation = useNavigation();
@@ -516,6 +518,12 @@ const HomeScreen = () => {
   const toggleSidebar = () => {
     setSidebarVisible(!isSidebarVisible);
   };
+
+  const handleCopy = (text) => {
+    Clipboard.setString(text);
+   
+  };
+  const [isVisible, setIsVisible] = useState(true);
 
   useEffect(() => {
     Animated.timing(sidebarAnim, {
@@ -602,7 +610,54 @@ const HomeScreen = () => {
       </View>
       <ScrollView>
         <View className="justify-center items-center">
-          <NewCard width={400} />
+          {/* <NewCard width={400} /> */}
+          <View className="justify-center items-center ">
+            {/* <ListSectionCard width={400} /> */}
+            <View className="bg-primary p-4 rounded-lg justify-between shadow-md w-80 h-44">
+              <View className="justify-between  mb-4">
+                <View className=" flex-row items-center justify-between">
+                  <Text className="text-slate-950  text-base">
+                    Total Balance:
+                  </Text>
+                  <Entypo name="dots-three-vertical" size={20} />
+                </View>
+
+                <View className="d-flex flex-row items-center">
+                  <Text className="text-white text-2xl font-bold">
+                    {isVisible ? "$100,000.00" : "*********"}
+                  </Text>
+                  <TouchableOpacity onPress={() => setIsVisible(!isVisible)}>
+                    <Ionicons
+                      name={isVisible ? "eye" : "eye-off"}
+                      size={22}
+                      style={[styles.icon, { color: "white" }]}
+                    />
+                  </TouchableOpacity>
+                </View>
+              </View>
+
+              <View className="justify-between ">
+                <View className="flex-row d-flex items-center">
+                  <Text className="text-slate-950 text-lg font-semibold">
+                    A/C No: 879234568951
+                  </Text>
+                  <TouchableOpacity
+                    onPress={() => handleCopy("83927423837849")}
+                  >
+                    <Ionicons
+                      name="copy"
+                      size={20}
+                      style={[styles.icon, { color: "white" }]}
+                    />
+                  </TouchableOpacity>
+                </View>
+
+                <Text className="text-white text-base font-semibold">
+                  Digi-Bank Savings Foreign Accounts
+                </Text>
+              </View>
+            </View>
+          </View>
         </View>
 
         <View className="flex flex-col px-5 pt-5">
@@ -629,18 +684,23 @@ const HomeScreen = () => {
                     { backgroundColor: Color.PrimaryWebOrient },
                   ]}
                 >
-                  <Payment style={styles.icon} onPress={() => navigation.navigate("SendBeneficiaryMoney")}/>
+                  <Payment
+                    style={styles.icon}
+                    onPress={() => navigation.navigate("SendBeneficiaryMoney")}
+                  />
                   <Text className="text-center font-semibold text-white">
                     Payment
                   </Text>
                 </View>
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => navigation.navigate("SendBeneficiaryMoney")}>
+              <TouchableOpacity
+                onPress={() => navigation.navigate("SendBeneficiaryMoney")}
+              >
                 <View
                   className="w-24 h-24 bg-white m-2.5 rounded-lg flex justify-center items-center"
                   style={styles.box}
                 >
-                  <Beneficiary style={styles.icon}   onPress={() => navigation.navigate("BeneficiaryList")}/>
+                  <Beneficiary style={styles.icon} />
                   <Text className="text-center font-semibold">Beneficiary</Text>
                 </View>
               </TouchableOpacity>
@@ -897,7 +957,9 @@ const HomeScreen = () => {
           </View>
         </ScrollView>
         <View className="px-5 mt-5">
-          <Text className="text-base font-semibold text-black">Credit Cards</Text>
+          <Text className="text-base font-semibold text-black">
+            Credit Cards
+          </Text>
         </View>
         <List.Section className="bg-white rounded-lg ml-5 mr-5">
           <List.Accordion
@@ -967,7 +1029,11 @@ const HomeScreen = () => {
       </ScrollView>
       <Footer />
 
-      <StatusBar backgroundColor="transparent" style="dark" translucent={true} />
+      <StatusBar
+        backgroundColor="transparent"
+        style="dark"
+        translucent={true}
+      />
     </SafeAreaView>
   );
 };
@@ -991,6 +1057,10 @@ const styles = StyleSheet.create({
   overlay: {
     flex: 1,
     backgroundColor: "rgba(0,0,0,0.5)",
+  },
+  icon: {
+    marginHorizontal: 8,
+    color: Color.PrimaryWebOrient,
   },
 });
 export default HomeScreen;
