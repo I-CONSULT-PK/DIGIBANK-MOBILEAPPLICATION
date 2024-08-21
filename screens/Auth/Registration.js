@@ -25,6 +25,7 @@ import API_BASE_URL from "../../config";
 import * as LocalAuthentication from "expo-local-authentication";
 import * as Device from "expo-device";
 import { v4 as uuidv4 } from "uuid";
+import AntDesign from '@expo/vector-icons/AntDesign';
 
 const Registration = ({ route }) => {
   const navigation = useNavigation();
