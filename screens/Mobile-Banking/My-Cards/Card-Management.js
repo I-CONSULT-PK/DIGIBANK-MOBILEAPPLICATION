@@ -28,6 +28,7 @@ const CardManagement = () => {
   const [isEnabled, setIsEnabled] = useState(false);
   const [selectedOption, setSelectedOption] = useState("Credit Card");
   const backgroundImage = require("../../../assets/Images/Cards.png");
+
   const toggleSwitch = () => setIsEnabled((previousState) => !previousState);
 
   const handlePress = () => setExpanded(!expanded);
@@ -101,7 +102,7 @@ const CardManagement = () => {
   };
 
   const renderNoDataMessage = (type) => (
-    <View className="p-4 justify-center items-center">
+    <View className="p-5 justify-center items-center">
       <Text className="text-gray-500 text-lg">No {type} Cards Found</Text>
     </View>
   );
@@ -125,88 +126,82 @@ const CardManagement = () => {
     const isDebitCard = !card.isCreditCard;
 
     return (
-      <List.AccordionGroup>
-        <List.Accordion
-          id="1"
-          key={card.cardId}
-          className="font-InterRegular m-0 text-base bg-white mb-3 mt-4"
-          style={styles.accordion}
-          title={
-            <View className="flex flex-row items-center">
-              <Image
-                source={require("../../../assets/visa.png")}
-                className="w-110 h-10 mr-1"
-              />
-              <View className="flex flex-col ml-4">
-                <Text className="text-lg font-semibold text-gray-800">
-                  {card.cardHolderName}
-                </Text>
-                <Text className="text-xs font-medium text-neutral-500">
-                  {maskCardNumber(card.cardNumber)}
-                </Text>
-              </View>
+      <List.Accordion
+        id={card.cardId}
+        key={card.cardId}
+        className="font-InterRegular m-0 text-base bg-white mb-3 mt-4"
+        style={styles.accordion}
+        title={
+          <View className="flex flex-row items-center">
+            <Image
+              source={require("../../../assets/visa.png")}
+              className="w-110 h-10 mr-1"
+            />
+            <View className="flex flex-col ml-4">
+              <Text className="text-lg font-semibold text-gray-800">
+                {card.cardHolderName}
+              </Text>
+              <Text className="text-xs font-medium text-neutral-500">
+                {maskCardNumber(card.cardNumber)}
+              </Text>
             </View>
-          }
-          left={(props) => <List.Icon {...props} />}
-          expanded={isExpanded}
-          onPress={onPress}
-        >
-          <View className="justify-center items-center mr-10 mt-3">
-            <ImageBackground
-              source={backgroundImage}
-              style={styles.imageBackground}
-              imageStyle={styles.imageStyle}
-            >
-              <View className="flex-1 items-center px-5 py-16 mt-10">
-                <Text className="text-black text-2xl font-semibold mb-4">
-                  {maskCardNumber(card.cardNumber)}
+          </View>
+        }
+        left={(props) => <List.Icon {...props} />}
+        expanded={isExpanded}
+        onPress={onPress}
+      >
+        <View className="justify-center items-center mr-10 mt-3">
+          <ImageBackground
+            source={backgroundImage}
+            style={styles.imageBackground}
+            imageStyle={styles.imageStyle}
+          >
+            <View className="flex-1 items-center px-5 py-16 mt-10">
+              <Text className="text-black text-2xl font-semibold mb-4">
+                {maskCardNumber(card.cardNumber)}
+              </Text>
+              <View className="flex-row justify-between w-full mb-4">
+                <Text className="text-black text-md font-semibold">
+                  {card.expiryDate}
                 </Text>
-                <View className="flex-row justify-between w-full mb-4">
-                  <Text className="text-black text-md font-semibold">
-                    {card.expiryDate}
-                  </Text>
-                  <Text className="text-black text-md font-semibold">
-                    CVV: {card.cvv}
-                  </Text>
-                </View>
-                <Text className="text-black text-xl">
-                  {card.cardHolderName}
+                <Text className="text-black text-md font-semibold">
+                  CVV: {card.cvv}
                 </Text>
               </View>
-            </ImageBackground>
-          </View>
+              <Text className="text-black text-xl">{card.cardHolderName}</Text>
+            </View>
+          </ImageBackground>
+        </View>
 
-          <View className="p-4 mr-2">
-            {isDebitCard && (
-              <View className="flex-row items-center justify-between">
-                <Switch
-                  trackColor={{ false: "#767577", true: "#1DBBD8" }}
-                  thumbColor={isEnabled ? "#1DBBD8" : "#f4f3f4"}
-                  onValueChange={toggleSwitch}
-                  value={isEnabled}
-                />
-                <Text className="text-sm font-medium">
-                  Deactivate Your Card
-                </Text>
-              </View>
-            )}
-            <View className="my-2">
-              <View className="border-t border-gray-300"></View>
+        <View className="p-4 mr-2">
+          {isDebitCard && (
+            <View className="flex-row items-center justify-between">
+              <Switch
+                trackColor={{ false: "#767577", true: "#1DBBD8" }}
+                thumbColor={isEnabled ? "#1DBBD8" : "#f4f3f4"}
+                onValueChange={toggleSwitch}
+                value={isEnabled}
+              />
+              <Text className="text-sm font-medium">Deactivate Your Card</Text>
             </View>
-            {cardDetails.map((detail, index) => (
-              <View
-                key={index}
-                className={`mb-2 flex-row items-center justify-between ${
-                  index < cardDetails.length - 1 ? "my-2" : ""
-                }`}
-              >
-                <Text className="text-xs text-gray-500">{detail.label}</Text>
-                <Text className="text-sm font-medium">{detail.value}</Text>
-              </View>
-            ))}
+          )}
+          <View className="my-2">
+            <View className="border-t border-gray-300"></View>
           </View>
-        </List.Accordion>
-      </List.AccordionGroup>
+          {cardDetails.map((detail, index) => (
+            <View
+              key={index}
+              className={`mb-2 flex-row items-center justify-between ${
+                index < cardDetails.length - 1 ? "my-2" : ""
+              }`}
+            >
+              <Text className="text-xs text-gray-500">{detail.label}</Text>
+              <Text className="text-sm font-medium">{detail.value}</Text>
+            </View>
+          ))}
+        </View>
+      </List.Accordion>
     );
   };
 
@@ -246,7 +241,7 @@ const CardManagement = () => {
                 </Text>
               </TouchableOpacity>
               <TouchableOpacity
-                className={`flex-1 p-3 bg-white w-16 h-12 rounded-r-lg ${
+                className={`flex-1 p-3 bg-white w-16 h-12 rounded-r-lg  ${
                   selectedOption === "Debit Card"
                     ? "bg-primary shadow-lg"
                     : "shadow-sm"
@@ -265,9 +260,8 @@ const CardManagement = () => {
               </TouchableOpacity>
             </View>
 
-            {/* Render Credit Card Section */}
-
-            <List.Section className="bg-white rounded-xl ml-5 mr-5">
+            {/* Credit Card Section */}
+            <List.Section className="bg-white rounded-xl ml-5 mr-5 mt-0">
               {selectedOption === "Credit Card" ? (
                 cards.filter((card) => card.isCreditCard).length > 0 ? (
                   cards
@@ -283,8 +277,9 @@ const CardManagement = () => {
               )}
             </List.Section>
 
-            {/* Render Debit Card Section */}
-            <List.Section className="bg-white rounded-xl ml-5 mr-5">
+            {/* Debit Card Section */}
+            <List.Section className="bg-white rounded-xl ml-5 mr-5 mt-[-10px]">
+              {/* Adjust margin-top here */}
               {selectedOption === "Debit Card" ? (
                 cards.filter((card) => !card.isCreditCard).length > 0 ? (
                   cards
@@ -305,6 +300,7 @@ const CardManagement = () => {
     </SafeAreaView>
   );
 };
+
 const styles = StyleSheet.create({
   accordion: {
     borderColor: "#D1D5DB",
@@ -318,6 +314,9 @@ const styles = StyleSheet.create({
   },
   imageStyle: {
     borderRadius: 16,
+  },
+  accordionGroup: {
+    backgroundColor: "transparent",
   },
 });
 
