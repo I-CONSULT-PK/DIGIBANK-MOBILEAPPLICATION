@@ -65,8 +65,30 @@ const CardManagement = () => {
         Alert.alert("Error", "Unexpected response format");
       }
     } catch (error) {
-      console.error("Error fetching card data:", error);
-      Alert.alert("Error", "Failed to fetch card data");
+      if (error.response) {
+        const statusCode = error.response.status;
+
+        if (statusCode === 404) {
+          Alert.alert("Error", "Server not found. Please try again later.");
+        } else if (statusCode === 503) {
+          Alert.alert("Error", "Service unavailable. Please try again later.");
+        } else if (statusCode === 400) {
+          Alert.alert(
+            "Error",
+            error.response.data.message ||
+              "Bad request. Please check your input."
+          );
+        } else {
+          Alert.alert("Error", `Card not found`);
+        }
+      } else if (error.request) {
+        Alert.alert(
+          "Error",
+          "No response from the server. Please check your connection."
+        );
+      } else {
+        Alert.alert("Error", `Error: ${error.message}`);
+      }
     }
   };
 
