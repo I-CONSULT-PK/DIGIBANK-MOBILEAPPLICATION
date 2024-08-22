@@ -61,13 +61,16 @@ import StartSection from "./screens/Auth/StartSection";
 import SendBeneficiaryMoney from "./screens/Mobile-Banking/Beneficiary/SendBeneficiaryMoney";
 import BeneficiaryList from "./screens/Mobile-Banking/Beneficiary/BeneficiaryList";
 import Add_Beneficiary from "./screens/Mobile-Banking/Beneficiary/Add-Beneficiary";
-import AvailCashonCreditCard  from "./screens/Mobile-Banking/Easy-Cash/AvailCashonCreditCard"; 
-import BeneficiaryAccountDetails  from "./screens/Mobile-Banking/Easy-Cash/BeneficiaryAccountDetails"; 
+import AvailCashonCreditCard from "./screens/Mobile-Banking/Easy-Cash/AvailCashonCreditCard";
+import BeneficiaryAccountDetails from "./screens/Mobile-Banking/Easy-Cash/BeneficiaryAccountDetails";
 import Summary from "./screens/Mobile-Banking/Easy-Cash/Summary";
 import SendFromAccount from "./screens/Mobile-Banking/Beneficiary/SendFromAccount";
 import PayNow from "./screens/Mobile-Banking/Beneficiary/PayNow";
 import BankList from "./screens/Mobile-Banking/Beneficiary/BankList";
 import Fatch_Acc_Beneficiary from "./screens/Mobile-Banking/Beneficiary/Fatch_Acc_Beneficiary";
+import ChooseSecurity from "./screens/Auth/ChooseSecurity";
+import RegisterFingerPrint from "./screens/Auth/RegisterFingerPrint";
+import RegisterFaceDetector from "./screens/Auth/RegisterFaceDetector";
 
 const Stack = createNativeStackNavigator();
 
@@ -177,7 +180,7 @@ export default function App() {
         />
         {/* Easy-Cash Module end */}
 
-         {/* Beneficiary Module  */}
+        {/* Beneficiary Module  */}
         <Stack.Screen
           name="SendFromAccount"
           component={SendFromAccount}
@@ -193,7 +196,7 @@ export default function App() {
           component={SendBeneficiaryMoney}
           options={{ headerShown: false }}
         />
-         <Stack.Screen
+        <Stack.Screen
           name="PayNow"
           component={PayNow}
           options={{ headerShown: false }}
@@ -360,12 +363,13 @@ export default function App() {
           component={Footer}
           options={{ headerShown: false }}
         />
+
         <Stack.Screen
           name="OTPverification"
           component={OTPverification}
           options={{ headerShown: false }}
         />
-        
+
         <Stack.Screen
           name="BeneficiaryList"
           component={BeneficiaryList}
@@ -376,7 +380,21 @@ export default function App() {
           component={BankList}
           options={{ headerShown: false }}
         />
-
+        <Stack.Screen
+          name="ChooseSecurity"
+          component={ChooseSecurity}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="RegisterFingerPrint"
+          component={RegisterFingerPrint}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="RegisterFaceDetector"
+          component={RegisterFaceDetector}
+          options={{ headerShown: false }}
+        />
         <Stack.Screen
           name="Fatch_Acc_Beneficiary"
           component={Fatch_Acc_Beneficiary}
@@ -396,16 +414,16 @@ export default function App() {
               component={SplashScreen}
               options={{ headerShown: false }}
             />
-             <Stack.Screen
-                name="Add_Beneficiary"
-                component={Add_Beneficiary}
-                options={{ headerShown: false }}
-              />
-                <Stack.Screen
-                name="Fatch_Acc_Beneficiary"
-                component={Fatch_Acc_Beneficiary}
-                options={{ headerShown: false }}
-              />
+            <Stack.Screen
+              name="Add_Beneficiary"
+              component={Add_Beneficiary}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="Fatch_Acc_Beneficiary"
+              component={Fatch_Acc_Beneficiary}
+              options={{ headerShown: false }}
+            />
 
             <Stack.Screen
               name="Auth"
@@ -425,6 +443,21 @@ export default function App() {
             <Stack.Screen
               name="ForgetUserName"
               component={ForgetUserName}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="ChooseSecurity"
+              component={ChooseSecurity}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="RegisterFingerPrint"
+              component={RegisterFingerPrint}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="RegisterFaceDetector"
+              component={RegisterFaceDetector}
               options={{ headerShown: false }}
             />
             <Stack.Screen
