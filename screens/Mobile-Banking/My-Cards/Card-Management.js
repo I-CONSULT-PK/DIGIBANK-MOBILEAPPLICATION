@@ -175,16 +175,17 @@ const CardManagement = () => {
     <SafeAreaView className="bg-[#f9fafc]" style={{ flex: 1 }}>
       <ScrollView>
         <View className="flex-1">
-          <TouchableOpacity onPress={() => navigation.navigate("SelectCards")}>
-            <Entypo
-              name="chevron-left"
-              size={wp("8%")}
-              color="#090909"
-              marginTop={hp("2%")}
-            />
-          </TouchableOpacity>
-          <View className="justify-center items-center">
-            <Text className="font-InterBold text-2xl">Cards</Text>
+        <View className="relative w-full mt-10">
+            <TouchableOpacity
+              onPress={() => navigation.goBack()}
+              className="absolute left-5 "
+              style={{ zIndex: 1 }}
+            >
+              <Entypo name="chevron-left" size={30} color="black" />
+            </TouchableOpacity>
+            <Text className="text-center font-InterBold text-2xl">
+              Cards
+            </Text>
           </View>
           <View className="mt-2">
             <View className="flex flex-row justify-center w-4/5 h-18 my-5 mx-auto">

@@ -521,7 +521,6 @@ const HomeScreen = () => {
 
   const handleCopy = (text) => {
     Clipboard.setString(text);
-   
   };
   const [isVisible, setIsVisible] = useState(true);
 
@@ -653,7 +652,7 @@ const HomeScreen = () => {
                 </View>
 
                 <Text className="text-white text-base font-semibold">
-                  Digi-Bank Savings Foreign Accounts
+                  Digi-Bank Accounts
                 </Text>
               </View>
             </View>
