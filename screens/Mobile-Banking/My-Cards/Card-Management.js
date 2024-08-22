@@ -1,6 +1,13 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { Text, View, Image, Alert, Switch } from "react-native";
+import {
+  Text,
+  View,
+  Image,
+  Alert,
+  Switch,
+  ImageBackground,
+} from "react-native";
 import { ScrollView, StyleSheet, TouchableOpacity } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { List } from "react-native-paper";
@@ -20,6 +27,7 @@ const CardManagement = () => {
   const [cards, setCards] = useState([]);
   const [isEnabled, setIsEnabled] = useState(false);
   const [selectedOption, setSelectedOption] = useState("Credit Card");
+  const backgroundImage = require("../../../assets/Images/Cards.png");
 
   const toggleSwitch = () => setIsEnabled((previousState) => !previousState);
 
@@ -49,7 +57,6 @@ const CardManagement = () => {
       );
 
       if (response.data.success && Array.isArray(response.data.data)) {
-        // Process the card data
         const updatedCards = response.data.data.map((card) => ({
           ...card,
           isCreditCard: card.isCreditCard === true,
@@ -59,8 +66,30 @@ const CardManagement = () => {
         Alert.alert("Error", "Unexpected response format");
       }
     } catch (error) {
-      console.error("Error fetching card data:", error);
-      Alert.alert("Error", "Failed to fetch card data");
+      if (error.response) {
+        const statusCode = error.response.status;
+
+        if (statusCode === 404) {
+          Alert.alert("Error", "Server not found. Please try again later.");
+        } else if (statusCode === 503) {
+          Alert.alert("Error", "Service unavailable. Please try again later.");
+        } else if (statusCode === 400) {
+          Alert.alert(
+            "Error",
+            error.response.data.message ||
+              "Bad request. Please check your input."
+          );
+        } else {
+          Alert.alert("Error", `Card not found`);
+        }
+      } else if (error.request) {
+        Alert.alert(
+          "Error",
+          "No response from the server. Please check your connection."
+        );
+      } else {
+        Alert.alert("Error", `Error: ${error.message}`);
+      }
     }
   };
 
@@ -69,19 +98,16 @@ const CardManagement = () => {
   }, []);
 
   const maskCardNumber = (number) => {
-    return number
-      .replace(/\d(?=\d{4})/g, "•")
-      .replace(/(\d{4})(\d{4})(\d{4})(\d{4})/, "•••• •••• •••• $4");
+    return number.replace(/(.{4})/g, "$1  ").trim();
   };
 
   const renderNoDataMessage = (type) => (
-    <View className="p-4 justify-center items-center">
+    <View className="p-5 justify-center items-center">
       <Text className="text-gray-500 text-lg">No {type} Cards Found</Text>
     </View>
   );
 
   const renderCardSection = (card, isExpanded, onPress) => {
-    // Array of card details
     const cardDetails = [
       {
         label: "Card Number",
@@ -97,12 +123,14 @@ const CardManagement = () => {
       },
     ];
 
+    const isDebitCard = !card.isCreditCard;
+
     return (
-      <List.AccordionGroup>
+      <List.AccordionGroup style={styles.accordionGroup}>
         <List.Accordion
-          id="1"
+          id={card.cardId}
           key={card.cardId}
-          className="font-InterRegular m-0 text-base bg-white mb-3 "
+          className="font-InterRegular m-0 text-base bg-white mb-3 mt-4"
           style={styles.accordion}
           title={
             <View className="flex flex-row items-center">
@@ -115,7 +143,7 @@ const CardManagement = () => {
                   {card.cardHolderName}
                 </Text>
                 <Text className="text-xs font-medium text-neutral-500">
-                  {card.cardNumber}
+                  {maskCardNumber(card.cardNumber)}
                 </Text>
               </View>
             </View>
@@ -124,33 +152,45 @@ const CardManagement = () => {
           expanded={isExpanded}
           onPress={onPress}
         >
-          <View className="justify-center items-center mr-8">
-            <View className="bg-gray-800 p-4 rounded-lg shadow-md w-80">
-              {cardDetails.map((detail, index) => (
-                <View
-                  key={index}
-                  className={`flex-row ${
-                    index < cardDetails.length - 1 ? "mb-4" : ""
-                  } justify-between items-center`}
-                >
-                  <Text className="text-gray-400 text-sm"></Text>
-                  <Text className="text-white text-lg font-semibold">
-                    {detail.value}
+          <View className="justify-center items-center mr-10 mt-3">
+            <ImageBackground
+              source={backgroundImage}
+              style={styles.imageBackground}
+              imageStyle={styles.imageStyle}
+            >
+              <View className="flex-1 items-center px-5 py-16 mt-10">
+                <Text className="text-black text-2xl font-semibold mb-4">
+                  {maskCardNumber(card.cardNumber)}
+                </Text>
+                <View className="flex-row justify-between w-full mb-4">
+                  <Text className="text-black text-md font-semibold">
+                    {card.expiryDate}
+                  </Text>
+                  <Text className="text-black text-md font-semibold">
+                    CVV: {card.cvv}
                   </Text>
                 </View>
-              ))}
-            </View>
+                <Text className="text-black text-xl">
+                  {card.cardHolderName}
+                </Text>
+              </View>
+            </ImageBackground>
           </View>
+
           <View className="p-4 mr-2">
-            <View className="flex-row items-center justify-between">
-              <Switch
-                trackColor={{ false: "#767577", true: "#1DBBD8" }}
-                thumbColor={isEnabled ? "#1DBBD8" : "#f4f3f4"}
-                onValueChange={toggleSwitch}
-                value={isEnabled}
-              />
-              <Text className="text-sm font-medium">Deactivate Your Card</Text>
-            </View>
+            {isDebitCard && (
+              <View className="flex-row items-center justify-between">
+                <Switch
+                  trackColor={{ false: "#767577", true: "#1DBBD8" }}
+                  thumbColor={isEnabled ? "#1DBBD8" : "#f4f3f4"}
+                  onValueChange={toggleSwitch}
+                  value={isEnabled}
+                />
+                <Text className="text-sm font-medium">
+                  Deactivate Your Card
+                </Text>
+              </View>
+            )}
             <View className="my-2">
               <View className="border-t border-gray-300"></View>
             </View>
@@ -207,7 +247,7 @@ const CardManagement = () => {
                 </Text>
               </TouchableOpacity>
               <TouchableOpacity
-                className={`flex-1 p-3 bg-white w-16 h-12 rounded-r-lg ${
+                className={`flex-1 p-3 bg-white w-16 h-12 rounded-r-lg  ${
                   selectedOption === "Debit Card"
                     ? "bg-primary shadow-lg"
                     : "shadow-sm"
@@ -226,9 +266,8 @@ const CardManagement = () => {
               </TouchableOpacity>
             </View>
 
-            {/* Render Credit Card Section */}
-            
-            <List.Section className="bg-white rounded-xl ml-5 mr-5">
+            {/* Credit Card Section */}
+            <List.Section className="bg-white rounded-xl ml-5 mr-5 mt-0">
               {selectedOption === "Credit Card" ? (
                 cards.filter((card) => card.isCreditCard).length > 0 ? (
                   cards
@@ -244,8 +283,9 @@ const CardManagement = () => {
               )}
             </List.Section>
 
-            {/* Render Debit Card Section */}
-            <List.Section className="bg-white rounded-xl ml-5 mr-5">
+            {/* Debit Card Section */}
+            <List.Section className="bg-white rounded-xl ml-5 mr-5 mt-[-10px]">
+              {/* Adjust margin-top here */}
               {selectedOption === "Debit Card" ? (
                 cards.filter((card) => !card.isCreditCard).length > 0 ? (
                   cards
@@ -266,11 +306,23 @@ const CardManagement = () => {
     </SafeAreaView>
   );
 };
+
 const styles = StyleSheet.create({
   accordion: {
     borderColor: "#D1D5DB",
     borderWidth: 1,
     borderRadius: 8,
+  },
+  imageBackground: {
+    width: wp("85%"),
+    height: hp("30%"),
+    borderRadius: 16,
+  },
+  imageStyle: {
+    borderRadius: 16,
+  },
+  accordionGroup: {
+    backgroundColor: "transparent",
   },
 });
 
