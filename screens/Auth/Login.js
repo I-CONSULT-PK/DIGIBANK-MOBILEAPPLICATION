@@ -188,18 +188,18 @@ const Login = ({ navigation }) => {
       const checkBiometricSupport = async () => {
         const hasHardware = await LocalAuthentication.hasHardwareAsync();
         const isEnrolled = await LocalAuthentication.isEnrolledAsync();
-  
-        if (!hasHardware) {
-          Alert.alert(
-            "Error",
-            "Biometric authentication is not available on this device."
-          );
-        } else if (!isEnrolled) {
-          Alert.alert(
-            "Error",
-            "No biometric authentication is set up on this device."
-          );
-        }
+ 
+        // if (!hasHardware) {
+        //   Alert.alert(
+        //     "Error",
+        //     "Biometric authentication is not available on this device."
+        //   );
+        // } else if (!isEnrolled) {
+        //   Alert.alert(
+        //     "Error",
+        //     "No biometric authentication is set up on this device."
+        //   );
+        // }
       };
   
       checkBiometricSupport();
