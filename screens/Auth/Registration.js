@@ -25,6 +25,7 @@ import API_BASE_URL from "../../config";
 import * as LocalAuthentication from "expo-local-authentication";
 import * as Device from "expo-device";
 import { v4 as uuidv4 } from "uuid";
+import { AntDesign } from "@expo/vector-icons";
 
 const Registration = ({ route }) => {
   const navigation = useNavigation();
@@ -85,6 +86,30 @@ const Registration = ({ route }) => {
     password: "",
     confirmPassword: "",
   });
+
+  const [hasBio, setHasBio] = useState(true);
+  const [hasFaceDetection, setHasFaceDetection] = useState(true);
+
+  const checkHardwareSupport = async () => {
+    const hasHardware = await LocalAuthentication.hasHardwareAsync();
+    const supportedTypes = await LocalAuthentication.supportedAuthenticationTypesAsync();
+  
+    if (hasHardware) {
+      // Iterate through supported types
+      supportedTypes.forEach((type) => {
+        if (type === LocalAuthentication.AuthenticationType.FINGERPRINT) {
+          setHasBio(true);
+        }
+        if (type === LocalAuthentication.AuthenticationType.FACIAL_RECOGNITION) {
+          setHasFaceDetection(true);
+        }
+      });
+    }
+  };
+
+  useEffect(() => {
+    checkHardwareSupport();
+  }, []);
 
   useFocusEffect(
     React.useCallback(() => {
@@ -275,7 +300,9 @@ const Registration = ({ route }) => {
             Alert.alert("Success", dto.message);
 
             setTimeout(() => {
-              navigation.navigate("Login");
+              (hasBio || hasFaceDetection)
+                        ? navigation.navigate("ChooseSecurity")
+                        : navigation.navigate("RegisterFaceDetector");
             }, 1000);
           } else {
             if (dto.message) {
@@ -317,23 +344,23 @@ const Registration = ({ route }) => {
     try {
       // Check if hardware supports biometrics
       const compatible = await LocalAuthentication.hasHardwareAsync();
-      if (!compatible) {
-        Alert.alert(
-          "Error",
-          "Biometric authentication is not supported on this device."
-        );
-        return;
-      }
+      // if (!compatible) {
+      //   Alert.alert(
+      //     "Error",
+      //     "Biometric authentication is not supported on this device."
+      //   );
+      //   return;
+      // }
 
       // Check if biometric records are enrolled
       const enrolled = await LocalAuthentication.isEnrolledAsync();
-      if (!enrolled) {
-        Alert.alert(
-          "Error",
-          "No biometric records found. Please set up biometrics in your device settings."
-        );
-        return;
-      }
+      // if (!enrolled) {
+      //   Alert.alert(
+      //     "Error",
+      //     "No biometric records found. Please set up biometrics in your device settings."
+      //   );
+      //   return;
+      // }
 
       // Authenticate with biometrics
       const result = await LocalAuthentication.authenticateAsync({
@@ -361,27 +388,7 @@ const Registration = ({ route }) => {
   const [isEnabled, setIsEnabled] = useState(false);
   const [biometricData, setBiometricData] = useState(null);
   const [visitorId, setVisitorId] = useState(null);
-
-  useEffect(() => {
-    const checkBiometricSupport = async () => {
-      const hasHardware = await LocalAuthentication.hasHardwareAsync();
-      const isEnrolled = await LocalAuthentication.isEnrolledAsync();
-
-      if (!hasHardware) {
-        Alert.alert(
-          "Error",
-          "Biometric authentication is not available on this device."
-        );
-      } else if (!isEnrolled) {
-        Alert.alert(
-          "Error",
-          "No biometric authentication is set up on this device."
-        );
-      }
-    };
-
-    checkBiometricSupport();
-  }, []);
+  
   const toggleSwitch = async () => {
     if (!isEnabled) {
       try {
@@ -503,30 +510,6 @@ const Registration = ({ route }) => {
                         onSubmitEditing={Keyboard.dismiss}
                       />
                     </View>
-                    <View className="mb-8 d-flex flex-row">
-                      <Text
-                        className="text-lg font-InterMedium"
-                        style={{ color: Color.PrimaryWebOrientTxtColor }}
-                      >
-                        Set Fingerprint
-                      </Text>
-                      <Switch
-                        className="ml-auto"
-                        trackColor={{ false: "#767577", true: "#1DBBD8" }}
-                        thumbColor={isEnabled ? "#1DBBD8" : "#f4f3f4"}
-                        onValueChange={toggleSwitch}
-                        value={isEnabled}
-                      />
-                    </View>
-                    {biometricData && (
-                      <View>
-                        <Text>Device Info:</Text>
-                        <Text>Brand: {biometricData.brand}</Text>
-                        <Text>Model: {biometricData.modelName}</Text>
-                        <Text>OS: {biometricData.osName}</Text>
-                        <Text>OS Version: {biometricData.osVersion}</Text>
-                      </View>
-                    )}
                   </View>
                 </View>
 
@@ -537,7 +520,7 @@ const Registration = ({ route }) => {
                     onPress={handleRegister}
                   >
                     <Text className="text-white text-base text-center font-medium font-InterSemiBold">
-                      Sign up
+                      Create
                     </Text>
                   </TouchableOpacity>
                   <View className="flex-row justify-center">
@@ -607,30 +590,7 @@ const Registration = ({ route }) => {
                         onSubmitEditing={Keyboard.dismiss}
                       />
                     </View>
-                    <View className="mb-4 d-flex flex-row">
-                      <Text
-                        className="text-lg font-InterMedium"
-                        style={{ color: Color.PrimaryWebOrientTxtColor }}
-                      >
-                        Set Fingerprint
-                      </Text>
-                      <Switch
-                        className="ml-auto"
-                        trackColor={{ false: "#767577", true: "#1DBBD8" }}
-                        thumbColor={isEnabled ? "#1DBBD8" : "#f4f3f4"}
-                        onValueChange={toggleSwitch}
-                        value={isEnabled}
-                      />
-                    </View>
-                    {/* {biometricData && (
-                      <View>
-                        <Text>Device Info:</Text>
-                        <Text>Brand: {biometricData.brand}</Text>
-                        <Text>Model: {biometricData.modelName}</Text>
-                        <Text>OS: {biometricData.osName}</Text>
-                        <Text>OS Version: {biometricData.osVersion}</Text>
-                      </View>
-                    )} */}
+                  
                   </View>
                 </View>
 
@@ -692,30 +652,6 @@ const Registration = ({ route }) => {
                       </Text>
                       <Input value={returnedData.email} disable />
                     </View>
-                    <View className="mb-8 d-flex flex-row">
-                      <Text
-                        className="text-lg font-InterMedium"
-                        style={{ color: Color.PrimaryWebOrientTxtColor }}
-                      >
-                        Set Fingerprint
-                      </Text>
-                      <Switch
-                        className="ml-auto"
-                        trackColor={{ false: "#767577", true: "#1DBBD8" }}
-                        thumbColor={isEnabled ? "#1DBBD8" : "#f4f3f4"}
-                        onValueChange={toggleSwitch}
-                        value={isEnabled}
-                      />
-                    </View>
-                    {/* {biometricData && (
-                      <View>
-                        <Text>Device Info:</Text>
-                        <Text>Brand: {biometricData.brand}</Text>
-                        <Text>Model: {biometricData.modelName}</Text>
-                        <Text>OS: {biometricData.osName}</Text>
-                        <Text>OS Version: {biometricData.osVersion}</Text>
-                      </View>
-                    )} */}
                   </View>
                 </View>
 
@@ -729,7 +665,7 @@ const Registration = ({ route }) => {
                       Next
                     </Text>
                   </TouchableOpacity>
-
+                 
                   <View className="flex-row justify-center">
                     <Text className="text-sm font-InterRegular">
                       Already have an account?{" "}

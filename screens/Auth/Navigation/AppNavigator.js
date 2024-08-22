@@ -62,6 +62,9 @@ import PayNow from "../../Mobile-Banking/Beneficiary/PayNow";
 import Fatch_Acc_Beneficiary from "../../Mobile-Banking/Beneficiary/Fatch_Acc_Beneficiary";
 import BeneficiaryList from "../../Mobile-Banking/Beneficiary/BeneficiaryList";
 import BankList from "../../Mobile-Banking/Beneficiary/BankList";
+import ChooseSecurity from "../ChooseSecurity";
+import RegisterFingerPrint from "../RegisterFingerPrint";
+import RegisterFaceDetector from "../RegisterFaceDetector";
 
 const Stack = createStackNavigator();
 
@@ -93,6 +96,9 @@ const AppNavigator = () => {
         <Stack.Screen name="CardActivation" component={CardActivation} />
         <Stack.Screen name="SetCardPin" component={SetCardPin} />
         <Stack.Screen name="CardActivated" component={CardActivated} />
+        <Stack.Screen name="ChooseSecurity" component={ChooseSecurity} />
+        <Stack.Screen name="RegisterFingerPrint" component={RegisterFingerPrint} />
+        <Stack.Screen name="RegisterFaceDetector" component={RegisterFaceDetector} />
         {/* Easy-Cash Module */}
         <Stack.Screen
           name="AvailCashonCreditCard"
