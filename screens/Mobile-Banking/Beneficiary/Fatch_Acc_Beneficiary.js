@@ -47,7 +47,7 @@ const Fatch_Acc_Beneficiary = ({ route }) => {
             customerId: customerId,
             bankUrl: bankLogo,
           };
-
+          
           const dto = await axios.post(
             `${API_BASE_URL}/v1/beneficiary/createBeneficiary`,
             payload,
