@@ -152,7 +152,7 @@ const CardManagement = () => {
           expanded={isExpanded}
           onPress={onPress}
         >
-          <View className="justify-center items-center mr-10 mt-3">
+          <View className="justify-center items-center px-10  mt-3">
             <ImageBackground
               source={backgroundImage}
               style={styles.imageBackground}
