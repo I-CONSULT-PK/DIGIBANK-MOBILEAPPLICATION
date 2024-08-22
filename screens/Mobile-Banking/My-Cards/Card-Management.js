@@ -126,82 +126,88 @@ const CardManagement = () => {
     const isDebitCard = !card.isCreditCard;
 
     return (
-      <List.Accordion
-        id={card.cardId}
-        key={card.cardId}
-        className="font-InterRegular m-0 text-base bg-white mb-3 mt-4"
-        style={styles.accordion}
-        title={
-          <View className="flex flex-row items-center">
-            <Image
-              source={require("../../../assets/visa.png")}
-              className="w-110 h-10 mr-1"
-            />
-            <View className="flex flex-col ml-4">
-              <Text className="text-lg font-semibold text-gray-800">
-                {card.cardHolderName}
-              </Text>
-              <Text className="text-xs font-medium text-neutral-500">
-                {maskCardNumber(card.cardNumber)}
-              </Text>
-            </View>
-          </View>
-        }
-        left={(props) => <List.Icon {...props} />}
-        expanded={isExpanded}
-        onPress={onPress}
-      >
-        <View className="justify-center items-center mr-10 mt-3">
-          <ImageBackground
-            source={backgroundImage}
-            style={styles.imageBackground}
-            imageStyle={styles.imageStyle}
-          >
-            <View className="flex-1 items-center px-5 py-16 mt-10">
-              <Text className="text-black text-2xl font-semibold mb-4">
-                {maskCardNumber(card.cardNumber)}
-              </Text>
-              <View className="flex-row justify-between w-full mb-4">
-                <Text className="text-black text-md font-semibold">
-                  {card.expiryDate}
+      <List.AccordionGroup style={styles.accordionGroup}>
+        <List.Accordion
+          id={card.cardId}
+          key={card.cardId}
+          className="font-InterRegular m-0 text-base bg-white mb-3 mt-4"
+          style={styles.accordion}
+          title={
+            <View className="flex flex-row items-center">
+              <Image
+                source={require("../../../assets/visa.png")}
+                className="w-110 h-10 mr-1"
+              />
+              <View className="flex flex-col ml-4">
+                <Text className="text-lg font-semibold text-gray-800">
+                  {card.cardHolderName}
                 </Text>
-                <Text className="text-black text-md font-semibold">
-                  CVV: {card.cvv}
+                <Text className="text-xs font-medium text-neutral-500">
+                  {maskCardNumber(card.cardNumber)}
                 </Text>
               </View>
-              <Text className="text-black text-xl">{card.cardHolderName}</Text>
             </View>
-          </ImageBackground>
-        </View>
-
-        <View className="p-4 mr-2">
-          {isDebitCard && (
-            <View className="flex-row items-center justify-between">
-              <Switch
-                trackColor={{ false: "#767577", true: "#1DBBD8" }}
-                thumbColor={isEnabled ? "#1DBBD8" : "#f4f3f4"}
-                onValueChange={toggleSwitch}
-                value={isEnabled}
-              />
-              <Text className="text-sm font-medium">Deactivate Your Card</Text>
-            </View>
-          )}
-          <View className="my-2">
-            <View className="border-t border-gray-300"></View>
-          </View>
-          {cardDetails.map((detail, index) => (
-            <View
-              key={index}
-              className={`mb-2 flex-row items-center justify-between ${
-                index < cardDetails.length - 1 ? "my-2" : ""
-              }`}
+          }
+          left={(props) => <List.Icon {...props} />}
+          expanded={isExpanded}
+          onPress={onPress}
+        >
+          <View className="justify-center items-center mr-10 mt-3">
+            <ImageBackground
+              source={backgroundImage}
+              style={styles.imageBackground}
+              imageStyle={styles.imageStyle}
             >
-              <Text className="text-xs text-gray-500">{detail.label}</Text>
-              <Text className="text-sm font-medium">{detail.value}</Text>
+              <View className="flex-1 items-center px-5 py-16 mt-10">
+                <Text className="text-black text-2xl font-semibold mb-4">
+                  {maskCardNumber(card.cardNumber)}
+                </Text>
+                <View className="flex-row justify-between w-full mb-4">
+                  <Text className="text-black text-md font-semibold">
+                    {card.expiryDate}
+                  </Text>
+                  <Text className="text-black text-md font-semibold">
+                    CVV: {card.cvv}
+                  </Text>
+                </View>
+                <Text className="text-black text-xl">
+                  {card.cardHolderName}
+                </Text>
+              </View>
+            </ImageBackground>
+          </View>
+
+          <View className="p-4 mr-2">
+            {isDebitCard && (
+              <View className="flex-row items-center justify-between">
+                <Switch
+                  trackColor={{ false: "#767577", true: "#1DBBD8" }}
+                  thumbColor={isEnabled ? "#1DBBD8" : "#f4f3f4"}
+                  onValueChange={toggleSwitch}
+                  value={isEnabled}
+                />
+                <Text className="text-sm font-medium">
+                  Deactivate Your Card
+                </Text>
+              </View>
+            )}
+            <View className="my-2">
+              <View className="border-t border-gray-300"></View>
             </View>
-          ))}
-        </View>
-      </List.Accordion>
+            {cardDetails.map((detail, index) => (
+              <View
+                key={index}
+                className={`mb-2 flex-row items-center justify-between ${
+                  index < cardDetails.length - 1 ? "my-2" : ""
+                }`}
+              >
+                <Text className="text-xs text-gray-500">{detail.label}</Text>
+                <Text className="text-sm font-medium">{detail.value}</Text>
+              </View>
+            ))}
+          </View>
+        </List.Accordion>
+      </List.AccordionGroup>
     );
   };
 
