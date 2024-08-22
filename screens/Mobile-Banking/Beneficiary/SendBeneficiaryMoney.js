@@ -21,7 +21,7 @@ const SendBeneficiaryMoney = ({ navigation }) => {
             <TouchableOpacity onPress={() => navigation.goBack()} className="absolute left-5">
               <Entypo name="chevron-left" size={25} color="white" />
             </TouchableOpacity>
-            <Text className="text-white font-semibold text-lg font-InterSemiBold">Send Money</Text>
+            <Text className="text-white text-lg font-InterBold">Send Money</Text>
           </View>
         </View>
 
