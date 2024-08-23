@@ -15,15 +15,15 @@ const SupplementaryCardCustomization = () => {
     <SafeAreaView className="flex-1  bg-[#f9fafc]">
       <ScrollView>
         <View>
-          <TouchableOpacity
-            onPress={() => navigation.navigate("SelectApplyOptionCard")}
-            className="mt-9 ml-5"
-          >
-            <Entypo name="chevron-left" size={30} color="#090909" />
-          </TouchableOpacity>
-          <Text className="text-2xl text-center  font-bold">
-            Supplementary Card
-          </Text>
+          <View className="flex-row items-center justify-center w-full mt-10">
+            <TouchableOpacity
+              onPress={() => navigation.goBack()}
+              className="absolute left-5"
+            >
+              <Entypo name="chevron-left" size={30} color="black" />
+            </TouchableOpacity>
+            <Text className="font-InterBold text-2xl">Supplementary Card</Text>
+          </View>
         </View>
         <View className="flex-1 justify-center items-center shadow-gray-200">
           <View className="w-11/12 max-w-md p-5 py-7 bg-white rounded-xl shadow-lg mt-4">
@@ -50,9 +50,9 @@ const SupplementaryCardCustomization = () => {
         </View>
         <View className="px-10 mt-14">
           <Button
-            text='Confirm and proceed '
-            width='w-[100%]'
-            styles='mb-4 py-3'
+            text="Confirm and proceed "
+            width="w-[100%]"
+            styles="mb-4 py-3"
             onPress={() => navigation.navigate("SupplementaryCardLimitSplit")}
           />
         </View>

@@ -79,7 +79,7 @@ const BankList = ({ navigation }) => {
                         <TouchableOpacity onPress={() => navigation.goBack()} className="absolute left-5">
                             <Entypo name="chevron-left" size={25} color="white" />
                         </TouchableOpacity>
-                        <Text className="text-white font-semibold text-lg font-InterSemiBold">Select Bank</Text>
+                        <Text className="text-white text-lg font-InterBold">Select Bank</Text>
                     </View>
                 </View>
 
@@ -96,7 +96,7 @@ const BankList = ({ navigation }) => {
                         {filteredBanks.map((bank, index) => (
                             <React.Fragment key={index}>
                                 <OptionBox
-                                    image={{ uri: bank.bankLogo }} 
+                                    image={{ uri: bank.bankLogo }}
                                     text={bank.bankName}
                                     icon1='arrowright'
                                     iconColor1={Color.PrimaryWebOrient}

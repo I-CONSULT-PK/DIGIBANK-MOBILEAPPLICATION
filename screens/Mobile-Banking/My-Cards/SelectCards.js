@@ -17,16 +17,17 @@ const SelectCards = () => {
     <SafeAreaView className=" bg-[#f9fafc]" style={{ flex: 1 }}>
       <ScrollView>
         <View className=" flex-1">
-          <TouchableOpacity onPress={() => navigation.navigate("Home")}>
-            <Entypo
-              name="chevron-left"
-              size={wp("8%")}
-              color="#090909"
-              marginTop={hp("2%")}
-            />
-          </TouchableOpacity>
-          <View className="justify-center items-center">
-            <Text className="font-InterBold text-2xl "> Cards & Loan</Text>
+        <View className="relative w-full mt-10">
+            <TouchableOpacity
+              onPress={() => navigation.navigate("Home")}
+              className="absolute left-5 "
+              style={{ zIndex: 1 }}
+            >
+              <Entypo name="chevron-left" size={30} color="black" />
+            </TouchableOpacity>
+            <Text className="text-center font-InterBold text-2xl">
+              Cards & Loan
+            </Text>
           </View>
           <View className="p-4">
             <TouchableOpacity onPress={() => navigation.navigate("CardManagement")}
