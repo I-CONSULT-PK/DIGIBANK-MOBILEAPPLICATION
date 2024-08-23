@@ -21,7 +21,7 @@ const SetCardPin = ({ navigation }) => {
   const [isConfirmationStage, setIsConfirmationStage] = useState(false);
   const [confirmationOtp, setConfirmationOtp] = useState(["", "", "", ""]);
   const otpInputs = useRef([]);
-  const initialOtpRef = useRef(["", "", "", ""]);  // Use ref to store the initial OTP
+  const initialOtpRef = useRef(["", "", "", ""]); // Use ref to store the initial OTP
 
   useEffect(() => {
     // Focus the first input box when the stage changes
@@ -64,10 +64,10 @@ const SetCardPin = ({ navigation }) => {
 
   const handleConfirmPress = () => {
     // Debugging: Check values of OTPs
-    console.log("Original PIN:", initialOtpRef.current.join(''));
-    console.log("Confirmation PIN:", confirmationOtp.join(''));
+    console.log("Original PIN:", initialOtpRef.current.join(""));
+    console.log("Confirmation PIN:", confirmationOtp.join(""));
 
-    if (initialOtpRef.current.join('') === confirmationOtp.join('')) {
+    if (initialOtpRef.current.join("") === confirmationOtp.join("")) {
       navigation.navigate("CardActivated");
     } else {
       Alert.alert("Error", "PINs do not match. Please try again.");
@@ -76,15 +76,15 @@ const SetCardPin = ({ navigation }) => {
 
   return (
     <SafeAreaView className="bg-[#f9fafc]" style={{ flex: 1 }}>
-      <TouchableOpacity
-        className="mt-8 ml-2"
-        onPress={() => navigation.navigate("CardActivation")}
-      >
-        <Entypo name="chevron-left" size={30} color="#090909" />
-      </TouchableOpacity>
-      <Text className="text-2xl text-center  font-bold">
-        Card Activation
-      </Text>
+      <View className="flex-row items-center justify-center w-full mt-10">
+        <TouchableOpacity
+          onPress={() => navigation.goBack()}
+          className="absolute left-5"
+        >
+          <Entypo name="chevron-left" size={30} color="black" />
+        </TouchableOpacity>
+        <Text className="font-InterBold text-2xl">Card Activation</Text>
+      </View>
       <View
         style={{
           flex: 1,
@@ -98,10 +98,7 @@ const SetCardPin = ({ navigation }) => {
             style={styles.container}
           >
             <View className="flex justify-center items-center">
-              <Image
-                source={require("../../../assets/pin-icon.png")}
-
-              />
+              <Image source={require("../../../assets/pin-icon.png")} />
               <Text className="font-semibold text-base text-center mt-2">
                 {isConfirmationStage ? "Set up Card PIN" : "Set up Card PIN"}
               </Text>
@@ -145,16 +142,16 @@ const SetCardPin = ({ navigation }) => {
         <View className="p-7">
           {!isConfirmationStage ? (
             <Button
-              text='Next'
-              width='w-[100%]'
-              styles='mb-4 py-4'
+              text="Next"
+              width="w-[100%]"
+              styles="mb-4 py-4"
               onPress={handleNextPress}
             />
           ) : (
             <Button
-              text='Confirm'
-              width='w-[100%]'
-              styles='mb-4 py-4'
+              text="Confirm"
+              width="w-[100%]"
+              styles="mb-4 py-4"
               onPress={handleConfirmPress}
             />
           )}

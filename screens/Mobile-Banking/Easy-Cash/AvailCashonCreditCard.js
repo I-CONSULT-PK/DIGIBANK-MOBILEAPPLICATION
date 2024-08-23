@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Text,
   View,
   ScrollView,
   SafeAreaView,
   TouchableOpacity,
+  BackHandler
 } from "react-native";
 import { Entypo } from "@expo/vector-icons";
 import CashUpCardSvg from "../../../assets/Images/CashUpCardSvg.svg";
@@ -28,14 +29,37 @@ const AvailCashonCreditCard = () => {
     { key: "4", value: "124 Months" },
     { key: "5", value: "135 Months" },
   ];
+  const handleBack = () => {
+    navigation.goBack();
+  };
+  useEffect(() => {
+    const handleBackPress = () => {
+      navigation.navigate("Home");
+      return true;
+    };
+
+    BackHandler.addEventListener("hardwareBackPress", handleBackPress);
+
+    return () => {
+      BackHandler.removeEventListener("hardwareBackPress", handleBackPress);
+    };
+  }, []);
 
   return (
     <SafeAreaView className="flex-1 bg-[#f9fafc]">
       <View>
         <View className="flex flex-col overflow-hidden gap-4 pt-16 pl-6 bg-cyan-500">
-          <TouchableOpacity onPress={() => navigation.navigate("SelectCards")}>
-            <Entypo name="chevron-left" size={30} color="white" />
-          </TouchableOpacity>
+          <View className="flex-row items-center justify-center w-full mt-10">
+            <TouchableOpacity
+              onPress={() => navigation.navigate("Home")}
+              className="absolute left-0"
+            >
+              <Entypo name="chevron-left" size={30} color="white" />
+            </TouchableOpacity>
+            <Text className="font-InterBold text-2xl text-white mr-4">
+              Easy Cash
+            </Text>
+          </View>
           <View className="flex flex-row items-center mt-8">
             <Text className="text-3xl font-semibold text-black">
               {"Avail Cash on\n"}
