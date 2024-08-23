@@ -19,7 +19,7 @@ import ListSectionCard from "../../../assets/Images/ListSectionCard.svg";
 const NameOnTheCard = () => {
   const navigation = useNavigation();
   const [showMessage, setShowMessage] = useState(false);
-  const [fadeAnim] = useState(new Animated.Value(0)); // Initialize animated value
+  const [fadeAnim] = useState(new Animated.Value(0));
 
   const handleBack = () => {
     navigation.goBack();
@@ -39,7 +39,6 @@ const NameOnTheCard = () => {
   }, []);
 
   const handleConfirmAddress = () => {
-    // Show the message and animate it
     setShowMessage(true);
     Animated.timing(fadeAnim, {
       toValue: 1,
@@ -47,23 +46,27 @@ const NameOnTheCard = () => {
       useNativeDriver: true,
     }).start();
 
-    // Navigate to the next screen after a delay
     setTimeout(() => {
       navigation.navigate("CardActivation");
-    }, 1000); // 1 second delay
+    }, 1000);
   };
 
   return (
     <SafeAreaView className="flex-1 bg-[#f9fafc] h-full">
       <ScrollView>
-        <TouchableOpacity onPress={handleBack} className="mt-5 ml-3">
-          <Entypo name="chevron-left" size={30} color="#090909" />
-        </TouchableOpacity>
-        <Text className="text-2xl text-center mt-5 font-bold">
-          Activate Your Card
-        </Text>
+        <View className="relative w-full mt-10">
+          <TouchableOpacity
+            onPress={() => navigation.goBack()}
+            className="absolute left-5 "
+            style={{ zIndex: 1 }}
+          >
+            <Entypo name="chevron-left" size={30} color="black" />
+          </TouchableOpacity>
+          <Text className="text-center font-InterBold text-2xl">
+            Activate your Card
+          </Text>
+        </View>
 
-        {/* Conditionally render the message with fade-in effect */}
         {showMessage && (
           <Animated.View
             style={{

@@ -82,6 +82,9 @@ export default function App() {
     InterRegular: require("./assets/fonts/Inter-Regular.ttf"),
     InterSemiBold: require("./assets/fonts/Inter-SemiBold.ttf"),
   });
+  if (!loaded) {
+    return null; // Or a splash screen
+  }
 
   const Auth = () => {
     return (

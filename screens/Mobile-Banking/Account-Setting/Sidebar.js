@@ -420,8 +420,10 @@ import {
 import { useNavigation } from "@react-navigation/native";
 import { Entypo, Ionicons } from "@expo/vector-icons";
 import { SafeAreaView } from "react-native-safe-area-context";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Color } from "../../../GlobalStyles";
 
+// Define menu items
 const menuItems = [
   { title: "Person Management", icon: "person" },
   { title: "Transfer", icon: "swap-horizontal" },
@@ -433,15 +435,40 @@ const menuItems = [
   { title: "Locator", icon: "location-outline" },
   { title: "Contact Us", icon: "chatbubbles-outline" },
   { title: "Refer", icon: "people" },
+  { title: "Logout", icon: "log-out" },
 ];
 
 const Sidebar = () => {
   const navigation = useNavigation();
 
-  const handlePress = (item) => {
-    console.log(item.title);
+  const handlePress = async (item) => {
+    if (item.title === "Logout") {
+      try {
+        // Retrieve and log all keys and their values
+        const keys = await AsyncStorage.getAllKeys();
+        const items = await AsyncStorage.multiGet(keys);
+
+        console.log("Local Storage before clearing:");
+        items.forEach(([key, value]) => {
+          console.log(`Key: ${key}, Value: ${value}`);
+        });
+
+        // Clear local storage
+        await AsyncStorage.clear();
+
+        // Log clear confirmation
+        console.log("Local Storage has been cleared.");
+
+        navigation.navigate("Login");
+      } catch (error) {
+        console.error("Error clearing storage", error);
+      }
+    } else {
+      console.log(item.title);
+    }
   };
 
+  // Handle copying text to clipboard
   const handleCopy = (text) => {
     Clipboard.setString(text);
     alert("Copied to clipboard");
@@ -464,7 +491,6 @@ const Sidebar = () => {
             <Text className=" mb-0" style={{ color: Color.PrimaryWebOrient }}>
               A/C No: 83927423837849
             </Text>
-
             <TouchableOpacity onPress={() => handleCopy("83927423837849")}>
               <Ionicons
                 name="copy"

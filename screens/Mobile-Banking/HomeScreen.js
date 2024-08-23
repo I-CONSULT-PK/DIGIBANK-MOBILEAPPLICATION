@@ -468,7 +468,7 @@
 // export default HomeScreen;
 
 import { LinearGradient } from "expo-linear-gradient";
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import {
   FlatList,
   ScrollView,
@@ -486,7 +486,7 @@ import {
 } from "react-native";
 import { Color } from "../../GlobalStyles";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import { TouchableOpacity } from "react-native";
 import { Entypo, FontAwesome } from "@expo/vector-icons";
 import { Avatar, List, Divider } from "react-native-paper";
@@ -529,7 +529,11 @@ const HomeScreen = () => {
     Clipboard.setString(text);
   };
   const [isVisible, setIsVisible] = useState(true);
-
+  useFocusEffect(
+    useCallback(() => {
+      fetchCardData();
+    }, [])
+  );
   useEffect(() => {
     Animated.timing(sidebarAnim, {
       toValue: isSidebarVisible ? 0 : -300,
