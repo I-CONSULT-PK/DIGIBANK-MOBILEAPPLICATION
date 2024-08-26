@@ -65,7 +65,7 @@ const SendBeneficiaryMoney = ({ navigation }) => {
               text="Transfer to Bank"
               subtext="Transfer to all banks & wallets"
               icon1="arrowright"
-              onPress1={() => navigation.navigate("BeneficiaryList")}
+              onPress1={() => navigation.navigate("BeneficiaryList", { source: 'payment' })}
               iconColor1={Color.PrimaryWebOrient}
             />
 
@@ -74,7 +74,7 @@ const SendBeneficiaryMoney = ({ navigation }) => {
             <OptionBox
               image={RaastIcon}
               text="Raast Payment"
-              subtext="Free transfer to mobile number/IBAN/Bank account"
+              subtext="Free transfer to mobile number / IBAN / Bank account"
               icon1="arrowright"
               iconColor1={Color.PrimaryWebOrient}
             />

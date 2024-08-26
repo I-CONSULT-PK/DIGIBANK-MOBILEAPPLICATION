@@ -70,7 +70,7 @@ const EditBeneficiaryModal = ({ isModalVisible, toggleModal, beneficiary, handle
                             text="Save"
                             width="w-[100%]"
                             styles="py-4"
-                            onPress={() => handleUpdateBeneficiary(nickname, mobileNumber, beneficiary.id)}
+                            onPress={() => handleUpdateBeneficiary(nickname, mobileNumber, beneficiary.id, beneficiary)}
                         />
                     </View>
                 </View>

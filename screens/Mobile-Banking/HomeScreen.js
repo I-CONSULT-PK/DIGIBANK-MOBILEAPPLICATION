@@ -562,7 +562,7 @@ const HomeScreen = () => {
           navigation.navigate("SendBeneficiaryMoney");
           break;
         case "Beneficiary":
-          navigation.navigate("SendBeneficiaryMoney");
+          navigation.navigate("BeneficiaryList", { source: 'beneficiary' });
           break;
         case "Cards":
           navigation.navigate("SelectCards");

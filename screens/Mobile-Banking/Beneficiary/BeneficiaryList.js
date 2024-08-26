@@ -14,18 +14,20 @@ import OptionBox from "../../../components/OptionBox";
 import EditBeneficiaryModal from '../../../components/EditBeneficiaryModal';
 import Footer from "../../../components/Footer";
 
-const BeneficiaryList = ({ navigation }) => {
+const BeneficiaryList = ({ navigation, route }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [beneficiaries, setBeneficiaries] = useState([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedBeneficiary, setSelectedBeneficiary] = useState(null);
+
+  const { source } = route.params || {};
 
   const toggleModal = (beneficiary) => {
     setSelectedBeneficiary(beneficiary);
     setIsModalVisible(!isModalVisible);
   };
 
-  const onHandleModalClose = () => {
+  const handleModalClose = () => {
     setIsModalVisible(!isModalVisible);
   }
 
@@ -46,7 +48,6 @@ const BeneficiaryList = ({ navigation }) => {
         if (dto && dto.success && dto.data) {
           const transformedBeneficiaries = dto.data.map(item => ({
             ...item,
-            beneficiary: true,
             liked: item.flag
           }));
 
@@ -84,65 +85,70 @@ const BeneficiaryList = ({ navigation }) => {
     }
   };
 
-  const handleUpdateBeneficiary = async (nickname, mobileNumber, beneId) => {
-    try {
-      const bearerToken = await AsyncStorage.getItem('token');
-      const customerId = parseInt(await AsyncStorage.getItem('customerId'), 10);
+  const handleUpdateBeneficiary = async (nickname, mobileNumber, beneId, beneficiary) => {
+    if (nickname !== beneficiary.beneficiaryAlias || mobileNumber !== beneficiary.mobileNumber) {
+      try {
+        const bearerToken = await AsyncStorage.getItem('token');
+        const customerId = parseInt(await AsyncStorage.getItem('customerId'), 10);
 
-      if (bearerToken && customerId) {
-        const updateData = {
-          beneficiaryAlias: nickname,
-          mobileNumber: mobileNumber,
-          beneId: beneId,
-          customerId: customerId
-        };
+        if (bearerToken && customerId) {
+          const updateData = {
+            beneficiaryAlias: nickname,
+            mobileNumber: mobileNumber,
+            beneId: beneId,
+            customerId: customerId
+          };
 
-        const response = await axios.post(`${API_BASE_URL}/v1/beneficiary/updateBeneficiary`,
-          updateData,
-          {
-            headers: {
-              'Authorization': `Bearer ${bearerToken}`
+          const response = await axios.post(`${API_BASE_URL}/v1/beneficiary/updateBeneficiary`,
+            updateData,
+            {
+              headers: {
+                'Authorization': `Bearer ${bearerToken}`
+              }
+            }
+          );
+
+          const dto = response.data;
+
+          if (dto && dto.success && dto.data) {
+            fetchBeneficiaries();
+            handleModalClose();
+
+            Alert.alert('Success', 'Beneficiary updated successfully');
+          }
+          else {
+            if (dto.message) {
+              Alert.alert('Error', dto.message);
+            }
+            else if (dto.errors && dto.errors.length > 0) {
+              Alert.alert('Error', dto.errors);
             }
           }
-        );
-
-        const dto = response.data;
-
-        if (dto && dto.success && dto.data) {
-          fetchBeneficiaries();
-          onHandleModalClose();
-
-          Alert.alert('Success', 'Beneficiary updated successfully');
+        } else {
+          Alert.alert('Error', 'Unexpected error occured. Try again later!');
         }
-        else {
-          if (dto.message) {
-            Alert.alert('Error', dto.message);
-          }
-          else if (dto.errors && dto.errors.length > 0) {
-            Alert.alert('Error', dto.errors);
-          }
-        }
-      } else {
-        Alert.alert('Error', 'Unexpected error occured. Try again later!');
-      }
-    } catch (error) {
-      if (error.response) {
-        const statusCode = error.response.status;
+      } catch (error) {
+        if (error.response) {
+          const statusCode = error.response.status;
 
-        if (statusCode === 404) {
-          Alert.alert('Error', 'Server timed out. Try again later!');
-        } else if (statusCode === 503) {
-          Alert.alert('Error', 'Service unavailable. Please try again later.');
-        } else if (statusCode === 400) {
-          Alert.alert('Error', error.response.data.data.errors[0]);
+          if (statusCode === 404) {
+            Alert.alert('Error', 'Server timed out. Try again later!');
+          } else if (statusCode === 503) {
+            Alert.alert('Error', 'Service unavailable. Please try again later.');
+          } else if (statusCode === 400) {
+            Alert.alert('Error', error.response.data.data.errors[0]);
+          } else {
+            Alert.alert('Error', error.message);
+          }
+        } else if (error.request) {
+          Alert.alert('Error', 'No response from the server. Please check your connection.');
         } else {
           Alert.alert('Error', error.message);
         }
-      } else if (error.request) {
-        Alert.alert('Error', 'No response from the server. Please check your connection.');
-      } else {
-        Alert.alert('Error', error.message);
       }
+    }
+    else {
+      handleModalClose();
     }
   };
 
@@ -246,7 +252,7 @@ const BeneficiaryList = ({ navigation }) => {
       else {
         Alert.alert('Error', 'Unexpected error occured. Try again later!');
       }
-    } 
+    }
     catch (error) {
       if (error.response) {
         const statusCode = error.response.status;
@@ -283,13 +289,16 @@ const BeneficiaryList = ({ navigation }) => {
         <View style={{ backgroundColor: Color.PrimaryWebOrient, height: 100 }}>
           <View className="flex-row items-center justify-center w-full h-full">
             <TouchableOpacity
-              onPress={() => navigation.goBack()}
+              onPress={() => {
+                source === 'beneficiary' && navigation.navigate('Home');
+                source === 'payment' && navigation.goBack();
+              }}
               className="absolute left-5"
             >
               <Entypo name="chevron-left" size={25} color="white" />
             </TouchableOpacity>
             <Text className="text-white text-lg font-InterBold">
-              Beneficiary
+              {source === 'payment' ? 'Payment' : 'Beneficiary'}
             </Text>
           </View>
         </View>
@@ -317,9 +326,9 @@ const BeneficiaryList = ({ navigation }) => {
               </View>
             </TouchableOpacity>
 
-            <View className="my-3 w-full border-b border-gray-300" />
+            {source !== 'payment' && (<View className="my-3 w-full border-b border-gray-300" />)}
 
-            <TouchableOpacity
+            {source !== 'payment' && (<TouchableOpacity
               className="flex-row items-center"
               onPress={() => navigation.navigate("BankList")}
             >
@@ -335,13 +344,15 @@ const BeneficiaryList = ({ navigation }) => {
                   Add New Beneficiary
                 </Text>
               </View>
-            </TouchableOpacity>
+            </TouchableOpacity>)}
 
-            <View className="mt-3 mb-4 w-full border-b border-gray-300" />
+            {source !== 'payment' && (<View className="mt-3 mb-4 w-full border-b border-gray-300" />)}
+            {source === 'payment' && (<View className="my-4 w-full border-b border-gray-300" />)}
 
             {filteredBeneficiaries.map((beneficiary) => (
               <React.Fragment key={beneficiary.id}>
                 <OptionBox
+                  beneObj={beneficiary}
                   image={{ uri: beneficiary.bankUrl }}
                   text={beneficiary.beneficiaryAlias}
                   subtext={beneficiary.accountNumber}
@@ -354,7 +365,9 @@ const BeneficiaryList = ({ navigation }) => {
                   onPress2={() => handleRemoveBeneficiary(beneficiary.id)}
                   onPressName={() => handleNamePress(beneficiary.id)}
                   toggleModal={() => toggleModal(beneficiary)}
-                  beneficiary={beneficiary.beneficiary}
+                  beneficiary={true}
+                  navigation={navigation}
+                  source={source}
                 />
                 <View className="my-4 w-full border-b border-gray-300" />
               </React.Fragment>
