@@ -123,11 +123,11 @@ const styles = StyleSheet.create({
   whiteContainer: {
     backgroundColor: "white",
     borderRadius: 10,
-    width: "30%",
-    height: height * 0.1,
+    width: "25%",
+    height: height * 0.12,
     justifyContent: "center",
     alignItems: "center",
-    padding: 2,
+    padding: 1,
     position: "relative",
   },
   loaderWrapper: {
@@ -140,7 +140,7 @@ const styles = StyleSheet.create({
     transform: [{ translateX: -20 }, { translateY: -16 }],
   },
   loader: {
-    width: 13.6,
+    width: 9,
     height: 32,
     backgroundColor: Color.PrimaryWebOrient,
   },
