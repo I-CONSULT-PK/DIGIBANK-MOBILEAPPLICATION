@@ -35,16 +35,18 @@ const PayNow = () => {
   return (
     <SafeAreaView className="flex-1 bg-[#f9fafc]">
       <ScrollView className="flex-1">
-        <TouchableOpacity
-          className="mt-10 ml-4"
-          onPress={() => navigation.goBack()}
-        >
-          <Entypo name="chevron-left" size={30} color="black" />
-        </TouchableOpacity>
-        {/* Title Section */}
-        <View className="justify-center items-center">
-          <Text className="font-InterBold text-2xl">Send Money</Text>
-        </View>
+        <View className="relative w-full mt-10">
+            <TouchableOpacity
+              onPress={() => navigation.goBack()}
+              className="absolute left-5 "
+              style={{ zIndex: 1 }}
+            >
+              <Entypo name="chevron-left" size={30} color="black" />
+            </TouchableOpacity>
+            <Text className="text-center font-InterBold text-2xl">
+             Send Money
+            </Text>
+          </View>
         {/* From Account Section */}
         <Text className="font-semibold mb-1 text-gray-700 mt-7 px-3">
           From Account

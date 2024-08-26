@@ -480,7 +480,9 @@ import {
   Modal,
   Animated,
   Easing,
+  Clipboard,
   TextInput,
+  ImageBackground,
 } from "react-native";
 import { Color } from "../../GlobalStyles";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -502,8 +504,12 @@ import Beneficiary from "../../assets/Images/Beneficiary.svg";
 import ListSectionCard from "../../assets/Images/ListSectionCard.svg";
 import Footer from "../../components/Footer";
 import Sidebar from "./Account-Setting/Sidebar";
-
-import { StatusBar } from 'expo-status-bar';
+import { Ionicons } from "@expo/vector-icons";
+import API_BASE_URL from "../../config";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import axios from "axios";
+import { StatusBar } from "expo-status-bar";
+const backgroundImage = require("../../assets/Images/Cards.png");
 
 const HomeScreen = () => {
   const navigation = useNavigation();
@@ -512,10 +518,17 @@ const HomeScreen = () => {
   const [isSidebarVisible, setSidebarVisible] = useState(false);
   const sidebarAnim = useRef(new Animated.Value(-300)).current;
   const modalAnim = useRef(new Animated.Value(0)).current;
+  const [cards, setCards] = useState([]);
+  const backgroundImage = require("../../assets/Images/Cards.png");
 
   const toggleSidebar = () => {
     setSidebarVisible(!isSidebarVisible);
   };
+
+  const handleCopy = (text) => {
+    Clipboard.setString(text);
+  };
+  const [isVisible, setIsVisible] = useState(true);
 
   useEffect(() => {
     Animated.timing(sidebarAnim, {
@@ -535,6 +548,186 @@ const HomeScreen = () => {
 
   const handlePress = () => setExpanded(!expanded);
   const handlePress1 = () => setExpanded1(!expanded1);
+  const [activeItem, setActiveItem] = useState(null);
+
+  // Function to handle item press
+  const handlePressMenu = (item) => {
+    setActiveItem(item);
+
+    setTimeout(() => {
+      switch (item) {
+        case "Transfer":
+          break;
+        case "Payment":
+          navigation.navigate("SendBeneficiaryMoney");
+          break;
+        case "Beneficiary":
+          navigation.navigate("BeneficiaryList", { source: 'beneficiary' });
+          break;
+        case "Cards":
+          navigation.navigate("SelectCards");
+          break;
+        case "Top up":
+          break;
+        case "Accounts":
+          break;
+        case "QR Payments":
+          break;
+        case "Utilty Pay":
+          break;
+        case "Statment":
+          break;
+        case "Discount":
+          break;
+        default:
+          break;
+      }
+    }, 100);
+  };
+
+  const fetchCardData = async () => {
+    try {
+      const bearerToken = await AsyncStorage.getItem("token");
+      if (!bearerToken) {
+        Alert.alert("Error", "Authentication token not found");
+        return;
+      }
+
+      const response = await axios.get(
+        `${API_BASE_URL}/v1/customer/card/fetchCardById/zanbeel-9036764`,
+        {
+          headers: {
+            Authorization: `Bearer ${bearerToken}`,
+          },
+        }
+      );
+
+      if (response.data.success && Array.isArray(response.data.data)) {
+        const updatedCards = response.data.data.map((card) => ({
+          ...card,
+          isCreditCard: card.isCreditCard === true,
+        }));
+        setCards(updatedCards);
+      } else {
+        Alert.alert("Error", "Unexpected response format");
+      }
+    } catch (error) {
+      if (error.response) {
+        const statusCode = error.response.status;
+
+        if (statusCode === 404) {
+          Alert.alert("Error", "Server not found. Please try again later.");
+        } else if (statusCode === 503) {
+          Alert.alert("Error", "Service unavailable. Please try again later.");
+        } else if (statusCode === 400) {
+          Alert.alert(
+            "Error",
+            error.response.data.message ||
+              "Bad request. Please check your input."
+          );
+        } else {
+          Alert.alert("Error", "Card not found");
+        }
+      } else if (error.request) {
+        Alert.alert(
+          "Error",
+          "No response from the server. Please check your connection."
+        );
+      } else {
+        Alert.alert("Error", `Error: ${error.message}`);
+      }
+    }
+  };
+
+  useEffect(() => {
+    fetchCardData();
+  }, []);
+
+  const maskCardNumber = (number) => {
+    return number.replace(/(.{4})/g, "$1  ").trim();
+  };
+
+  const renderNoDataMessage = (type) => (
+    <View className="flex-1 justify-center items-center mt-5">
+      <Text className="text-gray-500 text-lg">No {type} Cards Found</Text>
+    </View>
+  );
+
+  const renderCardSection = (card, isExpanded, onPress) => {
+    const cardDetails = [
+      {
+        label: "Card Number",
+        value: maskCardNumber(card.cardNumber),
+      },
+      {
+        label: "Card Holder",
+        value: card.cardHolderName,
+      },
+      {
+        label: "Expiry",
+        value: card.expiryDate,
+      },
+    ];
+
+    const isDebitCard = !card.isCreditCard;
+
+    return (
+      <List.AccordionGroup className="my-2">
+        <List.Accordion
+          id={card.cardId}
+          key={card.cardId}
+          className="bg-white mb-2"
+          style={styles.accordion}
+          title={
+            <View className="flex-row items-center">
+              <Entypo
+                name="credit-card"
+                size={35}
+                className="mr-1"
+                style={{ color: Color.PrimaryWebOrient }}
+              />
+              <View className="ml-4">
+                <Text className="text-base font-semibold text-black">
+                  {card.cardHolderName}
+                </Text>
+                <Text className="text-sm font-medium text-gray-500">
+                  {maskCardNumber(card.cardNumber)}
+                </Text>
+              </View>
+            </View>
+          }
+          left={(props) => <List.Icon {...props} />}
+          expanded={isExpanded}
+          onPress={onPress}
+        >
+          <View className="flex-1 items-center px-5 py-5 mb-5">
+            <ImageBackground
+              source={backgroundImage}
+              className="w-full h-[200px] justify-center items-center"
+              imageStyle={{ borderRadius: 10 }}
+            >
+              <View className="flex-1 items-center px-5 py-16 mt-5">
+                <Text className="text-black text-2xl font-semibold ">
+                  {maskCardNumber(card.cardNumber)}
+                </Text>
+                <View className="flex-row justify-between w-full mb-4">
+                  <Text className="text-black text-md font-semibold">
+                    {card.expiryDate}
+                  </Text>
+                  <Text className="text-black text-md font-semibold">
+                    CVV: {card.cvv}
+                  </Text>
+                </View>
+                <Text className="text-black text-xl">
+                  {card.cardHolderName}
+                </Text>
+              </View>
+            </ImageBackground>
+          </View>
+        </List.Accordion>
+      </List.AccordionGroup>
+    );
+  };
 
   return (
     <SafeAreaView style={styles.container} className="h-full bg-[#f9fafc]">
@@ -602,9 +795,55 @@ const HomeScreen = () => {
       </View>
       <ScrollView>
         <View className="justify-center items-center">
-          <NewCard width={400} />
-        </View>
+          {/* <NewCard width={400} /> */}
+          <View className="justify-center items-center ">
+            {/* <ListSectionCard width={400} /> */}
+            <View className="bg-primary p-4 rounded-lg justify-between shadow-md w-80 h-44">
+              <View className="justify-between  mb-4">
+                <View className=" flex-row items-center justify-between">
+                  <Text className="text-slate-950  text-base">
+                    Total Balance:
+                  </Text>
+                  <Entypo name="dots-three-vertical" size={20} />
+                </View>
 
+                <View className="d-flex flex-row items-center">
+                  <Text className="text-white text-2xl font-bold">
+                    {isVisible ? "$100,000.00" : "*********"}
+                  </Text>
+                  <TouchableOpacity onPress={() => setIsVisible(!isVisible)}>
+                    <Ionicons
+                      name={isVisible ? "eye" : "eye-off"}
+                      size={22}
+                      style={[styles.icon, { color: "white" }]}
+                    />
+                  </TouchableOpacity>
+                </View>
+              </View>
+
+              <View className="justify-between ">
+                <View className="flex-row d-flex items-center">
+                  <Text className="text-slate-950 text-lg font-semibold">
+                    A/C No: 879234568951
+                  </Text>
+                  <TouchableOpacity
+                    onPress={() => handleCopy("83927423837849")}
+                  >
+                    <Ionicons
+                      name="copy"
+                      size={20}
+                      style={[styles.icon, { color: "white" }]}
+                    />
+                  </TouchableOpacity>
+                </View>
+
+                <Text className="text-white text-base font-semibold">
+                  Digi-Bank Accounts
+                </Text>
+              </View>
+            </View>
+          </View>
+        </View>
         <View className="flex flex-col px-5 pt-5">
           <Text className="font-bold text-black text-lg">Activity</Text>
         </View>
@@ -612,112 +851,145 @@ const HomeScreen = () => {
           <View className="flex flex-col justify-center items-center">
             {/* First Row */}
             <View className="flex-row justify-between mb-4">
-              <TouchableOpacity>
-                <View
-                  className="w-24 h-24 bg-white m-2.5 rounded-lg flex justify-center items-center"
-                  style={styles.box}
+              {["Transfer", "Payment", "Beneficiary"].map((item) => (
+                <TouchableOpacity
+                  key={item}
+                  onPress={() => handlePressMenu(item)}
                 >
-                  <Transfer style={styles.icon} />
-                  <Text className="text-center font-semibold">Transfer</Text>
-                </View>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => navigation.navigate("SendBeneficiaryMoney")}>
-                <View
-                  className="w-24 h-24 bg-white m-2.5 rounded-lg flex justify-center items-center"
-                  style={[
-                    styles.box,
-                    { backgroundColor: Color.PrimaryWebOrient },
-                  ]}
-                >
-                  <Payment style={styles.icon} onPress={() => navigation.navigate("SendBeneficiaryMoney")}/>
-                  <Text className="text-center font-semibold text-white">
-                    Payment
-                  </Text>
-                </View>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => navigation.navigate("BeneficiaryList")}>
-                <View
-                  className="w-24 h-24 bg-white m-2.5 rounded-lg flex justify-center items-center"
-                  style={styles.box}
-                >
-                  <Beneficiary style={styles.icon}/>
-                  <Text className="text-center font-semibold">Beneficiary</Text>
-                </View>
-              </TouchableOpacity>
+                  <View
+                    className="w-24 h-24 m-2.5 rounded-lg flex justify-center items-center"
+                    style={[
+                      styles.box,
+                      {
+                        backgroundColor:
+                          activeItem === item
+                            ? Color.PrimaryWebOrient
+                            : "white",
+                      },
+                    ]}
+                  >
+                    {item === "Transfer" && (
+                      <Transfer
+                        color={activeItem === item ? "white" : "black"}
+                      />
+                    )}
+                    {item === "Payment" && (
+                      <Payment
+                        color={activeItem === item ? "white" : "black"}
+                      />
+                    )}
+                    {item === "Beneficiary" && (
+                      <Beneficiary
+                        color={activeItem === item ? "white" : "black"}
+                      />
+                    )}
+                    <Text
+                      className="text-center font-semibold"
+                      style={{
+                        color: activeItem === item ? "white" : "black",
+                      }}
+                    >
+                      {item}
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+              ))}
             </View>
 
             {/* Second Row */}
             <View className="flex-row justify-between mb-4">
-              <TouchableOpacity
-                onPress={() => navigation.navigate("SelectCards")}
-              >
-                <View
-                  className="w-24 h-24 bg-white m-2.5 rounded-lg flex justify-center items-center"
-                  style={styles.box}
+              {["Cards", "Top up", "Accounts"].map((item) => (
+                <TouchableOpacity
+                  key={item}
+                  onPress={() => handlePressMenu(item)}
                 >
-                  <Cards style={styles.icon} />
-                  <Text className="text-center font-semibold">Cards</Text>
-                </View>
-              </TouchableOpacity>
-              <TouchableOpacity>
-                <View
-                  className="w-24 h-24 bg-white m-2.5 rounded-lg flex justify-center items-center"
-                  style={styles.box}
-                >
-                  <Topup style={styles.icon} />
-                  <Text className="text-center font-semibold">Top up</Text>
-                </View>
-              </TouchableOpacity>
-              <TouchableOpacity>
-                <View
-                  className="w-24 h-24 bg-white m-2.5 rounded-lg flex justify-center items-center"
-                  style={styles.box}
-                >
-                  <Account style={styles.icon} />
-                  <Text className="text-center font-semibold"> Accounts</Text>
-                </View>
-              </TouchableOpacity>
+                  <View
+                    className="w-24 h-24 m-2.5 rounded-lg flex justify-center items-center"
+                    style={[
+                      styles.box,
+                      {
+                        backgroundColor:
+                          activeItem === item
+                            ? Color.PrimaryWebOrient
+                            : "white",
+                      },
+                    ]}
+                  >
+                    {item === "Cards" && <Cards style={styles.icon} />}
+                    {item === "Top up" && <Topup style={styles.icon} />}
+                    {item === "Accounts" && <Account style={styles.icon} />}
+                    <Text
+                      className="text-center font-semibold"
+                      style={{
+                        color: activeItem === item ? "white" : "black",
+                      }}
+                    >
+                      {item}
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+              ))}
             </View>
 
             {/* Third Row */}
             <View className="flex-row justify-between mb-4">
-              <TouchableOpacity>
-                <View
-                  className="w-24 h-24 bg-white m-2.5 rounded-lg flex justify-center items-center"
-                  style={styles.box}
+              {["QR Payments", "Utility Pay", "Statement"].map((item) => (
+                <TouchableOpacity
+                  key={item}
+                  onPress={() => handlePressMenu(item)}
                 >
-                  <QR style={styles.icon} />
-                  <Text className="text-center font-semibold">QR Payments</Text>
-                </View>
-              </TouchableOpacity>
-              <TouchableOpacity>
-                <View
-                  className="w-24 h-24 bg-white m-2.5 rounded-lg flex justify-center items-center"
-                  style={styles.box}
-                >
-                  <Utility style={styles.icon} />
-                  <Text className="text-center font-semibold">Utilty Pay</Text>
-                </View>
-              </TouchableOpacity>
-              <TouchableOpacity>
-                <View
-                  className="w-24 h-24 bg-white m-2.5 rounded-lg flex justify-center items-center"
-                  style={styles.box}
-                >
-                  <Statment style={styles.icon} />
-                  <Text className="text-center font-semibold">Statment</Text>
-                </View>
-              </TouchableOpacity>
+                  <View
+                    className="w-24 h-24 m-2.5 rounded-lg flex justify-center items-center"
+                    style={[
+                      styles.box,
+                      {
+                        backgroundColor:
+                          activeItem === item
+                            ? Color.PrimaryWebOrient
+                            : "white",
+                      },
+                    ]}
+                  >
+                    {item === "QR Payments" && <QR style={styles.icon} />}
+                    {item === "Utility Pay" && <Utility style={styles.icon} />}
+                    {item === "Statement" && <Statment style={styles.icon} />}
+                    <Text
+                      className="text-center font-semibold"
+                      style={{
+                        color: activeItem === item ? "white" : "black",
+                      }}
+                    >
+                      {item}
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+              ))}
             </View>
+
             {/* Fourth Row */}
             <View className="flex-row justify-between mb-4">
-              <TouchableOpacity>
+              <TouchableOpacity onPress={() => handlePressMenu("Discount")}>
                 <View
-                  className="w-24 h-24 bg-white m-2.5 rounded-lg flex justify-center items-center"
-                  style={styles.box}
+                  className="w-24 h-24 m-2.5 rounded-lg flex justify-center items-center"
+                  style={[
+                    styles.box,
+                    {
+                      backgroundColor:
+                        activeItem === "Discount"
+                          ? Color.PrimaryWebOrient
+                          : "white",
+                    },
+                  ]}
                 >
                   <Discount style={styles.icon} />
-                  <Text className="text-center font-semibold">Discount</Text>
+                  <Text
+                    className="text-center font-semibold"
+                    style={{
+                      color: activeItem === "Discount" ? "white" : "black",
+                    }}
+                  >
+                    Discount
+                  </Text>
                 </View>
               </TouchableOpacity>
             </View>
@@ -897,77 +1169,25 @@ const HomeScreen = () => {
           </View>
         </ScrollView>
         <View className="px-5 mt-5">
-          <Text className="text-base font-semibold text-black">Credit Cards</Text>
+          <Text className="text-base font-semibold text-black">
+            Credit Cards
+          </Text>
         </View>
-        <List.Section className="bg-white rounded-lg ml-5 mr-5">
-          <List.Accordion
-            className="font-InterRegular m-0 text-base bg-white"
-            title={
-              <View className="flex flex-row items-center">
-                <Entypo
-                  name="credit-card"
-                  size={30}
-                  className="mr-1"
-                  style={{ color: Color.PrimaryWebOrient }}
-                />
-                <View className="flex flex-col ml-4">
-                  <Text className="text-sm font-semibold text-gray-800">
-                    Credit Card
-                  </Text>
-                  <Text className="text-xs font-medium text-neutral-500">
-                    5669996****7989
-                  </Text>
-                </View>
-              </View>
-            }
-            left={(props) => <List.Icon {...props} />}
-            expanded={expanded}
-            onPress={handlePress}
-          >
-            {/* The content inside the Accordion */}
-            <View className="justify-center items-center mr-8">
-              <ListSectionCard width={400} />
-            </View>
-
-            <Divider />
-            {/* Add more sections here if needed */}
-          </List.Accordion>
-        </List.Section>
-
-        <List.Section className="bg-white rounded-lg ml-5 mr-5">
-          <List.Accordion
-            className="font-InterRegular m-0 text-base bg-white"
-            title={
-              <View className="flex flex-row items-center">
-                <Entypo
-                  name="credit-card"
-                  size={30}
-                  className="mr-1"
-                  style={{ color: Color.PrimaryWebOrient }}
-                />
-                <View className="flex flex-col ml-4">
-                  <Text className="text-sm font-semibold text-gray-800">
-                    Credit Card
-                  </Text>
-                  <Text className="text-xs font-medium text-neutral-500">
-                    5669996****7989
-                  </Text>
-                </View>
-              </View>
-            }
-            left={(props) => <List.Icon {...props} />}
-            expanded={expanded1}
-            onPress={handlePress1}
-          >
-            <View className="justify-center items-center mr-8">
-              <ListSectionCard width={400} />
-            </View>
-          </List.Accordion>
+        <List.Section className="bg-white rounded-xl mx-4 mt-4 ">
+          {cards.filter((card) => card.isCreditCard).length > 0
+            ? cards
+                .filter((card) => card.isCreditCard)
+                .map((card) => renderCardSection(card, expanded, handlePress))
+            : renderNoDataMessage("Credit")}
         </List.Section>
       </ScrollView>
       <Footer />
 
-      <StatusBar backgroundColor="transparent" style="dark" translucent={true} />
+      <StatusBar
+        backgroundColor="transparent"
+        style="dark"
+        translucent={true}
+      />
     </SafeAreaView>
   );
 };
@@ -991,6 +1211,15 @@ const styles = StyleSheet.create({
   overlay: {
     flex: 1,
     backgroundColor: "rgba(0,0,0,0.5)",
+  },
+  icon: {
+    marginHorizontal: 8,
+    color: Color.PrimaryWebOrient,
+  },
+  accordion: {
+    borderColor: "#D1D5DB",
+    borderWidth: 1,
+    borderRadius: 8,
   },
 });
 export default HomeScreen;

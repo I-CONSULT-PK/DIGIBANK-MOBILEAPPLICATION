@@ -289,7 +289,10 @@ const BeneficiaryList = ({ navigation, route }) => {
         <View style={{ backgroundColor: Color.PrimaryWebOrient, height: 100 }}>
           <View className="flex-row items-center justify-center w-full h-full">
             <TouchableOpacity
-              onPress={() => navigation.goBack()}
+              onPress={() => {
+                source === 'beneficiary' && navigation.navigate('Home');
+                source === 'payment' && navigation.goBack();
+              }}
               className="absolute left-5"
             >
               <Entypo name="chevron-left" size={25} color="white" />

@@ -75,12 +75,15 @@ const ApplyForCard = () => {
     <SafeAreaView className="flex-1 bg-[#f9fafc] h-full">
       <ScrollView>
         <View>
-          <TouchableOpacity onPress={handleBack} className="mt-12 ml-5">
-            <Entypo name="chevron-left" size={30} color="#090909" />
-          </TouchableOpacity>
-          <Text className="text-2xl text-center mt-5 font-bold">
-            Apply for Card
-          </Text>
+        <View className="flex-row items-center justify-center w-full mt-10">
+        <TouchableOpacity
+          onPress={() => navigation.goBack()}
+          className="absolute left-5"
+        >
+          <Entypo name="chevron-left" size={30} color="black" />
+        </TouchableOpacity>
+        <Text className="font-InterBold text-2xl">Apply for Card</Text>
+      </View>
           <View className="flex flex-row justify-center w-4/5 h-18 my-5 mx-auto" style={styles.container}>
             <TouchableOpacity
               className={`flex-1 p-3 bg-white w-16 h-12 rounded-l-lg ${selectedOption === "Salaried"
@@ -182,8 +185,7 @@ const ApplyForCard = () => {
                               ? Color.PrimaryWebOrient
                               : "gray",
                         }}
-                        className="py-2 px-4 border-2 rounded-lg"
-                      >
+                        className="py-2 px-4 border-2 rounded-lg">
                         <Text
                           style={{
                             color: selectedId === option.id ? "white" : "black",
