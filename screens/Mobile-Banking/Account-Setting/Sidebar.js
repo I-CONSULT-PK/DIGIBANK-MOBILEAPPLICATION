@@ -48,7 +48,7 @@ const Sidebar = () => {
       }
 
       const response = await axios.get(
-        `${API_BASE_URL}/v1/customer/fetchUserDetails?userId=190`,
+        `${API_BASE_URL}/v1/customer/fetchUserDetails?userId=165`,
         {
           headers: {
             Authorization: `Bearer ${bearerToken}`,

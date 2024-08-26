@@ -605,7 +605,7 @@ const HomeScreen = () => {
       }
 
       const response = await axios.get(
-        `${API_BASE_URL}/v1/customer/fetchUserDetails?userId=190`,
+        `${API_BASE_URL}/v1/customer/fetchUserDetails?userId=165`,
         {
           headers: {
             Authorization: `Bearer ${bearerToken}`,
@@ -619,6 +619,8 @@ const HomeScreen = () => {
         setUserDetails({
           firstName: response.data.data.firstName || "User",
           lastName: response.data.data.lastName || "Name",
+          defaultAccountBalance:
+            response.data.data.defaultAccountBalance || "N/A",
           accountNumber: response.data.data.accountNumber || "N/A",
           accountType: response.data.data.accountType || "N/A",
         });
@@ -856,8 +858,11 @@ const HomeScreen = () => {
 
                 <View className="d-flex flex-row items-center">
                   <Text className="text-white text-2xl font-bold">
-                    {isVisible ? "$100,000.00" : "*********"}
+                    {isVisible
+                      ? userDetails.defaultAccountBalance
+                      : "*********"}
                   </Text>
+
                   <TouchableOpacity onPress={() => setIsVisible(!isVisible)}>
                     <Ionicons
                       name={isVisible ? "eye" : "eye-off"}
@@ -873,8 +878,7 @@ const HomeScreen = () => {
                   <Text className="text-slate-950 text-lg font-semibold">
                     A/C No: {userDetails.accountNumber}
                   </Text>
-                  <TouchableOpacity
-                  >
+                  <TouchableOpacity>
                     <Ionicons
                       name="copy"
                       size={20}
