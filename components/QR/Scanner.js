@@ -7,7 +7,9 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import MyQrCodeImage from "../../assets/Images/MyQRCode.png";
 import TextInput from "../TextInput";
 import Button from "../Button";
-import { Camera } from 'expo-camera';
+import { Camera } from "expo-camera";
+import * as ImagePicker from "expo-image-picker";
+
 const ScannerScreen = () => {
   const [hasPermission, setHasPermission] = useState(null);
   const [scanned, setScanned] = useState(false);
@@ -54,6 +56,30 @@ const ScannerScreen = () => {
 
   const toggleTab = () => {
     setReceiveMoney(!recieveMoney);
+  };
+
+  const openGallery = async () => {
+    // Ask for permission to access the gallery
+    const permissionResult =
+      await ImagePicker.requestMediaLibraryPermissionsAsync();
+
+    if (permissionResult.granted === false) {
+      alert("You've refused to allow this app to access your photos!");
+      return;
+    }
+
+    // Launch the image picker
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      console.log(result.assets[0].uri); // You can use the selected image URI here
+      // Handle the selected image (e.g., upload it or display it)
+    }
   };
 
   return (
@@ -131,7 +157,7 @@ const ScannerScreen = () => {
                 {torchOn ? "Torch On" : "Torch Off"}
               </Text>
             </TouchableOpacity>
-            <TouchableOpacity className="items-center">
+            <TouchableOpacity className="items-center" onPress={openGallery}>
               <Ionicons name="image" size={30} color="white" />
               <Text className="text-white text-xs mt-1">Scan from Gallery</Text>
             </TouchableOpacity>
