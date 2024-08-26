@@ -14,6 +14,7 @@ import TextInput from "../../../components/TextInput";
 import { Color } from "../../../GlobalStyles";
 import { SelectList } from "react-native-dropdown-select-list";
 import CustomButton from "../../../components/Button";
+import { StatusBar } from "expo-status-bar";
 const PayNow = () => {
   const navigation = useNavigation();
   const [selected, setSelected] = React.useState("");
@@ -157,6 +158,7 @@ const PayNow = () => {
       </ScrollView>
 
       <Footer />
+      <StatusBar backgroundColor='#f9fafc' style="dark" />
     </SafeAreaView>
   );
 };

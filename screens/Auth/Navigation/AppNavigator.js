@@ -105,19 +105,19 @@ const AppNavigator = () => {
         <Stack.Screen name="Summary" component={Summary} />
         {/* Easy-Cash Module end*/}
 
-         {/* Beneficiary Module  */}
+        {/* Beneficiary Module  */}
         <Stack.Screen name="SendFromAccount" component={SendFromAccount} />
-        <Stack.Screen name="SendBeneficiaryMoney" component={SendBeneficiaryMoney}/>
-        <Stack.Screen name="Add_Beneficiary" component={Add_Beneficiary}/>
-        <Stack.Screen name="PayNow" component={PayNow}/>
+        <Stack.Screen name="SendBeneficiaryMoney" component={SendBeneficiaryMoney} />
+        <Stack.Screen name="Add_Beneficiary" component={Add_Beneficiary} />
+        <Stack.Screen name="PayNow" component={PayNow} />
 
 
-         {/* Beneficiary Module  end*/}
+        {/* Beneficiary Module  end*/}
         <Stack.Screen
           name="SelectApplyOptionCard"
           component={SelectApplyOptionCard}
         />
- <Stack.Screen
+        <Stack.Screen
           name="SelectApplyOptionCard"
           component={SelectApplyOptionCard}
         />
@@ -151,18 +151,18 @@ const AppNavigator = () => {
 
         <Stack.Screen name="WalletBeneficiary" component={WalletBeneficiary} />
         <Stack.Screen name="BankBeneficiary" component={BankBeneficiary} />
-        <Stack.Screen name="AddWalletBeneficiary"component={AddWalletBeneficiary}/>
+        <Stack.Screen name="AddWalletBeneficiary" component={AddWalletBeneficiary} />
         <Stack.Screen name="AddBankBeneficiary" component={AddBankBeneficiary}
         />
         {/* <Stack.Screen name="SelectTopUp" component={SelectTopUp} /> */}
         <Stack.Screen name="TopUp" component={TopUp} />
         <Stack.Screen name="Scanner" component={Scanner} />
         <Stack.Screen name="MyQRCode" component={MyQRCode} />
-        <Stack.Screen name="BillPaymentListing"component={BillPaymentListing}/>
+        <Stack.Screen name="BillPaymentListing" component={BillPaymentListing} />
         <Stack.Screen name="BillPaymentTopUp" component={BillPaymentTopUp} />
         <Stack.Screen name="OTPverification" component={OTPverification} />
 
-        <Stack.Screen name="Fatch_Acc_Beneficiary" component={Fatch_Acc_Beneficiary}/>
+        <Stack.Screen name="Fatch_Acc_Beneficiary" component={Fatch_Acc_Beneficiary} />
 
         <Stack.Screen name="BeneficiaryList" component={BeneficiaryList} />
         <Stack.Screen name="BankList" component={BankList} />

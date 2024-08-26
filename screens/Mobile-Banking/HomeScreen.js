@@ -621,7 +621,7 @@ const HomeScreen = () => {
                   <Text className="text-center font-semibold">Transfer</Text>
                 </View>
               </TouchableOpacity>
-              <TouchableOpacity>
+              <TouchableOpacity onPress={() => navigation.navigate("SendBeneficiaryMoney")}>
                 <View
                   className="w-24 h-24 bg-white m-2.5 rounded-lg flex justify-center items-center"
                   style={[
@@ -635,7 +635,7 @@ const HomeScreen = () => {
                   </Text>
                 </View>
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => navigation.navigate("SendBeneficiaryMoney")}>
+              <TouchableOpacity onPress={() => navigation.navigate("BeneficiaryList")}>
                 <View
                   className="w-24 h-24 bg-white m-2.5 rounded-lg flex justify-center items-center"
                   style={styles.box}
