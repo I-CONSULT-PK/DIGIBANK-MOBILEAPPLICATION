@@ -28,7 +28,6 @@ const encrypt = (plaintext) => {
   return base64Combined;
 };
 
-
 // Example usage
 const message = 'From Javascript!';
 const encryptedMessage = encrypt(message);
@@ -68,7 +67,6 @@ const decrypt = (encryptedData) => {
 
   return originalMessage;
 };
-
 
 // Example usage
 try {
