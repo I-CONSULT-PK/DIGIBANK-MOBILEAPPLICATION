@@ -342,7 +342,7 @@ const Login = ({ navigation }) => {
         </ScrollView>
       </LinearGradient>
       <StatusBar backgroundColor={Color.PrimaryWebOrient} style="light" />
-      <LoaderComponent visible={showLoader} />
+      {/* <LoaderComponent visible={showLoader} /> */}
       {/* Show loader when necessary */}
       <Modal
         transparent={true}
