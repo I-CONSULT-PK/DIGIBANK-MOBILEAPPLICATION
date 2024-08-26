@@ -529,8 +529,8 @@ const Registration = ({ route }) => {
                     text='Create'
                     width='w-[100%]'
                     styles='mb-4 py-4'
-                    // onPress={handleRegister}
-                    onPress={() => navigation.navigate("ChooseSecurity")}
+                    onPress={handleRegister}
+                    // onPress={() => navigation.navigate("ChooseSecurity")}
                     loading={registerLoading}
                   />
 
@@ -610,8 +610,8 @@ const Registration = ({ route }) => {
                     text='Next'
                     width='w-[100%]'
                     styles='mb-4 py-4'
-                    // onPress={handleNext}
-                    onPress={() => setMain(false)}
+                    onPress={handleNext}
+                    // onPress={() => setMain(false)}
                     loading={nextLoading}
                   />
 
@@ -670,8 +670,8 @@ const Registration = ({ route }) => {
                     text='Next'
                     width='w-[100%]'
                     styles='mb-4 py-4'
-                    // onPress={handleOTP}
-                    onPress={() => navigation.navigate("OTP", { source: "registration" })}
+                    onPress={handleOTP}
+                    // onPress={() => navigation.navigate("OTP", { source: "registration" })}
                     loading={otpLoading}
                   />
 
