@@ -29,7 +29,7 @@ const BeneficiaryList = ({ navigation, route }) => {
 
   const handleModalClose = () => {
     setIsModalVisible(!isModalVisible);
-  }
+  };
 
   const fetchBeneficiaries = async () => {
     try {

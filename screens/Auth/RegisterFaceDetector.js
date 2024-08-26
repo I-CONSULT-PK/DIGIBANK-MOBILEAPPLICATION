@@ -14,11 +14,12 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
+import { StatusBar } from "expo-status-bar";
 
 const RegisterFaceDetector = () => {
     const navigation = useNavigation();
   return (
-    <SafeAreaView className="h-full flex-1">
+    <SafeAreaView className="h-full flex-1 bg-white">
       <TouchableOpacity onPress={() => navigation.navigate("ChooseSecurity")}>
         <Entypo
           name="chevron-left"
@@ -50,6 +51,7 @@ const RegisterFaceDetector = () => {
           </View>
         </View>
       </View>
+      <StatusBar backgroundColor='#ffffff' style="dark" />
     </SafeAreaView>
   )
 }

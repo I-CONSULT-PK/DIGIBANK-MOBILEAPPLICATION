@@ -206,7 +206,8 @@ const OTP = ({ navigation, route }) => {
               text='Verify'
               width='w-[100%]'
               styles='mb-4 py-4'
-              onPress={verifyOTP}
+              // onPress={verifyOTP}
+              onPress={() => source === 'registration' && navigation.navigate('SignUp', { source: 'OTP'})}
               loading={loading}
             />
 

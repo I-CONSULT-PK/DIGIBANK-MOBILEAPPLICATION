@@ -1,4 +1,4 @@
-import React, { useState, useContext,useEffect } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import {
   Dimensions,
   ScrollView,
@@ -29,16 +29,15 @@ import { useNavigation } from "@react-navigation/native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { LinearGradient } from 'expo-linear-gradient';
 import { StatusBar } from 'expo-status-bar';
-import AntDesign from '@expo/vector-icons/AntDesign';
 import axios from 'axios';
 import API_BASE_URL from '../../config';
 import * as LocalAuthentication from 'expo-local-authentication'; // Import for Expo
 import * as Device from 'expo-device';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { v4 as uuidv4 } from 'uuid'; // If you are using UUID for visitor ID generation
- 
+
 const Login = ({ navigation }) => {
-  
+
   const [selectedOption, setSelectedOption] = useState("mobile");
   const sw = Dimensions.get("screen").width;
   const sh = Dimensions.get("screen").height;
@@ -46,88 +45,62 @@ const Login = ({ navigation }) => {
   const [password, setPassword] = useState("");
   const { showLoader, hideLoader } = useContext(AppLoaderContext);
   const [pinCodeModalVisible, setPinCodeModalVisible] = useState(false);
-  // const handleLogin = async () => {
-  //   // // New Work
-  //   // // Validate email and password
-  //   // if (!emailorUsername || !password) {
-  //   //   Alert.alert("Validation Error", "Please enter both email and password");
-  //   //   return;
-  //   // }
- 
-  //   // try {
-  //   //   const apiUrl = "http://192.168.0.196:9096/v1/customer/login";
-  //   //   showLoader();
-  //   //   const response = await fetch(apiUrl, {
-  //   //     method: "POST",
-  //   //     headers: {
-  //   //       "Content-Type": "application/json",
-  //   //     },
-  //   //     body: JSON.stringify({
-  //   //       emailorUsername,
-  //   //       password,
-  //   //     }),
-  //   //   });
- 
-  //   //   const data = await response.json();
- 
-  //   //   if (response.ok && data.success) {
-  //   //     // Successful login
-  //   //     console.log("Login successful", data);
- 
-  //   //     // Navigate to the next screen
-  //   // navigation.navigate("OTP");
-  //   //   } else {
-  //   //     // Failed login, display error message
-  //   //     Alert.alert(
-  //   //       "Login Failed",
-  //   //       data.message || "Invalid email or password"
-  //   //     );
-  //   //   }
-  //   // } catch (error) {
-  //   //   console.error("Login error", error.message);
-  //   //   Alert.alert("Error", "An error occurred. Please try again later.");
-  //   // } finally {
-  //   //   // Hide loader
-  //   //   hideLoader();
-  //   // }
-  //   setPinCodeModalVisible(true);
-  // };
- 
-  // --------------------------------------------------
- 
+  
+  // --------------------------------------------------------------------
+
   const [form, setForm] = useState({ username: '', password: '' });
- 
+  const [isEnabled, setIsEnabled] = useState(false);
+  const [biometricData, setBiometricData] = useState(null);
+  const [visitorId, setVisitorId] = useState(null);
+  const [modalVisible, setModalVisible] = useState(false);
+
+  const securityImages1 = [
+    require('../../assets/security-img-1.png'),
+    require('../../assets/security-img-2.png'),
+    require('../../assets/security-img-3.png'),
+    require('../../assets/security-img-4.png'),
+    require('../../assets/security-img-5.png'),
+  ];
+
+  const securityImages2 = [
+    require('../../assets/security-img-6.png'),
+    require('../../assets/security-img-7.png'),
+    require('../../assets/security-img-8.png'),
+    require('../../assets/security-img-9.png'),
+    require('../../assets/security-img-10.png'),
+  ];
+
   const handleChange = (name, value) => {
     setForm({
       ...form,
       [name]: value,
     });
   };
- 
+
   const handleLogin = async () => {
     if (form.username === '' || form.password === '') {
       Alert.alert('Error', 'Username and password cannot be null');
       return;
     }
-  
+
     const loginData = {
       emailorUsername: form.username,
       password: form.password
     };
-  
+
     try {
       const response = await axios.post(`${API_BASE_URL}/v1/customer/login`, loginData, { timeout: 10000 });
       const dto = response.data;
-  
+
       if (dto && dto.success && dto.data && dto.data.customerId) {
         const customerId = dto.data.customerId.toString();
         const token = dto.data.token.toString();
         const expirationTime = dto.data.expirationTime.toString();
-  
+
         await AsyncStorage.setItem('customerId', customerId);
         await AsyncStorage.setItem('token', token);
         await AsyncStorage.setItem('expirationTime', expirationTime);
-  
+
         navigation.navigate('Home');
       } else {
         const message = dto.message || (dto.errors && dto.errors.length > 0 ? dto.errors.join(", ") : "Unknown error");
@@ -135,12 +108,12 @@ const Login = ({ navigation }) => {
       }
     } catch (error) {
       console.error("Login error:", error); // Log detailed error
-  
+
       if (error.response) {
         // Server responded with a status code outside the range of 2xx
         const statusCode = error.response.status;
         const errorMessage = error.response.data.message || error.message;
-  
+
         if (statusCode === 404) {
           Alert.alert('Error', 'Server timed out. Try again later!');
         } else if (statusCode === 503) {
@@ -159,51 +132,7 @@ const Login = ({ navigation }) => {
       }
     }
   };
-  
-  
- 
-  const securityImages1 = [
-    require('../../assets/security-img-1.png'),
-    require('../../assets/security-img-2.png'),
-    require('../../assets/security-img-3.png'),
-    require('../../assets/security-img-4.png'),
-    require('../../assets/security-img-5.png'),
-  ];
- 
-  const securityImages2 = [
-    require('../../assets/security-img-6.png'),
-    require('../../assets/security-img-7.png'),
-    require('../../assets/security-img-8.png'),
-    require('../../assets/security-img-9.png'),
-    require('../../assets/security-img-10.png'),
-  ];
 
-    const [isEnabled, setIsEnabled] = useState(false);
-    const [biometricData, setBiometricData] = useState(null);
-    const [visitorId, setVisitorId] = useState(null);
-    const [modalVisible, setModalVisible] = useState(false);
-    
-  
-    useEffect(() => {
-      const checkBiometricSupport = async () => {
-        const hasHardware = await LocalAuthentication.hasHardwareAsync();
-        const isEnrolled = await LocalAuthentication.isEnrolledAsync();
- 
-        // if (!hasHardware) {
-        //   Alert.alert(
-        //     "Error",
-        //     "Biometric authentication is not available on this device."
-        //   );
-        // } else if (!isEnrolled) {
-        //   Alert.alert(
-        //     "Error",
-        //     "No biometric authentication is set up on this device."
-        //   );
-        // }
-      };
-  
-      checkBiometricSupport();
-    }, []);
   const handlePress = async () => {
     if (!isEnabled) {
       try {
@@ -251,7 +180,7 @@ const Login = ({ navigation }) => {
       console.log("Biometric Data Reset");
     }
   };
- 
+
   return (
     <SafeAreaView className="h-full flex-1">
       <LinearGradient
@@ -261,7 +190,7 @@ const Login = ({ navigation }) => {
         <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
           <View className="flex-row items-center p-4 mt-2">
             <TouchableOpacity onPress={() => navigation.goBack()}>
-              <AntDesign name="arrowleft" size={20} color="white" />
+              <Entypo name="chevron-left" size={24} color="white" />
             </TouchableOpacity>
             <Text className="text-white font-semibold text-lg ml-4 font-InterSemiBold">
               Login
@@ -450,7 +379,7 @@ const Login = ({ navigation }) => {
         >
           <View className="bg-white p-5 rounded-lg w-11/12 max-w-xs justify-center items-center ">
             <Image
-              source={require("../../assets/alerrt-icon.png")} 
+              source={require("../../assets/alerrt-icon.png")}
               className="w-16 h-14 mb-4"
             />
             <Text className="text-lg font-bold mb-2">Alert Notification</Text>
@@ -483,13 +412,12 @@ const Login = ({ navigation }) => {
     </SafeAreaView>
   );
 };
- 
+
 const styles = StyleSheet.create({
   loader: {
     width: wp("20%"),
     height: wp("20%"),
   },
 });
- 
+
 export default Login;
- 
