@@ -30,14 +30,14 @@ const Summary = () => {
   return (
     <SafeAreaView className="flex-1 bg-[#f9fafc]">
       <ScrollView className="flex-1">
-        <TouchableOpacity
-          className="mt-10"
-          onPress={() => navigation.navigate("BeneficiaryAccountDetails")}
-        >
-          <Entypo name="chevron-left" size={30} color="black" />
-        </TouchableOpacity>
-        <View className="justify-center items-center">
-          <Text className="font-InterBold text-2xl">Summary</Text>
+        <View className="flex-row items-center justify-center w-full mt-10">
+          <TouchableOpacity
+            onPress={() => navigation.goBack()}
+            className="absolute left-5"
+          >
+            <Entypo name="chevron-left" size={30} color="black" />
+          </TouchableOpacity>
+          <Text className="font-InterBold text-2xl">Easy Cash</Text>
         </View>
         <View className="bg-white p-6 rounded-lg shadow-lg w-11/12 mt-7 mx-auto">
           <View className="relative mt-5">

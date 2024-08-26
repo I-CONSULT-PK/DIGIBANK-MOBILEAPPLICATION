@@ -17,17 +17,15 @@ const SelectApplyOptionCard = () => {
     <SafeAreaView className=" bg-[#f9fafc]" style={{ flex: 1 }}>
       <ScrollView>
         <View className=" flex-1">
-          <TouchableOpacity onPress={() => navigation.navigate("SelectCards")}>
-            <Entypo
-              name="chevron-left"
-              size={wp("8%")}
-              color="#090909"
-              marginTop={hp("2%")}
-            />
-          </TouchableOpacity>
-          <View className="justify-center items-center">
-            <Text className="font-InterBold text-2xl "> Choose Your Card </Text>
-          </View>
+        <View className="flex-row items-center justify-center w-full mt-10">
+        <TouchableOpacity
+          onPress={() => navigation.goBack()}
+          className="absolute left-5"
+        >
+          <Entypo name="chevron-left" size={30} color="black" />
+        </TouchableOpacity>
+        <Text className="font-InterBold text-2xl">Cards</Text>
+      </View>
           <View className="p-4">
             <TouchableOpacity
               onPress={() => navigation.navigate("ApplyCard")}

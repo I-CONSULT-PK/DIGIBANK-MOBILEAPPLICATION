@@ -11,17 +11,25 @@ import { Color } from "../../../GlobalStyles";
 import API_BASE_URL from '../../../config';
 import SearchBar from "../../../components/SearchBar";
 import OptionBox from "../../../components/OptionBox";
-import CustomModal from '../../../components/CustomModal';
+import EditBeneficiaryModal from '../../../components/EditBeneficiaryModal';
 import Footer from "../../../components/Footer";
 
-const BeneficiaryList = ({ navigation }) => {
+const BeneficiaryList = ({ navigation, route }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [beneficiaries, setBeneficiaries] = useState([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [selectedBeneficiary, setSelectedBeneficiary] = useState(null);
 
-  const toggleModal = () => {
+  const { source } = route.params || {};
+
+  const toggleModal = (beneficiary) => {
+    setSelectedBeneficiary(beneficiary);
     setIsModalVisible(!isModalVisible);
   };
+
+  const handleModalClose = () => {
+    setIsModalVisible(!isModalVisible);
+  }
 
   const fetchBeneficiaries = async () => {
     try {
@@ -29,20 +37,18 @@ const BeneficiaryList = ({ navigation }) => {
       const bearerToken = await AsyncStorage.getItem('token');
 
       if (customerId && bearerToken) {
-        const dto = await axios.get(`${API_BASE_URL}/v1/beneficiary/getAllBeneficiary/${customerId}`, {
+        const response = await axios.get(`${API_BASE_URL}/v1/beneficiary/getAllBeneficiary?customerId=${customerId}&flag=false`, {
           headers: {
             'Authorization': `Bearer ${bearerToken}`
           }
         });
 
-        if (dto && dto.data[0].success && dto.data) {
+        const dto = response.data;
+
+        if (dto && dto.success && dto.data) {
           const transformedBeneficiaries = dto.data.map(item => ({
-            id: item.data.id,
-            image: item.data.bankUrl,
-            text: item.data.beneficiaryAlias || 'Unknown',
-            subtext: item.data.accountNumber,
-            beneficiary: true,
-            liked: false,
+            ...item,
+            liked: item.flag
           }));
 
           setBeneficiaries(transformedBeneficiaries);
@@ -55,7 +61,6 @@ const BeneficiaryList = ({ navigation }) => {
             Alert.alert('Error', dto.errors);
           }
         }
-
       } else {
         Alert.alert('Error', 'Unexpected error occured. Try again later!');
       }
@@ -77,6 +82,73 @@ const BeneficiaryList = ({ navigation }) => {
       } else {
         Alert.alert('Error', error.message);
       }
+    }
+  };
+
+  const handleUpdateBeneficiary = async (nickname, mobileNumber, beneId, beneficiary) => {
+    if (nickname !== beneficiary.beneficiaryAlias || mobileNumber !== beneficiary.mobileNumber) {
+      try {
+        const bearerToken = await AsyncStorage.getItem('token');
+        const customerId = parseInt(await AsyncStorage.getItem('customerId'), 10);
+
+        if (bearerToken && customerId) {
+          const updateData = {
+            beneficiaryAlias: nickname,
+            mobileNumber: mobileNumber,
+            beneId: beneId,
+            customerId: customerId
+          };
+
+          const response = await axios.post(`${API_BASE_URL}/v1/beneficiary/updateBeneficiary`,
+            updateData,
+            {
+              headers: {
+                'Authorization': `Bearer ${bearerToken}`
+              }
+            }
+          );
+
+          const dto = response.data;
+
+          if (dto && dto.success && dto.data) {
+            fetchBeneficiaries();
+            handleModalClose();
+
+            Alert.alert('Success', 'Beneficiary updated successfully');
+          }
+          else {
+            if (dto.message) {
+              Alert.alert('Error', dto.message);
+            }
+            else if (dto.errors && dto.errors.length > 0) {
+              Alert.alert('Error', dto.errors);
+            }
+          }
+        } else {
+          Alert.alert('Error', 'Unexpected error occured. Try again later!');
+        }
+      } catch (error) {
+        if (error.response) {
+          const statusCode = error.response.status;
+
+          if (statusCode === 404) {
+            Alert.alert('Error', 'Server timed out. Try again later!');
+          } else if (statusCode === 503) {
+            Alert.alert('Error', 'Service unavailable. Please try again later.');
+          } else if (statusCode === 400) {
+            Alert.alert('Error', error.response.data.data.errors[0]);
+          } else {
+            Alert.alert('Error', error.message);
+          }
+        } else if (error.request) {
+          Alert.alert('Error', 'No response from the server. Please check your connection.');
+        } else {
+          Alert.alert('Error', error.message);
+        }
+      }
+    }
+    else {
+      handleModalClose();
     }
   };
 
@@ -104,6 +176,63 @@ const BeneficiaryList = ({ navigation }) => {
 
       if (bearerToken) {
         const response = await axios.post(`${API_BASE_URL}/v1/beneficiary/deleteBene/${id}`, {}, {
+          headers: {
+            'Authorization': `Bearer ${bearerToken}`
+          }
+        });
+
+        const dto = response.data;
+
+        if (dto && dto.success && dto.data) {
+          Alert.alert('Success', 'Beneficiary deleted successfully');
+        }
+        else {
+          if (dto.message) {
+            Alert.alert('Error', dto.message);
+          }
+          else if (dto.errors && dto.errors.length > 0) {
+            Alert.alert('Error', dto.errors);
+          }
+        }
+      }
+      else {
+        Alert.alert('Error', 'Unexpected error occured. Try again later!');
+      }
+    }
+    catch (error) {
+      if (error.response) {
+        const statusCode = error.response.status;
+
+        if (statusCode === 404) {
+          Alert.alert('Error', 'Server timed out. Try again later!');
+        } else if (statusCode === 503) {
+          Alert.alert('Error', 'Service unavailable. Please try again later.');
+        } else if (statusCode === 400) {
+          Alert.alert('Error', error.response.data.data.errors[0]);
+        } else {
+          Alert.alert('Error', error.message);
+        }
+      } else if (error.request) {
+        Alert.alert('Error', 'No response from the server. Please check your connection.');
+      } else {
+        Alert.alert('Error', error.message);
+      }
+    }
+  };
+
+  const handleLikeToggle = async (id) => {
+    setBeneficiaries((prevBeneficiaries) =>
+      prevBeneficiaries.map((b) =>
+        b.id === id ? { ...b, liked: !b.liked } : b
+      )
+    );
+
+    try {
+      const bearerToken = await AsyncStorage.getItem('token');
+      const customerId = await AsyncStorage.getItem('customerId');
+
+      if (bearerToken && customerId) {
+        const response = await axios.post(`${API_BASE_URL}/v1/beneficiary/addToFavourite?beneId=${id}&flag=true&customerId=${customerId}`, {}, {
           headers: {
             'Authorization': `Bearer ${bearerToken}`
           }
@@ -145,20 +274,12 @@ const BeneficiaryList = ({ navigation }) => {
     }
   };
 
-  const handleLikeToggle = (id) => {
-    setBeneficiaries((prevBeneficiaries) =>
-      prevBeneficiaries.map((b) =>
-        b.id === id ? { ...b, liked: !b.liked } : b
-      )
-    );
-  };
-
   const handleNamePress = (id) => {
     navigation.navigate('SendFromAccount', { beneficiaryId: id });
   };
 
   const filteredBeneficiaries = beneficiaries.filter((beneficiary) =>
-    beneficiary.text.toLowerCase().includes(searchQuery.toLowerCase())
+    beneficiary.beneficiaryAlias.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   return (
@@ -168,13 +289,16 @@ const BeneficiaryList = ({ navigation }) => {
         <View style={{ backgroundColor: Color.PrimaryWebOrient, height: 100 }}>
           <View className="flex-row items-center justify-center w-full h-full">
             <TouchableOpacity
-              onPress={() => navigation.goBack()}
+              onPress={() => {
+                source === 'beneficiary' && navigation.navigate('Home');
+                source === 'payment' && navigation.goBack();
+              }}
               className="absolute left-5"
             >
               <Entypo name="chevron-left" size={25} color="white" />
             </TouchableOpacity>
-            <Text className="text-white font-semibold text-lg font-InterSemiBold">
-              Beneficiary
+            <Text className="text-white text-lg font-InterBold">
+              {source === 'payment' ? 'Payment' : 'Beneficiary'}
             </Text>
           </View>
         </View>
@@ -202,9 +326,9 @@ const BeneficiaryList = ({ navigation }) => {
               </View>
             </TouchableOpacity>
 
-            <View className="my-3 w-full border-b border-gray-300" />
+            {source !== 'payment' && (<View className="my-3 w-full border-b border-gray-300" />)}
 
-            <TouchableOpacity
+            {source !== 'payment' && (<TouchableOpacity
               className="flex-row items-center"
               onPress={() => navigation.navigate("BankList")}
             >
@@ -220,26 +344,30 @@ const BeneficiaryList = ({ navigation }) => {
                   Add New Beneficiary
                 </Text>
               </View>
-            </TouchableOpacity>
+            </TouchableOpacity>)}
 
-            <View className="mt-3 mb-4 w-full border-b border-gray-300" />
+            {source !== 'payment' && (<View className="mt-3 mb-4 w-full border-b border-gray-300" />)}
+            {source === 'payment' && (<View className="my-4 w-full border-b border-gray-300" />)}
 
             {filteredBeneficiaries.map((beneficiary) => (
               <React.Fragment key={beneficiary.id}>
                 <OptionBox
-                  image={{ uri: beneficiary.image }}
-                  text={beneficiary.text}
-                  subtext={beneficiary.subtext}
+                  beneObj={beneficiary}
+                  image={{ uri: beneficiary.bankUrl }}
+                  text={beneficiary.beneficiaryAlias}
+                  subtext={beneficiary.accountNumber}
                   icon1={beneficiary.liked ? "heart" : "hearto"}
                   icon2="trash-2"
                   iconColor1={beneficiary.liked ? "red" : "darkgray"}
                   iconColor2="darkgray"
-                  beneficiary={beneficiary.beneficiary}
                   payment={beneficiary.payment}
                   onPress1={() => handleLikeToggle(beneficiary.id)}
                   onPress2={() => handleRemoveBeneficiary(beneficiary.id)}
                   onPressName={() => handleNamePress(beneficiary.id)}
-                  toggleModal={toggleModal}
+                  toggleModal={() => toggleModal(beneficiary)}
+                  beneficiary={true}
+                  navigation={navigation}
+                  source={source}
                 />
                 <View className="my-4 w-full border-b border-gray-300" />
               </React.Fragment>
@@ -247,7 +375,7 @@ const BeneficiaryList = ({ navigation }) => {
           </View>
         </View>
 
-        <CustomModal isModalVisible={isModalVisible} toggleModal={toggleModal} />
+        <EditBeneficiaryModal isModalVisible={isModalVisible} toggleModal={toggleModal} beneficiary={selectedBeneficiary} handleUpdateBeneficiary={handleUpdateBeneficiary} />
       </ScrollView>
       <Footer />
       <StatusBar backgroundColor={Color.PrimaryWebOrient} style="light" />

@@ -6,6 +6,7 @@ import {
   SafeAreaView,
   TouchableOpacity,
   StyleSheet,
+  Image
 } from "react-native";
 import { Entypo } from "@expo/vector-icons";
 import Footer from "../../../components/Footer";
@@ -14,15 +15,19 @@ import TextInput from "../../../components/TextInput";
 import { Color } from "../../../GlobalStyles";
 import { SelectList } from "react-native-dropdown-select-list";
 import CustomButton from "../../../components/Button";
-const SendFromAccount = () => {
-  const navigation = useNavigation();
-  const [selected, setSelected] = React.useState("");
+import { StatusBar } from "expo-status-bar";
 
+const SendFromAccount = ({ route }) => {
+  const navigation = useNavigation();
+  const { beneObj } = route.params || {};
+
+  const [selected, setSelected] = React.useState("");
   const [selectedOption, setSelectedOption] = useState(null);
 
   const handleSelect = (option) => {
     setSelectedOption(selectedOption === option ? null : option);
   };
+
   const Purpose = [
     { key: "1", value: "Standard Chartered Bank" },
     { key: "2", value: "HBL (Habib Bank Limited)" },
@@ -34,16 +39,18 @@ const SendFromAccount = () => {
   return (
     <SafeAreaView className="flex-1 bg-[#f9fafc]">
       <ScrollView className="flex-1">
-        <TouchableOpacity
-          className="mt-10 ml-4" // Adjust margin for better alignment
-          onPress={() => navigation.goBack()}
-        >
-          <Entypo name="chevron-left" size={30} color="black" />
-        </TouchableOpacity>
-        {/* Title Section */}
-        <View className="justify-center items-center">
-          <Text className="font-InterBold text-2xl">Send Money</Text>
-        </View>
+      <View className="relative w-full mt-10">
+            <TouchableOpacity
+              onPress={() => navigation.goBack()}
+              className="absolute left-5 "
+              style={{ zIndex: 1 }}
+            >
+              <Entypo name="chevron-left" size={30} color="black" />
+            </TouchableOpacity>
+            <Text className="text-center font-InterBold text-2xl">
+            Send Money
+            </Text>
+          </View>
         {/* From Account Section */}
         <Text className="font-semibold mb-1 text-gray-700 mt-7 px-3">
           From Account
@@ -79,17 +86,21 @@ const SendFromAccount = () => {
             style={styles.container}
           >
             {/* UBL BANK section */}
-            <View className="px-3 py-2 text-sm font-medium text-center  bg-blue rounded-md h-[54px] w-[65px]">
-              <Text className="text-center text-white">UBL {"\n"}BANK</Text>
+            <View className="p-2 rounded-md shadow-md shadow-gray-300 justify-center items-center bg-slate-100">
+              <Image
+                source={{ uri: beneObj.bankUrl }}
+                resizeMode="contain"
+                className="w-10 h-10"
+              />
             </View>
 
             {/* Account details section */}
             <View className="flex flex-col ml-4">
               <Text className="text-base font-semibold text-gray-800">
-                Mahrukh Zafar
+                {beneObj.beneficiaryName}
               </Text>
               <Text className="text-sm leading-snug text-neutral-500">
-                25678945087986
+                {beneObj.accountNumber}
               </Text>
             </View>
           </View>
@@ -144,13 +155,14 @@ const SendFromAccount = () => {
       </ScrollView>
 
       <Footer />
+      <StatusBar backgroundColor='#f9fafc' style="dark" />
     </SafeAreaView>
   );
 };
 const styles = StyleSheet.create({
   container: {
     shadowColor: "#000",
-    elevation: 30,
+    elevation: 20,
     borderColor: Color.PrimaryWebOrient,
   },
 });
