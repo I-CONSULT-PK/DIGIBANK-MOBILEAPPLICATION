@@ -5,6 +5,7 @@ import HomeScreen from "../../HomeScreen";
 import OTP_Signup from "../OTP_Signup";
 import OTP from "../OTP";
 
+import StartSection from '../../Auth/StartSection';
 import Login from "../Login";
 import Registration from "../Registration";
 import Sidebar from "../../Sidebar";
@@ -73,6 +74,7 @@ const AppNavigator = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator>
+        <Stack.Screen name="StartScreen" component={StartSection} />
         <Stack.Screen name="FingerPrint" component={FingerPrint} />
         <Stack.Screen name="Login" component={Login} />
         <Stack.Screen name="ForgetPassword" component={ForgetPassword} />

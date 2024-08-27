@@ -18,18 +18,22 @@ import {
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
 import * as LocalAuthentication from "expo-local-authentication";
+import PINCodeModal from "../../components/PINCodeModal";
 
-const ChooseSecurity = () => {
-  const navigation = useNavigation();
+const ChooseSecurity = ({ navigation }) => {
+  const [hasBio, setHasBio] = useState(false);
+  const [hasFaceDetection, setHasFaceDetection] = useState(false);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [source, setSource] = useState('');
 
-  const [hasBio, setHasBio] = useState(true);
-  const [hasFaceDetection, setHasFaceDetection] = useState(true);
+  const otpLength = 5;
+  const [otp, setOtp] = useState(Array(otpLength).fill(''));
 
   const checkHardwareSupport = async () => {
     const hasHardware = await LocalAuthentication.hasHardwareAsync();
     const supportedTypes = await LocalAuthentication.supportedAuthenticationTypesAsync();
     const isEnrolled = await LocalAuthentication.isEnrolledAsync();
-  
+
     if (hasHardware) {
       // Iterate through supported types
       supportedTypes.forEach((type) => {
@@ -42,10 +46,15 @@ const ChooseSecurity = () => {
       });
     }
   };
-  
+
   useEffect(() => {
     checkHardwareSupport();
   }, []);
+
+  const toggleModal = (source) => {
+    setSource(source);
+    setIsModalVisible(!isModalVisible);
+  };
 
   return (
     <SafeAreaView
@@ -56,7 +65,7 @@ const ChooseSecurity = () => {
         colors={[Color.PrimaryWebOrient, Color.PrimaryWebOrientLayer2]}
         style={{ flex: 1 }}
       >
-        <TouchableOpacity onPress={() => navigation.navigate("StartSection")}>
+        <TouchableOpacity onPress={() => navigation.navigate("StartScreen")}>
           <Entypo
             name="chevron-left"
             size={wp("8%")}
@@ -73,7 +82,7 @@ const ChooseSecurity = () => {
                 style={{ width: "45%", height: undefined, aspectRatio: 1 }}
                 className="left-2"
               />
-              <Text className="text-2xl font-semibold text-center text-white ">
+              <Text className="text-2xl font-semibold text-center text-white mt-4">
                 Enhance Your Security
               </Text>
               <Text className="text-base text-center text-white mt-2 px-8">
@@ -87,7 +96,7 @@ const ChooseSecurity = () => {
                 <View className=" w-full px-8">
                   {hasBio && (<TouchableOpacity
                     className="flex-row items-center justify-between bg-white border-gray-200 p-4 mb-2 rounded-xl shadow-2xl"
-                    onPress={() => navigation.navigate("RegisterFingerPrint")}
+                    onPress={() => toggleModal('fingerprint')}
                   >
                     <Ionicons name="finger-print" size={28} color="#00C6FF" />
                     <Text className="flex-1 text-base text-left ml-4">
@@ -102,7 +111,7 @@ const ChooseSecurity = () => {
                   </TouchableOpacity>)}
 
                   {hasFaceDetection && (<TouchableOpacity className="flex-row  justify-between bg-white border-gray-200 p-4 mb-2 rounded-lg shadow-inner"
-                  onPress={() => navigation.navigate("RegisterFaceDetector")}>
+                    onPress={() => toggleModal('face')}>
                     <Ionicons name="scan-outline" size={28} color="#00C6FF" />
                     <Text className="flex-1 text-base text-left ml-4">
                       Add Face ID
@@ -128,6 +137,8 @@ const ChooseSecurity = () => {
           </View>
         </View>
       </LinearGradient>
+
+      <PINCodeModal isModalVisible={isModalVisible} toggleModal={toggleModal} otpLength={otpLength} otp={otp} setOtp={setOtp} source={source} navigation={navigation} />
 
       <StatusBar backgroundColor={Color.PrimaryWebOrient} style="light" />
     </SafeAreaView>
