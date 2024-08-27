@@ -5,16 +5,14 @@ import {
   View,
   StyleSheet,
   TouchableOpacity,
-  Clipboard,
   Alert,
+  Clipboard,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { Entypo, Ionicons } from "@expo/vector-icons";
 import { SafeAreaView } from "react-native-safe-area-context";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import axios from "axios";
 import { Color } from "../../../GlobalStyles";
-import API_BASE_URL from "../../../config";
 
 // Define menu items
 const menuItems = [
@@ -32,89 +30,38 @@ const menuItems = [
 ];
 
 const Sidebar = () => {
-  const [userDetails, setUserDetails] = useState({});
+  const [userDetails, setUserDetails] = useState({
+    firstName: "",
+    lastName: "",
+    accountNumber: "",
+    accountType: "",
+  });
+
   const navigation = useNavigation();
 
   useEffect(() => {
-    fetchUserDetails();
-  }, []);
+    const loadUserDetails = async () => {
+      try {
+        const firstName = (await AsyncStorage.getItem("firstName")) || "User";
+        const lastName = (await AsyncStorage.getItem("lastName")) || "Name";
+        const accountNumber =
+          (await AsyncStorage.getItem("accountNumber")) || "1234567890";
+        const accountType =
+          (await AsyncStorage.getItem("accountType")) || "Checking";
 
-  const fetchUserDetails = async () => {
-    try {
-      const bearerToken = await AsyncStorage.getItem("token");
-      if (!bearerToken) {
-        Alert.alert("Error", "Authentication token not found");
-        return;
-      }
-
-      const response = await axios.get(
-        `${API_BASE_URL}/v1/customer/fetchUserDetails?userId=165`,
-        {
-          headers: {
-            Authorization: `Bearer ${bearerToken}`,
-          },
-        }
-      );
-
-      if (response.data && response.data.data) {
         setUserDetails({
-          firstName: response.data.data.firstName || "User",
-          lastName: response.data.data.lastName || "Name",
-          accountNumber: response.data.data.accountNumber || "N/A",
-          accountType: response.data.data.accountType || "N/A",
+          firstName,
+          lastName,
+          accountNumber,
+          accountType,
         });
-      } else {
-        Alert.alert("Error", "Unexpected response format");
+      } catch (error) {
+        console.error("Error loading user details from AsyncStorage", error);
       }
-    } catch (error) {
-      if (error.response) {
-        // Server responded with a status code outside of 2xx range
-        const statusCode = error.response.status;
+    };
 
-        if (statusCode === 400) {
-          // Bad Request
-          const message = error.response.data.message || "Bad request";
-          Alert.alert("Error", `Bad Request: ${message}`);
-        } else if (statusCode === 401) {
-          // Unauthorized
-          Alert.alert(
-            "Error",
-            "Unauthorized: Please check your authentication token"
-          );
-        } else if (statusCode === 403) {
-          // Forbidden
-          Alert.alert(
-            "Error",
-            "Forbidden: You do not have permission to access this resource"
-          );
-        } else if (statusCode === 404) {
-          // Not Found
-          Alert.alert(
-            "Error",
-            "Not Found: The requested resource could not be found"
-          );
-        } else if (statusCode === 500) {
-          // Internal Server Error
-          Alert.alert(
-            "Error",
-            "Server Error: Something went wrong on the server"
-          );
-        } else {
-          // Other status codes
-          Alert.alert("Error", `Error ${statusCode}: ${error.message}`);
-        }
-      } else if (error.request) {
-        // Request was made but no response was received
-        Alert.alert(
-          "Error",
-          "No response from the server. Please check your connection."
-        );
-      } else {
-        // Something happened while setting up the request
-        Alert.alert("Error", `Error: ${error.message}`);
-      }
-    }
-  };
+    loadUserDetails();
+  }, []);
 
   const handlePress = async (item) => {
     if (item.title === "Logout") {
@@ -142,8 +89,6 @@ const Sidebar = () => {
       console.log(item.title);
     }
   };
-
-  // Handle copying text to clipboard
 
   return (
     <SafeAreaView className="h-full bg-[#f9fafc]">

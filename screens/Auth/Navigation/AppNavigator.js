@@ -23,7 +23,7 @@ import AddWalletBeneficiary from "../../Select Beneficiary/Add Beneficiary/AddWa
 import History from "../../History";
 import TopUp from "../../Bill & Top-Up/TopUp";
 import SendMoney from "../../SendMoney";
-import Scanner from "../../Scanner";
+
 import EntitySelection from "../../EntitySelection";
 import BillPaymentListing from "../../Bill & Top-Up/BillPaymentListing";
 import BillPaymentTopUp from "../../Bill & Top-Up/BillPaymentTopUp";
@@ -66,6 +66,7 @@ import BankList from "../../Mobile-Banking/Beneficiary/BankList";
 import ChooseSecurity from "../ChooseSecurity";
 import RegisterFingerPrint from "../RegisterFingerPrint";
 import RegisterFaceDetector from "../RegisterFaceDetector";
+import Scanner from "../../../components/QR/Scanner";
 
 const Stack = createStackNavigator();
 

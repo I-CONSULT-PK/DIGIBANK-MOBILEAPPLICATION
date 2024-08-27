@@ -1,20 +1,30 @@
 import React, { useState } from "react";
 import { View, Text, TouchableOpacity } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { Entypo } from "@expo/vector-icons";
+import {
+  Entypo,
+  Feather,
+  MaterialCommunityIcons,
+  FontAwesome,
+  AntDesign,
+} from "@expo/vector-icons";
 import { Color } from "../GlobalStyles";
 
 const Footer = () => {
   const navigation = useNavigation();
   const [selected, setSelected] = useState("home");
+
   return (
-    <View className="bg-white py-4">
+    <View className="bg-white py-4 shadow-lg">
       <View className="flex flex-row justify-between items-center mx-4">
         {/* Home */}
         <TouchableOpacity
-          className={`flex items-center ${
-            selected === "home" ? "border-t-2 border-primary" : ""
-          }`}
+          className="flex items-center"
+          style={{
+            borderTopWidth: selected === "home" ? 2 : 0,
+            borderColor: Color.PrimaryWebOrient,
+            paddingTop: selected === "home" ? 8 : 10,
+          }}
           onPress={() => {
             setSelected("home");
             navigation.navigate("Home");
@@ -24,7 +34,7 @@ const Footer = () => {
             name="home"
             size={30}
             style={{
-              color: selected === "home" ? Color.PrimaryWebOrient : "#000",
+              color: selected === "home" ? Color.PrimaryWebOrient : "#15161db0",
             }}
           />
           <Text
@@ -37,84 +47,122 @@ const Footer = () => {
           </Text>
         </TouchableOpacity>
 
-        {/* Send */}
+        {/* Cash Points */}
         <TouchableOpacity
-          className={`flex items-center ${
-            selected === "send" ? "border-t-2 border-primary" : ""
-          }`}
+          className="flex items-center"
+          style={{
+            borderTopWidth: selected === "cashpoints" ? 2 : 0,
+            borderColor: Color.PrimaryWebOrient,
+            paddingTop: selected === "cashpoints" ? 8 : 10,
+          }}
           onPress={() => {
-            setSelected("send");
-            // navigation.navigate("Send");
+            setSelected("cashpoints");
+            // Replace with your actual navigation target
+            // navigation.navigate("CashPoints");
           }}
         >
-          <Entypo
-            name="paper-plane"
+          <Feather
+            name="map-pin"
             size={30}
             style={{
-              color: selected === "send" ? Color.PrimaryWebOrient : "#000",
+              color:
+                selected === "cashpoints" ? Color.PrimaryWebOrient : "#15161db0",
             }}
           />
           <Text
             className="mt-1 text-xs font-semibold"
             style={{
-              color: selected === "send" ? Color.PrimaryWebOrient : "#000",
+              color:
+                selected === "cashpoints" ? Color.PrimaryWebOrient : "#000",
             }}
           >
-            Send
+            Cash Points
           </Text>
         </TouchableOpacity>
 
-        {/* Cards */}
+        {/* QR Code */}
         <TouchableOpacity
-          className={`flex items-center ${
-            selected === "cards" ? "border-t-2 border-primary" : ""
-          }`}
+          className="flex items-center  shadow-2xl border-2 rounded-lg w-14 h-14 "
+          style={{
+            backgroundColor: Color.PrimaryWebOrient,
+            borderColor: Color.PrimaryWebOrient,
+            paddingTop: selected === "qrcode" ? 5 : 8,
+          }}
           onPress={() => {
-            setSelected("cards");
-            // navigation.navigate("ApplyForCard");
+            setSelected("qrcode");
+            // Replace with your actual navigation target
+            navigation.navigate("Scanner");
           }}
         >
-          <Entypo
-            name="credit-card"
+          <AntDesign
+            name="qrcode"
+            size={42}
+            style={{
+              color: "#fff",
+              paddingBottom: 5, // White color  selected
+            }}
+          />
+        </TouchableOpacity>
+
+        {/* Promotion */}
+        <TouchableOpacity
+          className="flex items-center"
+          style={{
+            borderTopWidth: selected === "promotion" ? 2 : 0,
+            borderColor: Color.PrimaryWebOrient,
+            paddingTop: selected === "promotion" ? 8 : 10,
+          }}
+          onPress={() => {
+            setSelected("promotion");
+            // Replace with your actual navigation target
+            // navigation.navigate("Promotion");
+          }}
+        >
+          <MaterialCommunityIcons
+            name="bullhorn-variant-outline"
             size={30}
             style={{
-              color: selected === "cards" ? Color.PrimaryWebOrient : "#000",
+              color: selected === "promotion" ? Color.PrimaryWebOrient : "#15161db0",
             }}
           />
           <Text
             className="mt-1 text-xs font-semibold"
             style={{
-              color: selected === "cards" ? Color.PrimaryWebOrient : "#000",
+              color: selected === "promotion" ? Color.PrimaryWebOrient : "#000",
             }}
           >
-            Cards
+            Promotion
           </Text>
         </TouchableOpacity>
 
-        {/* Settings */}
+        {/* Account */}
         <TouchableOpacity
-          className={`flex items-center ${
-            selected === "settings" ? "border-t-2 border-primary" : ""
-          }`}
+          className="flex items-center"
+          style={{
+            borderTopWidth: selected === "account" ? 2 : 0,
+            borderColor: Color.PrimaryWebOrient,
+            paddingTop: selected === "account" ? 8 : 10,
+          }}
           onPress={() => {
-            setSelected("settings");
-            // navigation.navigate("Settings");
+            setSelected("account");
+            // Replace with your actual navigation target
+            // navigation.navigate("Account");
           }}
         >
-          <Entypo
-            name="cog"
+          <FontAwesome
+            name="user"
             size={30}
             style={{
-              color: selected === "settings" ? Color.PrimaryWebOrient : "#000",
+              color: selected === "account" ? Color.PrimaryWebOrient : "#15161db0",
             }}
           />
           <Text
             className="mt-1 text-xs font-semibold"
             style={{
-              color: selected === "settings" ? Color.PrimaryWebOrient : "#000",
+              color: selected === "account" ? Color.PrimaryWebOrient : "#000",
             }}
           >
-            Settings
+            Account
           </Text>
         </TouchableOpacity>
       </View>

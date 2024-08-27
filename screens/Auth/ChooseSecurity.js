@@ -124,7 +124,7 @@ const ChooseSecurity = ({ navigation }) => {
                     />
                   </TouchableOpacity>)}
                 </View>
-                <View className=" mt-6 px-4">
+                <View className=" mt-4 px-4">
                   <Button
                     text="Skip"
                     width="w-[100%]"
