@@ -1,24 +1,25 @@
 import React, { useState, useEffect } from "react";
 import {
   TouchableOpacity,
-  Image,
-  BackHandler,
   ScrollView,
   Text,
   View,
+  Animated,
+  BackHandler,
 } from "react-native";
 import { Entypo } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import Footer from "../../../components/Footer";
-import { Color } from "../../../GlobalStyles";
 import TextInput from "../../../components/TextInput";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { SelectList } from "react-native-dropdown-select-list";
 import Button from "../../../components/Button";
 import Icon from "react-native-vector-icons/FontAwesome";
 import ListSectionCard from "../../../assets/Images/ListSectionCard.svg";
+
 const NameOnTheCard = () => {
   const navigation = useNavigation();
+  const [showMessage, setShowMessage] = useState(false);
+  const [fadeAnim] = useState(new Animated.Value(0));
 
   const handleBack = () => {
     navigation.goBack();
@@ -37,29 +38,58 @@ const NameOnTheCard = () => {
     };
   }, []);
 
+  const handleConfirmAddress = () => {
+    setShowMessage(true);
+    Animated.timing(fadeAnim, {
+      toValue: 1,
+      duration: 500,
+      useNativeDriver: true,
+    }).start();
+
+    setTimeout(() => {
+      navigation.navigate("CardActivation");
+    }, 1000);
+  };
+
   return (
     <SafeAreaView className="flex-1 bg-[#f9fafc] h-full">
       <ScrollView>
-        <TouchableOpacity onPress={handleBack} className="mt-5 ml-3">
-          <Entypo name="chevron-left" size={30} color="#090909" />
-        </TouchableOpacity>
-        <Text className="text-2xl text-center mt-5 font-bold">
-          Activate Your Card
-        </Text>
-        <View className="justify-center items-center mt-5">
-          <View className="flex-row items-center px-12 py-5 bg-emerald-50 rounded-md">
-            <Icon
-              name="check-circle"
-              size={20}
-              color="#4CAF50"
-              className="mr-2"
-            />
-
-            <Text className=" ml-3 text-sm font-semibold text-gray-800 capitalize text-center">
-              Your application is approved!
-            </Text>
-          </View>
+        <View className="relative w-full mt-10">
+          <TouchableOpacity
+            onPress={() => navigation.goBack()}
+            className="absolute left-5 "
+            style={{ zIndex: 1 }}
+          >
+            <Entypo name="chevron-left" size={30} color="black" />
+          </TouchableOpacity>
+          <Text className="text-center font-InterBold text-2xl">
+            Activate your Card
+          </Text>
         </View>
+
+        {showMessage && (
+          <Animated.View
+            style={{
+              opacity: fadeAnim,
+              alignItems: "center",
+              justifyContent: "center",
+              padding: 10,
+            }}
+          >
+            <View className="flex-row items-center px-12 py-5 bg-emerald-50 rounded-md">
+              <Icon
+                name="check-circle"
+                size={20}
+                color="#4CAF50"
+                className="mr-2"
+              />
+              <Text className=" ml-3 text-sm font-semibold text-gray-800 capitalize text-center">
+                Your application is approved!
+              </Text>
+            </View>
+          </Animated.View>
+        )}
+
         <View className="flex flex-col px-8 py-7 mt-7 bg-white rounded-xl shadow-lg max-w-md mx-auto">
           <View className="justify-center items-center">
             <ListSectionCard width={300} />
@@ -86,10 +116,10 @@ const NameOnTheCard = () => {
 
         <View className="p-5">
           <Button
-            text='Confirm Address'
-            width='w-[100%]'
-            styles='mb-4 py-4'
-            onPress={() => navigation.navigate("CardActivation")}
+            text="Confirm Address"
+            width="w-[100%]"
+            styles="mb-4 py-4"
+            onPress={handleConfirmAddress}
           />
         </View>
       </ScrollView>
