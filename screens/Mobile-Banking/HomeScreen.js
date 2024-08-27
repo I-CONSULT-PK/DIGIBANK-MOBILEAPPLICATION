@@ -598,21 +598,29 @@ const HomeScreen = () => {
 
   const fetchUserDetails = async () => {
     try {
+      // Retrieve the token and customerId from AsyncStorage
       const bearerToken = await AsyncStorage.getItem("token");
+      const customerId = await AsyncStorage.getItem("customerId");
+
       if (!bearerToken) {
         Alert.alert("Error", "Authentication token not found");
         return;
       }
-  
+      if (!customerId) {
+        Alert.alert("Error", "Customer ID not found");
+        return;
+      }
+
+      // Fetch user details using the customerId
       const response = await axios.get(
-        `${API_BASE_URL}/v1/customer/fetchUserDetails?userId=165`,
+        `${API_BASE_URL}/v1/customer/fetchUserDetails?userId=${customerId}`,
         {
           headers: {
             Authorization: `Bearer ${bearerToken}`,
           },
         }
       );
-  
+
       if (response.data && response.data.data) {
         const userDetails = {
           firstName: response.data.data.firstName || "User",
@@ -622,15 +630,15 @@ const HomeScreen = () => {
           accountNumber: response.data.data.accountNumber || "N/A",
           accountType: response.data.data.accountType || "N/A",
         };
-  
+
         // Save to AsyncStorage
         await AsyncStorage.multiSet([
-          ['firstName', userDetails.firstName],
-          ['lastName', userDetails.lastName],
-          ['accountNumber', userDetails.accountNumber],
-          ['accountType', userDetails.accountType]
+          ["firstName", userDetails.firstName],
+          ["lastName", userDetails.lastName],
+          ["accountNumber", userDetails.accountNumber],
+          ["accountType", userDetails.accountType],
         ]);
-  
+
         setUserDetails(userDetails);
       } else {
         Alert.alert("Error", "Unexpected response format");
@@ -640,7 +648,6 @@ const HomeScreen = () => {
       Alert.alert("Error", `Error fetching user details: ${error.message}`);
     }
   };
-  
 
   const fetchCardData = async () => {
     try {
