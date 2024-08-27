@@ -603,7 +603,7 @@ const HomeScreen = () => {
         Alert.alert("Error", "Authentication token not found");
         return;
       }
-
+  
       const response = await axios.get(
         `${API_BASE_URL}/v1/customer/fetchUserDetails?userId=165`,
         {
@@ -612,18 +612,26 @@ const HomeScreen = () => {
           },
         }
       );
-
-      // console.log("User Details Response:", response.data);
-
+  
       if (response.data && response.data.data) {
-        setUserDetails({
+        const userDetails = {
           firstName: response.data.data.firstName || "User",
           lastName: response.data.data.lastName || "Name",
           defaultAccountBalance:
             response.data.data.defaultAccountBalance || "N/A",
           accountNumber: response.data.data.accountNumber || "N/A",
           accountType: response.data.data.accountType || "N/A",
-        });
+        };
+  
+        // Save to AsyncStorage
+        await AsyncStorage.multiSet([
+          ['firstName', userDetails.firstName],
+          ['lastName', userDetails.lastName],
+          ['accountNumber', userDetails.accountNumber],
+          ['accountType', userDetails.accountType]
+        ]);
+  
+        setUserDetails(userDetails);
       } else {
         Alert.alert("Error", "Unexpected response format");
       }
@@ -632,6 +640,7 @@ const HomeScreen = () => {
       Alert.alert("Error", `Error fetching user details: ${error.message}`);
     }
   };
+  
 
   const fetchCardData = async () => {
     try {
