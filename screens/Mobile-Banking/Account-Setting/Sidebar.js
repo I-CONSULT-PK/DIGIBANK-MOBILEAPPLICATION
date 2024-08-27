@@ -1,427 +1,20 @@
-// import { LinearGradient } from "expo-linear-gradient";
-// import { TouchableOpacity } from "react-native";
-// import { Entypo, Feather, Ionicons } from "@expo/vector-icons";
-// import React, { useEffect, useState } from "react";
-// import { ScrollView, Text, View, StyleSheet, flex } from "react-native";
-// import { useNavigation } from "@react-navigation/native";
-// import ToggleSwitch from "rn-toggle-switch";
-// import { Avatar, IconButton } from "react-native-paper";
-// import { SafeAreaView } from "react-native-safe-area-context";
-// import { Color } from "../../../GlobalStyles";
-// import {
-//   widthPercentageToDP as wp,
-//   heightPercentageToDP as hp,
-// } from "react-native-responsive-screen";
-// const Sidebar = () => {
-//   const navigation = useNavigation();
-//   const Col = ({ numRows, children }) => {
-//     return <View style={styles[`${numRows}col`]}>{children}</View>;
-//   };
-
-//   const Row = ({ children }) => <View style={styles.row}>{children}</View>;
-//   const [userData, setUserData] = useState('');
-//    // Function to fetch data from the API
-//    const fetchData = async () => {
-//     try {
-//       // Make a GET request to the API endpoint
-//       const response = await fetch("http://192.168.0.196:9096/v1/customer/getCustomer/16");
-
-//       // Check if the request was successful (status code 200)
-//       if (response.ok) {
-//         // Parse the response JSON
-//         const data = await response.json();
-
-//         // Update the state with the fetched data
-//         setUserData(data);
-//       } else {
-//         console.error(`Error: ${response.status} - ${response.statusText}`);
-//       }
-//     } catch (error) {
-//       console.error("Error fetching data:", error);
-//     }
-//   };
-
-//   // useEffect to fetch data when the component mounts
-//   useEffect(() => {
-//     fetchData();
-//   }, []); // Empty dependency array ensures that the effect runs only once when the component mounts
-//   return (
-//     <SafeAreaView style={{ flex: 1, backgroundColor: Color.PrimaryWebOrient  }}>
-//       <ScrollView className="bg-white">
-//         <LinearGradient
-//           // Button Linear Gradient
-//           colors={[Color.PrimaryWebOrient, Color.PrimaryWebOrientLayer2]}
-//           className="h-70"
-//         >
-//           <TouchableOpacity onPress={() => navigation.navigate("Home")}>
-//             <Entypo
-//               name="chevron-left"
-//               size={30}
-//               color="#FFFFFF"
-//               marginTop={20}
-//             />
-//           </TouchableOpacity>
-
-//           <View style={styles.app}>
-//             <Row>
-//               <Col numRows={2}>
-//                 <Text
-//                   style={{
-//                     fontSize: 25,
-//                     color: "white",
-//                     marginLeft: 25,
-//                     marginBottom: 1,
-//                     fontWeight: "bold",
-//                   }}
-//                 >
-//                   Settings
-//                 </Text>
-//               </Col>
-//               <Col numRows={2}>
-//                 <View marginLeft={120}>
-//                   <ToggleSwitch
-//                     text={{
-//                       on: "",
-//                       off: "",
-//                       activeTextColor: "white",
-//                       inactiveTextColor: "black",
-//                     }}
-//                     textStyle={{ fontWeight: "bold" }}
-//                     color={{
-//                       indicator: "white",
-//                       active: Color.PrimaryWebOrient,
-//                       inactive: "rgba(247, 247, 247, 1)",
-//                       activeBorder: Color.PrimaryWebOrient,
-//                       inactiveBorder: Color.PrimaryWebOrient,
-//                     }}
-//                     active={true}
-//                     disabled={false}
-//                     width={10}
-//                     radius={15}
-//                     onValueChange={(val) => {
-//                       this.handleToggleSwitch(val);
-//                     }}
-//                   />
-//                 </View>
-//               </Col>
-//             </Row>
-//           </View>
-//           {userData && userData.data && (
-//           <View className="bg-white rounded-3xl flex-2 m-7 p-1">
-//             <Avatar.Image
-//               source={require("../../../assets/Images/ProfileImage.jpg")}
-//               style={{
-//                 margin: 5,
-//               }}
-//             />
-//             <Text
-//               style={{
-//                 color: "#000000",
-//                 fontSize: 20,
-//                 fontWeight: "600",
-//                 position: "absolute",
-//                 marginLeft: 80,
-//                 marginTop: 12,
-//               }}
-//             >
-//             {userData.data.firstName}
-
-//             </Text>
-//             <Text
-//               style={{
-//                 color: "#868889",
-//                 fontSize: 15,
-//                 fontWeight: "600",
-//                 position: "absolute",
-//                 marginLeft: 82,
-//                 marginTop: 36,
-//               }}
-//             >
-//               {userData.data.mobileNumber}
-
-//             </Text>
-//             <Text
-//               style={{
-//                 color: "#868889",
-//                 fontSize: 13,
-//                 fontWeight: "600",
-//                 position: "absolute",
-//                 marginLeft: 83,
-//                 marginTop: 55,
-//                 justifyContent: flex,
-//               }}
-//             >
-//              {userData.data.email}
-
-//             </Text>
-//           </View>
-//             )}
-//         </LinearGradient>
-//         <View>
-//         <View className=" p-2  justify-center items-center">
-//           <TouchableOpacity
-//                 // onPress={() => navigation.navigate("NameChange")}
-//                 style={styles.menuItemContainer}
-//               >
-//                 <Ionicons
-//                   name="settings"
-//                   size={wp("7%")}
-//                   style={{ color: Color.PrimaryWebOrient,marginRight:8  }}
-//                 />
-//                 <View style={styles.menuItemTextContainer}>
-//                   <Text  className="mr-2" style={{ fontSize: 15, fontWeight: 500 }}>
-//                     Account Setting
-//                   </Text>
-//                 </View>
-//                 <Entypo
-//                   name="chevron-right"
-//                   size={wp("7%")}
-//                   style={{ color: Color.PrimaryWebOrient }}
-//                 />
-//               </TouchableOpacity>
-//             </View>
-//           <View className=" p-2  justify-center items-center">
-//             <TouchableOpacity
-//               // onPress={() => navigation.navigate("NameChange")}
-//               style={styles.menuItemContainer}
-//             >
-//               <Ionicons
-//                 name="gift"
-//                 size={wp("7%")}
-//                 style={{ color: Color.PrimaryWebOrient, marginRight: 8 }}
-//               />
-//               <View style={styles.menuItemTextContainer}>
-//                 <Text className="mr-2" style={{ fontSize: 15, fontWeight: 500 }}>
-//                   My Rewards & Points
-//                 </Text>
-//               </View>
-//               <Entypo
-//                 name="chevron-right"
-//                 size={wp("7%")}
-//                 style={{ color: Color.PrimaryWebOrient }}
-//               />
-//             </TouchableOpacity>
-//           </View>
-//           <View className=" p-2  justify-center items-center">
-//           <TouchableOpacity
-//                 // onPress={() => navigation.navigate("NameChange")}
-//                 style={styles.menuItemContainer}
-//               >
-//                 <Ionicons
-//                   name="location"
-//                   size={wp("7%")}
-//                   style={{ color: Color.PrimaryWebOrient,marginRight:8  }}
-//                 />
-//                 <View style={styles.menuItemTextContainer}>
-//                   <Text  className="mr-2" style={{ fontSize: 15, fontWeight: 500 }}>
-//                   Locator
-//                   </Text>
-//                 </View>
-//                 <Entypo
-//                   name="chevron-right"
-//                   size={wp("7%")}
-//                   style={{ color: Color.PrimaryWebOrient }}
-//                 />
-//               </TouchableOpacity>
-//             </View>
-//             <View className=" p-2  justify-center items-center">
-//           <TouchableOpacity
-//                 // onPress={() => navigation.navigate("NameChange")}
-//                 style={styles.menuItemContainer}
-//               >
-//                 <Ionicons
-//                   name="document-text"
-//                   size={wp("7%")}
-//                   style={{ color: Color.PrimaryWebOrient,marginRight:8  }}
-//                 />
-//                 <View style={styles.menuItemTextContainer}>
-//                   <Text  className="mr-2" style={{ fontSize: 15, fontWeight: 500 }}>
-//                   Manage Request
-//                   </Text>
-//                 </View>
-//                 <Entypo
-//                   name="chevron-right"
-//                   size={wp("7%")}
-//                   style={{ color: Color.PrimaryWebOrient }}
-//                 />
-//               </TouchableOpacity>
-//             </View>
-
-//             <View className=" p-2  justify-center items-center">
-//           <TouchableOpacity
-//                 // onPress={() => navigation.navigate("NameChange")}
-//                 style={styles.menuItemContainer}
-//               >
-//                 <Feather
-//                 name="package"
-//                 size={wp("7%")}
-//                 style={{
-//                   color: Color.PrimaryWebOrient,marginRight:8
-//                 }}
-//                 />
-//                 <View style={styles.menuItemTextContainer}>
-//                   <Text  className="mr-2" style={{ fontSize: 15, fontWeight: 500 }}>
-//                   My Package
-//                   </Text>
-//                 </View>
-//                 <Entypo
-//                   name="chevron-right"
-//                   size={wp("7%")}
-//                   style={{ color: Color.PrimaryWebOrient }}
-//                 />
-//               </TouchableOpacity>
-//             </View>
-
-//             <View className=" p-2  justify-center items-center">
-//           <TouchableOpacity
-//                 onPress={() => navigation.navigate("SelectCards")}
-//                 style={styles.menuItemContainer}
-//               >
-//                 <Entypo
-//                   name="credit-card"
-//                   size={wp("7%")}
-//                   style={{ color: Color.PrimaryWebOrient,marginRight:8  }}
-//                 />
-//                 <View style={styles.menuItemTextContainer}>
-//                   <Text  className="mr-2" style={{ fontSize: 15, fontWeight: 500 }}>
-//                   {/* Active/Deactive Card */}
-//                   Card Management
-//                   </Text>
-//                 </View>
-//                 <Entypo
-//                   name="chevron-right"
-//                   size={wp("7%")}
-//                   style={{ color: Color.PrimaryWebOrient }}
-//                 />
-//               </TouchableOpacity>
-//             </View>
-
-//           <View>
-//             <Text
-//               style={{
-//                 marginLeft: 20,
-//                 marginTop: 20,
-
-//                 color: "#868889",
-//                 fontWeight: 500,
-//               }}
-//             >
-//               Help
-//             </Text>
-//           </View>
-//           <View className=" p-2  justify-center items-center">
-//           <TouchableOpacity
-//                 // onPress={() => navigation.navigate("NameChange")}
-//                 style={styles.menuItemContainer}
-//               >
-//             <Entypo
-//                 name="chat"
-//                 size={wp("7%")}
-//                 style={{
-//                   color: Color.PrimaryWebOrient,marginRight:8
-//                 }}
-//               />
-//                 <View style={styles.menuItemTextContainer}>
-//                   <Text  className="mr-2" style={{ fontSize: 15, fontWeight: 500 }}>
-//                    Customer Support
-//                   </Text>
-//                 </View>
-//                 <Entypo
-//                   name="chevron-right"
-//                   size={wp("7%")}
-//                   style={{ color: Color.PrimaryWebOrient }}
-//                 />
-//               </TouchableOpacity>
-//             </View>
-
-//             <View className=" p-2  justify-center items-center">
-//           <TouchableOpacity
-//                 // onPress={() => navigation.navigate("NameChange")}
-//                 style={styles.menuItemContainer}
-//               >
-//                 <Ionicons
-//                   name="help"
-//                   size={wp("7%")}
-//                   style={{ color: Color.PrimaryWebOrient,marginRight:8  }}
-//                 />
-//                 <View style={styles.menuItemTextContainer}>
-//                   <Text  className="mr-2" style={{ fontSize: 15, fontWeight: 500 }}>
-//                   Help/FAQ
-//                   </Text>
-//                 </View>
-//                 <Entypo
-//                   name="chevron-right"
-//                   size={wp("7%")}
-//                   style={{ color: Color.PrimaryWebOrient }}
-//                 />
-//               </TouchableOpacity>
-//             </View>
-//         </View>
-//       </ScrollView>
-//     </SafeAreaView>
-//   );
-// };
-
-// const styles = StyleSheet.create({
-//   container: {
-//     flex: 1,
-//     justifyContent: "center",
-//     alignItems: "center",
-//   },
-//   formCheck: {
-//     flexDirection: "row",
-//     alignItems: "center",
-//   },
-//   switchInput: {
-//     marginLeft: 2,
-//   },
-//   switchLabel: {
-//     marginLeft: 2,
-//   },
-//   menuItemContainer: {
-//     flexDirection: "row",
-//     alignItems: "center",
-
-//   },
-//   menuItemTextContainer: {
-//     flex: 1,
-
-//   },
-//   menuItemText: {
-//     fontSize: wp("3.5%"),
-//     fontFamily: "InterBold",
-//     marginRight: wp("3%"),
-//   },
-
-//   row: { flexDirection: "row" },
-//   "1col": {
-//     borderWidth: 1,
-//     flex: 1,
-//   },
-//   "2col": {
-//     // borderWidth: 1,
-//     flex: 2,
-//   },
-// });
-// handleToggleSwitch = (value) => {
-//   console.log(`Toggle switch value: ${value}`);
-// };
-
-// export default Sidebar;
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   ScrollView,
   Text,
   View,
   StyleSheet,
   TouchableOpacity,
+  Alert,
   Clipboard,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { Entypo, Ionicons } from "@expo/vector-icons";
 import { SafeAreaView } from "react-native-safe-area-context";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Color } from "../../../GlobalStyles";
 
+// Define menu items
 const menuItems = [
   { title: "Person Management", icon: "person" },
   { title: "Transfer", icon: "swap-horizontal" },
@@ -433,18 +26,68 @@ const menuItems = [
   { title: "Locator", icon: "location-outline" },
   { title: "Contact Us", icon: "chatbubbles-outline" },
   { title: "Refer", icon: "people" },
+  { title: "Logout", icon: "log-out" },
 ];
 
 const Sidebar = () => {
+  const [userDetails, setUserDetails] = useState({
+    firstName: "",
+    lastName: "",
+    accountNumber: "",
+    accountType: "",
+  });
+
   const navigation = useNavigation();
 
-  const handlePress = (item) => {
-    console.log(item.title);
-  };
+  useEffect(() => {
+    const loadUserDetails = async () => {
+      try {
+        const firstName = (await AsyncStorage.getItem("firstName")) || "User";
+        const lastName = (await AsyncStorage.getItem("lastName")) || "Name";
+        const accountNumber =
+          (await AsyncStorage.getItem("accountNumber")) || "1234567890";
+        const accountType =
+          (await AsyncStorage.getItem("accountType")) || "Checking";
 
-  const handleCopy = (text) => {
-    Clipboard.setString(text);
-    alert("Copied to clipboard");
+        setUserDetails({
+          firstName,
+          lastName,
+          accountNumber,
+          accountType,
+        });
+      } catch (error) {
+        console.error("Error loading user details from AsyncStorage", error);
+      }
+    };
+
+    loadUserDetails();
+  }, []);
+
+  const handlePress = async (item) => {
+    if (item.title === "Logout") {
+      try {
+        // Retrieve and log all keys and their values
+        const keys = await AsyncStorage.getAllKeys();
+        const items = await AsyncStorage.multiGet(keys);
+
+        console.log("Local Storage before clearing:");
+        items.forEach(([key, value]) => {
+          console.log(`Key: ${key}, Value: ${value}`);
+        });
+
+        // Clear local storage
+        await AsyncStorage.clear();
+
+        // Log clear confirmation
+        console.log("Local Storage has been cleared.");
+
+        navigation.navigate("Login");
+      } catch (error) {
+        console.error("Error clearing storage", error);
+      }
+    } else {
+      console.log(item.title);
+    }
   };
 
   return (
@@ -453,7 +96,11 @@ const Sidebar = () => {
         <View className="py-5 px-5 border-b border-gray-300">
           <Text className="text-slate-500 text-lg mb-0">Welcome</Text>
           <View className="flex-row items-center justify-between">
-            <Text className="font-bold text-2xl mb-0">Mirza Uraib</Text>
+            <Text className="font-bold text-2xl mb-0">
+              {`${userDetails.firstName || ""} ${
+                userDetails.lastName || ""
+              }`.trim() || "User"}
+            </Text>
             <Entypo
               name="chevron-right"
               size={20}
@@ -462,10 +109,9 @@ const Sidebar = () => {
           </View>
           <View className="flex flex-row items-center py-1 ">
             <Text className=" mb-0" style={{ color: Color.PrimaryWebOrient }}>
-              A/C No: 83927423837849
+              A/C No: {userDetails.accountNumber || "N/A"}
             </Text>
-
-            <TouchableOpacity onPress={() => handleCopy("83927423837849")}>
+            <TouchableOpacity>
               <Ionicons
                 name="copy"
                 size={20}
@@ -473,7 +119,9 @@ const Sidebar = () => {
               />
             </TouchableOpacity>
           </View>
-          <Text className="text-slate-500 mb-0">1 Account . Personal</Text>
+          <Text className="text-slate-500 mb-0">
+            {userDetails.accountType || "N/A"}
+          </Text>
         </View>
         {menuItems.map((item, index) => (
           <TouchableOpacity

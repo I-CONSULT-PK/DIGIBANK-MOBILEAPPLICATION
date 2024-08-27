@@ -468,7 +468,7 @@
 // export default HomeScreen;
 
 import { LinearGradient } from "expo-linear-gradient";
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import {
   FlatList,
   ScrollView,
@@ -480,13 +480,12 @@ import {
   Modal,
   Animated,
   Easing,
-  Clipboard,
   TextInput,
   ImageBackground,
 } from "react-native";
 import { Color } from "../../GlobalStyles";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import { TouchableOpacity } from "react-native";
 import { Entypo, FontAwesome } from "@expo/vector-icons";
 import { Avatar, List, Divider } from "react-native-paper";
@@ -510,7 +509,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import { StatusBar } from "expo-status-bar";
 const backgroundImage = require("../../assets/Images/Cards.png");
-
+import Toast from "react-native-toast-message";
 const HomeScreen = () => {
   const navigation = useNavigation();
   const [expanded, setExpanded] = useState(false);
@@ -520,15 +519,27 @@ const HomeScreen = () => {
   const modalAnim = useRef(new Animated.Value(0)).current;
   const [cards, setCards] = useState([]);
   const backgroundImage = require("../../assets/Images/Cards.png");
-
+  const [userDetails, setUserDetails] = useState({
+    firstName: "",
+    lastName: "",
+    accountNumber: "",
+    accountType: "",
+  });
   const toggleSidebar = () => {
     setSidebarVisible(!isSidebarVisible);
   };
 
   const handleCopy = (text) => {
     Clipboard.setString(text);
+    alert("Copied to clipboard");
   };
   const [isVisible, setIsVisible] = useState(true);
+  useFocusEffect(
+    useCallback(() => {
+      fetchCardData();
+      fetchUserDetails();
+    }, [])
+  );
 
   useEffect(() => {
     Animated.timing(sidebarAnim, {
@@ -562,7 +573,7 @@ const HomeScreen = () => {
           navigation.navigate("SendBeneficiaryMoney");
           break;
         case "Beneficiary":
-          navigation.navigate("BeneficiaryList", { source: 'beneficiary' });
+          navigation.navigate("SendBeneficiaryMoney");
           break;
         case "Cards":
           navigation.navigate("SelectCards");
@@ -583,6 +594,59 @@ const HomeScreen = () => {
           break;
       }
     }, 100);
+  };
+
+  const fetchUserDetails = async () => {
+    try {
+      // Retrieve the token and customerId from AsyncStorage
+      const bearerToken = await AsyncStorage.getItem("token");
+      const customerId = await AsyncStorage.getItem("customerId");
+
+      if (!bearerToken) {
+        Alert.alert("Error", "Authentication token not found");
+        return;
+      }
+      if (!customerId) {
+        Alert.alert("Error", "Customer ID not found");
+        return;
+      }
+
+      // Fetch user details using the customerId
+      const response = await axios.get(
+        `${API_BASE_URL}/v1/customer/fetchUserDetails?userId=${customerId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${bearerToken}`,
+          },
+        }
+      );
+
+      if (response.data && response.data.data) {
+        const userDetails = {
+          firstName: response.data.data.firstName || "User",
+          lastName: response.data.data.lastName || "Name",
+          defaultAccountBalance:
+            response.data.data.defaultAccountBalance || "N/A",
+          accountNumber: response.data.data.accountNumber || "N/A",
+          accountType: response.data.data.accountType || "N/A",
+        };
+
+        // Save to AsyncStorage
+        await AsyncStorage.multiSet([
+          ["firstName", userDetails.firstName],
+          ["lastName", userDetails.lastName],
+          ["accountNumber", userDetails.accountNumber],
+          ["accountType", userDetails.accountType],
+        ]);
+
+        setUserDetails(userDetails);
+      } else {
+        Alert.alert("Error", "Unexpected response format");
+      }
+    } catch (error) {
+      console.error("Error fetching user details:", error);
+      Alert.alert("Error", `Error fetching user details: ${error.message}`);
+    }
   };
 
   const fetchCardData = async () => {
@@ -641,6 +705,7 @@ const HomeScreen = () => {
 
   useEffect(() => {
     fetchCardData();
+    fetchUserDetails();
   }, []);
 
   const maskCardNumber = (number) => {
@@ -782,8 +847,8 @@ const HomeScreen = () => {
 
         {/* User Info */}
         <View className="flex flex-col justify-center text-lg font-semibold text-gray-800 mr-20">
-          <Text className="text-slate-500 text-sm mb-0">welcome</Text>
-          <Text className="font-bold text-lg mb-0">Mirza Uraib</Text>
+          <Text className="text-slate-500 text-sm mb-0">Welcome</Text>
+          <Text className="font-bold text-lg mb-0 text-black">{`${userDetails.firstName} ${userDetails.lastName}`}</Text>
         </View>
 
         {/* Notification Bell */}
@@ -809,8 +874,11 @@ const HomeScreen = () => {
 
                 <View className="d-flex flex-row items-center">
                   <Text className="text-white text-2xl font-bold">
-                    {isVisible ? "$100,000.00" : "*********"}
+                    {isVisible
+                      ? userDetails.defaultAccountBalance
+                      : "*********"}
                   </Text>
+
                   <TouchableOpacity onPress={() => setIsVisible(!isVisible)}>
                     <Ionicons
                       name={isVisible ? "eye" : "eye-off"}
@@ -824,11 +892,9 @@ const HomeScreen = () => {
               <View className="justify-between ">
                 <View className="flex-row d-flex items-center">
                   <Text className="text-slate-950 text-lg font-semibold">
-                    A/C No: 879234568951
+                    A/C No: {userDetails.accountNumber}
                   </Text>
-                  <TouchableOpacity
-                    onPress={() => handleCopy("83927423837849")}
-                  >
+                  <TouchableOpacity>
                     <Ionicons
                       name="copy"
                       size={20}
@@ -838,7 +904,7 @@ const HomeScreen = () => {
                 </View>
 
                 <Text className="text-white text-base font-semibold">
-                  Digi-Bank Accounts
+                  {userDetails.accountType}
                 </Text>
               </View>
             </View>

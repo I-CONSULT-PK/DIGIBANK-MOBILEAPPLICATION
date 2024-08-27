@@ -377,8 +377,7 @@ const Login = ({ navigation }) => {
                   width="w-[100%]"
                   styles="mb-4 py-4"
                   // onPress={handleLogin}
-                  onPress={() => navigation.navigate("Home")}
-
+                  onPress={handleLogin}
                 />
 
                 <View className="flex-row justify-center">
