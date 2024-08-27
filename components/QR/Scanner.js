@@ -7,7 +7,6 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import MyQrCodeImage from "../../assets/Images/MyQRCode.png";
 import TextInput from "../TextInput";
 import Button from "../Button";
-import { Camera } from "expo-camera";
 import * as ImagePicker from "expo-image-picker";
 
 const ScannerScreen = () => {
