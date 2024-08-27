@@ -96,7 +96,7 @@ const Add_Beneficiary = ({ route }) => {
             <Entypo name="chevron-left" size={30} color="black" />
           </TouchableOpacity>
           <View className=" ">
-            <Text className="font-InterBold text-2xl text-center">Send Money</Text>
+            <Text className="font-InterBold text-2xl text-center">Add Beneficiary</Text>
           </View>
         </View>
         <View className="px-6 mt-4">

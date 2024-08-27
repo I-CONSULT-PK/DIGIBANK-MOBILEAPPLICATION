@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, ScrollView, TouchableOpacity, Image, Alert } from "react-native";
+import { View, Text, ScrollView, TouchableOpacity, Image, Alert, BackHandler } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
 import { Entypo } from "@expo/vector-icons";
@@ -22,6 +22,19 @@ const BeneficiaryList = ({ navigation, route }) => {
 
   const { source } = route.params || {};
 
+  useEffect(() => {
+    const handleBackPress = () => {
+      navigation.navigate("Home");
+      return true;
+    };
+
+    BackHandler.addEventListener("hardwareBackPress", handleBackPress);
+
+    return () => {
+      BackHandler.removeEventListener("hardwareBackPress", handleBackPress);
+    };
+  }, []);
+
   const toggleModal = (beneficiary) => {
     setSelectedBeneficiary(beneficiary);
     setIsModalVisible(!isModalVisible);
@@ -35,39 +48,40 @@ const BeneficiaryList = ({ navigation, route }) => {
     try {
       const customerId = await AsyncStorage.getItem('customerId');
       const bearerToken = await AsyncStorage.getItem('token');
-
+  
       if (customerId && bearerToken) {
         const response = await axios.get(`${API_BASE_URL}/v1/beneficiary/getAllBeneficiary?customerId=${customerId}&flag=false`, {
           headers: {
             'Authorization': `Bearer ${bearerToken}`
           }
         });
-
+  
         const dto = response.data;
-
+  
         if (dto && dto.success && dto.data) {
           const transformedBeneficiaries = dto.data.map(item => ({
             ...item,
             liked: item.flag
           }));
-
+  
+          // Sort beneficiaries: those with `flag` set to true will be first
+          transformedBeneficiaries.sort((a, b) => (b.flag ? 1 : 0) - (a.flag ? 1 : 0));
+  
           setBeneficiaries(transformedBeneficiaries);
-        }
-        else {
+        } else {
           if (dto.message) {
             Alert.alert('Error', dto.message);
-          }
-          else if (dto.errors && dto.errors.length > 0) {
-            Alert.alert('Error', dto.errors);
+          } else if (dto.errors && dto.errors.length > 0) {
+            Alert.alert('Error', dto.errors.join('\n'));
           }
         }
       } else {
-        Alert.alert('Error', 'Unexpected error occured. Try again later!');
+        Alert.alert('Error', 'Unexpected error occurred. Try again later!');
       }
     } catch (error) {
       if (error.response) {
         const statusCode = error.response.status;
-
+  
         if (statusCode === 404) {
           Alert.alert('Error', 'Server timed out. Try again later!');
         } else if (statusCode === 503) {
@@ -84,6 +98,7 @@ const BeneficiaryList = ({ navigation, route }) => {
       }
     }
   };
+  
 
   const handleUpdateBeneficiary = async (nickname, mobileNumber, beneId, beneficiary) => {
     if (nickname !== beneficiary.beneficiaryAlias || mobileNumber !== beneficiary.mobileNumber) {
@@ -240,7 +255,10 @@ const BeneficiaryList = ({ navigation, route }) => {
 
         const dto = response.data;
 
-        if (!dto && !dto.success && !dto.data) {
+        if (dto && dto.success && dto.data) {
+          fetchBeneficiaries();
+        }
+        else {
           if (dto.message) {
             Alert.alert('Error', dto.message);
           }

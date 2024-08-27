@@ -48,7 +48,7 @@ const SendFromAccount = ({ route }) => {
               <Entypo name="chevron-left" size={30} color="black" />
             </TouchableOpacity>
             <Text className="text-center font-InterBold text-2xl">
-            Send Money
+            Add Beneficiary
             </Text>
           </View>
         {/* From Account Section */}

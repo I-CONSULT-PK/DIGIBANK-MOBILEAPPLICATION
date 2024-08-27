@@ -21,8 +21,8 @@ import * as LocalAuthentication from "expo-local-authentication";
 import PINCodeModal from "../../components/PINCodeModal";
 
 const ChooseSecurity = ({ navigation }) => {
-  const [hasBio, setHasBio] = useState(true);
-  const [hasFaceDetection, setHasFaceDetection] = useState(true);
+  const [hasBio, setHasBio] = useState(false);
+  const [hasFaceDetection, setHasFaceDetection] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [source, setSource] = useState('');
 

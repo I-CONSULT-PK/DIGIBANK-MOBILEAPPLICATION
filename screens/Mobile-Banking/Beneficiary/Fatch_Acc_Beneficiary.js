@@ -123,7 +123,7 @@ const Fatch_Acc_Beneficiary = ({ route }) => {
           </View>
         </View>
         <View className="px-6 mt-4">
-          <Text className="text-lg font-semibold">Confirm Following Beneficiary Details</Text>
+          <Text className="text-lg font-semibold">Beneficiary Details</Text>
         </View>
         <View className="flex-1 justify-center items-center p-4 shadow-gray-100">
           <View className="bg-white p-3 rounded-lg shadow-lg w-full">

@@ -611,7 +611,7 @@ const Registration = ({ route }) => {
                     width='w-[100%]'
                     styles='mb-4 py-4'
                     onPress={handleNext}
-                    // onPress={() => setMain(false)}
+                    // onPress={() => navigation.navigate('ChooseSecurity')}
                     loading={nextLoading}
                   />
 
