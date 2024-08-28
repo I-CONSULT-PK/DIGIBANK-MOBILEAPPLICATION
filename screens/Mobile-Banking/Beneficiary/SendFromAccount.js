@@ -1,32 +1,24 @@
 import React, { useState, useEffect } from "react";
-import {
-  Text,
-  View,
-  ScrollView,
-  SafeAreaView,
-  TouchableOpacity,
-  StyleSheet,
-  Image
-} from "react-native";
+import { Text, View, ScrollView, SafeAreaView, TouchableOpacity, StyleSheet, Image, Alert } from "react-native";
 import { Entypo } from "@expo/vector-icons";
-import Footer from "../../../components/Footer";
 import { useNavigation } from "@react-navigation/native";
-import TextInput from "../../../components/TextInput";
-import { Color } from "../../../GlobalStyles";
 import { SelectList } from "react-native-dropdown-select-list";
-import CustomButton from "../../../components/Button";
 import { StatusBar } from "expo-status-bar";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import axios from "axios";
+
+import { Color } from "../../../GlobalStyles";
+import API_BASE_URL from '../../../config';
+import CustomButton from "../../../components/Button";
+import TextInput from "../../../components/TextInput";
+import Footer from "../../../components/Footer";
 
 const SendFromAccount = ({ route }) => {
   const navigation = useNavigation();
   const { beneObj } = route.params || {};
 
-  const [userDetails, setUserDetails] = useState({
-    firstName: "",
-    lastName: "",
-    accountNumber: ""
-  });
+  const [userDetails, setUserDetails] = useState(null);
+  const [amount, setAmount] = useState(0);
   const [selected, setSelected] = useState("");
   const [selectedOption, setSelectedOption] = useState(null);
 
@@ -38,9 +30,10 @@ const SendFromAccount = ({ route }) => {
     { key: "5", value: "Savings" },
     { key: "6", value: "Investment" },
     { key: "7", value: "Donation" },
-    { key: "8", value: "Business Payment" },
+    { key: "8", value: "Transfer to own account" },
     { key: "9", value: "Rent Payment" },
     { key: "10", value: "Subscription Payment" },
+    { key: "11", value: "Other" },
   ];
 
   const handleSelect = (option) => {
@@ -49,42 +42,33 @@ const SendFromAccount = ({ route }) => {
 
   const loadUserDetails = async () => {
     try {
-      const firstName = (await AsyncStorage.getItem("firstName")) || "User";
-      const lastName = (await AsyncStorage.getItem("lastName")) || "Name";
-      const accountNumber = (await AsyncStorage.getItem("accountNumber")) || "1234567890";
-
-      setUserDetails({
-        firstName,
-        lastName,
-        accountNumber
-      });
-    }
-    catch (error) {
-      console.error("Error loading user details from AsyncStorage", error);
-    }
-  };
-
-  useEffect(() => {
-    loadUserDetails();
-  }, []);
-
-  const fundTransfer = async () => {
-    try {
+      const customerId = await AsyncStorage.getItem('customerId');
       const bearerToken = await AsyncStorage.getItem('token');
 
-      if (bearerToken) {
-        const response = await axios.get(`${API_BASE_URL}/v1/customer/fund/fundTransfer`, {
+      if (customerId && bearerToken) {
+        const response = await axios.get(`${API_BASE_URL}/v1/customer/fetchUserDetails?userId=${customerId}`, {
           headers: {
             'Authorization': `Bearer ${bearerToken}`
           }
         });
 
         const dto = response.data;
-        console.log(dto)
+
+        if (dto && dto.success && dto.data) {
+          setUserDetails(dto.data);
+        }
+        else {
+          if (dto.message) {
+            Alert.alert('Error', dto.message);
+          } else if (dto.errors && dto.errors.length > 0) {
+            Alert.alert('Error', dto.errors.join('\n'));
+          }
+        }
       } else {
         Alert.alert('Error', 'Unexpected error occurred. Try again later!');
       }
-    } catch (error) {
+    }
+    catch (error) {
       if (error.response) {
         const statusCode = error.response.status;
 
@@ -105,6 +89,24 @@ const SendFromAccount = ({ route }) => {
     }
   };
 
+  useEffect(() => {
+    loadUserDetails();
+  }, []);
+
+  const handleNext = () => {
+    if(userDetails === null || beneObj === null || amount === 0 || selected === "") {
+      Alert.alert('Error', 'Please fill all the required fields');
+    }
+    else {
+      if (amount < 1 || amount > 5000000) {
+        Alert.alert('Error', 'Please enter the correct amount');
+      }
+      else {
+        navigation.navigate('PayNow', { userDetails, beneObj, amount, selected });
+      }
+    }
+  };
+
   return (
     <SafeAreaView className="flex-1 bg-[#f9fafc]">
       <ScrollView className="flex-1">
@@ -117,7 +119,7 @@ const SendFromAccount = ({ route }) => {
             <Entypo name="chevron-left" size={30} color="black" />
           </TouchableOpacity>
           <Text className="text-center font-InterBold text-2xl">
-            Add Beneficiary
+            Payment
           </Text>
         </View>
         {/* From Account Section */}
@@ -137,10 +139,10 @@ const SendFromAccount = ({ route }) => {
             {/* Account details section */}
             <View className="flex flex-col ml-4">
               <Text className="text-base font-semibold text-gray-800">
-                {userDetails.firstName + " " + userDetails.lastName}
+                {userDetails && (userDetails.firstName + " " + userDetails.lastName)}
               </Text>
               <Text className="text-sm leading-snug text-neutral-500">
-                {userDetails.accountNumber}
+                {userDetails && (userDetails.accountNumber)}
               </Text>
             </View>
           </View>
@@ -176,7 +178,7 @@ const SendFromAccount = ({ route }) => {
         </View>
         {/* Balance and Amount Section */}
         <Text className="font-semibold mb-1 text-gray-700 mt-4 px-3">
-          Available balance Rs. 95,000
+          Available balance: {userDetails && (userDetails.defaultAccountBalance)}
         </Text>
         <Text className="font-semibold mb-1 text-gray-700 mt-7 px-3">
           Enter amount
@@ -186,6 +188,8 @@ const SendFromAccount = ({ route }) => {
             className="mt-2 w-96"
             placeholder="0.00"
             keyboardType="numeric"
+            value={amount}
+            onChange={(text) => setAmount(text)}
           />
         </View>
         <Text className="px-3 mt-5">
@@ -203,7 +207,7 @@ const SendFromAccount = ({ route }) => {
               setSelected={(val) => setSelected(val)}
               data={purpose}
               save="value"
-              placeholder="Others"
+              placeholder="Select a purpose"
               boxStyles={{
                 borderColor: "gray",
                 borderWidth: 1,
@@ -218,7 +222,8 @@ const SendFromAccount = ({ route }) => {
         <View className="p-5">
           <CustomButton
             text={"Next"}
-            onPress={() => navigation.navigate("PayNow")}
+            onPress={handleNext}
+            width="w-[100%]"
           />
         </View>
       </ScrollView>
