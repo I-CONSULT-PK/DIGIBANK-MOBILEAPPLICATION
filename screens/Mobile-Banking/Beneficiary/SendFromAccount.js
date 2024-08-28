@@ -68,43 +68,42 @@ const SendFromAccount = ({ route }) => {
     loadUserDetails();
   }, []);
 
-  // const fundTransfer = async () => {
-  //   try {
-  //     const bearerToken = await AsyncStorage.getItem('token');
+  const fundTransfer = async () => {
+    try {
+      const bearerToken = await AsyncStorage.getItem('token');
 
-  //     if (bearerToken) {
-  //       const response = await axios.get(`${API_BASE_URL}/v1/beneficiary/getAllBeneficiary?customerId=${customerId}&flag=false`, {
-  //         headers: {
-  //           'Authorization': `Bearer ${bearerToken}`
-  //         }
-  //       });
+      if (bearerToken) {
+        const response = await axios.get(`${API_BASE_URL}/v1/customer/fund/fundTransfer`, {
+          headers: {
+            'Authorization': `Bearer ${bearerToken}`
+          }
+        });
 
-  //       const dto = response.data;
+        const dto = response.data;
+        console.log(dto)
+      } else {
+        Alert.alert('Error', 'Unexpected error occurred. Try again later!');
+      }
+    } catch (error) {
+      if (error.response) {
+        const statusCode = error.response.status;
 
-        
-  //     } else {
-  //       Alert.alert('Error', 'Unexpected error occurred. Try again later!');
-  //     }
-  //   } catch (error) {
-  //     if (error.response) {
-  //       const statusCode = error.response.status;
-
-  //       if (statusCode === 404) {
-  //         Alert.alert('Error', 'Server timed out. Try again later!');
-  //       } else if (statusCode === 503) {
-  //         Alert.alert('Error', 'Service unavailable. Please try again later.');
-  //       } else if (statusCode === 400) {
-  //         Alert.alert('Error', error.response.data.data.errors[0]);
-  //       } else {
-  //         Alert.alert('Error', error.message);
-  //       }
-  //     } else if (error.request) {
-  //       Alert.alert('Error', 'No response from the server. Please check your connection.');
-  //     } else {
-  //       Alert.alert('Error', error.message);
-  //     }
-  //   }
-  // };
+        if (statusCode === 404) {
+          Alert.alert('Error', 'Server timed out. Try again later!');
+        } else if (statusCode === 503) {
+          Alert.alert('Error', 'Service unavailable. Please try again later.');
+        } else if (statusCode === 400) {
+          Alert.alert('Error', error.response.data.data.errors[0]);
+        } else {
+          Alert.alert('Error', error.message);
+        }
+      } else if (error.request) {
+        Alert.alert('Error', 'No response from the server. Please check your connection.');
+      } else {
+        Alert.alert('Error', error.message);
+      }
+    }
+  };
 
   return (
     <SafeAreaView className="flex-1 bg-[#f9fafc]">
