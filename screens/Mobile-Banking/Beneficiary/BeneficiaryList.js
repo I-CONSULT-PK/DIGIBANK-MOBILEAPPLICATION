@@ -48,25 +48,30 @@ const BeneficiaryList = ({ navigation, route }) => {
     try {
       const customerId = await AsyncStorage.getItem('customerId');
       const bearerToken = await AsyncStorage.getItem('token');
-  
+
       if (customerId && bearerToken) {
         const response = await axios.get(`${API_BASE_URL}/v1/beneficiary/getAllBeneficiary?customerId=${customerId}&flag=false`, {
           headers: {
             'Authorization': `Bearer ${bearerToken}`
           }
         });
-  
+
         const dto = response.data;
-  
+
         if (dto && dto.success && dto.data) {
           const transformedBeneficiaries = dto.data.map(item => ({
             ...item,
             liked: item.flag
           }));
-  
-          // Sort beneficiaries: those with `flag` set to true will be first
-          transformedBeneficiaries.sort((a, b) => (b.flag ? 1 : 0) - (a.flag ? 1 : 0));
-  
+
+          // Sort beneficiaries first by flag (true first) and within that by id in descending order
+          transformedBeneficiaries.sort((a, b) => {
+            if (b.flag === a.flag) {
+              return b.id - a.id;
+            }
+            return b.flag - a.flag;
+          });
+
           setBeneficiaries(transformedBeneficiaries);
         } else {
           if (dto.message) {
@@ -81,7 +86,7 @@ const BeneficiaryList = ({ navigation, route }) => {
     } catch (error) {
       if (error.response) {
         const statusCode = error.response.status;
-  
+
         if (statusCode === 404) {
           Alert.alert('Error', 'Server timed out. Try again later!');
         } else if (statusCode === 503) {
@@ -98,7 +103,6 @@ const BeneficiaryList = ({ navigation, route }) => {
       }
     }
   };
-  
 
   const handleUpdateBeneficiary = async (nickname, mobileNumber, beneId, beneficiary) => {
     if (nickname !== beneficiary.beneficiaryAlias || mobileNumber !== beneficiary.mobileNumber) {
