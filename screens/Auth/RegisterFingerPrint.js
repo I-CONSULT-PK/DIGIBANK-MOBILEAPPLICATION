@@ -19,6 +19,7 @@ import * as LocalAuthentication from "expo-local-authentication";
 import * as Device from "expo-device";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { v4 as uuidv4 } from "uuid";
+import { StatusBar } from "expo-status-bar";
 
 const RegisterFingerPrint = () => {
   const navigation = useNavigation();
@@ -87,7 +88,7 @@ const RegisterFingerPrint = () => {
   };
 
   return (
-    <SafeAreaView className="h-full flex-1">
+    <SafeAreaView className="h-full flex-1 bg-white">
       <TouchableOpacity onPress={() => navigation.navigate("ChooseSecurity")}>
         <Entypo
           name="chevron-left"
@@ -121,6 +122,7 @@ const RegisterFingerPrint = () => {
           </View>
         </View>
       </View>
+      <StatusBar backgroundColor='#ffffff' style="dark" />
     </SafeAreaView>
   );
 };
