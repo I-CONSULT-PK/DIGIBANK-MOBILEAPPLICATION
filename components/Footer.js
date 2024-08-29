@@ -66,7 +66,9 @@ const Footer = () => {
             size={30}
             style={{
               color:
-                selected === "cashpoints" ? Color.PrimaryWebOrient : "#15161db0",
+                selected === "cashpoints"
+                  ? Color.PrimaryWebOrient
+                  : "#15161db0",
             }}
           />
           <Text
@@ -82,11 +84,11 @@ const Footer = () => {
 
         {/* QR Code */}
         <TouchableOpacity
-          className="flex items-center  shadow-2xl border-2 rounded-lg w-14 h-14 "
+          className="flex items-center justify-center shadow-2xl border-2 rounded-lg w-14 h-14 "
           style={{
             backgroundColor: Color.PrimaryWebOrient,
             borderColor: Color.PrimaryWebOrient,
-            paddingTop: selected === "qrcode" ? 5 : 8,
+            paddingVertical: selected === "qrcode" ? 5 : 5,
           }}
           onPress={() => {
             setSelected("qrcode");
@@ -99,7 +101,8 @@ const Footer = () => {
             size={42}
             style={{
               color: "#fff",
-              paddingBottom: 5, // White color  selected
+              textAlign: "center",
+               // Center the icon horizontally
             }}
           />
         </TouchableOpacity>
@@ -122,7 +125,8 @@ const Footer = () => {
             name="bullhorn-variant-outline"
             size={30}
             style={{
-              color: selected === "promotion" ? Color.PrimaryWebOrient : "#15161db0",
+              color:
+                selected === "promotion" ? Color.PrimaryWebOrient : "#15161db0",
             }}
           />
           <Text
@@ -153,7 +157,8 @@ const Footer = () => {
             name="user"
             size={30}
             style={{
-              color: selected === "account" ? Color.PrimaryWebOrient : "#15161db0",
+              color:
+                selected === "account" ? Color.PrimaryWebOrient : "#15161db0",
             }}
           />
           <Text

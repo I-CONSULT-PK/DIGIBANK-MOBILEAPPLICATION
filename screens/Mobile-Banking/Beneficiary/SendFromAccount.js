@@ -6,7 +6,7 @@ import {
   SafeAreaView,
   TouchableOpacity,
   StyleSheet,
-  Image
+  Image,
 } from "react-native";
 import { Entypo } from "@expo/vector-icons";
 import Footer from "../../../components/Footer";
@@ -19,7 +19,9 @@ import { StatusBar } from "expo-status-bar";
 
 const SendFromAccount = ({ route }) => {
   const navigation = useNavigation();
-  const { beneObj } = route.params || {};
+  const { beneObj, accountData } = route.params || {};
+
+  console.log(accountData);
 
   const [selected, setSelected] = React.useState("");
   const [selectedOption, setSelectedOption] = useState(null);
@@ -39,29 +41,29 @@ const SendFromAccount = ({ route }) => {
   return (
     <SafeAreaView className="flex-1 bg-[#f9fafc]">
       <ScrollView className="flex-1">
-      <View className="relative w-full mt-10">
-            <TouchableOpacity
-              onPress={() => navigation.goBack()}
-              className="absolute left-5 "
-              style={{ zIndex: 1 }}
-            >
-              <Entypo name="chevron-left" size={30} color="black" />
-            </TouchableOpacity>
-            <Text className="text-center font-InterBold text-2xl">
+        <View className="relative w-full mt-10">
+          <TouchableOpacity
+            onPress={() => navigation.navigate("Home")}
+            className="absolute left-2 "
+            style={{ zIndex: 1 }}
+          >
+            <Entypo name="chevron-left" size={30} color="black" />
+          </TouchableOpacity>
+          <Text className="text-center font-InterBold text-2xl">
             Add Beneficiary
-            </Text>
-          </View>
+          </Text>
+        </View>
         {/* From Account Section */}
         <Text className="font-semibold mb-1 text-gray-700 mt-7 px-3">
           From Account
         </Text>
-        <View className="flex justify-center items-center px-3">
+        <View className="flex justify-center items-center ">
           <View
-            className="flex flex-row items-center p-4 bg-white rounded-lg shadow-md w-96 max-w-md"
-            style={styles.container}
+            className="flex flex-row items-center p-4 bg-white rounded-lg shadow-md  mx-4"
+            style={{ width: "94%" }}
           >
             {/* DIGI BANK section */}
-            <View className="px-3 py-2 text-sm font-medium  text-white bg-cyan-500 rounded-md h-[54px] w-[65px]">
+            <View className="px-3 py-2 text-sm font-medium text-white bg-cyan-500 rounded-md h-[54px] w-[65px]">
               <Text className="text-center text-white">DIGI {"\n"}BANK</Text>
             </View>
 
@@ -80,27 +82,37 @@ const SendFromAccount = ({ route }) => {
         <Text className="font-semibold mb-1 text-gray-700 mt-7 px-3">
           To Account
         </Text>
-        <View className="flex justify-center items-center px-3">
+        <View className="flex justify-center items-center ">
           <View
-            className="flex flex-row items-center p-4 bg-white rounded-lg shadow-md w-96 max-w-md"
-            style={styles.container}
+            className="flex flex-row items-center p-4 bg-white rounded-lg shadow-md  mx-4"
+            style={{ width: "94%" }}
           >
             {/* UBL BANK section */}
-            <View className="p-2 rounded-md shadow-md shadow-gray-300 justify-center items-center bg-slate-100">
-              <Image
-                source={{ uri: beneObj.bankUrl }}
-                resizeMode="contain"
-                className="w-10 h-10"
-              />
+            <View className="p-2 rounded-sm shadow-md shadow-gray-200 justify-center items-center bg-slate-100">
+              {beneObj && (
+                <Image
+                  source={{ uri: beneObj.bankUrl }}
+                  resizeMode="contain"
+                  className="w-10 h-10"
+                />
+              )}
+
+              {accountData && (
+                <Image
+                  source={{ uri: accountData.bankUrl }}
+                  resizeMode="contain"
+                  className="w-10 h-10"
+                />
+              )}
             </View>
 
             {/* Account details section */}
             <View className="flex flex-col ml-4">
               <Text className="text-base font-semibold text-gray-800">
-                {beneObj.beneficiaryName}
+                {beneObj ? beneObj.beneficiaryName : accountData.title}
               </Text>
               <Text className="text-sm leading-snug text-neutral-500">
-                {beneObj.accountNumber}
+                {beneObj ? beneObj.accountNumber : accountData.accountNumber}
               </Text>
             </View>
           </View>
@@ -112,11 +124,12 @@ const SendFromAccount = ({ route }) => {
         <Text className="font-semibold mb-1 text-gray-700 mt-7 px-3">
           Enter amount
         </Text>
-        <View className="flex items-center">
+        <View className="flex flex-row  p-4 rounded-lg shadow-md  ">
           <TextInput
-            className="mt-2 w-96"
+            className="mt-2 "
             placeholder="0.00"
             keyboardType="numeric"
+            style={{ width: "100%" }}
           />
         </View>
         <Text className="px-3 mt-5">
@@ -128,24 +141,25 @@ const SendFromAccount = ({ route }) => {
             Purpose Of Payment
           </Text>
         </View>
-        <View className="flex-1 justify-center items-center p-4">
-          <View className="w-96">
-            <SelectList
-              setSelected={(val) => setSelected(val)}
-              data={Purpose}
-              save="value"
-              placeholder="Others"
-              boxStyles={{
-                borderColor: "gray",
-                borderWidth: 1,
-              }}
-              dropdownStyles={{
-                borderColor: "gray",
-                borderWidth: 1,
-              }}
-            />
-          </View>
+
+        <View className="w-full px-4 py-4 rounded-lg shadow-md">
+          <SelectList
+            setSelected={(val) => setSelected(val)}
+            data={Purpose}
+            save="value"
+            placeholder="Others"
+            boxStyles={{
+              borderColor: "gray",
+              borderWidth: 1,
+              width: "100%", // Make the dropdown full width
+            }}
+            dropdownStyles={{
+              borderColor: "gray",
+              borderWidth: 0.5,
+            }}
+          />
         </View>
+
         <View className="p-5">
           <CustomButton
             text={"Next"}
@@ -155,7 +169,7 @@ const SendFromAccount = ({ route }) => {
       </ScrollView>
 
       <Footer />
-      <StatusBar backgroundColor='#f9fafc' style="dark" />
+      <StatusBar backgroundColor="#f9fafc" style="dark" />
     </SafeAreaView>
   );
 };

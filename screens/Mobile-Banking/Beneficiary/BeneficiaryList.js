@@ -99,7 +99,6 @@ const BeneficiaryList = ({ navigation, route }) => {
     }
   };
   
-
   const handleUpdateBeneficiary = async (nickname, mobileNumber, beneId, beneficiary) => {
     if (nickname !== beneficiary.beneficiaryAlias || mobileNumber !== beneficiary.mobileNumber) {
       try {
