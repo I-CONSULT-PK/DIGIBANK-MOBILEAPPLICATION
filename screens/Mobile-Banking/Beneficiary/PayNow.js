@@ -47,7 +47,11 @@ const PayNow = ({ route }) => {
         const dto = response.data;
 
         if (dto && dto.success && dto.data) {
-          console.log(dto.data);
+          Alert.alert('Success', 'Fund has been transfered successfully');
+
+          setTimeout(() => {
+            navigation.navigate('Home');
+          }, 1200);
         }
         else {
           if (dto.message) {

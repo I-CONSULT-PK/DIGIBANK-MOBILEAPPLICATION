@@ -15,7 +15,7 @@ import Footer from "../../../components/Footer";
 
 const SendFromAccount = ({ route }) => {
   const navigation = useNavigation();
-  const { beneObj } = route.params || {};
+  const { beneObj, source } = route.params || {};
 
   const [userDetails, setUserDetails] = useState(null);
   const [amount, setAmount] = useState(0);
@@ -112,7 +112,9 @@ const SendFromAccount = ({ route }) => {
       <ScrollView className="flex-1">
         <View className="relative w-full mt-10">
           <TouchableOpacity
-            onPress={() => navigation.goBack()}
+            onPress={() => {
+              source === 'dashboard' ? navigation.navigate('Home') : navigation.goBack();
+            }}
             className="absolute left-5 "
             style={{ zIndex: 1 }}
           >

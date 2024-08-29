@@ -296,10 +296,6 @@ const BeneficiaryList = ({ navigation, route }) => {
     }
   };
 
-  const handleNamePress = (id) => {
-    navigation.navigate('SendFromAccount', { beneficiaryId: id });
-  };
-
   const filteredBeneficiaries = beneficiaries.filter((beneficiary) =>
     beneficiary.beneficiaryAlias.toLowerCase().includes(searchQuery.toLowerCase())
   );
@@ -314,6 +310,7 @@ const BeneficiaryList = ({ navigation, route }) => {
               onPress={() => {
                 source === 'beneficiary' && navigation.navigate('Home');
                 source === 'payment' && navigation.goBack();
+                source === 'dashboard' && navigation.navigate('Home');
               }}
               className="absolute left-5"
             >
@@ -348,9 +345,9 @@ const BeneficiaryList = ({ navigation, route }) => {
               </View>
             </TouchableOpacity>
 
-            {source !== 'payment' && (<View className="my-3 w-full border-b border-gray-300" />)}
+            {(source !== 'payment' && source !== 'dashboard') && (<View className="my-3 w-full border-b border-gray-300" />)}
 
-            {source !== 'payment' && (<TouchableOpacity
+            {(source !== 'payment' && source !== 'dashboard') && (<TouchableOpacity
               className="flex-row items-center"
               onPress={() => navigation.navigate("BankList")}
             >
@@ -368,8 +365,8 @@ const BeneficiaryList = ({ navigation, route }) => {
               </View>
             </TouchableOpacity>)}
 
-            {source !== 'payment' && (<View className="mt-3 mb-4 w-full border-b border-gray-300" />)}
-            {source === 'payment' && (<View className="my-4 w-full border-b border-gray-300" />)}
+            {(source !== 'payment' && source !== 'dashboard') && (<View className="mt-3 mb-4 w-full border-b border-gray-300" />)}
+            {(source === 'payment' || source === 'dashboard') && (<View className="my-4 w-full border-b border-gray-300" />)}
 
             {filteredBeneficiaries.map((beneficiary) => (
               <React.Fragment key={beneficiary.id}>
@@ -385,7 +382,6 @@ const BeneficiaryList = ({ navigation, route }) => {
                   payment={beneficiary.payment}
                   onPress1={() => handleLikeToggle(beneficiary.id)}
                   onPress2={() => handleRemoveBeneficiary(beneficiary.id)}
-                  onPressName={() => handleNamePress(beneficiary.id)}
                   toggleModal={() => toggleModal(beneficiary)}
                   beneficiary={true}
                   navigation={navigation}

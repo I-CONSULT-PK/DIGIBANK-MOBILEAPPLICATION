@@ -510,6 +510,7 @@ import axios from "axios";
 import { StatusBar } from "expo-status-bar";
 const backgroundImage = require("../../assets/Images/Cards.png");
 import Toast from "react-native-toast-message";
+
 const HomeScreen = () => {
   const navigation = useNavigation();
   const [beneficiaries, setBeneficiaries] = useState([]);
@@ -526,6 +527,7 @@ const HomeScreen = () => {
     accountNumber: "",
     accountType: "",
   });
+
   const toggleSidebar = () => {
     setSidebarVisible(!isSidebarVisible);
   };
@@ -534,7 +536,9 @@ const HomeScreen = () => {
     Clipboard.setString(text);
     alert("Copied to clipboard");
   };
+
   const [isVisible, setIsVisible] = useState(true);
+
   useFocusEffect(
     useCallback(() => {
       fetchCardData();
@@ -866,6 +870,7 @@ const HomeScreen = () => {
 
   return (
     <SafeAreaView style={styles.container} className="h-full bg-[#f9fafc]">
+
       <Modal
         transparent={true}
         animationType="none"
@@ -899,7 +904,8 @@ const HomeScreen = () => {
           </Animated.View>
         </View>
       </Modal>
-      <View className="flex flex-row items-center justify-between px-4 pt-6 pb-3">
+
+      <View className="flex flex-row items-center justify-between px-5 py-2 mb-2 shadow-md bg-white border-b-[1px] border-gray-100">
         {/* Menu Icon */}
         <Entypo
           name="menu"
@@ -1133,20 +1139,21 @@ const HomeScreen = () => {
         </View>
         <View className="flex-row justify-between px-5">
           <Text className="text-base font-semibold text-black">My Payees</Text>
-          <Text className="text-xs font-medium text-gray-800 underline">
-            View All
-          </Text>
+          <TouchableOpacity onPress={() => navigation.navigate("BeneficiaryList", { source: 'dashboard' })}>
+            <Text className="text-xs font-medium text-gray-800 underline">View All</Text>
+          </TouchableOpacity>
         </View>
         <ScrollView
-          className="pt-1"
+          className="pt-1 mx-2"
           horizontal
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={styles.scrollContainer}
         >
           {beneficiaries.map((beneficiary, index) => (
-            <View
+            <TouchableOpacity
               key={index}
               className="w-24 h-36 bg-white m-2 rounded-lg shadow-lg justify-center items-center"
+              onPress={() => navigation.navigate('SendFromAccount', { beneObj: beneficiary, source: 'dashboard' })}
             >
               <View
                 className="w-20 h-20 bg-primary mt-3 rounded-lg shadow-lg justify-center items-center"
@@ -1164,7 +1171,7 @@ const HomeScreen = () => {
                   {beneficiary.beneficiaryBankName}
                 </Text>
               </View>
-            </View>
+            </TouchableOpacity>
           ))}
         </ScrollView>
         <View className="flex-row justify-between px-5 mt-5">
@@ -1174,7 +1181,7 @@ const HomeScreen = () => {
           </Text>
         </View>
         <ScrollView
-          className="pt-1"
+          className="pt-1 mx-2"
           horizontal
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={styles.scrollContainer}
@@ -1261,13 +1268,14 @@ const HomeScreen = () => {
       <Footer />
 
       <StatusBar
-        backgroundColor="transparent"
+        backgroundColor="#ffffff"
         style="dark"
         translucent={true}
       />
     </SafeAreaView>
   );
 };
+
 const styles = StyleSheet.create({
   box: {
     shadowColor: "#000",
@@ -1299,4 +1307,5 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
 });
+
 export default HomeScreen;
