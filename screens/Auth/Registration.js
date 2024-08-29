@@ -11,7 +11,6 @@ import {
 } from "react-native";
 import Input from "../../components/TextInput";
 import InputWithIcon from "../../components/TextInputWithIcon";
-import { Controller, useForm } from "react-hook-form";
 import { Color } from "../../GlobalStyles";
 import LoaderComponent from "../../components/LoaderComponent";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
@@ -25,7 +24,8 @@ import API_BASE_URL from "../../config";
 import * as LocalAuthentication from "expo-local-authentication";
 import * as Device from "expo-device";
 import { v4 as uuidv4 } from "uuid";
-import { AntDesign } from "@expo/vector-icons";
+import { Entypo } from "@expo/vector-icons";
+import Button from "../../components/Button";
 
 const Registration = ({ route }) => {
   const navigation = useNavigation();
@@ -33,11 +33,6 @@ const Registration = ({ route }) => {
 
   // const toggleSwitch = () => setIsEnabled((previousState) => !previousState);
 
-  const {
-    control,
-    handleSubmit,
-    formState: { errors },
-  } = useForm();
   const [isLoading, setIsLoading] = useState(false);
 
   const handleLoginPress = () => {
@@ -87,20 +82,27 @@ const Registration = ({ route }) => {
     confirmPassword: "",
   });
 
+  const [nextLoading, setNextLoading] = useState(false);
+  const [otpLoading, setOtpLoading] = useState(false);
+  const [registerLoading, setRegisterLoading] = useState(false);
+
   const [hasBio, setHasBio] = useState(true);
   const [hasFaceDetection, setHasFaceDetection] = useState(true);
 
   const checkHardwareSupport = async () => {
     const hasHardware = await LocalAuthentication.hasHardwareAsync();
-    const supportedTypes = await LocalAuthentication.supportedAuthenticationTypesAsync();
-  
+    const supportedTypes =
+      await LocalAuthentication.supportedAuthenticationTypesAsync();
+
     if (hasHardware) {
       // Iterate through supported types
       supportedTypes.forEach((type) => {
         if (type === LocalAuthentication.AuthenticationType.FINGERPRINT) {
           setHasBio(true);
         }
-        if (type === LocalAuthentication.AuthenticationType.FACIAL_RECOGNITION) {
+        if (
+          type === LocalAuthentication.AuthenticationType.FACIAL_RECOGNITION
+        ) {
           setHasFaceDetection(true);
         }
       });
@@ -137,6 +139,8 @@ const Registration = ({ route }) => {
     ) {
       Alert.alert("Error", "Please enter all the fields");
     } else {
+      setNextLoading(true);
+
       const registrationData = {
         globalId: {
           cnicNumber: initialForm.cnic,
@@ -195,6 +199,8 @@ const Registration = ({ route }) => {
         } else {
           Alert.alert("Error", error.message);
         }
+      } finally {
+        setNextLoading(false);
       }
     }
   };
@@ -203,6 +209,8 @@ const Registration = ({ route }) => {
     if (initialForm.mobile === "" || returnedData.email === "") {
       Alert.alert("Error", "Unexpected error occured. Try again later");
     } else {
+      setOtpLoading(true);
+
       const otpData = {
         mobileNumber: initialForm.mobile,
         email: returnedData.email,
@@ -257,6 +265,8 @@ const Registration = ({ route }) => {
         } else {
           Alert.alert("Error", error.message);
         }
+      } finally {
+        setOtpLoading(false);
       }
     }
   };
@@ -272,6 +282,8 @@ const Registration = ({ route }) => {
       if (finalForm.password !== finalForm.confirmPassword) {
         Alert.alert("Error", "Password do not match");
       } else {
+        setRegisterLoading(true);
+
         const userData = {
           mobileNumber: mobileNumber,
           firstName: firstName,
@@ -300,9 +312,9 @@ const Registration = ({ route }) => {
             Alert.alert("Success", dto.message);
 
             setTimeout(() => {
-              (hasBio || hasFaceDetection)
-                        ? navigation.navigate("ChooseSecurity")
-                        : navigation.navigate("RegisterFaceDetector");
+              hasBio || hasFaceDetection
+                ? navigation.navigate("ChooseSecurity")
+                : navigation.navigate("RegisterFaceDetector");
             }, 1000);
           } else {
             if (dto.message) {
@@ -335,6 +347,8 @@ const Registration = ({ route }) => {
           } else {
             Alert.alert("Error", error.message);
           }
+        } finally {
+          setRegisterLoading(false);
         }
       }
     }
@@ -388,7 +402,7 @@ const Registration = ({ route }) => {
   const [isEnabled, setIsEnabled] = useState(false);
   const [biometricData, setBiometricData] = useState(null);
   const [visitorId, setVisitorId] = useState(null);
-  
+
   const toggleSwitch = async () => {
     if (!isEnabled) {
       try {
@@ -449,10 +463,10 @@ const Registration = ({ route }) => {
                 main && navigation.goBack();
               }}
             >
-              <AntDesign name="arrowleft" size={20} color="white" />
+              <Entypo name="chevron-left" size={24} color="white" />
             </TouchableOpacity>
             <Text className="text-white text-lg font-semibold ml-4 font-InterSemiBold">
-              Register yourself
+              Sign-Up
             </Text>
           </View>
 
@@ -514,15 +528,15 @@ const Registration = ({ route }) => {
                 </View>
 
                 <View className="mb-5">
-                  <TouchableOpacity
-                    className="py-4 rounded-lg mb-4"
-                    style={{ backgroundColor: Color.PrimaryWebOrient }}
+                  <Button
+                    text="Create"
+                    width="w-[100%]"
+                    styles="mb-4 py-4"
                     onPress={handleRegister}
-                  >
-                    <Text className="text-white text-base text-center font-medium font-InterSemiBold">
-                      Create
-                    </Text>
-                  </TouchableOpacity>
+                    // onPress={() => navigation.navigate("ChooseSecurity")}
+                    loading={registerLoading}
+                  />
+
                   <View className="flex-row justify-center">
                     <Text className="text-sm font-InterRegular">
                       Already have an account?{" "}
@@ -590,20 +604,18 @@ const Registration = ({ route }) => {
                         onSubmitEditing={Keyboard.dismiss}
                       />
                     </View>
-                  
                   </View>
                 </View>
 
                 <View className="mb-5">
-                  <TouchableOpacity
-                    className="py-4 rounded-lg mb-4"
-                    style={{ backgroundColor: Color.PrimaryWebOrient }}
+                  <Button
+                    text="Next"
+                    width="w-[100%]"
+                    styles="mb-4 py-4"
                     onPress={handleNext}
-                  >
-                    <Text className="text-white text-base text-center font-medium font-InterSemiBold">
-                      Next
-                    </Text>
-                  </TouchableOpacity>
+                    // onPress={() => navigation.navigate('ChooseSecurity')}
+                    loading={nextLoading}
+                  />
 
                   <View className="flex-row justify-center">
                     <Text className="text-sm font-InterRegular">
@@ -656,16 +668,15 @@ const Registration = ({ route }) => {
                 </View>
 
                 <View className="mb-5">
-                  <TouchableOpacity
-                    className="py-4 rounded-lg mb-4"
-                    style={{ backgroundColor: Color.PrimaryWebOrient }}
+                  <Button
+                    text="Next"
+                    width="w-[100%]"
+                    styles="mb-4 py-4"
                     onPress={handleOTP}
-                  >
-                    <Text className="text-white text-base text-center font-medium font-InterSemiBold">
-                      Next
-                    </Text>
-                  </TouchableOpacity>
-                 
+                    // onPress={() => navigation.navigate("OTP", { source: "registration" })}
+                    loading={otpLoading}
+                  />
+
                   <View className="flex-row justify-center">
                     <Text className="text-sm font-InterRegular">
                       Already have an account?{" "}
@@ -687,6 +698,8 @@ const Registration = ({ route }) => {
           </View>
         </ScrollView>
       </LinearGradient>
+
+      <StatusBar backgroundColor={Color.PrimaryWebOrient} style="light" />
     </SafeAreaView>
   );
 };

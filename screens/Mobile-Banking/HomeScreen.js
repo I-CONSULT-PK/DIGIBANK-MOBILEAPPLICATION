@@ -891,7 +891,7 @@ const HomeScreen = () => {
 
               <View className="justify-between ">
                 <View className="flex-row d-flex items-center">
-                  <Text className="text-slate-950 text-lg font-semibold">
+                  <Text className="text-slate-950 text-lg">
                     A/C No: {userDetails.accountNumber}
                   </Text>
                   <TouchableOpacity>
