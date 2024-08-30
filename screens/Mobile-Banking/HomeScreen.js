@@ -1175,9 +1175,9 @@ const HomeScreen = () => {
           ))}
           {beneficiaries.length === 0 && (
             <TouchableOpacity className="w-20 h-20 bg-white m-2 rounded-lg shadow-lg justify-center items-center"
-            onPress={() => navigation.navigate('BeneficiaryList', { source: 'beneficiary' })}>
+            onPress={() => navigation.navigate("BankList", { source: 'dashboard' })}>
               <AntDesign name="pluscircleo" size={22} color={Color.PrimaryWebOrient} />
-              <Text className="font-InterSemiBold text-sm mt-2">Add</Text>
+              <Text className="font-InterSemiBold text-sm mt-1.5">Add</Text>
             </TouchableOpacity>
           )}
         </ScrollView>

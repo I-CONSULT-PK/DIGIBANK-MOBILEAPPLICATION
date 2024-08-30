@@ -12,9 +12,11 @@ import SearchBar from '../../../components/SearchBar';
 import OptionBox from '../../../components/OptionBox';
 import Footer from '../../../components/Footer';
 
-const BankList = ({ navigation }) => {
+const BankList = ({ navigation, route }) => {
     const [searchQuery, setSearchQuery] = useState('');
     const [banks, setBanks] = useState([]);
+
+    const { source } = route.params || {};
 
     useEffect(() => {
         const fetchBanks = async () => {
@@ -76,7 +78,7 @@ const BankList = ({ navigation }) => {
 
                 <View style={{ backgroundColor: Color.PrimaryWebOrient, height: 100 }}>
                     <View className="flex-row items-center justify-center w-full h-full">
-                        <TouchableOpacity onPress={() => navigation.goBack()} className="absolute left-5">
+                        <TouchableOpacity onPress={() => source === 'dashboard' ? navigation.navigate('Home') : navigation.goBack()} className="absolute left-5">
                             <Entypo name="chevron-left" size={25} color="white" />
                         </TouchableOpacity>
                         <Text className="text-white text-lg font-InterBold">Select Bank</Text>
