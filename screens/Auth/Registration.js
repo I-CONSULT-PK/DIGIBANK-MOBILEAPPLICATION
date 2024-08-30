@@ -123,11 +123,6 @@ const Registration = ({ route }) => {
     }));
   };
 
-  const handleNumericChange = (name, value) => {
-    const numericValue = value.replace(/[^0-9]/g, "");
-    handleChange(name, numericValue);
-  };
-
   const handleNext = async () => {
     if (
       initialForm.cnic === "" ||
@@ -289,6 +284,7 @@ const Registration = ({ route }) => {
           email: email,
           userName: finalForm.username,
           password: finalForm.password,
+          status: "00",
           accountDto: {
             accountNumber: accountNumber,
           },
@@ -301,10 +297,8 @@ const Registration = ({ route }) => {
           );
           const dto = response.data;
 
-          if (dto && dto.success && dto.data) {
-            Alert.alert("Success", dto.message + "hereeee");
-
-            console.log("I'm hereeeeeee!")
+          if (dto && dto.success) {
+            Alert.alert("Success", dto.message);
 
             setTimeout(() => {
               if (hasBio || hasFaceDetection) {
@@ -313,8 +307,6 @@ const Registration = ({ route }) => {
                 navigation.navigate("Login");
               }
             }, 1000);
-
-            console.log("I'm here!")
           } else {
             if (dto.message) {
               Alert.alert("Error", dto.message);
@@ -339,6 +331,7 @@ const Registration = ({ route }) => {
               Alert.alert("Error", error.message);
             }
           } else if (error.request) {
+            console.log(error)
             Alert.alert(
               "Error",
               "No response from the server. Please check your connection."
@@ -350,51 +343,6 @@ const Registration = ({ route }) => {
           setRegisterLoading(false);
         }
       }
-    }
-  };
-
-  const handleBiometricAuth = async () => {
-    try {
-      // Check if hardware supports biometrics
-      const compatible = await LocalAuthentication.hasHardwareAsync();
-      // if (!compatible) {
-      //   Alert.alert(
-      //     "Error",
-      //     "Biometric authentication is not supported on this device."
-      //   );
-      //   return;
-      // }
-
-      // Check if biometric records are enrolled
-      const enrolled = await LocalAuthentication.isEnrolledAsync();
-      // if (!enrolled) {
-      //   Alert.alert(
-      //     "Error",
-      //     "No biometric records found. Please set up biometrics in your device settings."
-      //   );
-      //   return;
-      // }
-
-      // Authenticate with biometrics
-      const result = await LocalAuthentication.authenticateAsync({
-        promptMessage: "Authenticate with Biometrics",
-        fallbackLabel: "Enter Passcode",
-      });
-
-      if (result.success) {
-        Alert.alert("Success", "Biometric authentication successful.");
-        await axios.post(`${API_BASE_URL}/api/devices/biometricAuth`, {
-          userId: userId,
-          authenticated: true,
-        });
-      } else {
-        Alert.alert(
-          "Error",
-          "Biometric authentication failed. Please try again."
-        );
-      }
-    } catch (error) {
-      Alert.alert("Error", error.message);
     }
   };
 

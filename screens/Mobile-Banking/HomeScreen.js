@@ -905,7 +905,7 @@ const HomeScreen = () => {
         </View>
       </Modal>
 
-      <View className="flex flex-row items-center justify-between px-5 py-2 mb-2 shadow-md bg-white border-b-[1px] border-gray-100">
+      <View className="flex flex-row items-center justify-between px-5 py-2 shadow-md bg-white border-b-[1px] border-gray-100">
         {/* Menu Icon */}
         <Entypo
           name="menu"
@@ -935,7 +935,7 @@ const HomeScreen = () => {
         />
       </View>
       <ScrollView>
-        <View className="justify-center items-center">
+        <View className="justify-center items-center pt-2">
           {/* <NewCard width={400} /> */}
           <View className="justify-center items-center ">
             {/* <ListSectionCard width={400} /> */}
