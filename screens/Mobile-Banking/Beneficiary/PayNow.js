@@ -51,7 +51,7 @@ const PayNow = ({ route }) => {
 
           setTimeout(() => {
             navigation.navigate('Home');
-          }, 1200);
+          }, 1000);
         }
         else {
           if (dto.message) {

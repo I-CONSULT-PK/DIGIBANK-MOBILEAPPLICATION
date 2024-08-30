@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Text, View, ScrollView, SafeAreaView, TouchableOpacity, StyleSheet, Image, Alert } from "react-native";
+import { Text, View, ScrollView, SafeAreaView, TouchableOpacity, StyleSheet, Image, Alert, BackHandler } from "react-native";
 import { Entypo } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { SelectList } from "react-native-dropdown-select-list";
@@ -21,6 +21,19 @@ const SendFromAccount = ({ route }) => {
   const [amount, setAmount] = useState(0);
   const [selected, setSelected] = useState("");
   const [selectedOption, setSelectedOption] = useState(null);
+
+  useEffect(() => {
+    const handleBackPress = () => {
+      source === 'dashboard' ? navigation.navigate("Home") : navigation.goBack();
+      return true;
+    };
+
+    BackHandler.addEventListener("hardwareBackPress", handleBackPress);
+
+    return () => {
+      BackHandler.removeEventListener("hardwareBackPress", handleBackPress);
+    };
+  }, []);
 
   const purpose = [
     { key: "1", value: "Bill Payment" },

@@ -503,7 +503,7 @@ import Beneficiary from "../../assets/Images/Beneficiary.svg";
 import ListSectionCard from "../../assets/Images/ListSectionCard.svg";
 import Footer from "../../components/Footer";
 import Sidebar from "./Account-Setting/Sidebar";
-import { Ionicons } from "@expo/vector-icons";
+import { Ionicons, AntDesign } from "@expo/vector-icons";
 import API_BASE_URL from "../../config";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
@@ -1173,6 +1173,13 @@ const HomeScreen = () => {
               </View>
             </TouchableOpacity>
           ))}
+          {beneficiaries.length === 0 && (
+            <TouchableOpacity className="w-20 h-20 bg-white m-2 rounded-lg shadow-lg justify-center items-center"
+            onPress={() => navigation.navigate('BeneficiaryList', { source: 'beneficiary' })}>
+              <AntDesign name="pluscircleo" size={22} color={Color.PrimaryWebOrient} />
+              <Text className="font-InterSemiBold text-sm mt-2">Add</Text>
+            </TouchableOpacity>
+          )}
         </ScrollView>
         <View className="flex-row justify-between px-5 mt-5">
           <Text className="text-base font-semibold text-black">Quick Pay</Text>

@@ -86,8 +86,8 @@ const Registration = ({ route }) => {
   const [otpLoading, setOtpLoading] = useState(false);
   const [registerLoading, setRegisterLoading] = useState(false);
 
-  const [hasBio, setHasBio] = useState(true);
-  const [hasFaceDetection, setHasFaceDetection] = useState(true);
+  const [hasBio, setHasBio] = useState(false);
+  const [hasFaceDetection, setHasFaceDetection] = useState(false);
 
   const checkHardwareSupport = async () => {
     const hasHardware = await LocalAuthentication.hasHardwareAsync();
@@ -289,10 +289,6 @@ const Registration = ({ route }) => {
           email: email,
           userName: finalForm.username,
           password: finalForm.password,
-          status: "00",
-          device: {
-            pinHash: "1234",
-          },
           accountDto: {
             accountNumber: accountNumber,
           },
@@ -300,19 +296,25 @@ const Registration = ({ route }) => {
 
         try {
           const response = await axios.post(
-            `${API_BASE_URL}/api/devices/signUp`,
+            `${API_BASE_URL}/v1/customer/register`,
             userData
           );
           const dto = response.data;
 
           if (dto && dto.success && dto.data) {
-            Alert.alert("Success", dto.message);
+            Alert.alert("Success", dto.message + "hereeee");
+
+            console.log("I'm hereeeeeee!")
 
             setTimeout(() => {
-              (hasBio || hasFaceDetection)
-                ? navigation.navigate("ChooseSecurity")
-                : navigation.navigate("RegisterFaceDetector");
+              if (hasBio || hasFaceDetection) {
+                navigation.navigate("ChooseSecurity");
+              } else {
+                navigation.navigate("Login");
+              }
             }, 1000);
+
+            console.log("I'm here!")
           } else {
             if (dto.message) {
               Alert.alert("Error", dto.message);

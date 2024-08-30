@@ -308,9 +308,7 @@ const BeneficiaryList = ({ navigation, route }) => {
           <View className="flex-row items-center justify-center w-full h-full">
             <TouchableOpacity
               onPress={() => {
-                source === 'beneficiary' && navigation.navigate('Home');
-                source === 'payment' && navigation.goBack();
-                source === 'dashboard' && navigation.navigate('Home');
+                source === 'payment' ? navigation.goBack() : navigation.navigate('Home');
               }}
               className="absolute left-5"
             >
