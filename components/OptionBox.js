@@ -6,7 +6,7 @@ import AntDesign from '@expo/vector-icons/AntDesign';
 const OptionBox = ({ beneObj, image, text, subtext, payment, icon1, icon2, onPress1, onPress2, iconColor1, iconColor2, beneficiary, toggleModal, navigation, source }) => {
     return (
         <View className="flex-row justify-between items-center">
-            {source === 'payment' ? (
+            {(source === 'payment' || source === 'dashboard') ? (
                 <TouchableOpacity className="flex-row items-center flex-1" onPress={() => navigation.navigate('SendFromAccount', { beneObj })}>
                     <View className="p-1.5 rounded-lg shadow-md shadow-gray-300 justify-center items-center bg-white">
                         <Image
@@ -66,11 +66,11 @@ const OptionBox = ({ beneObj, image, text, subtext, payment, icon1, icon2, onPre
                     </View>
                 </TouchableOpacity>)}
 
-            {source !== 'payment' && icon1 && <TouchableOpacity className="ml-2 p-2 rounded-full shadow-md shadow-gray-300 justify-center items-center bg-white" onPress={onPress1}>
+            {(source !== 'payment' && source !== 'dashboard') && icon1 && <TouchableOpacity className="ml-2 p-2 rounded-full shadow-md shadow-gray-300 justify-center items-center bg-white" onPress={onPress1}>
                 <AntDesign name={icon1} size={icon2 ? 19 : 20} color={iconColor1} />
             </TouchableOpacity>}
 
-            {source !== 'payment' && icon2 && <TouchableOpacity className="ml-2 p-2 rounded-full shadow-md shadow-gray-300 justify-center items-center bg-white" onPress={onPress2}>
+            {(source !== 'payment' && source !== 'dashboard') && icon2 && <TouchableOpacity className="ml-2 p-2 rounded-full shadow-md shadow-gray-300 justify-center items-center bg-white" onPress={onPress2}>
                 <Feather name={icon2} size={icon2 ? 19 : 20} color={iconColor2} />
             </TouchableOpacity>}
         </View>

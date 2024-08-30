@@ -22,7 +22,7 @@ import InputWithIcon from "../../components/TextInputWithIcon";
 import MainImage from "../../assets/Images/MainImage.svg";
 import { Color } from "../../GlobalStyles";
 import { Entypo } from "@expo/vector-icons";
-import CustomButton from "../../components/Button";
+import Button from "../../components/Button";
 import { AppLoaderContext } from "../../components/LoaderHOC";
 import PinCode from "./PinCode";
 import { useNavigation } from "@react-navigation/native";
@@ -38,64 +38,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { v4 as uuidv4 } from 'uuid'; // If you are using UUID for visitor ID generation
  
 const Login = ({ navigation }) => {
-  
-  const [selectedOption, setSelectedOption] = useState("mobile");
-  const sw = Dimensions.get("screen").width;
-  const sh = Dimensions.get("screen").height;
-  const [emailorUsername, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const { showLoader, hideLoader } = useContext(AppLoaderContext);
-  const [pinCodeModalVisible, setPinCodeModalVisible] = useState(false);
-  // const handleLogin = async () => {
-  //   // // New Work
-  //   // // Validate email and password
-  //   // if (!emailorUsername || !password) {
-  //   //   Alert.alert("Validation Error", "Please enter both email and password");
-  //   //   return;
-  //   // }
- 
-  //   // try {
-  //   //   const apiUrl = "http://192.168.0.196:9096/v1/customer/login";
-  //   //   showLoader();
-  //   //   const response = await fetch(apiUrl, {
-  //   //     method: "POST",
-  //   //     headers: {
-  //   //       "Content-Type": "application/json",
-  //   //     },
-  //   //     body: JSON.stringify({
-  //   //       emailorUsername,
-  //   //       password,
-  //   //     }),
-  //   //   });
- 
-  //   //   const data = await response.json();
- 
-  //   //   if (response.ok && data.success) {
-  //   //     // Successful login
-  //   //     console.log("Login successful", data);
- 
-  //   //     // Navigate to the next screen
-  //   // navigation.navigate("OTP");
-  //   //   } else {
-  //   //     // Failed login, display error message
-  //   //     Alert.alert(
-  //   //       "Login Failed",
-  //   //       data.message || "Invalid email or password"
-  //   //     );
-  //   //   }
-  //   // } catch (error) {
-  //   //   console.error("Login error", error.message);
-  //   //   Alert.alert("Error", "An error occurred. Please try again later.");
-  //   // } finally {
-  //   //   // Hide loader
-  //   //   hideLoader();
-  //   // }
-  //   setPinCodeModalVisible(true);
-  // };
- 
-  // --------------------------------------------------
- 
   const [form, setForm] = useState({ username: '', password: '' });
+  const [loading, setLoading] = useState(false);
  
   const handleChange = (name, value) => {
     setForm({
@@ -114,6 +58,8 @@ const Login = ({ navigation }) => {
       emailorUsername: form.username,
       password: form.password
     };
+
+    setLoading(true);
   
     try {
       const response = await axios.post(`${API_BASE_URL}/v1/customer/login`, loginData, { timeout: 10000 });
@@ -157,10 +103,10 @@ const Login = ({ navigation }) => {
         // Something went wrong in setting up the request
         Alert.alert('Error', 'Error setting up request: ' + error.message);
       }
+    } finally {
+      setLoading(false);
     }
   };
-  
-  
  
   const securityImages1 = [
     require('../../assets/security-img-1.png'),
@@ -182,28 +128,7 @@ const Login = ({ navigation }) => {
     const [biometricData, setBiometricData] = useState(null);
     const [visitorId, setVisitorId] = useState(null);
     const [modalVisible, setModalVisible] = useState(false);
-    
-  
-    useEffect(() => {
-      const checkBiometricSupport = async () => {
-        const hasHardware = await LocalAuthentication.hasHardwareAsync();
-        const isEnrolled = await LocalAuthentication.isEnrolledAsync();
- 
-        // if (!hasHardware) {
-        //   Alert.alert(
-        //     "Error",
-        //     "Biometric authentication is not available on this device."
-        //   );
-        // } else if (!isEnrolled) {
-        //   Alert.alert(
-        //     "Error",
-        //     "No biometric authentication is set up on this device."
-        //   );
-        // }
-      };
-  
-      checkBiometricSupport();
-    }, []);
+
   const handlePress = async () => {
     if (!isEnabled) {
       try {
@@ -372,13 +297,12 @@ const Login = ({ navigation }) => {
               {/* -----| Security Image End |----- */}
 
               <View className="mb-2">
-                <CustomButton
+                <Button
                   text="Login"
                   width="w-[100%]"
                   styles="mb-4 py-4"
                   onPress={handleLogin}
-                 
-                  // onPress={() => navigation.navigate("Home")}
+                  loading={loading}
                 />
 
                 <View className="flex-row justify-center">
@@ -466,7 +390,7 @@ const Login = ({ navigation }) => {
               >
                 <Text className="text-center text-black text-base">Cancel</Text>
               </TouchableOpacity>
-              <CustomButton
+              <Button
                 text="Ok"
                 onPress={() => {
                   setModalVisible(false);
