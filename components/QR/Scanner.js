@@ -125,11 +125,11 @@ const ScannerScreen = () => {
       // Check if the parsed data has the necessary fields
       if (
         accountData.accountNumber &&
-        accountData.title &&
+        accountData.beneficiaryName &&
         accountData.bankUrl
       ) {
         // Navigate to the next screen with the data
-        navigation.navigate("SendFromAccount", { accountData });
+        navigation.navigate("SendFromAccount", { beneObj: accountData });
       } else {
         alert("Invalid QR Code data");
       }
@@ -233,15 +233,18 @@ const ScannerScreen = () => {
   const shareQrCode = async () => {
     try {
       const { status } = await MediaLibrary.requestPermissionsAsync();
-  
+
       if (status !== "granted") {
-        Alert.alert("Permission required", "You need to grant gallery permissions to share the QR code.");
+        Alert.alert(
+          "Permission required",
+          "You need to grant gallery permissions to share the QR code."
+        );
         return;
       }
-  
+
       const uri = await qrCodeRef.current.capture();
       console.log("Captured URI:", uri);
-  
+
       await Share.share({
         url: uri,
         message: "Here is my QR code!",
@@ -254,7 +257,8 @@ const ScannerScreen = () => {
 
   const accountData = {
     accountNumber: userDetails && userDetails.accountNumber,
-    title: userDetails && userDetails.firstName + " " + userDetails.lastName,
+    beneficiaryName:
+      userDetails && userDetails.firstName + " " + userDetails.lastName,
     bankUrl: userDetails && userDetails.bankImage,
   };
 
@@ -342,7 +346,7 @@ const ScannerScreen = () => {
       ) : (
         <View className="flex-1 bg-white items-center px-4 py-6">
           {/* Tab Navigation */}
-          <View className="flex-row bg-gray-100 rounded-full  mb-6">
+          <View className="flex-row bg-gray-100 rounded-full mb-6">
             <TouchableOpacity
               className={`flex-1 items-center py-2 rounded-full ${
                 selectedTab === "staticQR" ? "bg-primary" : "bg-transparent"
@@ -376,7 +380,6 @@ const ScannerScreen = () => {
           {selectedTab === "staticQR" && (
             <>
               {/* QR Code Area */}
-
               <ViewShot
                 ref={qrCodeRef}
                 options={{ format: "png", quality: 0.9 }}
@@ -388,7 +391,7 @@ const ScannerScreen = () => {
                     your phone to receive money through QR Scan
                   </Text>
                   <QRCode value={JSON.stringify(accountData)} size={200} />
-                  <Text className="text-lg font-semibold mt-4 ">
+                  <Text className="text-lg font-semibold mt-4">
                     {userDetails &&
                       userDetails.firstName + " " + userDetails.lastName}
                   </Text>
@@ -423,8 +426,8 @@ const ScannerScreen = () => {
           )}
 
           {selectedTab === "createQR" && (
-            <View className="flex-1 items-center justify-center">
-              <View className=" items-center justify-center -top-10">
+            <View className="flex-1 items-center justify-center -top-8">
+              <View className="items-center justify-center">
                 <Text className="text-lg font-bold">
                   Create your custom Digi Bank QR
                 </Text>
@@ -434,19 +437,19 @@ const ScannerScreen = () => {
                 </Text>
               </View>
 
-              <View className="mt-2">
+              <View className="mt-2 ">
                 <TextInput
                   placeholder="Enter Amount Here..."
                   keyboardType="numeric"
-                  className="border border-gray-300 p-3 rounded-md"
-                  width="w-[90%]"
+                  className="border border-gray-300 p-3 rounded-md mb-5 mt-5"
+                  style={{ width: "100%" }}
                 />
               </View>
 
               <Button
                 text="Generate QR Now"
-                width="w-[70%]"
-                styles="py-3 px-4 mt-8 mx-auto"
+                className=""
+                styles="p-5"
               />
             </View>
           )}

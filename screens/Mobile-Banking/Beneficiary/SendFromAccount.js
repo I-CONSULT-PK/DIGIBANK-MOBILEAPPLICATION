@@ -123,12 +123,12 @@ const SendFromAccount = ({ route }) => {
   return (
     <SafeAreaView className="flex-1 bg-[#f9fafc]">
       <ScrollView className="flex-1">
-        <View className="relative w-full mt-10">
+        <View className="relative w-full mt-8">
           <TouchableOpacity
             onPress={() => {
               source === 'dashboard' ? navigation.navigate('Home') : navigation.goBack();
             }}
-            className="absolute left-5 "
+            className="absolute left-3 "
             style={{ zIndex: 1 }}
           >
             <Entypo name="chevron-left" size={30} color="black" />
@@ -141,13 +141,13 @@ const SendFromAccount = ({ route }) => {
         <Text className="font-semibold mb-1 text-gray-700 mt-7 px-3">
           From Account
         </Text>
-        <View className="flex justify-center items-center">
+        <View className="flex justify-center px-4 ">
           <View
-            className="flex flex-row items-center p-4 bg-white rounded-lg shadow-md w-96 max-w-md"
-            style={styles.container}
+            className="flex flex-row overflow-hidden items-center p-4 bg-white rounded-lg shadow-md"
+            
           >
             {/* DIGI BANK section */}
-            <View className="px-3 py-2 text-sm font-medium  text-white bg-cyan-500 rounded-md h-[54px] w-[65px]">
+            <View className="px-3 py-2 text-sm font-medium  text-white bg-cyan-500 rounded-md ">
               <Text className="text-center text-white">DIGI {"\n"}BANK</Text>
             </View>
 
@@ -166,13 +166,13 @@ const SendFromAccount = ({ route }) => {
         <Text className="font-semibold mb-1 text-gray-700 mt-7 px-3">
           To Account
         </Text>
-        <View className="flex justify-center items-center">
+        <View className="flex justify-center px-4 ">
           <View
-            className="flex flex-row overflow-hidden items-center p-4 bg-white rounded-lg shadow-md w-96 max-w-md"
+            className="flex flex-row overflow-hidden items-center p-4 bg-white rounded-lg shadow-md"
             style={styles.container}
           >
             {/* UBL BANK section */}
-            <View className="p-2 rounded-md shadow-md shadow-gray-300 justify-center items-center bg-slate-100">
+            <View className="p-2 rounded-md shadow-sm shadow-gray-300 justify-center items-center bg-slate-100">
               <Image
                 source={{ uri: beneObj.bankUrl }}
                 resizeMode="contain"
@@ -198,13 +198,14 @@ const SendFromAccount = ({ route }) => {
         <Text className="font-semibold mb-1 text-gray-700 mt-7 px-3">
           Enter amount
         </Text>
-        <View className="flex items-center">
+        <View className="flex items-center px-4">
           <TextInput
-            className="mt-2 w-96"
+            className="mt-2 "
             placeholder="0.00"
             keyboardType="numeric"
             value={amount}
             onChange={(text) => setAmount(text)}
+            style={{ width: "100%" }}
           />
         </View>
         <Text className="px-3 mt-5">
@@ -216,8 +217,8 @@ const SendFromAccount = ({ route }) => {
             Purpose Of Payment
           </Text>
         </View>
-        <View className="flex-1 justify-center items-center p-4">
-          <View className="w-96">
+        <View className="flex-1 justify-center p-4 px-4">
+          <View className="w-98">
             <SelectList
               setSelected={(val) => setSelected(val)}
               data={purpose}
@@ -226,6 +227,7 @@ const SendFromAccount = ({ route }) => {
               boxStyles={{
                 borderColor: "gray",
                 borderWidth: 1,
+               
               }}
               dropdownStyles={{
                 borderColor: "gray",
@@ -234,7 +236,7 @@ const SendFromAccount = ({ route }) => {
             />
           </View>
         </View>
-        <View className="p-5">
+        <View className="px-4">
           <CustomButton
             text={"Next"}
             onPress={handleNext}
