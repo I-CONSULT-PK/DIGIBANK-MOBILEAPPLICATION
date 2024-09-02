@@ -6,6 +6,9 @@ import {
   Image,
   Alert,
   Share,
+  KeyboardAvoidingView,
+  ScrollView,
+  Platform,
 } from "react-native";
 import { BarCodeScanner } from "expo-barcode-scanner";
 import { Ionicons } from "@expo/vector-icons";
@@ -426,32 +429,37 @@ const ScannerScreen = () => {
           )}
 
           {selectedTab === "createQR" && (
-            <View className="flex-1 items-center justify-center -top-8">
-              <View className="items-center justify-center">
-                <Text className="text-lg font-bold">
-                  Create your custom Digi Bank QR
-                </Text>
-                <Text className="text-center text-gray-500 mt-2">
-                  Enter amount below to create a custom QR for any amount you
-                  want.
-                </Text>
-              </View>
+            <KeyboardAvoidingView
+              behavior={Platform.OS === "ios" ? "padding" : "height"}
+              className="flex-1"
+            >
+              <ScrollView
+                contentContainerStyle={{ flexGrow: 1 }}
+                keyboardShouldPersistTaps="handled"
+              >
+                <View className="flex-1 items-center justify-center -top-8">
+                  <View className="items-center justify-center">
+                    <Text className="text-lg font-bold">
+                      Create your custom Digi Bank QR
+                    </Text>
+                    <Text className="text-center text-gray-500 mt-2">
+                      Enter amount below to create a custom QR for any amount
+                      you want.
+                    </Text>
+                  </View>
 
-              <View className="mt-2 ">
-                <TextInput
-                  placeholder="Enter Amount Here..."
-                  keyboardType="numeric"
-                  className="border border-gray-300 p-3 rounded-md mb-5 mt-5"
-                  style={{ width: "100%" }}
-                />
-              </View>
+                  <View className="mt-2">
+                    <TextInput
+                      placeholder="Enter Amount Here."
+                      keyboardType="numeric"
+                      className="border border-gray-300 p-3 w-40 rounded-md mb-5 mt-5"
+                    />
+                  </View>
 
-              <Button
-                text="Generate QR Now"
-                className=""
-                styles="p-5"
-              />
-            </View>
+                  <Button text="Generate QR Now" styles="p-5" />
+                </View>
+              </ScrollView>
+            </KeyboardAvoidingView>
           )}
         </View>
       )}
