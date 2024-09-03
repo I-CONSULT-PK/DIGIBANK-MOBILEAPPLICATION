@@ -503,7 +503,7 @@ import Beneficiary from "../../assets/Images/Beneficiary.svg";
 import ListSectionCard from "../../assets/Images/ListSectionCard.svg";
 import Footer from "../../components/Footer";
 import Sidebar from "./Account-Setting/Sidebar";
-import { Ionicons } from "@expo/vector-icons";
+import { Ionicons, AntDesign } from "@expo/vector-icons";
 import API_BASE_URL from "../../config";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
@@ -577,7 +577,7 @@ const HomeScreen = () => {
         case "Payment":
           navigation.navigate("SendBeneficiaryMoney");
           break;
-        case "Beneficiary":
+        case "My Payees":
           navigation.navigate("BeneficiaryList", { source: 'beneficiary' });
           break;
         case "Cards":
@@ -591,8 +591,9 @@ const HomeScreen = () => {
           break;
         case "Utilty Pay":
           break;
-        case "Statment":
-          break;
+          case "Statement":
+            navigation.navigate("Account_Statements"); 
+            break;
         case "Discount":
           break;
         default:
@@ -839,13 +840,13 @@ const HomeScreen = () => {
           expanded={isExpanded}
           onPress={onPress}
         >
-          <View className="flex-1 items-center px-5 py-5 mb-5">
+          <View className="flex-1 items-center px-10 py-5 mb-5">
             <ImageBackground
               source={backgroundImage}
-              className="w-full h-[200px] justify-center items-center"
+              className="w-[320] h-[200px] justify-center items-center "
               imageStyle={{ borderRadius: 10 }}
             >
-              <View className="flex-1 items-center px-5 py-16 mt-5">
+              <View className="flex-1 items-center px-4 py-16 mt-5">
                 <Text className="text-black text-2xl font-semibold ">
                   {maskCardNumber(card.cardNumber)}
                 </Text>
@@ -993,7 +994,7 @@ const HomeScreen = () => {
           <View className="flex flex-col justify-center items-center">
             {/* First Row */}
             <View className="flex-row justify-between mb-4">
-              {["Transfer", "Payment", "Beneficiary"].map((item) => (
+              {["Transfer", "Payment", "My Payees"].map((item) => (
                 <TouchableOpacity
                   key={item}
                   onPress={() => handlePressMenu(item)}
@@ -1020,7 +1021,7 @@ const HomeScreen = () => {
                         color={activeItem === item ? "white" : "black"}
                       />
                     )}
-                    {item === "Beneficiary" && (
+                    {item === "My Payees" && (
                       <Beneficiary
                         color={activeItem === item ? "white" : "black"}
                       />
@@ -1173,6 +1174,13 @@ const HomeScreen = () => {
               </View>
             </TouchableOpacity>
           ))}
+          {beneficiaries.length === 0 && (
+            <TouchableOpacity className="w-20 h-20 bg-white m-2 rounded-lg shadow-lg justify-center items-center"
+            onPress={() => navigation.navigate("BankList", { source: 'dashboard' })}>
+              <AntDesign name="pluscircleo" size={22} color={Color.PrimaryWebOrient} />
+              <Text className="font-InterSemiBold text-sm mt-1.5">Add</Text>
+            </TouchableOpacity>
+          )}
         </ScrollView>
         <View className="flex-row justify-between px-5 mt-5">
           <Text className="text-base font-semibold text-black">Quick Pay</Text>
