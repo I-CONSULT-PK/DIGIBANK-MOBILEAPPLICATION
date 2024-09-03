@@ -123,18 +123,18 @@ const Account_Statements = () => {
                   All
                 </Text>
               </TouchableOpacity>
-              <View className="flex-row bg-white shadow-gray-300 rounded-r-md">
-                <TouchableOpacity className="px-4 py-2">
-                  <Text className="text-black font-semibold text-base text-center">
-                    IN
-                  </Text>
-                </TouchableOpacity>
-                <TouchableOpacity className="px-4 py-2">
-                  <Text className="text-black font-semibold text-base text-center">
-                    OUT
-                  </Text>
-                </TouchableOpacity>
-              </View>
+                <View className="flex-row bg-white shadow-gray-300 rounded-r-md">
+                    <TouchableOpacity className="px-4 py-2">
+                    <Text className="text-black font-semibold text-base text-center">
+                        IN
+                    </Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity className="px-4 py-2">
+                    <Text className="text-black font-semibold text-base text-center">
+                        OUT
+                    </Text>
+                    </TouchableOpacity>
+                </View>
             </View>
             <View className="flex-row space-x-2">
               <View>
