@@ -577,7 +577,7 @@ const HomeScreen = () => {
         case "Payment":
           navigation.navigate("SendBeneficiaryMoney");
           break;
-        case "Beneficiary":
+        case "My Payees":
           navigation.navigate("BeneficiaryList", { source: 'beneficiary' });
           break;
         case "Cards":
@@ -591,8 +591,9 @@ const HomeScreen = () => {
           break;
         case "Utilty Pay":
           break;
-        case "Statment":
-          break;
+          case "Statement":
+            navigation.navigate("Account_Statements"); 
+            break;
         case "Discount":
           break;
         default:
@@ -839,13 +840,13 @@ const HomeScreen = () => {
           expanded={isExpanded}
           onPress={onPress}
         >
-          <View className="flex-1 items-center px-5 py-5 mb-5">
+          <View className="flex-1 items-center px-10 py-5 mb-5">
             <ImageBackground
               source={backgroundImage}
-              className="w-full h-[200px] justify-center items-center"
+              className="w-[320] h-[200px] justify-center items-center "
               imageStyle={{ borderRadius: 10 }}
             >
-              <View className="flex-1 items-center px-5 py-16 mt-5">
+              <View className="flex-1 items-center px-4 py-16 mt-5">
                 <Text className="text-black text-2xl font-semibold ">
                   {maskCardNumber(card.cardNumber)}
                 </Text>
@@ -993,7 +994,7 @@ const HomeScreen = () => {
           <View className="flex flex-col justify-center items-center">
             {/* First Row */}
             <View className="flex-row justify-between mb-4">
-              {["Transfer", "Payment", "Beneficiary"].map((item) => (
+              {["Transfer", "Payment", "My Payees"].map((item) => (
                 <TouchableOpacity
                   key={item}
                   onPress={() => handlePressMenu(item)}
@@ -1020,7 +1021,7 @@ const HomeScreen = () => {
                         color={activeItem === item ? "white" : "black"}
                       />
                     )}
-                    {item === "Beneficiary" && (
+                    {item === "My Payees" && (
                       <Beneficiary
                         color={activeItem === item ? "white" : "black"}
                       />

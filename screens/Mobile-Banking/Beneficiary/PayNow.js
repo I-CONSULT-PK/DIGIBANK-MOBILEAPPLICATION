@@ -51,7 +51,7 @@ const PayNow = ({ route }) => {
 
           setTimeout(() => {
             navigation.navigate('Home');
-          }, 1000);
+          }, 1200);
         }
         else {
           if (dto.message) {
@@ -88,10 +88,10 @@ const PayNow = ({ route }) => {
   return (
     <SafeAreaView className="flex-1 bg-[#f9fafc]">
       <ScrollView className="flex-1">
-        <View className="relative w-full mt-8">
+        <View className="relative w-full mt-10">
           <TouchableOpacity
             onPress={() => navigation.goBack()}
-            className="absolute left-3 "
+            className="absolute left-5 "
             style={{ zIndex: 1 }}
           >
             <Entypo name="chevron-left" size={30} color="black" />
@@ -104,11 +104,13 @@ const PayNow = ({ route }) => {
         <Text className="font-semibold mb-1 text-gray-700 mt-7 px-3">
           From Account
         </Text>
-        <View className="flex justify-center px-4">
+        <View className="flex justify-center items-center px-3">
           <View
-            className="flex flex-row overflow-hidden items-center p-3 bg-white rounded-lg shadow-md">
+            className="flex flex-row items-center p-4 bg-white rounded-lg shadow-md w-96 max-w-md"
+            style={styles.container}
+          >
             {/* DIGI BANK section */}
-            <View className="px-3 py-2 text-sm font-medium  text-white bg-cyan-500 rounded-md ">
+            <View className="px-3 py-2 text-sm font-medium  text-white bg-cyan-500 rounded-md h-[54px] w-[65px]">
               <Text className="text-center text-white">DIGI {"\n"}BANK</Text>
             </View>
 
@@ -124,13 +126,13 @@ const PayNow = ({ route }) => {
           </View>
         </View>
         {/* To Account Section */}
-        <View className="flex flex-col text-sm px-4">
+        <View className="flex flex-col text-sm max-w-[328px]">
           <View className="flex flex-col items-start font-semibold text-gray-800">
             <Text className="font-semibold mb-1 text-gray-700 mt-7 px-3">
               To Account
             </Text>
           </View>
-          <View className="flex  overflow-hidden items-center p-4 bg-white rounded-lg shadow-md">
+          <View className="flex flex-col items-center p-5 bg-white rounded-lg  w-96 mt-5 ml-2">
             {/* Account Title Section */}
             <View className="flex flex-col w-full mb-4">
               <View className="flex flex-row items-center justify-between w-full">
@@ -163,13 +165,13 @@ const PayNow = ({ route }) => {
           </View>
         </View>
         {/* Balance and Amount Section */}
-        <View className="flex flex-col text-sm px-4">
+        <View className="flex flex-col text-sm max-w-[328px]">
           <View className="flex flex-col items-start font-semibold text-gray-800">
             <Text className="font-semibold mb-1 text-gray-700 mt-7 px-3">
               Transfer Details
             </Text>
           </View>
-          <View className="flex flex-col items-center p-5 bg-white rounded-lg ml-2">
+          <View className="flex flex-col items-center p-5 bg-white rounded-lg  w-96 mt-5 ml-2">
             {/* Account Title Section */}
             <View className="flex flex-col w-full mb-4">
               <View className="flex flex-row items-center justify-between w-full">
@@ -213,6 +215,12 @@ const PayNow = ({ route }) => {
     </SafeAreaView>
   );
 };
-
+const styles = StyleSheet.create({
+  container: {
+    shadowColor: "#000",
+    elevation: 30,
+    borderColor: Color.PrimaryWebOrient,
+  },
+});
 
 export default PayNow;
