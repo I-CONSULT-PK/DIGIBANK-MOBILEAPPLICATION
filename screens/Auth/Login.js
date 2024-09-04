@@ -301,8 +301,7 @@ const Login = ({ navigation }) => {
                   text="Login"
                   width="w-[100%]"
                   styles="mb-4 py-4"
-                  // onPress={handleLogin}
-                  onPress={() => navigation.navigate("Account_Setting_List")}
+                  onPress={handleLogin}
                   loading={loading}
                 />
 
