@@ -68,6 +68,8 @@ import RegisterFingerPrint from "../RegisterFingerPrint";
 import RegisterFaceDetector from "../RegisterFaceDetector";
 import Scanner from "../../../components/QR/Scanner";
 import Account_Statements from "../../Mobile-Banking/Account-Setting/Account_Statements";
+import OTP_Preference from "../../Mobile-Banking/Account-Setting/OTP_Preference";
+import Account_Setting_List from "../../Mobile-Banking/Account-Setting/Account_Setting_List";
 
 const Stack = createStackNavigator();
 
@@ -142,7 +144,9 @@ const AppNavigator = () => {
         />
 
         <Stack.Screen name="AccountSetting" component={AccountSetting} />
+        <Stack.Screen name="Account_Setting_List" component={Account_Setting_List} />
         <Stack.Screen name="Account_Statements" component={Account_Statements} />
+        <Stack.Screen name="OTP_Preference" component={OTP_Preference} />
 
         <Stack.Screen name="NumberChange" component={NameChange} />
         <Stack.Screen name="PasswordChange" component={PasswordChange} />
