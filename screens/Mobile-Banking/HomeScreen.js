@@ -503,15 +503,17 @@ import Beneficiary from "../../assets/Images/Beneficiary.svg";
 import ListSectionCard from "../../assets/Images/ListSectionCard.svg";
 import Footer from "../../components/Footer";
 import Sidebar from "./Account-Setting/Sidebar";
-import { Ionicons } from "@expo/vector-icons";
+import { Ionicons, AntDesign } from "@expo/vector-icons";
 import API_BASE_URL from "../../config";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import { StatusBar } from "expo-status-bar";
 const backgroundImage = require("../../assets/Images/Cards.png");
 import Toast from "react-native-toast-message";
+
 const HomeScreen = () => {
   const navigation = useNavigation();
+  const [beneficiaries, setBeneficiaries] = useState([]);
   const [expanded, setExpanded] = useState(false);
   const [expanded1, setExpanded1] = useState(false);
   const [isSidebarVisible, setSidebarVisible] = useState(false);
@@ -525,6 +527,7 @@ const HomeScreen = () => {
     accountNumber: "",
     accountType: "",
   });
+
   const toggleSidebar = () => {
     setSidebarVisible(!isSidebarVisible);
   };
@@ -533,7 +536,9 @@ const HomeScreen = () => {
     Clipboard.setString(text);
     alert("Copied to clipboard");
   };
+
   const [isVisible, setIsVisible] = useState(true);
+
   useFocusEffect(
     useCallback(() => {
       fetchCardData();
@@ -572,7 +577,7 @@ const HomeScreen = () => {
         case "Payment":
           navigation.navigate("SendBeneficiaryMoney");
           break;
-        case "Beneficiary":
+        case "My Payees":
           navigation.navigate("BeneficiaryList", { source: 'beneficiary' });
           break;
         case "Cards":
@@ -586,8 +591,9 @@ const HomeScreen = () => {
           break;
         case "Utilty Pay":
           break;
-        case "Statment":
-          break;
+          case "Statement":
+            navigation.navigate("Account_Statements"); 
+            break;
         case "Discount":
           break;
         default:
@@ -687,7 +693,7 @@ const HomeScreen = () => {
           Alert.alert(
             "Error",
             error.response.data.message ||
-              "Bad request. Please check your input."
+            "Bad request. Please check your input."
           );
         } else {
           Alert.alert("Error", "Card not found");
@@ -702,6 +708,75 @@ const HomeScreen = () => {
       }
     }
   };
+
+  const fetchBeneficiaries = async () => {
+    try {
+      const customerId = await AsyncStorage.getItem('customerId');
+      const bearerToken = await AsyncStorage.getItem('token');
+
+      if (customerId && bearerToken) {
+        const response = await axios.get(`${API_BASE_URL}/v1/beneficiary/getAllBeneficiary?customerId=${customerId}&flag=false`, {
+          headers: {
+            'Authorization': `Bearer ${bearerToken}`
+          }
+        });
+
+        const dto = response.data;
+
+        if (dto && dto.success && dto.data) {
+          const transformedBeneficiaries = dto.data.map(item => ({
+            ...item,
+            liked: item.flag
+          }));
+
+          // Sort beneficiaries first by flag (true first) and within that by id in descending order
+          transformedBeneficiaries.sort((a, b) => {
+            if (b.flag === a.flag) {
+              return b.id - a.id;
+            }
+            return b.flag - a.flag;
+          });
+
+          setBeneficiaries(transformedBeneficiaries);
+        } else {
+          if (dto.message) {
+            Alert.alert('Error', dto.message);
+          } else if (dto.errors && dto.errors.length > 0) {
+            Alert.alert('Error', dto.errors.join('\n'));
+          }
+        }
+      } else {
+        Alert.alert('Error', 'Unexpected error occurred. Try again later!');
+      }
+    } catch (error) {
+      if (error.response) {
+        const statusCode = error.response.status;
+
+        if (statusCode === 404) {
+          Alert.alert('Error', 'Server timed out. Try again later!');
+        } else if (statusCode === 503) {
+          Alert.alert('Error', 'Service unavailable. Please try again later.');
+        } else if (statusCode === 400) {
+          Alert.alert('Error', error.response.data.data.errors[0]);
+        } else {
+          Alert.alert('Error', error.message);
+        }
+      } else if (error.request) {
+        Alert.alert('Error', 'No response from the server. Please check your connection.');
+      } else {
+        Alert.alert('Error', error.message);
+      }
+    }
+  };
+
+  const getColorForIndex = (index) => {
+    const colors = ["#3b82f6", "#FECC81", "#9683E4", "#5CCAA9", "#yourColor"];
+    return colors[index % colors.length];
+  };
+
+  useEffect(() => {
+    fetchBeneficiaries();
+  }, []);
 
   useEffect(() => {
     fetchCardData();
@@ -765,13 +840,13 @@ const HomeScreen = () => {
           expanded={isExpanded}
           onPress={onPress}
         >
-          <View className="flex-1 items-center px-5 py-5 mb-5">
+          <View className="flex-1 items-center px-10 py-5 mb-5">
             <ImageBackground
               source={backgroundImage}
-              className="w-full h-[200px] justify-center items-center"
+              className="w-[320] h-[200px] justify-center items-center "
               imageStyle={{ borderRadius: 10 }}
             >
-              <View className="flex-1 items-center px-5 py-16 mt-5">
+              <View className="flex-1 items-center px-4 py-16 mt-5">
                 <Text className="text-black text-2xl font-semibold ">
                   {maskCardNumber(card.cardNumber)}
                 </Text>
@@ -796,6 +871,7 @@ const HomeScreen = () => {
 
   return (
     <SafeAreaView style={styles.container} className="h-full bg-[#f9fafc]">
+
       <Modal
         transparent={true}
         animationType="none"
@@ -829,7 +905,8 @@ const HomeScreen = () => {
           </Animated.View>
         </View>
       </Modal>
-      <View className="flex flex-row items-center justify-between px-4 pt-6 pb-3">
+
+      <View className="flex flex-row items-center justify-between px-5 py-2 mb-2 shadow-md bg-white border-b-[1px] border-gray-100">
         {/* Menu Icon */}
         <Entypo
           name="menu"
@@ -917,7 +994,7 @@ const HomeScreen = () => {
           <View className="flex flex-col justify-center items-center">
             {/* First Row */}
             <View className="flex-row justify-between mb-4">
-              {["Transfer", "Payment", "Beneficiary"].map((item) => (
+              {["Transfer", "Payment", "My Payees"].map((item) => (
                 <TouchableOpacity
                   key={item}
                   onPress={() => handlePressMenu(item)}
@@ -944,7 +1021,7 @@ const HomeScreen = () => {
                         color={activeItem === item ? "white" : "black"}
                       />
                     )}
-                    {item === "Beneficiary" && (
+                    {item === "My Payees" && (
                       <Beneficiary
                         color={activeItem === item ? "white" : "black"}
                       />
@@ -1063,98 +1140,47 @@ const HomeScreen = () => {
         </View>
         <View className="flex-row justify-between px-5">
           <Text className="text-base font-semibold text-black">My Payees</Text>
-          <Text className="text-xs font-medium text-gray-800 underline">
-            View All
-          </Text>
+          <TouchableOpacity onPress={() => navigation.navigate("BeneficiaryList", { source: 'dashboard' })}>
+            <Text className="text-xs font-medium text-gray-800 underline">View All</Text>
+          </TouchableOpacity>
         </View>
         <ScrollView
-          className="pt-1"
+          className="pt-1 mx-2"
           horizontal
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={styles.scrollContainer}
         >
-          <View className="w-24 h-36 bg-white m-2 rounded-lg shadow-lg justify-center items-center">
-            <View
-              className="w-20 h-20 bg-primary mt-3 rounded-lg shadow-lg justify-center items-center"
-              style={{ backgroundColor: "#3b82f6" }}
+          {beneficiaries.map((beneficiary, index) => (
+            <TouchableOpacity
+              key={index}
+              className="w-24 h-36 bg-white m-2 rounded-lg shadow-lg justify-center items-center"
+              onPress={() => navigation.navigate('SendFromAccount', { beneObj: beneficiary, source: 'dashboard' })}
             >
-              <Text className="text-center text-4xl text-white font-bold">
-                M
-              </Text>
-            </View>
-            <View className="font-medium">
-              <Text className="text-sm text-center font-bold mt-1">Maha</Text>
-              <Text className="text-xs text-gray-600 font-semibold">
-                Meezan Bank
-              </Text>
-            </View>
-          </View>
-          <View className="w-24 h-36 bg-white m-2 rounded-lg shadow-lg justify-center items-center">
-            <View
-              className="w-20 h-20 bg-primary mt-3 rounded-lg shadow-lg justify-center items-center"
-              style={{ backgroundColor: "#FECC81" }}
-            >
-              <Text className="text-center font text-3xl text-white font-bold">
-                F
-              </Text>
-            </View>
-            <View className="font-medium">
-              <Text className="text-sm text-center font-bold mt-1">Faiz</Text>
-              <Text className="text-xs text-center text-gray-600 font-semibold">
-                Bank Alfalah
-              </Text>
-            </View>
-          </View>
-          <View className="w-24 h-36 bg-white m-2 rounded-lg shadow-lg justify-center items-center">
-            <View
-              className="w-20 h-20 bg-primary mt-3 rounded-lg shadow-lg justify-center items-center"
-              style={{ backgroundColor: "#9683E4" }}
-            >
-              <Text className="text-center font text-3xl text-white font-bold">
-                B
-              </Text>
-            </View>
-            <View className="font-medium">
-              <Text className="text-sm text-center font-bold mt-1">Bushra</Text>
-              <Text className="text-xs text-center text-gray-600 font-semibold">
-                Bank Alfalah
-              </Text>
-            </View>
-          </View>
-          <View className="w-24 h-36 bg-white m-2 rounded-lg shadow-lg justify-center items-center">
-            <View
-              className="w-20 h-20 bg-primary mt-3 rounded-lg shadow-lg justify-center items-center"
-              style={{ backgroundColor: "#5CCAA9" }}
-            >
-              <Text className="text-center font text-3xl text-white font-bold">
-                T
-              </Text>
-            </View>
-            <View className="font-medium">
-              <Text className="text-sm text-center font-bold mt-1">Tasbih</Text>
-              <Text className="text-xs text-center text-gray-600 font-semibold">
-                Bank HBL
-              </Text>
-            </View>
-          </View>
-          <View className="w-24 h-36 bg-white m-2 rounded-lg shadow-lg justify-center items-center">
-            <View
-              className="w-20 h-20 bg-primary mt-3 rounded-lg shadow-lg justify-center items-center"
-              style={{ backgroundColor: Color.PrimaryWebOrient }}
-            >
-              <Text className="text-center font text-3xl text-white font-bold">
-                A
-              </Text>
-            </View>
-            <View className="font-medium">
-              <Text className="text-sm text-center font-bold mt-1">
-                Abdullah
-              </Text>
-              <Text className="text-xs text-center text-gray-600 font-semibold">
-                Askari Bank
-              </Text>
-            </View>
-          </View>
+              <View
+                className="w-20 h-20 bg-primary mt-3 rounded-lg shadow-lg justify-center items-center"
+                style={{ backgroundColor: getColorForIndex(index) }} // Optional: You can create a function to get different colors
+              >
+                <Text className="text-center text-3xl text-white font-bold">
+                  {beneficiary.beneficiaryAlias.charAt(0).toUpperCase()}
+                </Text>
+              </View>
+              <View className="font-medium">
+                <Text className="text-sm text-center font-bold mt-1">
+                  {beneficiary.beneficiaryAlias}
+                </Text>
+                <Text className="text-xs text-center text-gray-600 font-semibold">
+                  {beneficiary.beneficiaryBankName}
+                </Text>
+              </View>
+            </TouchableOpacity>
+          ))}
+          {beneficiaries.length === 0 && (
+            <TouchableOpacity className="w-20 h-20 bg-white m-2 rounded-lg shadow-lg justify-center items-center"
+            onPress={() => navigation.navigate("BankList", { source: 'dashboard' })}>
+              <AntDesign name="pluscircleo" size={22} color={Color.PrimaryWebOrient} />
+              <Text className="font-InterSemiBold text-sm mt-1.5">Add</Text>
+            </TouchableOpacity>
+          )}
         </ScrollView>
         <View className="flex-row justify-between px-5 mt-5">
           <Text className="text-base font-semibold text-black">Quick Pay</Text>
@@ -1163,7 +1189,7 @@ const HomeScreen = () => {
           </Text>
         </View>
         <ScrollView
-          className="pt-1"
+          className="pt-1 mx-2"
           horizontal
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={styles.scrollContainer}
@@ -1242,21 +1268,22 @@ const HomeScreen = () => {
         <List.Section className="bg-white rounded-xl mx-4 mt-4 ">
           {cards.filter((card) => card.isCreditCard).length > 0
             ? cards
-                .filter((card) => card.isCreditCard)
-                .map((card) => renderCardSection(card, expanded, handlePress))
+              .filter((card) => card.isCreditCard)
+              .map((card) => renderCardSection(card, expanded, handlePress))
             : renderNoDataMessage("Credit")}
         </List.Section>
       </ScrollView>
       <Footer />
 
       <StatusBar
-        backgroundColor="transparent"
+        backgroundColor="#ffffff"
         style="dark"
         translucent={true}
       />
     </SafeAreaView>
   );
 };
+
 const styles = StyleSheet.create({
   box: {
     shadowColor: "#000",
@@ -1288,4 +1315,5 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
 });
+
 export default HomeScreen;

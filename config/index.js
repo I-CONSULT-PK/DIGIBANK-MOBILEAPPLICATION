@@ -4,7 +4,7 @@ let API_BASE_URL;
 
 switch (ENV) {
   case 'SITE':
-    API_BASE_URL = SITE;
+    API_BASE_URL = ENV;
     break;
   case 'IE':
     API_BASE_URL = IE;

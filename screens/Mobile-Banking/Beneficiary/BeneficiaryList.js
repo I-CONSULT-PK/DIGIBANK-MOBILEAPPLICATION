@@ -48,25 +48,30 @@ const BeneficiaryList = ({ navigation, route }) => {
     try {
       const customerId = await AsyncStorage.getItem('customerId');
       const bearerToken = await AsyncStorage.getItem('token');
-  
+
       if (customerId && bearerToken) {
         const response = await axios.get(`${API_BASE_URL}/v1/beneficiary/getAllBeneficiary?customerId=${customerId}&flag=false`, {
           headers: {
             'Authorization': `Bearer ${bearerToken}`
           }
         });
-  
+
         const dto = response.data;
-  
+
         if (dto && dto.success && dto.data) {
           const transformedBeneficiaries = dto.data.map(item => ({
             ...item,
             liked: item.flag
           }));
-  
-          // Sort beneficiaries: those with `flag` set to true will be first
-          transformedBeneficiaries.sort((a, b) => (b.flag ? 1 : 0) - (a.flag ? 1 : 0));
-  
+
+          // Sort beneficiaries first by flag (true first) and within that by id in descending order
+          transformedBeneficiaries.sort((a, b) => {
+            if (b.flag === a.flag) {
+              return b.id - a.id;
+            }
+            return b.flag - a.flag;
+          });
+
           setBeneficiaries(transformedBeneficiaries);
         } else {
           if (dto.message) {
@@ -81,7 +86,7 @@ const BeneficiaryList = ({ navigation, route }) => {
     } catch (error) {
       if (error.response) {
         const statusCode = error.response.status;
-  
+
         if (statusCode === 404) {
           Alert.alert('Error', 'Server timed out. Try again later!');
         } else if (statusCode === 503) {
@@ -98,7 +103,6 @@ const BeneficiaryList = ({ navigation, route }) => {
       }
     }
   };
-  
 
   const handleUpdateBeneficiary = async (nickname, mobileNumber, beneId, beneficiary) => {
     if (nickname !== beneficiary.beneficiaryAlias || mobileNumber !== beneficiary.mobileNumber) {
@@ -292,10 +296,6 @@ const BeneficiaryList = ({ navigation, route }) => {
     }
   };
 
-  const handleNamePress = (id) => {
-    navigation.navigate('SendFromAccount', { beneficiaryId: id });
-  };
-
   const filteredBeneficiaries = beneficiaries.filter((beneficiary) =>
     beneficiary.beneficiaryAlias.toLowerCase().includes(searchQuery.toLowerCase())
   );
@@ -310,6 +310,7 @@ const BeneficiaryList = ({ navigation, route }) => {
               onPress={() => {
                 source === 'beneficiary' && navigation.navigate('Home');
                 source === 'payment' && navigation.goBack();
+                source === 'dashboard' && navigation.navigate('Home');
               }}
               className="absolute left-5"
             >
@@ -344,9 +345,9 @@ const BeneficiaryList = ({ navigation, route }) => {
               </View>
             </TouchableOpacity>
 
-            {source !== 'payment' && (<View className="my-3 w-full border-b border-gray-300" />)}
+            {(source !== 'payment' && source !== 'dashboard') && (<View className="my-3 w-full border-b border-gray-300" />)}
 
-            {source !== 'payment' && (<TouchableOpacity
+            {(source !== 'payment' && source !== 'dashboard') && (<TouchableOpacity
               className="flex-row items-center"
               onPress={() => navigation.navigate("BankList")}
             >
@@ -364,8 +365,8 @@ const BeneficiaryList = ({ navigation, route }) => {
               </View>
             </TouchableOpacity>)}
 
-            {source !== 'payment' && (<View className="mt-3 mb-4 w-full border-b border-gray-300" />)}
-            {source === 'payment' && (<View className="my-4 w-full border-b border-gray-300" />)}
+            {(source !== 'payment' && source !== 'dashboard') && (<View className="mt-3 mb-4 w-full border-b border-gray-300" />)}
+            {(source === 'payment' || source === 'dashboard') && (<View className="my-4 w-full border-b border-gray-300" />)}
 
             {filteredBeneficiaries.map((beneficiary) => (
               <React.Fragment key={beneficiary.id}>
@@ -381,7 +382,6 @@ const BeneficiaryList = ({ navigation, route }) => {
                   payment={beneficiary.payment}
                   onPress1={() => handleLikeToggle(beneficiary.id)}
                   onPress2={() => handleRemoveBeneficiary(beneficiary.id)}
-                  onPressName={() => handleNamePress(beneficiary.id)}
                   toggleModal={() => toggleModal(beneficiary)}
                   beneficiary={true}
                   navigation={navigation}

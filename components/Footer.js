@@ -86,7 +86,7 @@ const Footer = () => {
           style={{
             backgroundColor: Color.PrimaryWebOrient,
             borderColor: Color.PrimaryWebOrient,
-            paddingTop: selected === "qrcode" ? 5 : 8,
+            paddingTop: 5,
           }}
           onPress={() => {
             setSelected("qrcode");

@@ -34,7 +34,6 @@ const Fatch_Acc_Beneficiary = ({ route }) => {
           const payload = {
             beneficiaryAlias: nickname,
             beneficiaryName: details.accountTitle,
-            accountType: "Current",
             accountNumber: details.accountNumber,
             beneficiaryBankName: details.bankName,
             mobileNumber: mobileNumber || "",
@@ -103,7 +102,7 @@ const Fatch_Acc_Beneficiary = ({ route }) => {
               <Entypo name="chevron-left" size={30} color="black" />
             </TouchableOpacity>
             <Text className="text-center font-InterBold text-2xl">
-              Send Money
+              Add Beneficiary
             </Text>
           </View>
         </View>
