@@ -67,7 +67,7 @@ import ChooseSecurity from "../ChooseSecurity";
 import RegisterFingerPrint from "../RegisterFingerPrint";
 import RegisterFaceDetector from "../RegisterFaceDetector";
 import Scanner from "../../../components/QR/Scanner";
-
+import SelectLanguage from "../../Mobile-Banking/Account-Setting/SelectLanguage";
 const Stack = createStackNavigator();
 
 const AppNavigator = () => {
@@ -102,6 +102,7 @@ const AppNavigator = () => {
         <Stack.Screen name="ChooseSecurity" component={ChooseSecurity} />
         <Stack.Screen name="RegisterFingerPrint" component={RegisterFingerPrint} />
         <Stack.Screen name="RegisterFaceDetector" component={RegisterFaceDetector} />
+        <Stack.Screen name="SelectLanguage" component={SelectLanguage} />
         {/* Easy-Cash Module */}
         <Stack.Screen
           name="AvailCashonCreditCard"

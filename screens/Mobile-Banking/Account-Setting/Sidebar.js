@@ -3,10 +3,10 @@ import {
   ScrollView,
   Text,
   View,
-  StyleSheet,
   TouchableOpacity,
   Alert,
   Clipboard,
+  I18nManager,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { Entypo, Ionicons } from "@expo/vector-icons";
@@ -14,20 +14,16 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Color } from "../../../GlobalStyles";
 
-// Define menu items
-const menuItems = [
-  { title: "Person Management", icon: "person" },
-  { title: "Transfer", icon: "swap-horizontal" },
-  { title: "Scan to Pay", icon: "qr-code" },
-  { title: "Utilities", icon: "cog" },
-  { title: "Quick Loan", icon: "cash" },
-  { title: "Statement", icon: "document-text" },
-  { title: "Self Top-Up", icon: "cash" },
-  { title: "Locator", icon: "location-outline" },
-  { title: "Contact Us", icon: "chatbubbles-outline" },
-  { title: "Refer", icon: "people" },
-  { title: "Logout", icon: "log-out" },
-];
+// Import translation and icon mapping files
+import { enData } from "./translations/en";
+import { urData } from "./translations/ur";
+
+// Define your language options
+const languageOptions = {
+  en: "English",
+  ur: "اردو",
+  // Add more languages here
+};
 
 const Sidebar = () => {
   const [userDetails, setUserDetails] = useState({
@@ -36,6 +32,7 @@ const Sidebar = () => {
     accountNumber: "",
     accountType: "",
   });
+  const [language, setLanguage] = useState("en");
 
   const navigation = useNavigation();
 
@@ -47,7 +44,7 @@ const Sidebar = () => {
         const accountNumber =
           (await AsyncStorage.getItem("accountNumber")) || "1234567890";
         const accountType =
-          (await AsyncStorage.getItem("accountType")) || "Checking";
+          (await AsyncStorage.getItem("accountType")) || "N/A";
 
         setUserDetails({
           firstName,
@@ -63,8 +60,17 @@ const Sidebar = () => {
     loadUserDetails();
   }, []);
 
+  const handleLanguageSelect = (selectedLanguage) => {
+    setLanguage(selectedLanguage);
+    I18nManager.forceRTL(selectedLanguage === "ur");
+  };
+
   const handlePress = async (item) => {
-    if (item.title === "Logout") {
+    const logoutTitle = language === "en"
+      ? enData.translations.menuItems.find(menuItem => menuItem.title === "Logout").title
+      : urData.translations.menuItems.find(menuItem => menuItem.title === "لاگ آؤٹ").title;
+
+    if (item.title === logoutTitle) {
       try {
         // Retrieve and log all keys and their values
         const keys = await AsyncStorage.getAllKeys();
@@ -85,18 +91,42 @@ const Sidebar = () => {
       } catch (error) {
         console.error("Error clearing storage", error);
       }
+    } else if (item.title === translations.menuItems.find(menuItem => menuItem.title === "Change Language").title) {
+      // Navigate to the SelectLanguage screen
+      navigation.navigate("SelectLanguage");
     } else {
       console.log(item.title);
     }
   };
 
+  // Select translations and icon mappings based on current language
+  const { translations, iconMapping } = language === "en" ? enData : urData;
+  const menuItems = translations.menuItems;
+
   return (
-    <SafeAreaView className="h-full bg-[#f9fafc]">
+    <SafeAreaView className="flex-1 bg-gray-50">
       <ScrollView>
-        <View className="py-5 px-5 border-b border-gray-300">
-          <Text className="text-slate-500 text-lg mb-0">Welcome</Text>
-          <View className="flex-row items-center justify-between">
-            <Text className="font-bold text-2xl mb-0">
+        <View className="px-5 border-b border-gray-300">
+          <View
+            className={`flex-row items-center justify-between ${
+              I18nManager.isRTL ? "flex-row-reverse" : ""
+            }`}
+          >
+            <Text
+              className={`text-gray-500 text-lg flex-1 ${
+                I18nManager.isRTL ? "text-right" : "text-left"
+              }`}
+            >
+              {translations.welcome}
+            </Text>
+          </View>
+
+          <View
+            className={`flex-row items-center justify-between ${
+              I18nManager.isRTL ? "flex-row-reverse" : ""
+            }`}
+          >
+            <Text className="font-bold text-2xl mb-1">
               {`${userDetails.firstName || ""} ${
                 userDetails.lastName || ""
               }`.trim() || "User"}
@@ -107,35 +137,65 @@ const Sidebar = () => {
               style={{ color: Color.PrimaryWebOrient }}
             />
           </View>
-          <View className="flex flex-row items-center py-1 ">
+          <View className="flex flex-row items-center py-1">
             <Text className=" mb-0" style={{ color: Color.PrimaryWebOrient }}>
               A/C No: {userDetails.accountNumber || "N/A"}
             </Text>
-            <TouchableOpacity>
-              <Ionicons
-                name="copy"
-                size={20}
-                style={[styles.icon, { color: "black" }]}
-              />
+            <TouchableOpacity onPress={() => Clipboard.setString(userDetails.accountNumber)}>
+              <View className="ml-3 text-black">
+                <Ionicons name="copy" size={20} />
+              </View>
             </TouchableOpacity>
           </View>
-          <Text className="text-slate-500 mb-0">
+          <Text className="text-gray-500">
             {userDetails.accountType || "N/A"}
           </Text>
+          <View
+            className={`flex-row items-center justify-center mb-4 ${
+              I18nManager.isRTL ? "flex-row-reverse" : ""
+            }`}
+          >
+            {Object.keys(languageOptions).map((lang) => (
+              <TouchableOpacity
+                key={lang}
+                className={`p-3 mt-3 ${
+                  language === lang ? "bg-primary" : "bg-white"
+                } rounded-l-lg flex-1`}
+                onPress={() => handleLanguageSelect(lang)}
+                style={{
+                  width: 100,
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <Text
+                  style={{
+                    textAlign: "center",
+                    fontWeight: "bold",
+                    color: language === lang ? "white" : "black",
+                  }}
+                >
+                  {languageOptions[lang]}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </View>
         </View>
         {menuItems.map((item, index) => (
           <TouchableOpacity
-            className="flex flex-row items-center py-3.5 px-5"
+            className={`flex-row items-center py-3 px-5 ${
+              I18nManager.isRTL ? "flex-row-reverse" : ""
+            }`}
             key={index}
             onPress={() => handlePress(item)}
           >
             <Ionicons
-              name={item.icon}
+              name={iconMapping[item.icon]}
               size={24}
               color={Color.Text}
-              style={styles.icon}
+              style={{ marginHorizontal: 10, color: Color.PrimaryWebOrient }}
             />
-            <Text className="flex-1 text-md">{item.title}</Text>
+            <Text className="text-md flex-1">{item.title}</Text>
             <Entypo
               name="chevron-right"
               size={24}
@@ -147,15 +207,5 @@ const Sidebar = () => {
     </SafeAreaView>
   );
 };
-
-const styles = StyleSheet.create({
-  contentContainer: {
-    flexGrow: 1,
-  },
-  icon: {
-    marginHorizontal: 10,
-    color: Color.PrimaryWebOrient,
-  },
-});
 
 export default Sidebar;

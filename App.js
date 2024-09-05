@@ -71,6 +71,7 @@ import Fatch_Acc_Beneficiary from "./screens/Mobile-Banking/Beneficiary/Fatch_Ac
 import ChooseSecurity from "./screens/Auth/ChooseSecurity";
 import RegisterFingerPrint from "./screens/Auth/RegisterFingerPrint";
 import RegisterFaceDetector from "./screens/Auth/RegisterFaceDetector";
+import SelectLanguage from "./screens/Mobile-Banking/Account-Setting/SelectLanguage";
 
 const Stack = createNativeStackNavigator();
 
@@ -401,6 +402,11 @@ export default function App() {
         <Stack.Screen
           name="Fatch_Acc_Beneficiary"
           component={Fatch_Acc_Beneficiary}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="SelectLanguage"
+          component={SelectLanguage}
           options={{ headerShown: false }}
         />
       </Stack.Navigator>

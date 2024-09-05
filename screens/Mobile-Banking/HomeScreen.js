@@ -737,7 +737,7 @@ const HomeScreen = () => {
     const isDebitCard = !card.isCreditCard;
 
     return (
-      <List.AccordionGroup className="my-2">
+      <List.AccordionGroup className="my-2" key={card.cardId}>
         <List.Accordion
           id={card.cardId}
           key={card.cardId}
