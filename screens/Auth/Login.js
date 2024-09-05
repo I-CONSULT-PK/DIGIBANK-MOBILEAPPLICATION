@@ -206,7 +206,7 @@ const Login = ({ navigation }) => {
       >
         <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
           <View className="flex-row items-center p-4 mt-2">
-            <TouchableOpacity onPress={() => navigation.goBack()}>
+            <TouchableOpacity onPress={() => navigation.navigate("StartScreen")}>
               <AntDesign name="arrowleft" size={20} color="white" />
             </TouchableOpacity>
             <Text className="text-white font-semibold text-lg ml-4 font-InterSemiBold">

@@ -73,6 +73,9 @@ import RegisterFingerPrint from "./screens/Auth/RegisterFingerPrint";
 import RegisterFaceDetector from "./screens/Auth/RegisterFaceDetector";
 import Account_Statements from "./screens/Mobile-Banking/Account-Setting/Account_Statements";
 import SelectLanguage from "./screens/Mobile-Banking/Account-Setting/SelectLanguage";
+import OTP_Preference from "./screens/Mobile-Banking/Account-Setting/OTP_Preference";
+import Account_Setting_List from "./screens/Mobile-Banking/Account-Setting/Account_Setting_List";
+
 const Stack = createNativeStackNavigator();
 
 export default function App() {
@@ -302,6 +305,16 @@ export default function App() {
           options={{ headerShown: false }}
         />
         <Stack.Screen
+          name="OTP_Preference"
+          component={OTP_Preference}
+          options={{ headerShown: false }}
+        />
+          <Stack.Screen
+              name="Account_Setting_List"
+              component={Account_Setting_List}
+              options={{ headerShown: false }}
+            />
+        <Stack.Screen
           name="History"
           component={History}
           options={{ headerShown: false }}
@@ -457,6 +470,16 @@ export default function App() {
             <Stack.Screen
               name="ForgetUserName"
               component={ForgetUserName}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="OTP_Preference"
+              component={OTP_Preference}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="Account_Setting_List"
+              component={Account_Setting_List}
               options={{ headerShown: false }}
             />
             <Stack.Screen
