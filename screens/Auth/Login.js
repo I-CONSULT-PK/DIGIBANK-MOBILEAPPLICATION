@@ -7,7 +7,6 @@ import {
   StyleSheet,
   View,
   Alert,
-  TextInput,
   Modal,
   Image,
   KeyboardAvoidingView,
@@ -35,7 +34,7 @@ import API_BASE_URL from '../../config';
 import * as LocalAuthentication from 'expo-local-authentication'; // Import for Expo
 import * as Device from 'expo-device';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { v4 as uuidv4 } from 'uuid'; // If you are using UUID for visitor ID generation
+// import { v4 as uuidv4 } from 'uuid'; // If you are using UUID for visitor ID generation
  
 const Login = ({ navigation }) => {
   const [form, setForm] = useState({ username: '', password: '' });
@@ -134,11 +133,11 @@ const Login = ({ navigation }) => {
       try {
         const result = await LocalAuthentication.authenticateAsync();
         if (result.success) {
-          const newVisitorId = uuidv4(); // Generate a new unique ID
-          setVisitorId(newVisitorId); // Set the visitor ID in state
+          // const newVisitorId = uuidv4(); // Generate a new unique ID
+          // setVisitorId(newVisitorId); // Set the visitor ID in state
 
           // Store the visitor ID locally
-          await AsyncStorage.setItem("visitorId", newVisitorId);
+          // await AsyncStorage.setItem("visitorId", newVisitorId);
 
           setIsEnabled(true);
           setBiometricData({
@@ -146,7 +145,7 @@ const Login = ({ navigation }) => {
             modelName: Device.modelName,
             osName: Device.osName,
             osVersion: Device.osVersion,
-            visitorId: newVisitorId,
+            // visitorId: newVisitorId,
           });
 
           // Console log the device and biometric info
@@ -155,7 +154,7 @@ const Login = ({ navigation }) => {
           console.log("Model Name:", Device.modelName);
           console.log("OS Name:", Device.osName);
           console.log("OS Version:", Device.osVersion);
-          console.log("Visitor ID:", newVisitorId);
+          // console.log("Visitor ID:", newVisitorId);
 
           navigation.navigate('Home');
         } else {
@@ -163,6 +162,7 @@ const Login = ({ navigation }) => {
         }
       } catch (error) {
         Alert.alert("Error", error.message);
+        console.log( error.message);
       }
     } else {
       setIsEnabled(false);

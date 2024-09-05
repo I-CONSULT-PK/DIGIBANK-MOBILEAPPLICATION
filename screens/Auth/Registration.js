@@ -301,10 +301,8 @@ const Registration = ({ route }) => {
           );
           const dto = response.data;
 
-          if (dto && dto.success && dto.data) {
-            Alert.alert("Success", dto.message + "hereeee");
-
-            console.log("I'm hereeeeeee!")
+          if (dto && dto.success) {
+            Alert.alert("Success", dto.message);
 
             setTimeout(() => {
               if (hasBio || hasFaceDetection) {
@@ -313,8 +311,6 @@ const Registration = ({ route }) => {
                 navigation.navigate("Login");
               }
             }, 1000);
-
-            console.log("I'm here!")
           } else {
             if (dto.message) {
               Alert.alert("Error", dto.message);

@@ -10,7 +10,7 @@ import {
 import { useNavigation } from "@react-navigation/native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
-import AntDesign from "@expo/vector-icons/AntDesign";
+import { Entypo } from "@expo/vector-icons";
 import { Color } from "../../../GlobalStyles";
 
 const { width } = Dimensions.get("window");
@@ -22,91 +22,98 @@ const Account_Setting_List = () => {
       id: 1,
       title: "Add Account",
       image: require("../../../assets/Add Account.png"),
+      link: "AddAccountScreen",
     },
     {
       id: 2,
       title: "Create Login PIN",
       image: require("../../../assets/Change login pin.png"),
+      link: "CreatePinScreen",
     },
     {
       id: 3,
       title: "Change Password",
       image: require("../../../assets/Change Password.png"),
+      link: "ChangePasswordScreen",
     },
     {
       id: 4,
       title: "Limit Management",
       image: require("../../../assets/Limit Management.png"),
+      link: "LimitManagementScreen",
     },
     {
       id: 5,
       title: "OTP Preference",
       image: require("../../../assets/OTP Preference.png"),
+      link: "OTP_Preference",
     },
     {
       id: 6,
       title: "User Activity",
-      image: require("../../../assets/Add Account.png"),
+      image: require("../../../assets/User Activity.png"),
+      link: "UserActivityScreen",
     },
     {
       id: 7,
       title: "Update Profile",
       image: require("../../../assets/Update Profile.png"),
+      link: "UpdateProfileScreen",
     },
     {
       id: 8,
       title: "Change Login pin",
       image: require("../../../assets/Change login pin.png"),
+      link: "ChangeLoginPinScreen",
     },
     {
       id: 9,
       title: "De-Activate PIN",
       image: require("../../../assets/De-Activate Login PIN.png"),
+      link: "DeactivatePinScreen",
     },
     {
       id: 10,
-      title: "Bio Registration",
+      title: "Enable Biometric ",
       image: require("../../../assets/Bio Registration.png"),
+      link: "Bio RegistrationScreen",
     },
   ];
 
-  // Define a consistent padding value for content alignment
   const horizontalPadding = 16;
 
   return (
     <SafeAreaView className="flex-1">
       <View className="flex-1 bg-white">
-        <LinearGradient
-          colors={[Color.PrimaryWebOrient, Color.PrimaryWebOrientLayer2]}
-          style={{ paddingBottom: 12 }}
-        >
-          <View className="flex-row items-center px-4 mt-2">
-            <TouchableOpacity onPress={() => navigation.navigate("Home")}>
-              <AntDesign name="arrowleft" size={20} color="white" />
-            </TouchableOpacity>
-            <Text className="text-white text-center font-semibold text-lg flex-1">
-              Setting
-            </Text>
-          </View>
-        </LinearGradient>
+      <View className="h-24" style={{backgroundColor: Color.PrimaryWebOrient}}>
+        <View className="flex-row items-center justify-center h-full">
+          <TouchableOpacity
+            onPress={() => navigation.goBack()}
+            className="absolute left-5"
+          >
+            <Entypo name="chevron-left" size={25} color="white" />
+          </TouchableOpacity>
+          <Text className="text-white text-lg font-bold">Settings</Text>
+        </View>
+      </View>
 
         <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
           <View className="flex-1 mt-2">
-            <View className="flex-row flex-wrap">
+            <View className="flex-row flex-wrap justify-center">
               {options.map((option) => (
                 <TouchableOpacity
                   key={option.id}
-                  onPress={() => console.log(option.title)}
+                  onPress={() => navigation.navigate(option.link)}
                   className="p-2"
                   style={{ width: (width - horizontalPadding * 1.2) / 2 }}
                 >
-                  <View className="bg-white rounded-lg p-4 shadow-lg flex-row items-center">
+                  <View className="bg-white rounded-lg p-2 shadow-lg  shadow-slate-400 flex-row items-center h-[55px]">
                     <Image
                       source={option.image}
-                      className="w-10 h-10 mr-2"
+                      className="w-8 h-8 mr-2"
                       resizeMode="contain"
                     />
-                    <Text className="text-base font-normal">
+                    <Text className="text-[12px] font-normal flex-shrink flex-grow w-36">
                       {option.title}
                     </Text>
                   </View>

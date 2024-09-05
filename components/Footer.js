@@ -5,7 +5,6 @@ import {
   Entypo,
   Feather,
   MaterialCommunityIcons,
-  FontAwesome,
   AntDesign,
 } from "@expo/vector-icons";
 import { Color } from "../GlobalStyles";
@@ -146,11 +145,11 @@ const Footer = () => {
           onPress={() => {
             setSelected("account");
             // Replace with your actual navigation target
-            // navigation.navigate("Account");
+            navigation.navigate("Account_Setting_List");
           }}
         >
-          <FontAwesome
-            name="user"
+          <Feather
+            name="settings"
             size={30}
             style={{
               color: selected === "account" ? Color.PrimaryWebOrient : "#15161db0",
