@@ -91,7 +91,7 @@ const StartSection = ({ navigation }) => {
                   <Button
                     text="Get Started"
                     onPress={() => {
-                      navigation.navigate("Account_Setting_List");
+                      navigation.navigate("LimitManagement");
                     }}
                     width="w-[60%]"
                   />

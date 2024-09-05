@@ -75,7 +75,7 @@ import Account_Statements from "./screens/Mobile-Banking/Account-Setting/Account
 import SelectLanguage from "./screens/Mobile-Banking/Account-Setting/SelectLanguage";
 import OTP_Preference from "./screens/Mobile-Banking/Account-Setting/OTP_Preference";
 import Account_Setting_List from "./screens/Mobile-Banking/Account-Setting/Account_Setting_List";
-
+import LimitManagement from "./screens/Mobile-Banking/Account-Setting/LimitManagement";
 const Stack = createNativeStackNavigator();
 
 export default function App() {
@@ -209,6 +209,18 @@ export default function App() {
           options={{ headerShown: false }}
         />
         {/* Beneficiary Module end */}
+        {/* Account Settings start */}
+        <Stack.Screen
+          name="AccountSetting"
+          component={AccountSetting}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="LimitManagement"
+          component={LimitManagement}
+          options={{ headerShown: false }}
+        />
+        {/* Account Settings end */}
         <Stack.Screen
           name="CardManagement"
           component={CardManagement}
@@ -244,11 +256,7 @@ export default function App() {
           component={CardActivated}
           options={{ headerShown: false }}
         />
-        <Stack.Screen
-          name="AccountSetting"
-          component={AccountSetting}
-          options={{ headerShown: false }}
-        />
+        
         <Stack.Screen
           name="Wallet"
           component={PersonalWallet}
@@ -309,11 +317,11 @@ export default function App() {
           component={OTP_Preference}
           options={{ headerShown: false }}
         />
-          <Stack.Screen
-              name="Account_Setting_List"
-              component={Account_Setting_List}
-              options={{ headerShown: false }}
-            />
+        <Stack.Screen
+          name="Account_Setting_List"
+          component={Account_Setting_List}
+          options={{ headerShown: false }}
+        />
         <Stack.Screen
           name="History"
           component={History}
