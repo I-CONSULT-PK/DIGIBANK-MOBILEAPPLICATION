@@ -812,7 +812,7 @@ const HomeScreen = () => {
     const isDebitCard = !card.isCreditCard;
 
     return (
-      <List.AccordionGroup className="my-2">
+      <List.AccordionGroup className="my-2" key={card.cardId}>
         <List.Accordion
           id={card.cardId}
           key={card.cardId}
@@ -968,7 +968,7 @@ const HomeScreen = () => {
 
               <View className="justify-between ">
                 <View className="flex-row d-flex items-center">
-                  <Text className="text-slate-950 text-lg font-semibold">
+                  <Text className="text-slate-950 text-lg">
                     A/C No: {userDetails.accountNumber}
                   </Text>
                   <TouchableOpacity>

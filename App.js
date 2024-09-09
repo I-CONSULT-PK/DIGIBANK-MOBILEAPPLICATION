@@ -72,7 +72,10 @@ import ChooseSecurity from "./screens/Auth/ChooseSecurity";
 import RegisterFingerPrint from "./screens/Auth/RegisterFingerPrint";
 import RegisterFaceDetector from "./screens/Auth/RegisterFaceDetector";
 import Account_Statements from "./screens/Mobile-Banking/Account-Setting/Account_Statements";
-
+import SelectLanguage from "./screens/Mobile-Banking/Account-Setting/SelectLanguage";
+import OTP_Preference from "./screens/Mobile-Banking/Account-Setting/OTP_Preference";
+import Account_Setting_List from "./screens/Mobile-Banking/Account-Setting/Account_Setting_List";
+import LimitManagement from "./screens/Mobile-Banking/Account-Setting/LimitManagement";
 const Stack = createNativeStackNavigator();
 
 export default function App() {
@@ -206,6 +209,18 @@ export default function App() {
           options={{ headerShown: false }}
         />
         {/* Beneficiary Module end */}
+        {/* Account Settings start */}
+        <Stack.Screen
+          name="AccountSetting"
+          component={AccountSetting}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="LimitManagement"
+          component={LimitManagement}
+          options={{ headerShown: false }}
+        />
+        {/* Account Settings end */}
         <Stack.Screen
           name="CardManagement"
           component={CardManagement}
@@ -241,11 +256,7 @@ export default function App() {
           component={CardActivated}
           options={{ headerShown: false }}
         />
-        <Stack.Screen
-          name="AccountSetting"
-          component={AccountSetting}
-          options={{ headerShown: false }}
-        />
+        
         <Stack.Screen
           name="Wallet"
           component={PersonalWallet}
@@ -299,6 +310,16 @@ export default function App() {
         <Stack.Screen
           name="Nic_DateChange"
           component={Nic_DateChange}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="OTP_Preference"
+          component={OTP_Preference}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="Account_Setting_List"
+          component={Account_Setting_List}
           options={{ headerShown: false }}
         />
         <Stack.Screen
@@ -409,6 +430,11 @@ export default function App() {
           component={Fatch_Acc_Beneficiary}
           options={{ headerShown: false }}
         />
+        <Stack.Screen
+          name="SelectLanguage"
+          component={SelectLanguage}
+          options={{ headerShown: false }}
+        />
       </Stack.Navigator>
     );
   };
@@ -452,6 +478,16 @@ export default function App() {
             <Stack.Screen
               name="ForgetUserName"
               component={ForgetUserName}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="OTP_Preference"
+              component={OTP_Preference}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="Account_Setting_List"
+              component={Account_Setting_List}
               options={{ headerShown: false }}
             />
             <Stack.Screen

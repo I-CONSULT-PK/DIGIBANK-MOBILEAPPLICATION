@@ -12,9 +12,6 @@ switch (ENV) {
   case 'ProdE':
     API_BASE_URL = ProdE;
     break;
-  default:
-    API_BASE_URL = IE; 
-    break;
 }
 
 export default API_BASE_URL;
