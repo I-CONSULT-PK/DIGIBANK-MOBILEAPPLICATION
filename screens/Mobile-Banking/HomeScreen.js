@@ -482,6 +482,7 @@ import {
   Easing,
   TextInput,
   ImageBackground,
+  Alert
 } from "react-native";
 import { Color } from "../../GlobalStyles";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -537,7 +538,7 @@ const HomeScreen = () => {
     alert("Copied to clipboard");
   };
 
-  const [isVisible, setIsVisible] = useState(false);
+  const [isVisible, setIsVisible] = useState(true);
 
   useFocusEffect(
     useCallback(() => {
@@ -584,12 +585,14 @@ const HomeScreen = () => {
           navigation.navigate("SelectCards");
           break;
         case "Top up":
+          navigation.navigate("Top_up_List");
           break;
         case "Accounts":
           break;
         case "QR Payments":
           break;
-        case "Utilty Pay":
+        case "Utility Pay":
+            navigation.navigate("Bill_Payment_List")
           break;
           case "Statement":
             navigation.navigate("Account_Statements"); 

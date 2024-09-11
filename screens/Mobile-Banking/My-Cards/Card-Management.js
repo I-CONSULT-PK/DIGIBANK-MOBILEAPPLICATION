@@ -126,7 +126,7 @@ const CardManagement = () => {
     const isDebitCard = !card.isCreditCard;
 
     return (
-      <List.AccordionGroup style={styles.accordionGroup}>
+      <List.AccordionGroup style={styles.accordionGroup}  key={card.cardId}>
         <List.Accordion
           id={card.cardId}
           key={card.cardId}

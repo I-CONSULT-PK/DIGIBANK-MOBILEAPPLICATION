@@ -5,7 +5,7 @@ import HomeScreen from "../../HomeScreen";
 import OTP_Signup from "../OTP_Signup";
 import OTP from "../OTP";
 
-import StartSection from '../../Auth/StartSection';
+import StartSection from "../../Auth/StartSection";
 import Login from "../Login";
 import Registration from "../Registration";
 import Sidebar from "../../Sidebar";
@@ -68,9 +68,23 @@ import RegisterFingerPrint from "../RegisterFingerPrint";
 import RegisterFaceDetector from "../RegisterFaceDetector";
 import Scanner from "../../../components/QR/Scanner";
 import Account_Statements from "../../Mobile-Banking/Account-Setting/Account_Statements";
+import SelectLanguage from "../../Mobile-Banking/Account-Setting/SelectLanguage";
 import OTP_Preference from "../../Mobile-Banking/Account-Setting/OTP_Preference";
 import Account_Setting_List from "../../Mobile-Banking/Account-Setting/Account_Setting_List";
-
+import LimitManagement from "../../Mobile-Banking/Account-Setting/LimitManagement";
+import Bill_Payment_List from './../../Mobile-Banking/Bill-Payments/Bill_Payment_List';
+import Bill_Payment_Transfer from './../../Mobile-Banking/Bill-Payments/Bill_Payment_Transfer';
+import Fatch_Payment_Details from './../../Mobile-Banking/Bill-Payments/Fatch_Payment_Details';
+import Net_Bill_Pyament_List from './../../Mobile-Banking/Bill-Payments/Net_Bill_Pyament_List';
+import Set_Payment from './../../Mobile-Banking/Bill-Payments/Set_Payment';
+import Card_Payment_List from "../../Mobile-Banking/Credit-Card-Payments/Card_Payment_List";
+import Fatch_Bank_Details from "../../Mobile-Banking/Credit-Card-Payments/Fatch_Bank_Details";
+import Set_Card_Payment from "../../Mobile-Banking/Credit-Card-Payments/Set_Card_Payment";
+import Card_Payment_Transfer from "../../Mobile-Banking/Credit-Card-Payments/Card_Payment_Transfer";
+import Fatch_Other_Bank_Details from "../../Mobile-Banking/Credit-Card-Payments/Fatch_Other_Bank_Details";
+import Top_up_List from "../../Mobile-Banking/Mobile-Top-Up/Top-up-List";
+import Add_Biller from "../../Mobile-Banking/Mobile-Top-Up/Add_Biller";
+import SelectOption_Top_up from "../../Mobile-Banking/Mobile-Top-Up/SelectOption_Top_up";
 const Stack = createStackNavigator();
 
 const AppNavigator = () => {
@@ -103,8 +117,15 @@ const AppNavigator = () => {
         <Stack.Screen name="SetCardPin" component={SetCardPin} />
         <Stack.Screen name="CardActivated" component={CardActivated} />
         <Stack.Screen name="ChooseSecurity" component={ChooseSecurity} />
-        <Stack.Screen name="RegisterFingerPrint" component={RegisterFingerPrint} />
-        <Stack.Screen name="RegisterFaceDetector" component={RegisterFaceDetector} />
+        <Stack.Screen
+          name="RegisterFingerPrint"
+          component={RegisterFingerPrint}
+        />
+        <Stack.Screen
+          name="RegisterFaceDetector"
+          component={RegisterFaceDetector}
+        />
+        <Stack.Screen name="SelectLanguage" component={SelectLanguage} />
         {/* Easy-Cash Module */}
         <Stack.Screen
           name="AvailCashonCreditCard"
@@ -119,12 +140,19 @@ const AppNavigator = () => {
 
         {/* Beneficiary Module  */}
         <Stack.Screen name="SendFromAccount" component={SendFromAccount} />
-        <Stack.Screen name="SendBeneficiaryMoney" component={SendBeneficiaryMoney} />
+        <Stack.Screen
+          name="SendBeneficiaryMoney"
+          component={SendBeneficiaryMoney}
+        />
         <Stack.Screen name="Add_Beneficiary" component={Add_Beneficiary} />
         <Stack.Screen name="PayNow" component={PayNow} />
 
-
         {/* Beneficiary Module  end*/}
+
+        {/* Account Settings start */}
+        <Stack.Screen name="LimitManagement" component={LimitManagement} />
+        {/* Account Settings end */}
+
         <Stack.Screen
           name="SelectApplyOptionCard"
           component={SelectApplyOptionCard}
@@ -144,9 +172,30 @@ const AppNavigator = () => {
         />
 
         <Stack.Screen name="AccountSetting" component={AccountSetting} />
-        <Stack.Screen name="Account_Setting_List" component={Account_Setting_List} />
-        <Stack.Screen name="Account_Statements" component={Account_Statements} />
+        <Stack.Screen
+          name="Account_Setting_List"
+          component={Account_Setting_List}
+        />
+        <Stack.Screen
+          name="Account_Statements"
+          component={Account_Statements}
+        />
         <Stack.Screen name="OTP_Preference" component={OTP_Preference} />
+        <Stack.Screen name="Bill_Payment_List" component={Bill_Payment_List} />
+        <Stack.Screen name="Bill_Payment_Transfer" component={Bill_Payment_Transfer} />
+        <Stack.Screen name="Fatch_Payment_Details" component={Fatch_Payment_Details} />
+        <Stack.Screen name="Net_Bill_Pyament_List" component={Net_Bill_Pyament_List} />
+        <Stack.Screen name="Set_Payment" component={Set_Payment} />
+        <Stack.Screen name="Card_Payment_List" component={Card_Payment_List} />
+        <Stack.Screen name="Fatch_Bank_Details" component={Fatch_Bank_Details} />
+        <Stack.Screen name="Set_Card_Payment" component={Set_Card_Payment} />
+        <Stack.Screen name="Card_Payment_Transfer" component={Card_Payment_Transfer} />
+        <Stack.Screen name="Fatch_Other_Bank_Details" component={Fatch_Other_Bank_Details} />
+        <Stack.Screen name="Top_up_List" component={Top_up_List} />
+        <Stack.Screen name="Add_Biller" component={Add_Biller} />
+        <Stack.Screen name="SelectOption_Top_up" component={SelectOption_Top_up} />
+
+
 
         <Stack.Screen name="NumberChange" component={NameChange} />
         <Stack.Screen name="PasswordChange" component={PasswordChange} />
@@ -166,18 +215,29 @@ const AppNavigator = () => {
 
         <Stack.Screen name="WalletBeneficiary" component={WalletBeneficiary} />
         <Stack.Screen name="BankBeneficiary" component={BankBeneficiary} />
-        <Stack.Screen name="AddWalletBeneficiary" component={AddWalletBeneficiary} />
-        <Stack.Screen name="AddBankBeneficiary" component={AddBankBeneficiary}
+        <Stack.Screen
+          name="AddWalletBeneficiary"
+          component={AddWalletBeneficiary}
+        />
+        <Stack.Screen
+          name="AddBankBeneficiary"
+          component={AddBankBeneficiary}
         />
         {/* <Stack.Screen name="SelectTopUp" component={SelectTopUp} /> */}
         <Stack.Screen name="TopUp" component={TopUp} />
         <Stack.Screen name="Scanner" component={Scanner} />
         <Stack.Screen name="MyQRCode" component={MyQRCode} />
-        <Stack.Screen name="BillPaymentListing" component={BillPaymentListing} />
+        <Stack.Screen
+          name="BillPaymentListing"
+          component={BillPaymentListing}
+        />
         <Stack.Screen name="BillPaymentTopUp" component={BillPaymentTopUp} />
         <Stack.Screen name="OTPverification" component={OTPverification} />
 
-        <Stack.Screen name="Fatch_Acc_Beneficiary" component={Fatch_Acc_Beneficiary} />
+        <Stack.Screen
+          name="Fatch_Acc_Beneficiary"
+          component={Fatch_Acc_Beneficiary}
+        />
 
         <Stack.Screen name="BeneficiaryList" component={BeneficiaryList} />
         <Stack.Screen name="BankList" component={BankList} />

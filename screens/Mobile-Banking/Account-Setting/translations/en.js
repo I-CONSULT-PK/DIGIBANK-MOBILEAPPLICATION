@@ -1,0 +1,33 @@
+export const enData = {
+  translations: {
+    menuItems: [
+      { title: "Manage People", icon: "person" },
+      { title: "Transfer", icon: "swap-horizontal" },
+      { title: "Scan to Pay", icon: "qr-code" },
+      { title: "Settings", icon: "cog" },
+      { title: "Instant Loan", icon: "cash" },
+      { title: "Statement", icon: "document-text" },
+      { title: "Top Up Yourself", icon: "cash" },
+      { title: "Locations", icon: "location-outline" },
+      { title: "Contact Us", icon: "chatbubbles-outline" },
+      { title: "Refer", icon: "people" },
+      { title: "Change Language", icon: "language" },
+      { title: "Logout", icon: "log-out" },
+    ],
+    welcome: "Welcome",
+    accountNumberLabel: "Account Number:",
+  },
+  iconMapping: {
+    person: "person",
+    "swap-horizontal": "swap-horizontal",
+    "qr-code": "qr-code",
+    cog: "cog",
+    cash: "cash",
+    "document-text": "document-text",
+    "location-outline": "location-outline",
+    "chatbubbles-outline": "chatbubbles-outline",
+    people: "people",
+    language: "language",
+    "log-out": "log-out",
+  },
+};

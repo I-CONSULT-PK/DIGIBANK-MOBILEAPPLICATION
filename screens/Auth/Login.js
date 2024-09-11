@@ -7,6 +7,7 @@ import {
   StyleSheet,
   View,
   Alert,
+  TextInput,
   Modal,
   Image,
   KeyboardAvoidingView,
@@ -34,7 +35,7 @@ import API_BASE_URL from '../../config';
 import * as LocalAuthentication from 'expo-local-authentication'; // Import for Expo
 import * as Device from 'expo-device';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-// import { v4 as uuidv4 } from 'uuid'; // If you are using UUID for visitor ID generation
+import { v4 as uuidv4 } from 'uuid'; // If you are using UUID for visitor ID generation
  
 const Login = ({ navigation }) => {
   const [form, setForm] = useState({ username: '', password: '' });
@@ -127,6 +128,8 @@ const Login = ({ navigation }) => {
     const [biometricData, setBiometricData] = useState(null);
     const [visitorId, setVisitorId] = useState(null);
     const [modalVisible, setModalVisible] = useState(false);
+    const [modalVisible1, setModalVisible1] = useState(false);
+    const [error1, setError1] = useState("");
 
   const handlePress = async () => {
     if (!isEnabled) {
@@ -136,7 +139,7 @@ const Login = ({ navigation }) => {
           // const newVisitorId = uuidv4(); // Generate a new unique ID
           // setVisitorId(newVisitorId); // Set the visitor ID in state
 
-          // Store the visitor ID locally
+          // // Store the visitor ID locally
           // await AsyncStorage.setItem("visitorId", newVisitorId);
 
           setIsEnabled(true);
@@ -158,19 +161,26 @@ const Login = ({ navigation }) => {
 
           navigation.navigate('Home');
         } else {
-          Alert.alert("Authentication failed", result.error);
+          if (result.error === 'user_cancel') {
+            setError1("User canceled the authentication request!")
+            setModalVisible1(true);
+          }
+          else {
+            setError1("No fingerprint enrolled. Please enroll your fingerprint!")
+            setModalVisible1(true);
+          }
         }
       } catch (error) {
-        Alert.alert("Error", error.message);
-        console.log( error.message);
+        setError1(error.message);
+        setModalVisible1(true);
       }
     } else {
       setIsEnabled(false);
       setBiometricData(null);
-      setVisitorId(null);
+      // setVisitorId(null);
 
       // Remove the visitor ID from local storage
-      await AsyncStorage.removeItem("visitorId");
+      // await AsyncStorage.removeItem("visitorId");
 
       // Console log the biometric data reset
       console.log("Biometric Data Reset");
@@ -185,7 +195,7 @@ const Login = ({ navigation }) => {
       >
         <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
           <View className="flex-row items-center p-4 mt-2">
-            <TouchableOpacity onPress={() => navigation.navigate("StartScreen")}>
+            <TouchableOpacity onPress={() => navigation.goBack()}>
               <AntDesign name="arrowleft" size={20} color="white" />
             </TouchableOpacity>
             <Text className="text-white font-semibold text-lg ml-4 font-InterSemiBold">
@@ -394,6 +404,47 @@ const Login = ({ navigation }) => {
                 text="Ok"
                 onPress={() => {
                   setModalVisible(false);
+                }}
+                width="w-32"
+                backgroundColor="#1D4ED8"
+                textColor="#FFF"
+                fontSize="text-sm"
+                styles="mr-4"
+              />
+            </View>
+          </View>
+        </View>
+      </Modal>
+      <Modal
+        transparent={true}
+        visible={modalVisible1}
+        animationType="slide"
+        onRequestClose={() => setModalVisible1(false)}
+      >
+        <View
+          className="flex-1 justify-center items-center"
+          style={{ backgroundColor: "rgba(0, 0, 0, 0.7)" }}
+        >
+          <View className="bg-white p-5 rounded-lg w-11/12 max-w-xs justify-center items-center ">
+            <Image
+              source={require("../../assets/alerrt-icon.png")} 
+              className="w-16 h-14 mb-4"
+            />
+            <Text className="text-lg font-bold mb-2">Alert Notification</Text>
+            <Text className="text-center text-gray-500 mb-6">
+              {error1} 
+            </Text>
+            <View className="flex-row justify-between">
+              <TouchableOpacity
+                onPress={() => setModalVisible1(false)}
+                className="flex-1 bg-white border border-gray-300 rounded-lg py-2 mr-2 items-center justify-center"
+              >
+                <Text className="text-center text-black text-base">Cancel</Text>
+              </TouchableOpacity>
+              <Button
+                text="Ok"
+                onPress={() => {
+                  setModalVisible1(false);
                 }}
                 width="w-32"
                 backgroundColor="#1D4ED8"
