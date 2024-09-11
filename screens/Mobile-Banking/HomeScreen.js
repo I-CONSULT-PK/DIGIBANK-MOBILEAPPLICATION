@@ -482,6 +482,7 @@ import {
   Easing,
   TextInput,
   ImageBackground,
+  Alert
 } from "react-native";
 import { Color } from "../../GlobalStyles";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -584,12 +585,14 @@ const HomeScreen = () => {
           navigation.navigate("SelectCards");
           break;
         case "Top up":
+          navigation.navigate("Top_up_List");
           break;
         case "Accounts":
           break;
         case "QR Payments":
           break;
-        case "Utilty Pay":
+        case "Utility Pay":
+            navigation.navigate("Bill_Payment_List")
           break;
           case "Statement":
             navigation.navigate("Account_Statements"); 
@@ -812,7 +815,7 @@ const HomeScreen = () => {
     const isDebitCard = !card.isCreditCard;
 
     return (
-      <List.AccordionGroup className="my-2" key={card.cardId}>
+      <List.AccordionGroup className="my-2">
         <List.Accordion
           id={card.cardId}
           key={card.cardId}
@@ -968,7 +971,7 @@ const HomeScreen = () => {
 
               <View className="justify-between ">
                 <View className="flex-row d-flex items-center">
-                  <Text className="text-slate-950 text-lg">
+                  <Text className="text-slate-950 text-lg font-semibold">
                     A/C No: {userDetails.accountNumber}
                   </Text>
                   <TouchableOpacity>
@@ -994,9 +997,9 @@ const HomeScreen = () => {
           <View className="flex flex-col justify-center items-center">
             {/* First Row */}
             <View className="flex-row justify-between mb-4">
-              {["Transfer", "Payment", "My Payees"].map((item) => (
+              {["Transfer", "Payment", "My Payees"].map((item, index) => (
                 <TouchableOpacity
-                  key={item}
+                  key={index}
                   onPress={() => handlePressMenu(item)}
                 >
                   <View
@@ -1041,9 +1044,9 @@ const HomeScreen = () => {
 
             {/* Second Row */}
             <View className="flex-row justify-between mb-4">
-              {["Cards", "Top up", "Accounts"].map((item) => (
+              {["Cards", "Top up", "Accounts"].map((item, index) => (
                 <TouchableOpacity
-                  key={item}
+                  key={index}
                   onPress={() => handlePressMenu(item)}
                 >
                   <View
@@ -1076,9 +1079,9 @@ const HomeScreen = () => {
 
             {/* Third Row */}
             <View className="flex-row justify-between mb-4">
-              {["QR Payments", "Utility Pay", "Statement"].map((item) => (
+              {["QR Payments", "Utility Pay", "Statement"].map((item, index) => (
                 <TouchableOpacity
-                  key={item}
+                  key={index}
                   onPress={() => handlePressMenu(item)}
                 >
                   <View

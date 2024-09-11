@@ -17,7 +17,7 @@ const OTP_Preference = () => {
         <ScrollView className="flex-grow">
           <View className="flex-row items-center justify-between p-3 bg-white">
             <TouchableOpacity
-              onPress={() => navigation.navigate("StartScreen")}
+              onPress={() => navigation.navigate("Account_Setting_List")}
               style={{ zIndex: 1 }}
             >
               <Entypo name="chevron-left" size={30} color="black" />

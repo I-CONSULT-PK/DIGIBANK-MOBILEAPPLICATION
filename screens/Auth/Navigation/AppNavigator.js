@@ -72,6 +72,19 @@ import SelectLanguage from "../../Mobile-Banking/Account-Setting/SelectLanguage"
 import OTP_Preference from "../../Mobile-Banking/Account-Setting/OTP_Preference";
 import Account_Setting_List from "../../Mobile-Banking/Account-Setting/Account_Setting_List";
 import LimitManagement from "../../Mobile-Banking/Account-Setting/LimitManagement";
+import Bill_Payment_List from './../../Mobile-Banking/Bill-Payments/Bill_Payment_List';
+import Bill_Payment_Transfer from './../../Mobile-Banking/Bill-Payments/Bill_Payment_Transfer';
+import Fatch_Payment_Details from './../../Mobile-Banking/Bill-Payments/Fatch_Payment_Details';
+import Net_Bill_Pyament_List from './../../Mobile-Banking/Bill-Payments/Net_Bill_Pyament_List';
+import Set_Payment from './../../Mobile-Banking/Bill-Payments/Set_Payment';
+import Card_Payment_List from "../../Mobile-Banking/Credit-Card-Payments/Card_Payment_List";
+import Fatch_Bank_Details from "../../Mobile-Banking/Credit-Card-Payments/Fatch_Bank_Details";
+import Set_Card_Payment from "../../Mobile-Banking/Credit-Card-Payments/Set_Card_Payment";
+import Card_Payment_Transfer from "../../Mobile-Banking/Credit-Card-Payments/Card_Payment_Transfer";
+import Fatch_Other_Bank_Details from "../../Mobile-Banking/Credit-Card-Payments/Fatch_Other_Bank_Details";
+import Top_up_List from "../../Mobile-Banking/Mobile-Top-Up/Top-up-List";
+import Add_Biller from "../../Mobile-Banking/Mobile-Top-Up/Add_Biller";
+import SelectOption_Top_up from "../../Mobile-Banking/Mobile-Top-Up/SelectOption_Top_up";
 const Stack = createStackNavigator();
 
 const AppNavigator = () => {
@@ -168,6 +181,21 @@ const AppNavigator = () => {
           component={Account_Statements}
         />
         <Stack.Screen name="OTP_Preference" component={OTP_Preference} />
+        <Stack.Screen name="Bill_Payment_List" component={Bill_Payment_List} />
+        <Stack.Screen name="Bill_Payment_Transfer" component={Bill_Payment_Transfer} />
+        <Stack.Screen name="Fatch_Payment_Details" component={Fatch_Payment_Details} />
+        <Stack.Screen name="Net_Bill_Pyament_List" component={Net_Bill_Pyament_List} />
+        <Stack.Screen name="Set_Payment" component={Set_Payment} />
+        <Stack.Screen name="Card_Payment_List" component={Card_Payment_List} />
+        <Stack.Screen name="Fatch_Bank_Details" component={Fatch_Bank_Details} />
+        <Stack.Screen name="Set_Card_Payment" component={Set_Card_Payment} />
+        <Stack.Screen name="Card_Payment_Transfer" component={Card_Payment_Transfer} />
+        <Stack.Screen name="Fatch_Other_Bank_Details" component={Fatch_Other_Bank_Details} />
+        <Stack.Screen name="Top_up_List" component={Top_up_List} />
+        <Stack.Screen name="Add_Biller" component={Add_Biller} />
+        <Stack.Screen name="SelectOption_Top_up" component={SelectOption_Top_up} />
+
+
 
         <Stack.Screen name="NumberChange" component={NameChange} />
         <Stack.Screen name="PasswordChange" component={PasswordChange} />

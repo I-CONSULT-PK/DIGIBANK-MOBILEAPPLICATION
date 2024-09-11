@@ -86,13 +86,12 @@ const Registration = ({ route }) => {
   const [otpLoading, setOtpLoading] = useState(false);
   const [registerLoading, setRegisterLoading] = useState(false);
 
-  const [hasBio, setHasBio] = useState(true);
-  const [hasFaceDetection, setHasFaceDetection] = useState(true);
+  const [hasBio, setHasBio] = useState(false);
+  const [hasFaceDetection, setHasFaceDetection] = useState(false);
 
   const checkHardwareSupport = async () => {
     const hasHardware = await LocalAuthentication.hasHardwareAsync();
-    const supportedTypes =
-      await LocalAuthentication.supportedAuthenticationTypesAsync();
+    const supportedTypes = await LocalAuthentication.supportedAuthenticationTypesAsync();
 
     if (hasHardware) {
       // Iterate through supported types
@@ -100,9 +99,7 @@ const Registration = ({ route }) => {
         if (type === LocalAuthentication.AuthenticationType.FINGERPRINT) {
           setHasBio(true);
         }
-        if (
-          type === LocalAuthentication.AuthenticationType.FACIAL_RECOGNITION
-        ) {
+        if (type === LocalAuthentication.AuthenticationType.FACIAL_RECOGNITION) {
           setHasFaceDetection(true);
         }
       });
@@ -292,10 +289,6 @@ const Registration = ({ route }) => {
           email: email,
           userName: finalForm.username,
           password: finalForm.password,
-          status: "00",
-          device: {
-            pinHash: "1234",
-          },
           accountDto: {
             accountNumber: accountNumber,
           },
@@ -303,18 +296,20 @@ const Registration = ({ route }) => {
 
         try {
           const response = await axios.post(
-            `${API_BASE_URL}/api/devices/signUp`,
+            `${API_BASE_URL}/v1/customer/register`,
             userData
           );
           const dto = response.data;
 
-          if (dto && dto.success && dto.data) {
+          if (dto && dto.success) {
             Alert.alert("Success", dto.message);
 
             setTimeout(() => {
-              hasBio || hasFaceDetection
-                ? navigation.navigate("ChooseSecurity")
-                : navigation.navigate("RegisterFaceDetector");
+              if (hasBio || hasFaceDetection) {
+                navigation.navigate("ChooseSecurity");
+              } else {
+                navigation.navigate("Login");
+              }
             }, 1000);
           } else {
             if (dto.message) {
@@ -466,7 +461,7 @@ const Registration = ({ route }) => {
               <Entypo name="chevron-left" size={24} color="white" />
             </TouchableOpacity>
             <Text className="text-white text-lg font-semibold ml-4 font-InterSemiBold">
-              Sign-Up
+              Register yourself
             </Text>
           </View>
 
@@ -529,9 +524,9 @@ const Registration = ({ route }) => {
 
                 <View className="mb-5">
                   <Button
-                    text="Create"
-                    width="w-[100%]"
-                    styles="mb-4 py-4"
+                    text='Create'
+                    width='w-[100%]'
+                    styles='mb-4 py-4'
                     onPress={handleRegister}
                     // onPress={() => navigation.navigate("ChooseSecurity")}
                     loading={registerLoading}
@@ -604,14 +599,15 @@ const Registration = ({ route }) => {
                         onSubmitEditing={Keyboard.dismiss}
                       />
                     </View>
+
                   </View>
                 </View>
 
                 <View className="mb-5">
                   <Button
-                    text="Next"
-                    width="w-[100%]"
-                    styles="mb-4 py-4"
+                    text='Next'
+                    width='w-[100%]'
+                    styles='mb-4 py-4'
                     onPress={handleNext}
                     // onPress={() => navigation.navigate('ChooseSecurity')}
                     loading={nextLoading}
@@ -669,9 +665,9 @@ const Registration = ({ route }) => {
 
                 <View className="mb-5">
                   <Button
-                    text="Next"
-                    width="w-[100%]"
-                    styles="mb-4 py-4"
+                    text='Next'
+                    width='w-[100%]'
+                    styles='mb-4 py-4'
                     onPress={handleOTP}
                     // onPress={() => navigation.navigate("OTP", { source: "registration" })}
                     loading={otpLoading}
