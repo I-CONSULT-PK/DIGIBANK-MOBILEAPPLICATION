@@ -121,7 +121,7 @@ const PersonalWallet = () => {
           <View className="flex-row absolute top-16 right-1 p-2">
             <Bell className="mb-1" />
             <View className="ml-3 ">
-              <Filter onPress={() => navigation.navigate("AccountSetting")} />
+              <Filter onPress={() => navigation.navigate("")} />
             </View>
           </View>
         </LinearGradient>
