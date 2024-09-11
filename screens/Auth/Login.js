@@ -1,80 +1,88 @@
-import React, { useState, useContext,useEffect } from "react";
-import {
-  Dimensions,
-  ScrollView,
-  Text,
-  TouchableOpacity,
-  StyleSheet,
-  View,
-  Alert,
-  TextInput,
-  Modal,
-  Image,
-  KeyboardAvoidingView,
-  Keyboard
-} from "react-native";
+import React, { useState } from "react";
+import { ScrollView, Text, TouchableOpacity, StyleSheet, View, Alert, Modal, Image, Keyboard } from "react-native";
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
 import Input from "../../components/TextInput";
 import InputWithIcon from "../../components/TextInputWithIcon";
-import MainImage from "../../assets/Images/MainImage.svg";
 import { Color } from "../../GlobalStyles";
-import { Entypo } from "@expo/vector-icons";
 import Button from "../../components/Button";
-import { AppLoaderContext } from "../../components/LoaderHOC";
-import PinCode from "./PinCode";
-import { useNavigation } from "@react-navigation/native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { LinearGradient } from 'expo-linear-gradient';
 import { StatusBar } from 'expo-status-bar';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import axios from 'axios';
 import API_BASE_URL from '../../config';
-import * as LocalAuthentication from 'expo-local-authentication'; // Import for Expo
+import * as LocalAuthentication from 'expo-local-authentication';
 import * as Device from 'expo-device';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { v4 as uuidv4 } from 'uuid'; // If you are using UUID for visitor ID generation
 import { useFocusEffect } from "@react-navigation/native";
- 
+import ReactNativeBiometrics, { BiometryTypes } from 'react-native-biometrics';
+
 const Login = ({ navigation }) => {
   const [form, setForm] = useState({ username: '', password: '' });
   const [loading, setLoading] = useState(false);
- 
+
+  const [isEnabled, setIsEnabled] = useState(false);
+  const [biometricData, setBiometricData] = useState(null);
+  const [visitorId, setVisitorId] = useState(null);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [modalVisible1, setModalVisible1] = useState(false);
+  const [error1, setError1] = useState("");
+
+  const rnBiometrics = new ReactNativeBiometrics();
+
+  const securityImages1 = [
+    require('../../assets/security-img-1.png'),
+    require('../../assets/security-img-2.png'),
+    require('../../assets/security-img-3.png'),
+    require('../../assets/security-img-4.png'),
+    require('../../assets/security-img-5.png'),
+  ];
+
+  const securityImages2 = [
+    require('../../assets/security-img-6.png'),
+    require('../../assets/security-img-7.png'),
+    require('../../assets/security-img-8.png'),
+    require('../../assets/security-img-9.png'),
+    require('../../assets/security-img-10.png'),
+  ];
+
   const handleChange = (name, value) => {
     setForm({
       ...form,
       [name]: value,
     });
   };
- 
+
   const handleLogin = async () => {
     if (form.username === '' || form.password === '') {
       Alert.alert('Error', 'Username and password cannot be null');
       return;
     }
-  
+
     const loginData = {
       emailorUsername: form.username,
       password: form.password
     };
 
     setLoading(true);
-  
+
     try {
       const response = await axios.post(`${API_BASE_URL}/v1/customer/login`, loginData, { timeout: 10000 });
       const dto = response.data;
-  
+
       if (dto && dto.success && dto.data && dto.data.customerId) {
         const customerId = dto.data.customerId.toString();
         const token = dto.data.token.toString();
         const expirationTime = dto.data.expirationTime.toString();
-  
+
         await AsyncStorage.setItem('customerId', customerId);
         await AsyncStorage.setItem('token', token);
         await AsyncStorage.setItem('expirationTime', expirationTime);
-  
+
         navigation.navigate('Home');
       } else {
         const message = dto.message || (dto.errors && dto.errors.length > 0 ? dto.errors.join(", ") : "Unknown error");
@@ -82,12 +90,12 @@ const Login = ({ navigation }) => {
       }
     } catch (error) {
       console.error("Login error:", error); // Log detailed error
-  
+
       if (error.response) {
         // Server responded with a status code outside the range of 2xx
         const statusCode = error.response.status;
         const errorMessage = error.response.data.message || error.message;
-  
+
         if (statusCode === 404) {
           Alert.alert('Error', 'Server timed out. Try again later!');
         } else if (statusCode === 503) {
@@ -108,29 +116,6 @@ const Login = ({ navigation }) => {
       setLoading(false);
     }
   };
- 
-  const securityImages1 = [
-    require('../../assets/security-img-1.png'),
-    require('../../assets/security-img-2.png'),
-    require('../../assets/security-img-3.png'),
-    require('../../assets/security-img-4.png'),
-    require('../../assets/security-img-5.png'),
-  ];
- 
-  const securityImages2 = [
-    require('../../assets/security-img-6.png'),
-    require('../../assets/security-img-7.png'),
-    require('../../assets/security-img-8.png'),
-    require('../../assets/security-img-9.png'),
-    require('../../assets/security-img-10.png'),
-  ];
-
-    const [isEnabled, setIsEnabled] = useState(false);
-    const [biometricData, setBiometricData] = useState(null);
-    const [visitorId, setVisitorId] = useState(null);
-    const [modalVisible, setModalVisible] = useState(false);
-    const [modalVisible1, setModalVisible1] = useState(false);
-    const [error1, setError1] = useState("");
 
   const handlePress = async () => {
     if (!isEnabled) {
@@ -186,14 +171,14 @@ const Login = ({ navigation }) => {
 
   useFocusEffect(
     React.useCallback(() => {
-        const clean = () => {
-          setForm((prevForm) => ({ ...prevForm, password: '' }));
-        }
+      const clean = () => {
+        setForm((prevForm) => ({ ...prevForm, password: '' }));
+      }
 
-        clean();
+      clean();
     }, [])
-);
- 
+  );
+
   return (
     <SafeAreaView className="h-full flex-1">
       <LinearGradient
@@ -392,7 +377,7 @@ const Login = ({ navigation }) => {
         >
           <View className="bg-white p-5 rounded-lg w-11/12 max-w-xs justify-center items-center ">
             <Image
-              source={require("../../assets/alerrt-icon.png")} 
+              source={require("../../assets/alerrt-icon.png")}
               className="w-16 h-14 mb-4"
             />
             <Text className="text-lg font-bold mb-2">Alert Notification</Text>
@@ -434,12 +419,12 @@ const Login = ({ navigation }) => {
         >
           <View className="bg-white p-5 rounded-lg w-11/12 max-w-xs justify-center items-center ">
             <Image
-              source={require("../../assets/alerrt-icon.png")} 
+              source={require("../../assets/alerrt-icon.png")}
               className="w-16 h-14 mb-4"
             />
             <Text className="text-lg font-bold mb-2">Alert Notification</Text>
             <Text className="text-center text-gray-500 mb-6">
-              {error1} 
+              {error1}
             </Text>
             <View className="flex-row justify-between">
               <TouchableOpacity
@@ -466,13 +451,12 @@ const Login = ({ navigation }) => {
     </SafeAreaView>
   );
 };
- 
+
 const styles = StyleSheet.create({
   loader: {
     width: wp("20%"),
     height: wp("20%"),
   },
 });
- 
+
 export default Login;
- 

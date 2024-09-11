@@ -801,21 +801,24 @@ const HomeScreen = () => {
       {
         label: "Card Number",
         value: maskCardNumber(card.cardNumber),
+        key: 1
       },
       {
         label: "Card Holder",
         value: card.cardHolderName,
+        key: 2
       },
       {
         label: "Expiry",
         value: card.expiryDate,
+        key:3
       },
     ];
 
     const isDebitCard = !card.isCreditCard;
 
     return (
-      <List.AccordionGroup className="my-2">
+      <List.AccordionGroup className="my-2" key={card.cardId}>
         <List.Accordion
           id={card.cardId}
           key={card.cardId}

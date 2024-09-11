@@ -108,6 +108,14 @@ export default function App({ navigation }) {
     }
   };
 
+  useEffect(() => {
+    if (flag) {
+      setTimeout(() => {
+        navigation.navigate('Home'); // Navigate to the "Home" screen
+      }, 1500); // Wait for 2 seconds before navigating
+    }
+  }, [flag]);
+
   const captureImage = async () => {
     try {
       if (cameraRef.current) {
