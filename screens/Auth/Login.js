@@ -36,6 +36,7 @@ import * as LocalAuthentication from 'expo-local-authentication'; // Import for 
 import * as Device from 'expo-device';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { v4 as uuidv4 } from 'uuid'; // If you are using UUID for visitor ID generation
+import { useFocusEffect } from "@react-navigation/native";
  
 const Login = ({ navigation }) => {
   const [form, setForm] = useState({ username: '', password: '' });
@@ -161,11 +162,7 @@ const Login = ({ navigation }) => {
 
           navigation.navigate('Home');
         } else {
-          if (result.error === 'user_cancel') {
-            setError1("User canceled the authentication request!")
-            setModalVisible1(true);
-          }
-          else {
+          if (result.error !== 'user_cancel') {
             setError1("No fingerprint enrolled. Please enroll your fingerprint!")
             setModalVisible1(true);
           }
@@ -186,6 +183,16 @@ const Login = ({ navigation }) => {
       console.log("Biometric Data Reset");
     }
   };
+
+  useFocusEffect(
+    React.useCallback(() => {
+        const clean = () => {
+          setForm((prevForm) => ({ ...prevForm, password: '' }));
+        }
+
+        clean();
+    }, [])
+);
  
   return (
     <SafeAreaView className="h-full flex-1">
@@ -353,7 +360,7 @@ const Login = ({ navigation }) => {
                   {/* Face ID Button */}
                   <TouchableOpacity
                     className="flex flex-col items-center"
-                    onPress={() => setModalVisible(true)}
+                    onPress={() => navigation.navigate('CameraScreen')}
                   >
                     <View className="bg-[#1DBBD8] p-4 rounded-lg">
                       <Image

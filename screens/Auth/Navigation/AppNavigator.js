@@ -85,12 +85,15 @@ import Fatch_Other_Bank_Details from "../../Mobile-Banking/Credit-Card-Payments/
 import Top_up_List from "../../Mobile-Banking/Mobile-Top-Up/Top-up-List";
 import Add_Biller from "../../Mobile-Banking/Mobile-Top-Up/Add_Biller";
 import SelectOption_Top_up from "../../Mobile-Banking/Mobile-Top-Up/SelectOption_Top_up";
+import CameraScreen from "../CameraScreen";
+
 const Stack = createStackNavigator();
 
 const AppNavigator = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator>
+        <Stack.Screen name="CameraScreen" component={CameraScreen} />
         <Stack.Screen name="StartScreen" component={StartSection} />
         <Stack.Screen name="FingerPrint" component={FingerPrint} />
         <Stack.Screen name="Login" component={Login} />

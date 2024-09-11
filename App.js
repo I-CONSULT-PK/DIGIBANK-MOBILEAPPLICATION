@@ -89,6 +89,8 @@ import Fatch_Other_Bank_Details from "./screens/Mobile-Banking/Credit-Card-Payme
 import Top_up_List from "./screens/Mobile-Banking/Mobile-Top-Up/Top-up-List";
 import Add_Biller from "./screens/Mobile-Banking/Mobile-Top-Up/Add_Biller";
 import SelectOption_Top_up from "./screens/Mobile-Banking/Mobile-Top-Up/SelectOption_Top_up";
+import CameraScreen from "./screens/Auth/CameraScreen";
+
 const Stack = createNativeStackNavigator();
 
 export default function App() {
@@ -106,6 +108,11 @@ export default function App() {
   const Auth = () => {
     return (
       <Stack.Navigator initialRouteName="StartScreen">
+        <Stack.Screen
+          name="CameraScreen"
+          component={CameraScreen}
+          options={{ headerShown: false }}
+        />
         <Stack.Screen
           name="StartScreen"
           component={StartSection}
