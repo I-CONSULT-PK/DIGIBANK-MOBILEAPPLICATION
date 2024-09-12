@@ -2,9 +2,7 @@ import React from "react";
 import {
   Text,
   View,
-  ScrollView,
   TouchableOpacity,
-  Image,
   Dimensions,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
@@ -16,6 +14,7 @@ import Jazz from "../../../assets/Jazz.png";
 import Telenor from "../../../assets/Telenor.png";
 import Ufone from "../../../assets/Ufone.png";
 import Zong from "../../../assets/Zong.png";
+import Footer from "../../../components/Footer";
 
 const Top_up_List = () => {
   const navigation = useNavigation();
@@ -38,46 +37,46 @@ const Top_up_List = () => {
             <Text className="text-white text-lg font-bold">Mobile Top ups</Text>
           </View>
         </View>
-        <View className="px-4">
-          <View className="mt-8">
-            <OptionBox
-              // image={{ uri: bank.bankLogo }}
-              image={Jazz}
-              text="Jazz"
-              icon1="arrowright"
-              iconColor1={Color.PrimaryWebOrient}
-              onPress1={() => navigation.navigate("Add_Biller")}
-            />
-            <View className="my-3 w-full border-b border-gray-300" />
 
-            <OptionBox
-              // image={{ uri: bank.bankLogo }}
-              image={Telenor}
-              text="Telenor"
-              icon1="arrowright"
-              iconColor1={Color.PrimaryWebOrient}
-              onPress1={() => navigation.navigate("")}
-            />
-            <View className="my-3 w-full border-b border-gray-300" />
-            <OptionBox
-              image={Ufone}
-              text="Ufone"
-              icon1="arrowright"
-              iconColor1={Color.PrimaryWebOrient}
-              onPress1={() => navigation.navigate("")}
-            />
-            <View className="my-3 w-full border-b border-gray-300" />
-            <OptionBox
-              image={Zong}
-              text="Zong"
-              icon1="arrowright"
-              iconColor1={Color.PrimaryWebOrient}
-              onPress1={() => navigation.navigate("")}
-            />
-            <View className="my-3 w-full border-b border-gray-300" />
-          </View>
+        <View className=" px-4 mt-8">
+          <OptionBox
+            // image={{ uri: bank.bankLogo }}
+            image={Jazz}
+            text="Jazz"
+            icon1="arrowright"
+            iconColor1={Color.PrimaryWebOrient}
+            onPress1={() => navigation.navigate("Add_Biller")}
+          />
+          <View className="my-3 w-full border-b border-gray-300" />
+
+          <OptionBox
+            // image={{ uri: bank.bankLogo }}
+            image={Telenor}
+            text="Telenor"
+            icon1="arrowright"
+            iconColor1={Color.PrimaryWebOrient}
+            onPress1={() => navigation.navigate("")}
+          />
+          <View className="my-3 w-full border-b border-gray-300" />
+          <OptionBox
+            image={Ufone}
+            text="Ufone"
+            icon1="arrowright"
+            iconColor1={Color.PrimaryWebOrient}
+            onPress1={() => navigation.navigate("")}
+          />
+          <View className="my-3 w-full border-b border-gray-300" />
+          <OptionBox
+            image={Zong}
+            text="Zong"
+            icon1="arrowright"
+            iconColor1={Color.PrimaryWebOrient}
+            onPress1={() => navigation.navigate("")}
+          />
+          <View className="my-3 w-full border-b border-gray-300" />
         </View>
       </View>
+      <Footer/>
     </SafeAreaView>
   );
 };

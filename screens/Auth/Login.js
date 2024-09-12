@@ -1,4 +1,4 @@
-import React, { useState, useContext,useEffect } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import {
   Dimensions,
   ScrollView,
@@ -11,7 +11,7 @@ import {
   Modal,
   Image,
   KeyboardAvoidingView,
-  Keyboard
+  Keyboard,
 } from "react-native";
 import {
   widthPercentageToDP as wp,
@@ -27,109 +27,120 @@ import { AppLoaderContext } from "../../components/LoaderHOC";
 import PinCode from "./PinCode";
 import { useNavigation } from "@react-navigation/native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { LinearGradient } from 'expo-linear-gradient';
-import { StatusBar } from 'expo-status-bar';
-import AntDesign from '@expo/vector-icons/AntDesign';
-import axios from 'axios';
-import API_BASE_URL from '../../config';
-import * as LocalAuthentication from 'expo-local-authentication'; // Import for Expo
-import * as Device from 'expo-device';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { v4 as uuidv4 } from 'uuid'; // If you are using UUID for visitor ID generation
- 
+import { LinearGradient } from "expo-linear-gradient";
+import { StatusBar } from "expo-status-bar";
+import AntDesign from "@expo/vector-icons/AntDesign";
+import axios from "axios";
+import API_BASE_URL from "../../config";
+import * as LocalAuthentication from "expo-local-authentication"; // Import for Expo
+import * as Device from "expo-device";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { v4 as uuidv4 } from "uuid"; // If you are using UUID for visitor ID generation
+
 const Login = ({ navigation }) => {
-  const [form, setForm] = useState({ username: '', password: '' });
+  const [form, setForm] = useState({ username: "", password: "" });
   const [loading, setLoading] = useState(false);
- 
+
   const handleChange = (name, value) => {
     setForm({
       ...form,
       [name]: value,
     });
   };
- 
+
   const handleLogin = async () => {
-    if (form.username === '' || form.password === '') {
-      Alert.alert('Error', 'Username and password cannot be null');
+    if (form.username === "" || form.password === "") {
+      Alert.alert("Error", "Username and password cannot be null");
       return;
     }
-  
+
     const loginData = {
       emailorUsername: form.username,
-      password: form.password
+      password: form.password,
     };
 
     setLoading(true);
-  
+
     try {
-      const response = await axios.post(`${API_BASE_URL}/v1/customer/login`, loginData, { timeout: 10000 });
+      const response = await axios.post(
+        `${API_BASE_URL}/v1/customer/login`,
+        loginData,
+        { timeout: 10000 }
+      );
       const dto = response.data;
-  
+
       if (dto && dto.success && dto.data && dto.data.customerId) {
         const customerId = dto.data.customerId.toString();
         const token = dto.data.token.toString();
         const expirationTime = dto.data.expirationTime.toString();
-  
-        await AsyncStorage.setItem('customerId', customerId);
-        await AsyncStorage.setItem('token', token);
-        await AsyncStorage.setItem('expirationTime', expirationTime);
-  
-        navigation.navigate('Home');
+
+        await AsyncStorage.setItem("customerId", customerId);
+        await AsyncStorage.setItem("token", token);
+        await AsyncStorage.setItem("expirationTime", expirationTime);
+
+        navigation.navigate("Home");
       } else {
-        const message = dto.message || (dto.errors && dto.errors.length > 0 ? dto.errors.join(", ") : "Unknown error");
-        Alert.alert('Error', message);
+        const message =
+          dto.message ||
+          (dto.errors && dto.errors.length > 0
+            ? dto.errors.join(", ")
+            : "Unknown error");
+        Alert.alert("Error", message);
       }
     } catch (error) {
       console.error("Login error:", error); // Log detailed error
-  
+
       if (error.response) {
         // Server responded with a status code outside the range of 2xx
         const statusCode = error.response.status;
         const errorMessage = error.response.data.message || error.message;
-  
+
         if (statusCode === 404) {
-          Alert.alert('Error', 'Server timed out. Try again later!');
+          Alert.alert("Error", "Server timed out. Try again later!");
         } else if (statusCode === 503) {
-          Alert.alert('Error', 'Service unavailable. Please try again later.');
+          Alert.alert("Error", "Service unavailable. Please try again later.");
         } else if (statusCode === 400) {
-          Alert.alert('Error', errorMessage);
+          Alert.alert("Error", errorMessage);
         } else {
-          Alert.alert('Error', 'An unexpected error occurred: ' + errorMessage);
+          Alert.alert("Error", "An unexpected error occurred: " + errorMessage);
         }
       } else if (error.request) {
         // Request was made but no response received
-        Alert.alert('Error', 'No response from the server. Please check your connection.');
+        Alert.alert(
+          "Error",
+          "No response from the server. Please check your connection."
+        );
       } else {
         // Something went wrong in setting up the request
-        Alert.alert('Error', 'Error setting up request: ' + error.message);
+        Alert.alert("Error", "Error setting up request: " + error.message);
       }
     } finally {
       setLoading(false);
     }
   };
- 
+
   const securityImages1 = [
-    require('../../assets/security-img-1.png'),
-    require('../../assets/security-img-2.png'),
-    require('../../assets/security-img-3.png'),
-    require('../../assets/security-img-4.png'),
-    require('../../assets/security-img-5.png'),
-  ];
- 
-  const securityImages2 = [
-    require('../../assets/security-img-6.png'),
-    require('../../assets/security-img-7.png'),
-    require('../../assets/security-img-8.png'),
-    require('../../assets/security-img-9.png'),
-    require('../../assets/security-img-10.png'),
+    require("../../assets/security-img-1.png"),
+    require("../../assets/security-img-2.png"),
+    require("../../assets/security-img-3.png"),
+    require("../../assets/security-img-4.png"),
+    require("../../assets/security-img-5.png"),
   ];
 
-    const [isEnabled, setIsEnabled] = useState(false);
-    const [biometricData, setBiometricData] = useState(null);
-    const [visitorId, setVisitorId] = useState(null);
-    const [modalVisible, setModalVisible] = useState(false);
-    const [modalVisible1, setModalVisible1] = useState(false);
-    const [error1, setError1] = useState("");
+  const securityImages2 = [
+    require("../../assets/security-img-6.png"),
+    require("../../assets/security-img-7.png"),
+    require("../../assets/security-img-8.png"),
+    require("../../assets/security-img-9.png"),
+    require("../../assets/security-img-10.png"),
+  ];
+
+  const [isEnabled, setIsEnabled] = useState(false);
+  const [biometricData, setBiometricData] = useState(null);
+  const [visitorId, setVisitorId] = useState(null);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [modalVisible1, setModalVisible1] = useState(false);
+  const [error1, setError1] = useState("");
 
   const handlePress = async () => {
     if (!isEnabled) {
@@ -159,14 +170,15 @@ const Login = ({ navigation }) => {
           console.log("OS Version:", Device.osVersion);
           // console.log("Visitor ID:", newVisitorId);
 
-          navigation.navigate('Home');
+          navigation.navigate("Home");
         } else {
-          if (result.error === 'user_cancel') {
-            setError1("User canceled the authentication request!")
+          if (result.error === "user_cancel") {
+            setError1("User canceled the authentication request!");
             setModalVisible1(true);
-          }
-          else {
-            setError1("No fingerprint enrolled. Please enroll your fingerprint!")
+          } else {
+            setError1(
+              "No fingerprint enrolled. Please enroll your fingerprint!"
+            );
             setModalVisible1(true);
           }
         }
@@ -186,7 +198,7 @@ const Login = ({ navigation }) => {
       console.log("Biometric Data Reset");
     }
   };
- 
+
   return (
     <SafeAreaView className="h-full flex-1">
       <LinearGradient
@@ -311,7 +323,8 @@ const Login = ({ navigation }) => {
                   text="Login"
                   width="w-[100%]"
                   styles="mb-4 py-4"
-                  onPress={handleLogin}
+                  // onPress={handleLogin}
+                  onPress={() => navigation.navigate("Home")}
                   loading={loading}
                 />
 
@@ -385,7 +398,7 @@ const Login = ({ navigation }) => {
         >
           <View className="bg-white p-5 rounded-lg w-11/12 max-w-xs justify-center items-center ">
             <Image
-              source={require("../../assets/alerrt-icon.png")} 
+              source={require("../../assets/alerrt-icon.png")}
               className="w-16 h-14 mb-4"
             />
             <Text className="text-lg font-bold mb-2">Alert Notification</Text>
@@ -427,13 +440,11 @@ const Login = ({ navigation }) => {
         >
           <View className="bg-white p-5 rounded-lg w-11/12 max-w-xs justify-center items-center ">
             <Image
-              source={require("../../assets/alerrt-icon.png")} 
+              source={require("../../assets/alerrt-icon.png")}
               className="w-16 h-14 mb-4"
             />
             <Text className="text-lg font-bold mb-2">Alert Notification</Text>
-            <Text className="text-center text-gray-500 mb-6">
-              {error1} 
-            </Text>
+            <Text className="text-center text-gray-500 mb-6">{error1}</Text>
             <View className="flex-row justify-between">
               <TouchableOpacity
                 onPress={() => setModalVisible1(false)}
@@ -459,13 +470,12 @@ const Login = ({ navigation }) => {
     </SafeAreaView>
   );
 };
- 
+
 const styles = StyleSheet.create({
   loader: {
     width: wp("20%"),
     height: wp("20%"),
   },
 });
- 
+
 export default Login;
- 

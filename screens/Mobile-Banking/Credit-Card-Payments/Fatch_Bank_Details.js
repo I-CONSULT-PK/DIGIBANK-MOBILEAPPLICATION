@@ -13,6 +13,7 @@ import { AntDesign, Entypo } from "@expo/vector-icons";
 import { Color } from "../../../GlobalStyles";
 import TextInput from "../../../components/TextInput";
 import CustomButton from "../../../components/Button";
+import Footer from "../../../components/Footer";
 const Fatch_Bank_Details = () => {
   const navigation = useNavigation();
   const { width } = Dimensions.get("window");
@@ -97,6 +98,7 @@ const Fatch_Bank_Details = () => {
           </View>
         </View>
       </View>
+      <Footer/>
     </SafeAreaView>
   );
 };

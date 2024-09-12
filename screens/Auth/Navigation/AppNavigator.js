@@ -4,13 +4,11 @@ import { NavigationContainer } from "@react-navigation/native";
 import HomeScreen from "../../HomeScreen";
 import OTP_Signup from "../OTP_Signup";
 import OTP from "../OTP";
-
 import StartSection from "../../Auth/StartSection";
 import Login from "../Login";
 import Registration from "../Registration";
 import Sidebar from "../../Sidebar";
 import Card from "../../Card";
-import AccountSetting from "../../AccountSetting";
 import NameChange from "../../Namechange";
 import PasswordChange from "../../PasswordChange";
 import EmailChange from "../../EmailChange";
@@ -85,6 +83,12 @@ import Fatch_Other_Bank_Details from "../../Mobile-Banking/Credit-Card-Payments/
 import Top_up_List from "../../Mobile-Banking/Mobile-Top-Up/Top-up-List";
 import Add_Biller from "../../Mobile-Banking/Mobile-Top-Up/Add_Biller";
 import SelectOption_Top_up from "../../Mobile-Banking/Mobile-Top-Up/SelectOption_Top_up";
+import Packages from "../../Mobile-Banking/Mobile-Top-Up/Packages";
+import Enter_No_Top_up from "../../Mobile-Banking/Mobile-Top-Up/Enter_No_Top_up";
+import Fatch_Details from "../../Mobile-Banking/Mobile-Top-Up/Fatch_Details";
+import To_Up_Transfer from "../../Mobile-Banking/Mobile-Top-Up/To_Up_Transfer";
+import Account from "../../Mobile-Banking/Account/Account";
+import Update_Profile from "../../Mobile-Banking/Account-Setting/Update_Profile";
 const Stack = createStackNavigator();
 
 const AppNavigator = () => {
@@ -148,11 +152,7 @@ const AppNavigator = () => {
         <Stack.Screen name="PayNow" component={PayNow} />
 
         {/* Beneficiary Module  end*/}
-
-        {/* Account Settings start */}
         <Stack.Screen name="LimitManagement" component={LimitManagement} />
-        {/* Account Settings end */}
-
         <Stack.Screen
           name="SelectApplyOptionCard"
           component={SelectApplyOptionCard}
@@ -171,7 +171,6 @@ const AppNavigator = () => {
           component={SupplementaryCardLimitSplit}
         />
 
-        <Stack.Screen name="AccountSetting" component={AccountSetting} />
         <Stack.Screen
           name="Account_Setting_List"
           component={Account_Setting_List}
@@ -194,8 +193,12 @@ const AppNavigator = () => {
         <Stack.Screen name="Top_up_List" component={Top_up_List} />
         <Stack.Screen name="Add_Biller" component={Add_Biller} />
         <Stack.Screen name="SelectOption_Top_up" component={SelectOption_Top_up} />
-
-
+        <Stack.Screen name="Mobile_Packages" component={Packages} />
+        <Stack.Screen name="Enter_No_Top_up" component={Enter_No_Top_up} />
+        <Stack.Screen name="Fatch_Details_Top_up" component={Fatch_Details} />
+        <Stack.Screen name="To_Up_Transfer" component={To_Up_Transfer} />
+        <Stack.Screen name="Account_Balance" component={Account} />
+        <Stack.Screen name="Update_Profile" component={Update_Profile} />
 
         <Stack.Screen name="NumberChange" component={NameChange} />
         <Stack.Screen name="PasswordChange" component={PasswordChange} />

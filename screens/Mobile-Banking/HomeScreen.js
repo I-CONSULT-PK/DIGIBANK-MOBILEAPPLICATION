@@ -585,9 +585,10 @@ const HomeScreen = () => {
           navigation.navigate("SelectCards");
           break;
         case "Top up":
-          navigation.navigate("Top_up_List");
+          navigation.navigate("SelectOption_Top_up");
           break;
         case "Accounts":
+          navigation.navigate("Account_Balance");
           break;
         case "QR Payments":
           break;
@@ -815,7 +816,7 @@ const HomeScreen = () => {
     const isDebitCard = !card.isCreditCard;
 
     return (
-      <List.AccordionGroup className="my-2">
+      <List.AccordionGroup className="my-2" key={card.cardId}>
         <List.Accordion
           id={card.cardId}
           key={card.cardId}
