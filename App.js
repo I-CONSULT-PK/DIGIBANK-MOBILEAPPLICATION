@@ -10,7 +10,6 @@ import OTP from "./screens/Auth/OTP";
 import SplashScreen from "./screens/Auth/SplashScreen";
 import Sidebar from "./screens/Mobile-Banking/Account-Setting/Sidebar";
 import Card from "./screens/Mobile-Banking/Card/Card";
-import AccountSetting from "./screens/E-Wallet/Account-Setting/AccountSetting";
 import PersonalWallet from "./screens//E-Wallet/Wallet";
 import NameChange from "./screens/E-Wallet/Account-Setting/Namechange";
 import PasswordChange from "./screens/E-Wallet/Account-Setting/PasswordChange";
@@ -89,6 +88,12 @@ import Fatch_Other_Bank_Details from "./screens/Mobile-Banking/Credit-Card-Payme
 import Top_up_List from "./screens/Mobile-Banking/Mobile-Top-Up/Top-up-List";
 import Add_Biller from "./screens/Mobile-Banking/Mobile-Top-Up/Add_Biller";
 import SelectOption_Top_up from "./screens/Mobile-Banking/Mobile-Top-Up/SelectOption_Top_up";
+import Packages from "./screens/Mobile-Banking/Mobile-Top-Up/Packages";
+import Enter_No_Top_up from "./screens/Mobile-Banking/Mobile-Top-Up/Enter_No_Top_up";
+import Fatch_Details from "./screens/Mobile-Banking/Mobile-Top-Up/Fatch_Details";
+import To_Up_Transfer from "./screens/Mobile-Banking/Mobile-Top-Up/To_Up_Transfer";
+import Account from "./screens/Mobile-Banking/Account/Account";
+import Update_Profile from "./screens/Mobile-Banking/Account-Setting/Update_Profile";
 const Stack = createNativeStackNavigator();
 
 export default function App() {
@@ -222,6 +227,7 @@ export default function App() {
           options={{ headerShown: false }}
         />
         {/* Beneficiary Module end */}
+        {/* Account Settings start */}
         <Stack.Screen
           name="Bill_Payment_List"
           component={Bill_Payment_List}
@@ -249,16 +255,7 @@ export default function App() {
         />
 
         {/* Account Settings start */}
-        <Stack.Screen
-          name="AccountSetting"
-          component={AccountSetting}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name="LimitManagement"
-          component={LimitManagement}
-          options={{ headerShown: false }}
-        />
+
         <Stack.Screen
           name="Card_Payment_List"
           component={Card_Payment_List}
@@ -290,6 +287,11 @@ export default function App() {
           options={{ headerShown: false }}
         />
         <Stack.Screen
+          name="Enter_No_Top_up"
+          component={Enter_No_Top_up}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
           name="Add_Biller"
           component={Add_Biller}
           options={{ headerShown: false }}
@@ -297,6 +299,38 @@ export default function App() {
         <Stack.Screen
           name="SelectOption_Top_up"
           component={SelectOption_Top_up}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="Mobile_Packages"
+          component={Packages}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="To_Up_Transfer"
+          component={To_Up_Transfer}
+          options={{ headerShown: false }}
+        />
+        {/* Account Settings end */}
+
+        <Stack.Screen
+          name="LimitManagement"
+          component={LimitManagement}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="Fatch_Details_Top_up"
+          component={Fatch_Details}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="Account_Balance"
+          component={Account}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="Update_Profile"
+          component={Update_Profile}
           options={{ headerShown: false }}
         />
         {/* Account Settings end */}
@@ -601,12 +635,6 @@ export default function App() {
             />
 
             <Stack.Screen
-              name="AccountSetting"
-              component={AccountSetting}
-              options={{ headerShown: false }}
-            />
-
-            <Stack.Screen
               name="Language"
               component={Language}
               options={{ headerShown: false }}
@@ -674,6 +702,36 @@ export default function App() {
             <Stack.Screen
               name="SelectOption_Top_up"
               component={SelectOption_Top_up}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="Update_Profile"
+              component={Update_Profile}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="Mobile_Packages"
+              component={Packages}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="Enter_No_Top_up"
+              component={Enter_No_Top_up}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="Fatch_Details_Top_up"
+              component={Fatch_Details}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="To_Up_Transfer"
+              component={To_Up_Transfer}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="Account_Balance"
+              component={Account}
               options={{ headerShown: false }}
             />
             <Stack.Screen

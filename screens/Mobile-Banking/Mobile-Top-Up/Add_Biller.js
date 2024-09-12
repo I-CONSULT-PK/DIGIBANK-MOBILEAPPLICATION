@@ -14,6 +14,7 @@ import { AntDesign, Entypo } from "@expo/vector-icons";
 import { Color } from "../../../GlobalStyles";
 import TextInput from "../../../components/TextInput";
 import CustomButton from "../../../components/Button";
+import Footer from "../../../components/Footer";
 
 const Add_Biller = () => {
   const navigation = useNavigation();
@@ -76,12 +77,13 @@ const Add_Biller = () => {
             <View className=" mt-6">
               <CustomButton
                 text={"Next"}
-                onPress={() => navigation.navigate("Set_Card_Payment")}
+                onPress={() => navigation.navigate("Fatch_Details_Top_up")}
               />
             </View>
           </ScrollView>
         </View>
       </View>
+      <Footer/>
     </SafeAreaView>
   );
 };

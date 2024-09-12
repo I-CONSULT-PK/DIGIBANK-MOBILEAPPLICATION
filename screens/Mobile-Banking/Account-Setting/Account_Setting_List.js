@@ -58,7 +58,7 @@ const Account_Setting_List = () => {
       id: 7,
       title: "Update Profile",
       image: require("../../../assets/Update Profile.png"),
-      link: "UpdateProfileScreen",
+      link: "Update_Profile",
     },
     {
       id: 8,

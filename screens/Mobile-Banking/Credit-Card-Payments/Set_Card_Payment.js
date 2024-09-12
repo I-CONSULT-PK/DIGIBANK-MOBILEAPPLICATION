@@ -13,6 +13,7 @@ import { Entypo, AntDesign } from "@expo/vector-icons";
 import { Color } from "../../../GlobalStyles";
 import TextInput from "../../../components/TextInput";
 import CustomButton from "../../../components/Button";
+import Footer from "../../../components/Footer";
 const Set_Card_Payment = () => {
   const navigation = useNavigation();
   const { width } = Dimensions.get("window");
@@ -128,6 +129,7 @@ const Set_Card_Payment = () => {
           </View>
         </ScrollView>
       </View>
+      <Footer/>
     </SafeAreaView>
   );
 };

@@ -12,6 +12,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Entypo } from "@expo/vector-icons";
 import { Color } from "../../../GlobalStyles";
 import { Divider } from "react-native-paper";
+import Footer from "../../../components/Footer";
 const Card_Payment_Transfer = () => {
   const navigation = useNavigation();
   const { width } = Dimensions.get("window");
@@ -125,6 +126,7 @@ const Card_Payment_Transfer = () => {
           </View>
         </View>
       </View>
+      <Footer/>
     </SafeAreaView>
   );
 };

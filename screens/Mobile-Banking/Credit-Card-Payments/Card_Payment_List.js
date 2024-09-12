@@ -14,6 +14,7 @@ import { Color } from "../../../GlobalStyles";
 import OptionBox from "../../../components/OptionBox";
 import Digi_bank  from "../../../assets/digi-bank.png";
 import Other_bank  from "../../../assets/Other-bank.png";
+import Footer from "../../../components/Footer";
 
 const Card_Payment_List = () => {
   const navigation = useNavigation();
@@ -63,6 +64,7 @@ const Card_Payment_List = () => {
           </View>
         </View>
       </View>
+      <Footer/>
     </SafeAreaView>
   );
 };
