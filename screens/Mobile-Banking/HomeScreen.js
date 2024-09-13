@@ -635,8 +635,7 @@ const HomeScreen = () => {
         const userDetails = {
           firstName: response.data.data.firstName || "User",
           lastName: response.data.data.lastName || "Name",
-          defaultAccountBalance:
-            response.data.data.defaultAccountBalance || "N/A",
+          defaultAccountBalance: response.data.data.defaultAccountBalance || "N/A",
           accountNumber: response.data.data.accountNumber || "N/A",
           accountType: response.data.data.accountType || "N/A",
         };
