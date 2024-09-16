@@ -308,7 +308,7 @@ const Registration = ({ route }) => {
           );
           const dto = response.data;
 
-          if (dto && dto.success && dto.data) {
+          if (dto && dto.success) {
             Alert.alert("Success", dto.message);
 
             setTimeout(() => {
@@ -612,8 +612,8 @@ const Registration = ({ route }) => {
                     text="Next"
                     width="w-[100%]"
                     styles="mb-4 py-4"
-                    onPress={handleNext}
-                    // onPress={() => navigation.navigate('ChooseSecurity')}
+                    // onPress={handleNext}
+                    onPress={() => navigation.navigate('ChooseSecurity')}
                     loading={nextLoading}
                   />
 

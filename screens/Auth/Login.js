@@ -19,9 +19,10 @@ import {
 } from "react-native-responsive-screen";
 import Input from "../../components/TextInput";
 import InputWithIcon from "../../components/TextInputWithIcon";
+import MainImage from "../../assets/Images/MainImage.svg";
 import { Color } from "../../GlobalStyles";
 import { Entypo } from "@expo/vector-icons";
-import CustomButton from "../../components/Button";
+import Button from "../../components/Button";
 import { AppLoaderContext } from "../../components/LoaderHOC";
 import PinCode from "./PinCode";
 import { useNavigation } from "@react-navigation/native";
@@ -31,25 +32,14 @@ import { StatusBar } from "expo-status-bar";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import axios from "axios";
 import API_BASE_URL from "../../config";
-import * as LocalAuthentication from "expo-local-authentication";
+import * as LocalAuthentication from "expo-local-authentication"; // Import for Expo
 import * as Device from "expo-device";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { v4 as uuidv4 } from "uuid";
-import LoaderComponent from "../../components/LoaderComponent"; // Import the LoaderComponent
+import { v4 as uuidv4 } from "uuid"; // If you are using UUID for visitor ID generation
 
 const Login = ({ navigation }) => {
-  const [selectedOption, setSelectedOption] = useState("mobile");
-  const sw = Dimensions.get("screen").width;
-  const sh = Dimensions.get("screen").height;
-  const [emailorUsername, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const { showLoader, hideLoader } = useContext(AppLoaderContext);
-  const [pinCodeModalVisible, setPinCodeModalVisible] = useState(false);
   const [form, setForm] = useState({ username: "", password: "" });
-  const [isEnabled, setIsEnabled] = useState(false);
-  const [biometricData, setBiometricData] = useState(null);
-  const [visitorId, setVisitorId] = useState(null);
-  const [modalVisible, setModalVisible] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (name, value) => {
     setForm({
@@ -69,7 +59,7 @@ const Login = ({ navigation }) => {
       password: form.password,
     };
 
-    showLoader();
+    setLoading(true);
 
     try {
       const response = await axios.post(
@@ -125,20 +115,43 @@ const Login = ({ navigation }) => {
         Alert.alert("Error", "Error setting up request: " + error.message);
       }
     } finally {
-      hideLoader();
+      setLoading(false);
     }
   };
+
+  const securityImages1 = [
+    require("../../assets/security-img-1.png"),
+    require("../../assets/security-img-2.png"),
+    require("../../assets/security-img-3.png"),
+    require("../../assets/security-img-4.png"),
+    require("../../assets/security-img-5.png"),
+  ];
+
+  const securityImages2 = [
+    require("../../assets/security-img-6.png"),
+    require("../../assets/security-img-7.png"),
+    require("../../assets/security-img-8.png"),
+    require("../../assets/security-img-9.png"),
+    require("../../assets/security-img-10.png"),
+  ];
+
+  const [isEnabled, setIsEnabled] = useState(false);
+  const [biometricData, setBiometricData] = useState(null);
+  const [visitorId, setVisitorId] = useState(null);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [modalVisible1, setModalVisible1] = useState(false);
+  const [error1, setError1] = useState("");
 
   const handlePress = async () => {
     if (!isEnabled) {
       try {
         const result = await LocalAuthentication.authenticateAsync();
         if (result.success) {
-          const newVisitorId = uuidv4(); // Generate a new unique ID
-          setVisitorId(newVisitorId); // Set the visitor ID in state
+          // const newVisitorId = uuidv4(); // Generate a new unique ID
+          // setVisitorId(newVisitorId); // Set the visitor ID in state
 
-          // Store the visitor ID locally
-          await AsyncStorage.setItem("visitorId", newVisitorId);
+          // // Store the visitor ID locally
+          // await AsyncStorage.setItem("visitorId", newVisitorId);
 
           setIsEnabled(true);
           setBiometricData({
@@ -146,7 +159,7 @@ const Login = ({ navigation }) => {
             modelName: Device.modelName,
             osName: Device.osName,
             osVersion: Device.osVersion,
-            visitorId: newVisitorId,
+            // visitorId: newVisitorId,
           });
 
           // Console log the device and biometric info
@@ -155,48 +168,36 @@ const Login = ({ navigation }) => {
           console.log("Model Name:", Device.modelName);
           console.log("OS Name:", Device.osName);
           console.log("OS Version:", Device.osVersion);
-          console.log("Visitor ID:", newVisitorId);
+          // console.log("Visitor ID:", newVisitorId);
 
           navigation.navigate("Home");
         } else {
-          Alert.alert("Authentication failed", result.error);
+          if (result.error === "user_cancel") {
+            setError1("User canceled the authentication request!");
+            setModalVisible1(true);
+          } else {
+            setError1(
+              "No fingerprint enrolled. Please enroll your fingerprint!"
+            );
+            setModalVisible1(true);
+          }
         }
       } catch (error) {
-        Alert.alert("Error", error.message);
+        setError1(error.message);
+        setModalVisible1(true);
       }
     } else {
       setIsEnabled(false);
       setBiometricData(null);
-      setVisitorId(null);
+      // setVisitorId(null);
 
       // Remove the visitor ID from local storage
-      await AsyncStorage.removeItem("visitorId");
+      // await AsyncStorage.removeItem("visitorId");
 
       // Console log the biometric data reset
       console.log("Biometric Data Reset");
     }
   };
-
-  useEffect(() => {
-    const checkBiometricSupport = async () => {
-      const hasHardware = await LocalAuthentication.hasHardwareAsync();
-      const isEnrolled = await LocalAuthentication.isEnrolledAsync();
-
-      // if (!hasHardware) {
-      //   Alert.alert(
-      //     "Error",
-      //     "Biometric authentication is not available on this device."
-      //   );
-      // } else if (!isEnrolled) {
-      //   Alert.alert(
-      //     "Error",
-      //     "No biometric authentication is set up on this device."
-      //   );
-      // }
-    };
-
-    checkBiometricSupport();
-  }, []);
 
   return (
     <SafeAreaView className="h-full flex-1">
@@ -206,7 +207,7 @@ const Login = ({ navigation }) => {
       >
         <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
           <View className="flex-row items-center p-4 mt-2">
-            <TouchableOpacity onPress={() => navigation.navigate("StartScreen")}>
+            <TouchableOpacity onPress={() => navigation.goBack()}>
               <AntDesign name="arrowleft" size={20} color="white" />
             </TouchableOpacity>
             <Text className="text-white font-semibold text-lg ml-4 font-InterSemiBold">
@@ -279,13 +280,52 @@ const Login = ({ navigation }) => {
                 </View>
               </View>
 
+              {/* -----| Security Image Start |----- */}
+
+              {/* <View className="-top-2">
+                  <Text className="text-center font-medium text-sm mb-4 font-InterMedium">Select Security Image</Text>
+ 
+                  <View className="flex-row justify-around items-center">
+                    {securityImages1.map((image, index) => (
+                      <TouchableOpacity
+                        key={index}
+                        className="p-3 rounded shadow-md shadow-slate-600 justify-center items-center bg-white"
+                      >
+                        <Image
+                          source={image}
+                          resizeMode="contain"
+                          className="w-6 h-6"
+                        />
+                      </TouchableOpacity>
+                    ))}
+                  </View>
+ 
+                  <View className="flex-row justify-around items-center mt-3.5">
+                    {securityImages2.map((image, index) => (
+                      <TouchableOpacity
+                        key={index}
+                        className="p-3 rounded shadow-md shadow-slate-600 justify-center items-center bg-white"
+                      >
+                        <Image
+                          source={image}
+                          resizeMode="contain"
+                          className="w-6 h-6"
+                        />
+                      </TouchableOpacity>
+                    ))}
+                  </View>
+                </View> */}
+
+              {/* -----| Security Image End |----- */}
+
               <View className="mb-2">
-                <CustomButton
+                <Button
                   text="Login"
                   width="w-[100%]"
                   styles="mb-4 py-4"
                   // onPress={handleLogin}
                   onPress={() => navigation.navigate("Home")}
+                  loading={loading}
                 />
 
                 <View className="flex-row justify-center">
@@ -304,9 +344,10 @@ const Login = ({ navigation }) => {
                   </TouchableOpacity>
                 </View>
               </View>
-
+              {/* Centered Touch ID and Face ID buttons */}
               <View className="flex justify-center items-center ">
                 <View className="flex flex-row space-x-4">
+                  {/* Touch ID Button */}
                   <TouchableOpacity
                     className="flex flex-col items-center"
                     onPress={handlePress}
@@ -322,6 +363,7 @@ const Login = ({ navigation }) => {
                     </Text>
                   </TouchableOpacity>
 
+                  {/* Face ID Button */}
                   <TouchableOpacity
                     className="flex flex-col items-center"
                     onPress={() => setModalVisible(true)}
@@ -342,9 +384,8 @@ const Login = ({ navigation }) => {
           </View>
         </ScrollView>
       </LinearGradient>
+
       <StatusBar backgroundColor={Color.PrimaryWebOrient} style="light" />
-      {/* <LoaderComponent visible={showLoader} /> */}
-      {/* Show loader when necessary */}
       <Modal
         transparent={true}
         visible={modalVisible}
@@ -372,7 +413,7 @@ const Login = ({ navigation }) => {
               >
                 <Text className="text-center text-black text-base">Cancel</Text>
               </TouchableOpacity>
-              <CustomButton
+              <Button
                 text="Ok"
                 onPress={() => {
                   setModalVisible(false);
@@ -387,8 +428,54 @@ const Login = ({ navigation }) => {
           </View>
         </View>
       </Modal>
+      <Modal
+        transparent={true}
+        visible={modalVisible1}
+        animationType="slide"
+        onRequestClose={() => setModalVisible1(false)}
+      >
+        <View
+          className="flex-1 justify-center items-center"
+          style={{ backgroundColor: "rgba(0, 0, 0, 0.7)" }}
+        >
+          <View className="bg-white p-5 rounded-lg w-11/12 max-w-xs justify-center items-center ">
+            <Image
+              source={require("../../assets/alerrt-icon.png")}
+              className="w-16 h-14 mb-4"
+            />
+            <Text className="text-lg font-bold mb-2">Alert Notification</Text>
+            <Text className="text-center text-gray-500 mb-6">{error1}</Text>
+            <View className="flex-row justify-between">
+              <TouchableOpacity
+                onPress={() => setModalVisible1(false)}
+                className="flex-1 bg-white border border-gray-300 rounded-lg py-2 mr-2 items-center justify-center"
+              >
+                <Text className="text-center text-black text-base">Cancel</Text>
+              </TouchableOpacity>
+              <Button
+                text="Ok"
+                onPress={() => {
+                  setModalVisible1(false);
+                }}
+                width="w-32"
+                backgroundColor="#1D4ED8"
+                textColor="#FFF"
+                fontSize="text-sm"
+                styles="mr-4"
+              />
+            </View>
+          </View>
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 };
+
+const styles = StyleSheet.create({
+  loader: {
+    width: wp("20%"),
+    height: wp("20%"),
+  },
+});
 
 export default Login;

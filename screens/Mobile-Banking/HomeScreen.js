@@ -482,6 +482,7 @@ import {
   Easing,
   TextInput,
   ImageBackground,
+  Alert
 } from "react-native";
 import { Color } from "../../GlobalStyles";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -584,12 +585,15 @@ const HomeScreen = () => {
           navigation.navigate("SelectCards");
           break;
         case "Top up":
+          navigation.navigate("SelectOption_Top_up");
           break;
         case "Accounts":
+          navigation.navigate("Account_Balance");
           break;
         case "QR Payments":
           break;
-        case "Utilty Pay":
+        case "Utility Pay":
+            navigation.navigate("Bill_Payment_List")
           break;
           case "Statement":
             navigation.navigate("Account_Statements"); 
@@ -994,9 +998,9 @@ const HomeScreen = () => {
           <View className="flex flex-col justify-center items-center">
             {/* First Row */}
             <View className="flex-row justify-between mb-4">
-              {["Transfer", "Payment", "My Payees"].map((item) => (
+              {["Transfer", "Payment", "My Payees"].map((item, index) => (
                 <TouchableOpacity
-                  key={item}
+                  key={index}
                   onPress={() => handlePressMenu(item)}
                 >
                   <View
@@ -1041,9 +1045,9 @@ const HomeScreen = () => {
 
             {/* Second Row */}
             <View className="flex-row justify-between mb-4">
-              {["Cards", "Top up", "Accounts"].map((item) => (
+              {["Cards", "Top up", "Accounts"].map((item, index) => (
                 <TouchableOpacity
-                  key={item}
+                  key={index}
                   onPress={() => handlePressMenu(item)}
                 >
                   <View
@@ -1076,9 +1080,9 @@ const HomeScreen = () => {
 
             {/* Third Row */}
             <View className="flex-row justify-between mb-4">
-              {["QR Payments", "Utility Pay", "Statement"].map((item) => (
+              {["QR Payments", "Utility Pay", "Statement"].map((item, index) => (
                 <TouchableOpacity
-                  key={item}
+                  key={index}
                   onPress={() => handlePressMenu(item)}
                 >
                   <View

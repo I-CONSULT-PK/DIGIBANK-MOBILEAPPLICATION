@@ -10,7 +10,6 @@ import OTP from "./screens/Auth/OTP";
 import SplashScreen from "./screens/Auth/SplashScreen";
 import Sidebar from "./screens/Mobile-Banking/Account-Setting/Sidebar";
 import Card from "./screens/Mobile-Banking/Card/Card";
-import AccountSetting from "./screens/E-Wallet/Account-Setting/AccountSetting";
 import PersonalWallet from "./screens//E-Wallet/Wallet";
 import NameChange from "./screens/E-Wallet/Account-Setting/Namechange";
 import PasswordChange from "./screens/E-Wallet/Account-Setting/PasswordChange";
@@ -76,6 +75,25 @@ import SelectLanguage from "./screens/Mobile-Banking/Account-Setting/SelectLangu
 import OTP_Preference from "./screens/Mobile-Banking/Account-Setting/OTP_Preference";
 import Account_Setting_List from "./screens/Mobile-Banking/Account-Setting/Account_Setting_List";
 import LimitManagement from "./screens/Mobile-Banking/Account-Setting/LimitManagement";
+import Bill_Payment_List from "./screens/Mobile-Banking/Bill-Payments/Bill_Payment_List";
+import Bill_Payment_Transfer from "./screens/Mobile-Banking/Bill-Payments/Bill_Payment_Transfer";
+import Fatch_Payment_Details from "./screens/Mobile-Banking/Bill-Payments/Fatch_Payment_Details";
+import Net_Bill_Pyament_List from "./screens/Mobile-Banking/Bill-Payments/Net_Bill_Pyament_List";
+import Set_Payment from "./screens/Mobile-Banking/Bill-Payments/Set_Payment";
+import Card_Payment_List from "./screens/Mobile-Banking/Credit-Card-Payments/Card_Payment_List";
+import Fatch_Bank_Details from "./screens/Mobile-Banking/Credit-Card-Payments/Fatch_Bank_Details";
+import Set_Card_Payment from "./screens/Mobile-Banking/Credit-Card-Payments/Set_Card_Payment";
+import Card_Payment_Transfer from "./screens/Mobile-Banking/Credit-Card-Payments/Card_Payment_Transfer";
+import Fatch_Other_Bank_Details from "./screens/Mobile-Banking/Credit-Card-Payments/Fatch_Other_Bank_Details";
+import Top_up_List from "./screens/Mobile-Banking/Mobile-Top-Up/Top-up-List";
+import Add_Biller from "./screens/Mobile-Banking/Mobile-Top-Up/Add_Biller";
+import SelectOption_Top_up from "./screens/Mobile-Banking/Mobile-Top-Up/SelectOption_Top_up";
+import Packages from "./screens/Mobile-Banking/Mobile-Top-Up/Packages";
+import Enter_No_Top_up from "./screens/Mobile-Banking/Mobile-Top-Up/Enter_No_Top_up";
+import Fatch_Details from "./screens/Mobile-Banking/Mobile-Top-Up/Fatch_Details";
+import To_Up_Transfer from "./screens/Mobile-Banking/Mobile-Top-Up/To_Up_Transfer";
+import Account from "./screens/Mobile-Banking/Account/Account";
+import Update_Profile from "./screens/Mobile-Banking/Account-Setting/Update_Profile";
 const Stack = createNativeStackNavigator();
 
 export default function App() {
@@ -211,13 +229,108 @@ export default function App() {
         {/* Beneficiary Module end */}
         {/* Account Settings start */}
         <Stack.Screen
-          name="AccountSetting"
-          component={AccountSetting}
+          name="Bill_Payment_List"
+          component={Bill_Payment_List}
           options={{ headerShown: false }}
         />
         <Stack.Screen
+          name="Bill_Payment_Transfer"
+          component={Bill_Payment_Transfer}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="Fatch_Payment_Details"
+          component={Fatch_Payment_Details}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="Net_Bill_Pyament_List"
+          component={Net_Bill_Pyament_List}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="Set_Payment"
+          component={Set_Payment}
+          options={{ headerShown: false }}
+        />
+
+        {/* Account Settings start */}
+
+        <Stack.Screen
+          name="Card_Payment_List"
+          component={Card_Payment_List}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="Fatch_Bank_Details"
+          component={Fatch_Bank_Details}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="Set_Card_Payment"
+          component={Set_Card_Payment}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="Card_Payment_Transfer"
+          component={Card_Payment_Transfer}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="Fatch_Other_Bank_Details"
+          component={Fatch_Other_Bank_Details}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="Top_up_List"
+          component={Top_up_List}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="Enter_No_Top_up"
+          component={Enter_No_Top_up}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="Add_Biller"
+          component={Add_Biller}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="SelectOption_Top_up"
+          component={SelectOption_Top_up}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="Mobile_Packages"
+          component={Packages}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="To_Up_Transfer"
+          component={To_Up_Transfer}
+          options={{ headerShown: false }}
+        />
+        {/* Account Settings end */}
+
+        <Stack.Screen
           name="LimitManagement"
           component={LimitManagement}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="Fatch_Details_Top_up"
+          component={Fatch_Details}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="Account_Balance"
+          component={Account}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="Update_Profile"
+          component={Update_Profile}
           options={{ headerShown: false }}
         />
         {/* Account Settings end */}
@@ -256,7 +369,7 @@ export default function App() {
           component={CardActivated}
           options={{ headerShown: false }}
         />
-        
+
         <Stack.Screen
           name="Wallet"
           component={PersonalWallet}
@@ -522,17 +635,105 @@ export default function App() {
             />
 
             <Stack.Screen
-              name="AccountSetting"
-              component={AccountSetting}
-              options={{ headerShown: false }}
-            />
-
-            <Stack.Screen
               name="Language"
               component={Language}
               options={{ headerShown: false }}
             />
-
+            <Stack.Screen
+              name="Bill_Payment_List"
+              component={Bill_Payment_List}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="Bill_Payment_Transfer"
+              component={Bill_Payment_Transfer}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="Fatch_Payment_Details"
+              component={Fatch_Payment_Details}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="Net_Bill_Pyament_List"
+              component={Net_Bill_Pyament_List}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="Set_Payment"
+              component={Set_Payment}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="Card_Payment_List"
+              component={Card_Payment_List}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="Fatch_Bank_Details"
+              component={Fatch_Bank_Details}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="Set_Card_Payment"
+              component={Set_Card_Payment}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="Card_Payment_Transfer"
+              component={Card_Payment_Transfer}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="Fatch_Other_Bank_Details"
+              component={Fatch_Other_Bank_Details}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="Top_up_List"
+              component={Top_up_List}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="Add_Biller"
+              component={Add_Biller}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="SelectOption_Top_up"
+              component={SelectOption_Top_up}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="Update_Profile"
+              component={Update_Profile}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="Mobile_Packages"
+              component={Packages}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="Enter_No_Top_up"
+              component={Enter_No_Top_up}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="Fatch_Details_Top_up"
+              component={Fatch_Details}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="To_Up_Transfer"
+              component={To_Up_Transfer}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="Account_Balance"
+              component={Account}
+              options={{ headerShown: false }}
+            />
             <Stack.Screen
               name="NameChange"
               component={NameChange}

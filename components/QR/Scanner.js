@@ -35,10 +35,8 @@ const ScannerScreen = () => {
   const [recieveMoney, setReceiveMoney] = useState(false);
   const navigation = useNavigation();
   const [selectedTab, setSelectedTab] = useState("staticQR");
-
   const [hasPermissionn, setHasPermissionn] = useState(null);
   const [torchOn, setTorchOn] = useState(false);
-
   const qrCodeRef = useRef();
 
   const fetchUserDetails = async () => {
@@ -124,7 +122,6 @@ const ScannerScreen = () => {
       // Parse the scanned data as JSON
       const accountData = JSON.parse(data);
 
-      // Check if the parsed data has the necessary fields
       if (
         accountData.accountNumber &&
         accountData.beneficiaryName &&

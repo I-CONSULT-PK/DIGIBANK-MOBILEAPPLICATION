@@ -9,79 +9,51 @@ import {
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { LinearGradient } from "expo-linear-gradient";
 import { Entypo } from "@expo/vector-icons";
 import { Color } from "../../../GlobalStyles";
 
-const { width } = Dimensions.get("window");
-
-const Account_Setting_List = () => {
+const Bill_Payment_List = () => {
   const navigation = useNavigation();
+  const { width } = Dimensions.get("window");
+  const horizontalPadding = 16;
   const options = [
     {
       id: 1,
-      title: "Add Account",
-      image: require("../../../assets/Add Account.png"),
+      title: "Electricity",
+      image: require("../../../assets/Electricity.png"),
       link: "AddAccountScreen",
     },
     {
       id: 2,
-      title: "Create Login PIN",
-      image: require("../../../assets/Change login pin.png"),
+      title: "Gas",
+      image: require("../../../assets/Gas.png"),
       link: "CreatePinScreen",
     },
     {
       id: 3,
-      title: "Change Password",
-      image: require("../../../assets/Change Password.png"),
-      link: "ChangePasswordScreen",
+      title: "Internet",
+      image: require("../../../assets/Internet.png"),
+      link: "Net_Bill_Pyament_List",
     },
     {
       id: 4,
-      title: "Limit Management",
-      image: require("../../../assets/Limit Management.png"),
-      link: "LimitManagement",
+      title: "PTCL",
+      image: require("../../../assets/PTCL.png"),
+      link: "LimitManagementScreen",
     },
     {
       id: 5,
-      title: "OTP Preference",
-      image: require("../../../assets/OTP Preference.png"),
+      title: "Water",
+      image: require("../../../assets/water.png"),
       link: "OTP_Preference",
     },
     {
       id: 6,
-      title: "User Activity",
-      image: require("../../../assets/User Activity.png"),
-      link: "UserActivityScreen",
-    },
-    {
-      id: 7,
-      title: "Update Profile",
-      image: require("../../../assets/Update Profile.png"),
-      link: "Update_Profile",
-    },
-    {
-      id: 8,
-      title: "Change Login pin",
-      image: require("../../../assets/Change login pin.png"),
-      link: "ChangeLoginPinScreen",
-    },
-    {
-      id: 9,
-      title: "De-Activate PIN",
-      image: require("../../../assets/De-Activate Login PIN.png"),
-      link: "DeactivatePinScreen",
-    },
-    {
-      id: 10,
-      title: "Enable Biometric ",
-      image: require("../../../assets/Bio Registration.png"),
-      link: "ChooseSecurity",
+      title: "Credit Card",
+      image: require("../../../assets/Credit Card.png"),
+      link: "Card_Payment_List",
     },
   ];
-
-  const horizontalPadding = 16;
-
   return (
     <SafeAreaView className="flex-1">
       <View className="flex-1 bg-white">
@@ -91,17 +63,19 @@ const Account_Setting_List = () => {
         >
           <View className="flex-row items-center justify-center h-full">
             <TouchableOpacity
-               onPress={() => navigation.navigate("Home")}
+              onPress={() => navigation.goBack()}
               className="absolute left-5"
             >
               <Entypo name="chevron-left" size={25} color="white" />
             </TouchableOpacity>
-            <Text className="text-white text-lg font-bold">Settings</Text>
+            <Text className="text-white text-lg font-bold">Bill Payments</Text>
           </View>
         </View>
         <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
           <View className="flex-1 mt-2">
-            
+            <View className="px-4 py-2">
+              <Text className="text-base font-InterSemiBold">Select Bill Type</Text>
+            </View>
             <View className="flex-row flex-wrap justify-center">
               {options.map((option) => (
                 <TouchableOpacity
@@ -130,4 +104,4 @@ const Account_Setting_List = () => {
   );
 };
 
-export default Account_Setting_List;
+export default Bill_Payment_List;

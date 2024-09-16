@@ -63,7 +63,7 @@ const LimitManagement = ({ navigation }) => {
       >
         <View className="flex-row items-center justify-center h-full">
           <TouchableOpacity
-            onPress={() => navigation.goBack()}
+            onPress={() => navigation.navigate("Account_Setting_List")}
             className="absolute left-5"
           >
             <Entypo name="chevron-left" size={25} color="white" />

@@ -18,7 +18,7 @@ import { Color } from "../../GlobalStyles";
 import * as LocalAuthentication from "expo-local-authentication";
 import * as Device from "expo-device";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { v4 as uuidv4 } from "uuid";
+import { v4 as uuidv4 } from 'uuid'; // If you are using UUID for visitor ID generation
 import { StatusBar } from "expo-status-bar";
 
 const RegisterFingerPrint = () => {
@@ -27,36 +27,16 @@ const RegisterFingerPrint = () => {
   const [biometricData, setBiometricData] = useState(null);
   const [visitorId, setVisitorId] = useState(null);
 
-  useEffect(() => {
-    const checkBiometricSupport = async () => {
-      const hasHardware = await LocalAuthentication.hasHardwareAsync();
-      const isEnrolled = await LocalAuthentication.isEnrolledAsync();
-
-      //   if (!hasHardware) {
-      //     Alert.alert(
-      //       "Error",
-      //       "Biometric authentication is not available on this device."
-      //     );
-      //   } else if (!isEnrolled) {
-      //     Alert.alert(
-      //       "Error",
-      //       "No biometric authentication is set up on this device."
-      //     );
-      //   }
-    };
-
-    checkBiometricSupport();
-  }, []);
   const enableBiometricAccess = async () => {
     if (!isEnabled) {
       try {
         const result = await LocalAuthentication.authenticateAsync();
         if (result.success) {
-          const newVisitorId = uuidv4(); // Generate a new unique ID
-          setVisitorId(newVisitorId); // Set the visitor ID in state
+          // const newVisitorId = uuidv4(); // Generate a new unique ID
+          // setVisitorId(newVisitorId); // Set the visitor ID in state
 
           // Store the visitor ID locally
-          await AsyncStorage.setItem("visitorId", newVisitorId);
+          // await AsyncStorage.setItem("visitorId", newVisitorId);
 
           setIsEnabled(true);
           setBiometricData({
@@ -64,26 +44,35 @@ const RegisterFingerPrint = () => {
             modelName: Device.modelName,
             osName: Device.osName,
             osVersion: Device.osVersion,
-            visitorId: newVisitorId,
+            // visitorId: newVisitorId,
           });
 
           // Console log the device and biometric info
-          console.log("Biometric Data:", {
-            brand: Device.brand,
-            modelName: Device.modelName,
-            osName: Device.osName,
-            osVersion: Device.osVersion,
-            visitorId: newVisitorId,
-          });
+          console.log("Biometric Data:");
+          console.log("Brand:", Device.brand);
+          console.log("Model Name:", Device.modelName);
+          console.log("OS Name:", Device.osName);
+          console.log("OS Version:", Device.osVersion);
+          // console.log("Visitor ID:", newVisitorId);
 
-          // Navigate to Login page after successful authentication
-          navigation.navigate("Login");
+          navigation.navigate('Home');
         } else {
           Alert.alert("Authentication failed", result.error);
         }
       } catch (error) {
         Alert.alert("Error", error.message);
+        console.log( error.message);
       }
+    } else {
+      setIsEnabled(false);
+      setBiometricData(null);
+      setVisitorId(null);
+
+      // Remove the visitor ID from local storage
+      await AsyncStorage.removeItem("visitorId");
+
+      // Console log the biometric data reset
+      console.log("Biometric Data Reset");
     }
   };
 
@@ -122,7 +111,7 @@ const RegisterFingerPrint = () => {
           </View>
         </View>
       </View>
-      <StatusBar backgroundColor='#ffffff' style="dark" />
+      <StatusBar backgroundColor="#ffffff" style="dark" />
     </SafeAreaView>
   );
 };
