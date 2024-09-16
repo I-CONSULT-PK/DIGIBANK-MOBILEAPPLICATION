@@ -5,10 +5,17 @@ import {
   FlatList,
   TouchableOpacity,
   Platform,
-  Modal,
+  Pressable,
+  TextInput,
   Button,
   Alert,
+  TouchableWithoutFeedback,
+  Keyboard,
 } from "react-native";
+import { Color } from "../../../GlobalStyles";
+import RNHTMLtoPDF from 'react-native-html-to-pdf';
+import * as MailComposer from 'expo-mail-composer';
+import CustomModal from "../../../components/CustomModal";
 import { useNavigation } from "@react-navigation/native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
@@ -17,6 +24,11 @@ import { Entypo } from "@expo/vector-icons";
 import axios from "axios";
 import API_BASE_URL from "./../../../config/index";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { enData } from "./translations/en";
+import * as Print from 'expo-print';
+import * as FileSystem from 'expo-file-system';
+
+import * as Sharing from 'expo-sharing';
 
 const Account_Statements = () => {
   const navigation = useNavigation();
@@ -24,6 +36,39 @@ const Account_Statements = () => {
   const [show, setShow] = useState(false);
   const [statement, setStatement] = useState({});
   const [filter, setFilter] = useState("All");
+
+  // Modal start
+  const [modalVisible, setModalVisible] = useState(false);
+  const handleShowModal = () => setModalVisible(true);
+  const handleCloseModal = () => setModalVisible(false);
+  const [fromDate, setFromDate] = useState(null);
+  const [toDate, setToDate] = useState(null);
+  const [showFromPicker, setShowFromPicker] = useState(false);
+  const [showToPicker, setShowToPicker] = useState(false);
+  const [email, setEmail] = useState("");
+
+  useEffect(() => {
+    const getEmail = async () => {
+      const email = await AsyncStorage.getItem("email");
+      setEmail(email);
+    };
+
+    getEmail();
+  }, [])
+  
+
+  const handleFromDateChange = (event, selectedDate) => {
+    const currentDate = selectedDate || fromDate;
+    setShowFromPicker(false); // hide picker after selection
+    setFromDate(currentDate);
+  };
+
+  const handleToDateChange = (event, selectedDate) => {
+    const currentDate = selectedDate || toDate;
+    setShowToPicker(false); // hide picker after selection
+    setToDate(currentDate);
+  };
+  // Modal end
 
   const onChange = (event, selectedDate) => {
     const currentDate = selectedDate || date;
@@ -83,6 +128,131 @@ const Account_Statements = () => {
       return acc;
     }, {});
   };
+
+  const formatDate2 = (inputDate) => {
+    const date = new Date(inputDate);
+  
+    // Get the year, month, and day
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0'); 
+    const day = String(date.getDate()).padStart(2, '0'); 
+  
+    // Format to YYYY-MM-DD
+    return `${year}-${month}-${day}`;
+  };
+  
+
+  const fetchUserFullTransaction = async () => {
+  try {
+    const bearerToken = await AsyncStorage.getItem("token");
+    const accountNumber = await AsyncStorage.getItem("accountNumber");
+
+    if (bearerToken && accountNumber) {
+      const response = await axios.get(
+        `${API_BASE_URL}/v1/customer/fund/generateStatement?accountNumber=${accountNumber}&startDate=${formatDate2(fromDate)}&endDate=${formatDate2(toDate)}&statementType=date_range`,
+        {
+          headers: {
+            Authorization: `Bearer ${bearerToken}`,
+          },
+        }
+      );
+
+      const dto = response.data;
+
+      if (dto && dto.success && dto.data) {
+        const transactions = dto.data.transactionList.data;
+        const htmlContent = generateHTML(transactions);
+
+        // Generate PDF and get the temporary URI
+        const { uri: tempUri } = await Print.printToFileAsync({ html: htmlContent });
+        console.log('PDF file generated at:', tempUri);
+
+        // Optionally, you can directly share the PDF
+        if (await Sharing.isAvailableAsync()) {
+          await Sharing.shareAsync(tempUri, {
+            mimeType: 'application/pdf',
+            dialogTitle: 'Share your statement',
+          });
+        } else {
+          Alert.alert("Sharing not available", "The sharing feature is not available on this device.");
+        }
+
+      } else {
+        if (dto.message) {
+          Alert.alert("Error", dto.message);
+        } else if (dto.errors && dto.errors.length > 0) {
+          Alert.alert("Error", dto.errors.join("\n"));
+        }
+      }
+    } else {
+      Alert.alert("Error", "Unexpected error occurred. Try again later!");
+    }
+  } catch (error) {
+    if (error.response) {
+      const statusCode = error.response.status;
+
+      if (statusCode === 404) {
+        Alert.alert("Error", "Server timed out. Try again later!");
+      } else if (statusCode === 503) {
+        Alert.alert("Error", "Service unavailable. Please try again later.");
+      } else if (statusCode === 400) {
+        Alert.alert("Error", error.response.data.data.errors[0]);
+      } else {
+        Alert.alert("Error", error.message);
+      }
+    } else if (error.request) {
+      Alert.alert("Error", "No response from the server. Please check your connection.");
+    } else {
+      Alert.alert("Error", error.message);
+    }
+  }
+};
+  const generateHTML = (transactions) => {
+    let html = `
+      <html>
+        <head>
+          <style>
+            body { font-family: Arial, sans-serif; }
+            table { width: 100%; border-collapse: collapse; }
+            th, td { border: 1px solid #ddd; padding: 8px; }
+            th { background-color: #f2f2f2; }
+          </style>
+        </head>
+        <body>
+          <h1>Account Statement</h1>
+          <table>
+            <thead>
+              <tr>
+                <th>Description</th>
+                <th>Date</th>
+                <th>Amount</th>
+              </tr>
+            </thead>
+            <tbody>
+    `;
+  
+    transactions.forEach((transaction) => {
+      const isCredit = transaction.creditAmt > 0;
+      const amount = isCredit ? transaction.creditAmt : transaction.debitAmt;
+      html += `
+        <tr>
+          <td>${transaction.description}</td>
+          <td>${transaction.transactionDate}</td>
+          <td style="color: ${isCredit ? '#3bcb01' : '#fe3105'}">${amount}</td>
+        </tr>
+      `;
+    });
+  
+    html += `
+            </tbody>
+          </table>
+        </body>
+      </html>
+    `;
+  
+    return html;
+  };
+  
 
   const fetchUserTransaction = async () => {
     try {
@@ -242,7 +412,8 @@ const Account_Statements = () => {
           <View>
             <TouchableOpacity
               className="p-2 rounded-md bg-primary"
-              onPress={showDatePicker}
+              // onPress={showDatePicker}
+              onPress={handleShowModal}
             >
               <Ionicons
                 style={{ color: "white" }}
@@ -251,7 +422,7 @@ const Account_Statements = () => {
               />
             </TouchableOpacity>
 
-            {show && Platform.OS === "ios" && (
+            {/* {show && Platform.OS === "ios" && (
               <Modal
                 transparent={true}
                 animationType="slide"
@@ -295,7 +466,7 @@ const Account_Statements = () => {
                 onChange={onChange}
                 onClose={hideDatePicker}
               />
-            )}
+            )} */}
           </View>
           <TouchableOpacity className="p-2 rounded-md border border-gray-300 shadow-xl">
             <Ionicons name="download" size={24} color="black" />
@@ -351,6 +522,128 @@ const Account_Statements = () => {
       ) : (
         <Text>Loading...</Text>
       )}
+
+      <CustomModal
+        visible={modalVisible}
+        onClose={handleCloseModal}
+        confirmText="Send Now"
+        onConfirm={fetchUserFullTransaction}
+      >
+        {/* Wrap the modal content with TouchableWithoutFeedback */}
+        <TouchableWithoutFeedback onPress={handleCloseModal}>
+          <View className=" justify-center items-center">
+            <TouchableWithoutFeedback onPress={() => {}}>
+              {/* Your modal content */}
+              <View className=" flex-col items-center px-2 py-3.5 bg-white rounded-xl w-full">
+                {/* Icon at the top */}
+                <View className=" items-center justify-center mb-4">
+                  <View className="bg-primary p-3 rounded-full">
+                    <Ionicons
+                      name="document-text-outline"
+                      size={30}
+                      color="white"
+                    />
+                  </View>
+                </View>
+
+                {/* Modal Title and Subtext */}
+                <Text className="text-lg font-bold mb-2">
+                  Get Statement via Email
+                </Text>
+                <Text className="text-sm text-gray-500 mb-4">
+                  You can get the statement for up to 3 years
+                </Text>
+
+                {/* Date pickers */}
+                <View className="w-full mb-4">
+                  <View className="flex flex-row justify-between mb-2">
+                    <View className="flex flex-row bg-white rounded-xl w-full">
+                      {/* From Date */}
+                      <View>
+                        <Text className="text-sm mb-2 font-InterMedium">
+                          From
+                        </Text>
+                        <Pressable
+                          onPress={() => setShowFromPicker(true)}
+                          className="w-full border p-3 rounded-lg flex flex-row items-center mb-4"
+                        >
+                          <Text className="mr-2">
+                            {fromDate
+                              ? fromDate.toLocaleDateString()
+                              : "Select Date"}
+                          </Text>
+                          <Ionicons
+                            name="calendar-outline"
+                            size={20}
+                            className="ml-auto"
+                          />
+                        </Pressable>
+
+                        {showFromPicker && (
+                          <DateTimePicker
+                            value={fromDate || new Date()}
+                            mode="date"
+                            display="default"
+                            // Restrict future dates
+                            maximumDate={new Date()}
+                            onChange={handleFromDateChange}
+                          />
+                        )}
+                      </View>
+
+                      {/* To Date */}
+                      <View className="ml-5">
+                        <Text className="text-sm mb-2 font-InterMedium">
+                          To*
+                        </Text>
+                        <Pressable
+                          onPress={() => setShowToPicker(true)}
+                          className=" w-full border p-3 rounded-lg flex flex-row items-center mb-4"
+                        >
+                          <Text className="mr-2">
+                            {toDate
+                              ? toDate.toLocaleDateString()
+                              : "Select Date"}
+                          </Text>
+                          <Ionicons
+                            name="calendar-outline"
+                            size={20}
+                            className="ml-auto"
+                          />
+                        </Pressable>
+
+                        {showToPicker && (
+                          <DateTimePicker
+                            value={toDate || new Date()}
+                            mode="date"
+                            display="default"
+                            // Ensure "To" date is not earlier than "From" date
+                            minimumDate={fromDate || new Date()}
+                            maximumDate={new Date()}
+                            onChange={handleToDateChange}
+                          />
+                        )}
+                      </View>
+                    </View>
+                  </View>
+                </View>
+
+                {/* Email Input */}
+                <View className="w-full mb-4">
+                  <Text className="text-sm mb-2 font-InterMedium">Email</Text>
+                  <TextInput
+                    value={email}
+                    onChangeText={setEmail}
+                    placeholder="Email"
+                    keyboardType="email-address"
+                    className="border p-3 rounded-lg w-full"
+                  />
+                </View>
+              </View>
+            </TouchableWithoutFeedback>
+          </View>
+        </TouchableWithoutFeedback>
+      </CustomModal>
     </SafeAreaView>
   );
 };
