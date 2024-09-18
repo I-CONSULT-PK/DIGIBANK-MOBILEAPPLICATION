@@ -67,8 +67,8 @@ const Sidebar = () => {
 
   const handlePress = async (item) => {
     const logoutTitle = language === "en"
-      ? enData.translations.menuItems.find(menuItem => menuItem.title === "Logout").title
-      : urData.translations.menuItems.find(menuItem => menuItem.title === "لاگ آؤٹ").title;
+      ? enData.translations.menuItems.find(menuItem => menuItem.title === "Logout")?.title
+      : urData.translations.menuItems.find(menuItem => menuItem.title === "لاگ آؤٹ")?.title;
 
     if (item.title === logoutTitle) {
       try {
@@ -91,9 +91,12 @@ const Sidebar = () => {
       } catch (error) {
         console.error("Error clearing storage", error);
       }
-    } else if (item.title === translations.menuItems.find(menuItem => menuItem.title === "Change Language").title) {
+    } else if (item.title === translations.menuItems.find(menuItem => menuItem.title === "Change Language")?.title) {
       // Navigate to the SelectLanguage screen
       navigation.navigate("SelectLanguage");
+    } else if (item.title === translations.menuItems.find(menuItem => menuItem.title === "Device Management")?.title) {
+      // Navigate to the DeviceManagement screen
+      navigation.navigate("DeviceManagement");
     } else {
       console.log(item.title);
     }
@@ -104,75 +107,82 @@ const Sidebar = () => {
   const menuItems = translations.menuItems;
 
   return (
-    <SafeAreaView className="flex-1 bg-gray-50">
+    <SafeAreaView style={{ flex: 1, backgroundColor: '#f9f9f9' }}>
       <ScrollView>
-        <View className="px-5 border-b border-gray-300">
+        <View style={{ paddingHorizontal: 16, borderBottomWidth: 1, borderBottomColor: '#dcdcdc' }}>
           <View
-            className={`flex-row items-center justify-between ${
-              I18nManager.isRTL ? "flex-row-reverse" : ""
-            }`}
+            style={{
+              flexDirection: I18nManager.isRTL ? "row-reverse" : "row",
+              alignItems: 'center',
+              justifyContent: 'space-between',
+            }}
           >
             <Text
-              className={`text-gray-500 text-lg flex-1 ${
-                I18nManager.isRTL ? "text-right" : "text-left"
-              }`}
+              style={{
+                color: '#a0a0a0',
+                fontSize: 18,
+                flex: 1,
+                textAlign: I18nManager.isRTL ? "right" : "left",
+              }}
             >
               {translations.welcome}
             </Text>
           </View>
 
           <View
-            className={`flex-row items-center justify-between ${
-              I18nManager.isRTL ? "flex-row-reverse" : ""
-            }`}
+            style={{
+              flexDirection: I18nManager.isRTL ? "row-reverse" : "row",
+              alignItems: 'center',
+              justifyContent: 'space-between',
+            }}
           >
-            <Text className="font-bold text-2xl mb-1">
-              {`${userDetails.firstName || ""} ${
-                userDetails.lastName || ""
-              }`.trim() || "User"}
+            <Text style={{ fontWeight: 'bold', fontSize: 24, marginBottom: 4 }}>
+              {`${userDetails.firstName || ""} ${userDetails.lastName || ""}`.trim() || "User"}
             </Text>
             <Entypo
               name="chevron-right"
               size={20}
-              style={{ color: Color.PrimaryWebOrient }}
+              color={Color.PrimaryWebOrient}
             />
           </View>
-          <View className="flex flex-row items-center py-1">
-            <Text className=" mb-0" style={{ color: Color.PrimaryWebOrient }}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 8 }}>
+            <Text style={{ color: Color.PrimaryWebOrient }}>
               A/C No: {userDetails.accountNumber || "N/A"}
             </Text>
             <TouchableOpacity onPress={() => Clipboard.setString(userDetails.accountNumber)}>
-              <View className="ml-3 text-black">
-                <Ionicons name="copy" size={20} />
-              </View>
+              <Ionicons name="copy" size={20} style={{ marginLeft: 12 }} />
             </TouchableOpacity>
           </View>
-          <Text className="text-gray-500">
+          <Text style={{ color: '#a0a0a0' }}>
             {userDetails.accountType || "N/A"}
           </Text>
           <View
-            className={`flex-row items-center justify-center mb-4 ${
-              I18nManager.isRTL ? "flex-row-reverse" : ""
-            }`}
+            style={{
+              flexDirection: I18nManager.isRTL ? "row-reverse" : "row",
+              justifyContent: 'center',
+              marginBottom: 16,
+            }}
           >
             {Object.keys(languageOptions).map((lang) => (
               <TouchableOpacity
                 key={lang}
-                className={`p-3 mt-3 ${
-                  language === lang ? "bg-primary" : "bg-white"
-                } rounded-l-lg flex-1`}
-                onPress={() => handleLanguageSelect(lang)}
                 style={{
+                  padding: 12,
+                  marginTop: 12,
+                  backgroundColor: language === lang ? Color.PrimaryWebOrient : 'white',
+                  borderRadius: 8,
+                  flex: 1,
+                  alignItems: 'center',
+                  justifyContent: 'center',
                   width: 100,
-                  alignItems: "center",
-                  justifyContent: "center",
                 }}
+                onPress={() => handleLanguageSelect(lang)}
               >
                 <Text
                   style={{
-                    textAlign: "center",
-                    fontWeight: "bold",
-                    color: language === lang ? "white" : "black",
+                    textAlign: 'center',
+                    fontWeight: 'bold',
+                    color: language === lang ? 'white' : 'black',
                   }}
                 >
                   {languageOptions[lang]}
@@ -183,10 +193,13 @@ const Sidebar = () => {
         </View>
         {menuItems.map((item, index) => (
           <TouchableOpacity
-            className={`flex-row items-center py-3 px-5 ${
-              I18nManager.isRTL ? "flex-row-reverse" : ""
-            }`}
             key={index}
+            style={{
+              flexDirection: I18nManager.isRTL ? "row-reverse" : "row",
+              alignItems: 'center',
+              paddingVertical: 12,
+              paddingHorizontal: 16,
+            }}
             onPress={() => handlePress(item)}
           >
             <Ionicons
@@ -195,11 +208,11 @@ const Sidebar = () => {
               color={Color.Text}
               style={{ marginHorizontal: 10, color: Color.PrimaryWebOrient }}
             />
-            <Text className="text-md flex-1">{item.title}</Text>
+            <Text style={{ fontSize: 16, flex: 1 }}>{item.title}</Text>
             <Entypo
               name="chevron-right"
               size={24}
-              style={{ color: Color.PrimaryWebOrient }}
+              color={Color.PrimaryWebOrient}
             />
           </TouchableOpacity>
         ))}

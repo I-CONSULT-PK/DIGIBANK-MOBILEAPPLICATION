@@ -94,6 +94,8 @@ import Fatch_Details from "./screens/Mobile-Banking/Mobile-Top-Up/Fatch_Details"
 import To_Up_Transfer from "./screens/Mobile-Banking/Mobile-Top-Up/To_Up_Transfer";
 import Account from "./screens/Mobile-Banking/Account/Account";
 import Update_Profile from "./screens/Mobile-Banking/Account-Setting/Update_Profile";
+import DeviceManagement from "./screens/Mobile-Banking/Account-Setting/DeviceManagement";
+import ChangePassword from "./screens/Mobile-Banking/Account-Setting/ChangePassword";
 const Stack = createNativeStackNavigator();
 
 export default function App() {
@@ -251,6 +253,16 @@ export default function App() {
         <Stack.Screen
           name="Set_Payment"
           component={Set_Payment}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="DeviceManagement"
+          component={DeviceManagement}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="ChangePassword"
+          component={ChangePassword}
           options={{ headerShown: false }}
         />
 

@@ -34,7 +34,7 @@ const Account_Setting_List = () => {
       id: 3,
       title: "Change Password",
       image: require("../../../assets/Change Password.png"),
-      link: "ChangePasswordScreen",
+      link: "ChangePassword",
     },
     {
       id: 4,
