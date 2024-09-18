@@ -89,6 +89,7 @@ import Fatch_Details from "../../Mobile-Banking/Mobile-Top-Up/Fatch_Details";
 import To_Up_Transfer from "../../Mobile-Banking/Mobile-Top-Up/To_Up_Transfer";
 import Account from "../../Mobile-Banking/Account/Account";
 import Update_Profile from "../../Mobile-Banking/Account-Setting/Update_Profile";
+import Add_Account from "../../Mobile-Banking/Account-Setting/Add_Account";
 import DeviceManagement from "../../Mobile-Banking/Account-Setting/DeviceManagement";
 import ChangePassword from "../../Mobile-Banking/Account-Setting/ChangePassword";
 const Stack = createStackNavigator();
@@ -229,6 +230,7 @@ const AppNavigator = () => {
         <Stack.Screen name="To_Up_Transfer" component={To_Up_Transfer} />
         <Stack.Screen name="Account_Balance" component={Account} />
         <Stack.Screen name="Update_Profile" component={Update_Profile} />
+        <Stack.Screen name="Add_Account" component={Add_Account} />
 
         <Stack.Screen name="NumberChange" component={NameChange} />
         <Stack.Screen name="PasswordChange" component={PasswordChange} />

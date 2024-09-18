@@ -96,6 +96,7 @@ import Account from "./screens/Mobile-Banking/Account/Account";
 import Update_Profile from "./screens/Mobile-Banking/Account-Setting/Update_Profile";
 import DeviceManagement from "./screens/Mobile-Banking/Account-Setting/DeviceManagement";
 import ChangePassword from "./screens/Mobile-Banking/Account-Setting/ChangePassword";
+import Add_Account from "./screens/Mobile-Banking/Account-Setting/Add_Account";
 const Stack = createNativeStackNavigator();
 
 export default function App() {
@@ -186,6 +187,11 @@ export default function App() {
         <Stack.Screen
           name="ApplyCard"
           component={ApplyCard}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="Add_Account"
+          component={Add_Account}
           options={{ headerShown: false }}
         />
 

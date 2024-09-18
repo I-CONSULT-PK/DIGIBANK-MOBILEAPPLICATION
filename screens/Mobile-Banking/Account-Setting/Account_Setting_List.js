@@ -22,7 +22,7 @@ const Account_Setting_List = () => {
       id: 1,
       title: "Add Account",
       image: require("../../../assets/Add Account.png"),
-      link: "AddAccountScreen",
+      link: "Add_Account",
     },
     {
       id: 2,

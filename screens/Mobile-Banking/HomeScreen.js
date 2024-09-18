@@ -631,14 +631,16 @@ const HomeScreen = () => {
         }
       );
 
+      // console.log(response.data)
+
       if (response.data && response.data.data) {
         const userDetails = {
           firstName: response.data.data.firstName || "User",
           lastName: response.data.data.lastName || "Name",
-          defaultAccountBalance:
-            response.data.data.defaultAccountBalance || "N/A",
+          defaultAccountBalance: response.data.data.defaultAccountBalance || "N/A",
           accountNumber: response.data.data.accountNumber || "N/A",
           accountType: response.data.data.accountType || "N/A",
+          email: response.data.data.email || "N/A",
         };
 
         // Save to AsyncStorage
@@ -647,6 +649,7 @@ const HomeScreen = () => {
           ["lastName", userDetails.lastName],
           ["accountNumber", userDetails.accountNumber],
           ["accountType", userDetails.accountType],
+          ["email", userDetails.email],
         ]);
 
         setUserDetails(userDetails);
