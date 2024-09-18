@@ -94,6 +94,7 @@ import Fatch_Details from "./screens/Mobile-Banking/Mobile-Top-Up/Fatch_Details"
 import To_Up_Transfer from "./screens/Mobile-Banking/Mobile-Top-Up/To_Up_Transfer";
 import Account from "./screens/Mobile-Banking/Account/Account";
 import Update_Profile from "./screens/Mobile-Banking/Account-Setting/Update_Profile";
+import Add_Account from "./screens/Mobile-Banking/Account-Setting/Add_Account";
 const Stack = createNativeStackNavigator();
 
 export default function App() {
@@ -184,6 +185,11 @@ export default function App() {
         <Stack.Screen
           name="ApplyCard"
           component={ApplyCard}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="Add_Account"
+          component={Add_Account}
           options={{ headerShown: false }}
         />
 
@@ -707,6 +713,11 @@ export default function App() {
             <Stack.Screen
               name="Update_Profile"
               component={Update_Profile}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="Add_Account"
+              component={Add_Account}
               options={{ headerShown: false }}
             />
             <Stack.Screen

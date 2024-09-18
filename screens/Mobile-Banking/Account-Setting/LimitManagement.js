@@ -181,7 +181,7 @@ const LimitManagement = ({ navigation }) => {
       <CustomModal
         visible={modalVisible}
         onClose={handleCloseModal}
-        title="Customize Your Utility Bill Limit"
+       
         confirmText="Proceed"
         onConfirm={handleProceed}
       >
