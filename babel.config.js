@@ -12,7 +12,6 @@ module.exports = function(api) {
           path: '.env',
         }
       ],
-      ["react-native-worklets-core/plugin"],
     ],
   };
 };
