@@ -13,37 +13,41 @@ import CustomButton from "../../components/Button";
 import { Color } from "../../GlobalStyles";
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
-
-const { width, height } = Dimensions.get("window");
-import Input from "../../components/TextInput";
-
 import { SafeAreaView } from "react-native-safe-area-context";
 import { StatusBar } from 'expo-status-bar';
 import { Entypo } from "@expo/vector-icons";
 import axios from "axios";
 import API_BASE_URL from '../../config';
 
-import Button from "../../components/Button";
+const { width, height } = Dimensions.get("window");
 
 const OTP = ({ navigation, route }) => {
-  // const [otp, setOtp] = useState(["", "", "", "", "", ""]);
   const [isResendDisabled, setIsResendDisabled] = useState(false);
   const [userEmail, setUserEmail] = useState("");
   const [userNumber, setUserNumber] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [savedEmail, setSavedEmail] = useState("");
-  const [savedMobileNumber, setSavedMobileNumber] = useState("");
+  const [otpMethod, setOtpMethod] = useState("sms"); // Default method
   const otpInputs = useRef([]);
-
-  // ---------------------------------------------------
-
-  const { source, email, mobileNumber, cnic, accountNumber, firstName, lastName } = route.params || {};
-
+  
   const otpLength = 4;
   const inputs = useRef([]);
-
   const [otp, setOtp] = useState(Array(otpLength).fill(''));
   const [loading, setLoading] = useState(false);
+
+  // Get email and mobile number from the route params
+  const { email, mobileNumber } = route.params || {};
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      const savedEmail = await AsyncStorage.getItem("email");
+      const savedMobileNumber = await AsyncStorage.getItem("mobileNumber");
+      setUserEmail(savedEmail || email);
+      setUserNumber(savedMobileNumber || mobileNumber);
+      setOtpMethod(await AsyncStorage.getItem("otpDeliveryMethod") || "sms"); // Set the method from AsyncStorage
+    };
+
+    fetchUserData();
+  }, []);
 
   const handleChange = (text, index) => {
     const sanitizedText = text.replace(/[^0-9]/g, '');
@@ -74,8 +78,8 @@ const OTP = ({ navigation, route }) => {
       setLoading(true);
 
       const otpData = {
-        mobileNumber: mobileNumber,
-        email: email,
+        mobileNumber: userNumber,
+        email: userEmail,
         emailOtp: enteredOtp
       };
 
@@ -84,83 +88,37 @@ const OTP = ({ navigation, route }) => {
         const dto = response.data;
 
         if (dto && dto.success) {
-          source === 'username' && navigation.navigate('Login');
-          source === 'password' && navigation.navigate('PasswordChange', { cnic: cnic, accountNumber: accountNumber });
-          source === 'registration' && navigation.navigate('SignUp', { source: 'OTP', email: email, mobileNumber: mobileNumber, cnic: cnic, accountNumber: accountNumber, firstName: firstName, lastName: lastName });
-        }
-        else {
-          if (dto.message) {
-            Alert.alert('Error', dto.message);
-          }
-          else if (dto.errors && dto.errors.length > 0) {
-            Alert.alert('Error', dto.error);
-          }
-        }
-      }
-      catch (error) {
-        if (error.response) {
-          const statusCode = error.response.status;
-
-          if (statusCode === 404) {
-            Alert.alert('Error', 'Server timed out. Try again later!');
-          } else if (statusCode === 503) {
-            Alert.alert('Error', 'Service unavailable. Please try again later.');
-          } else if (statusCode === 400) {
-            Alert.alert('Error', error.response.data.data.errors[0]);
-          } else {
-            Alert.alert('Error', error.message);
-          }
-        } else if (error.request) {
-          Alert.alert('Error', 'No response from the server. Please check your connection.');
+          // Navigate based on your application flow
+          navigation.navigate('Home'); 
         } else {
-          Alert.alert('Error', error.message);
+          Alert.alert('Error', dto.message || 'OTP verification failed.');
         }
-      }
-      finally {
+      } catch (error) {
+        Alert.alert('Error', error.message || 'An error occurred during OTP verification.');
+      } finally {
         setLoading(false);
       }
     }
   };
 
-  const handleResend = async (email, mobileNumber) => {
+  const handleResend = async () => {
     setIsResendDisabled(true);
 
     try {
       const otpData = {
-        mobileNumber: mobileNumber,
-        email: email,
-        reason: 'verify mobile device'
+        mobileNumber: userNumber,
+        email: userEmail,
+        reason: 'Verify Mobile Device' 
       };
 
       const response = await axios.post(`${API_BASE_URL}/v1/otp/createOTP`, otpData);
       const dto = response.data;
 
       if (!dto.success) {
-        if (dto.message) {
-          Alert.alert('Error', dto.message);
-        }
-        else if (dto.errors && dto.errors.length > 0) {
-          Alert.alert('Error', dto.error);
-        }
+        Alert.alert('Error', dto.message || 'Failed to resend OTP.');
       }
     } catch (error) {
-      if (error.response) {
-        const statusCode = error.response.status;
-
-        if (statusCode === 404) {
-          Alert.alert('Error', 'Server timed out. Try again later!');
-        } else if (statusCode === 503) {
-          Alert.alert('Error', 'Service unavailable. Please try again later.');
-        } else if (statusCode === 400) {
-          Alert.alert('Error', error.response.data.data.errors[0]);
-        } else {
-          Alert.alert('Error', error.message);
-        }
-      } else if (error.request) {
-        Alert.alert('Error', 'No response from the server. Please check your connection.');
-      } else {
-        Alert.alert('Error', error.message);
-      }
+      Alert.alert('Error', error.message || 'An error occurred while resending OTP.');
     } finally {
       setIsResendDisabled(false);
     }
@@ -169,7 +127,6 @@ const OTP = ({ navigation, route }) => {
   return (
     <SafeAreaView className="h-full flex-1 bg-white">
       <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-
         <View className="flex-row items-center p-4 mt-2">
           <TouchableOpacity onPress={() => navigation.goBack()}>
             <Entypo name="chevron-left" size={24} color="black" />
@@ -179,7 +136,6 @@ const OTP = ({ navigation, route }) => {
 
         <View className="flex-1 mt-4 px-4 justify-center -top-14">
           <View className="bg-white rounded-xl w-full shadow-xl shadow-slate-500 px-5 pt-5 pb-4">
-
             <View className="mb-5">
               <Text className="text-sm mb-5 font-InterMedium">Enter Your OTP*</Text>
 
@@ -199,22 +155,22 @@ const OTP = ({ navigation, route }) => {
             </View>
 
             <View className="px-2 mb-7">
-              <Text className="text-sm font-InterMedium" style={{ color: Color.PrimaryWebOrientTxtColor }}>We have sent a code to <Text className="text-slate-500">({maskEmail(email) || '******@mail.com'})</Text> Enter code here to verify your identity</Text>
+              <Text className="text-sm font-InterMedium">
+                We have sent a code to <Text className="text-slate-500">({maskEmail(userEmail) || '******@mail.com'})</Text>. Enter code here to verify your identity.
+              </Text>
             </View>
 
-            <Button
+            <CustomButton
               text='Verify'
               width='w-[100%]'
               styles='mb-4 py-4'
               onPress={verifyOTP}
-              // onPress={() => source === 'registration' && navigation.navigate('SignUp', { source: 'OTP'})}
               loading={loading}
             />
 
             <View className="mt-1 mb-2 flex-row justify-center items-center">
               <Text className="font-InterMedium text-gray-400">Didn't receive a code? </Text>
-              <TouchableOpacity onPress={() => handleResend(email, mobileNumber)}
-                disabled={isResendDisabled}>
+              <TouchableOpacity onPress={handleResend} disabled={isResendDisabled}>
                 <Text className="font-InterSemiBold" style={{ color: Color.PrimaryWebOrientTxtColor }}>
                   RESEND
                 </Text>
@@ -223,7 +179,6 @@ const OTP = ({ navigation, route }) => {
 
           </View>
         </View>
-
       </ScrollView>
 
       <StatusBar backgroundColor="#ffffff" style="dark" />
