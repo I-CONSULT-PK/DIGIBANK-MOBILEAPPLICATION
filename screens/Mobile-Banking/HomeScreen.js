@@ -482,7 +482,7 @@ import {
   Easing,
   TextInput,
   ImageBackground,
-  Alert,
+  Alert
 } from "react-native";
 import { Color } from "../../GlobalStyles";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -523,10 +523,10 @@ const HomeScreen = () => {
   const [cards, setCards] = useState([]);
   const backgroundImage = require("../../assets/Images/Cards.png");
   const [userDetails, setUserDetails] = useState({
-    accountTitle: "",
+    firstName: "",
+    lastName: "",
     accountNumber: "",
     accountType: "",
-    accountBalance: "",
   });
 
   const toggleSidebar = () => {
@@ -579,7 +579,7 @@ const HomeScreen = () => {
           navigation.navigate("SendBeneficiaryMoney");
           break;
         case "My Payees":
-          navigation.navigate("BeneficiaryList", { source: "beneficiary" });
+          navigation.navigate("BeneficiaryList", { source: 'beneficiary' });
           break;
         case "Cards":
           navigation.navigate("SelectCards");
@@ -593,11 +593,11 @@ const HomeScreen = () => {
         case "QR Payments":
           break;
         case "Utility Pay":
-          navigation.navigate("Bill_Payment_List");
+            navigation.navigate("Bill_Payment_List")
           break;
-        case "Statement":
-          navigation.navigate("Account_Statements");
-          break;
+          case "Statement":
+            navigation.navigate("Account_Statements"); 
+            break;
         case "Discount":
           break;
         default:
@@ -610,7 +610,6 @@ const HomeScreen = () => {
     try {
       const bearerToken = await AsyncStorage.getItem("token");
       const customerId = await AsyncStorage.getItem("customerId");
-      const accountNumber = await AsyncStorage.getItem("accountNumber");
   
       if (!bearerToken) {
         Alert.alert("Error", "Authentication token not found");
@@ -620,13 +619,9 @@ const HomeScreen = () => {
         Alert.alert("Error", "Customer ID not found");
         return;
       }
-      if (!accountNumber) {
-        Alert.alert("Error", "Account number not found");
-        return;
-      }
   
       const response = await axios.get(
-        `${API_BASE_URL}/v1/account/getAccount?customerId=${customerId}&accountNumber=${accountNumber}`,
+        `${API_BASE_URL}/v1/customer/fetchUserDetails?userId=${customerId}`,
         {
           headers: {
             Authorization: `Bearer ${bearerToken}`,
@@ -634,32 +629,27 @@ const HomeScreen = () => {
         }
       );
   
-      if (response.data && response.data.data) {
-        const {
-          accountTitle,
-          accountBalance,
-          accountNumber,
-          accountType,
-          email,
-          mobileNumber, 
-        } = response.data.data;
+      // console.log("API Response:", response.data); 
+      // console.log("API Response:", API_BASE_URL); 
   
+      if (response.status === 200 && response.data && response.data.data) {
         const userDetails = {
-          accountTitle: accountTitle || "User Name",
-          accountBalance:
-            accountBalance !== undefined ? accountBalance.toString() : "N/A",
-          accountNumber: accountNumber || "N/A",
-          accountType: accountType || "N/A",
-          email: email || "N/A",
-          mobileNumber: mobileNumber || "N/A", 
+          firstName: response.data.data.firstName || "User",
+          lastName: response.data.data.lastName || "Name",
+          defaultAccountBalance: response.data.data.defaultAccountBalance || "N/A",
+          accountNumber: response.data.data.accountNumber || "N/A",
+          accountType: response.data.data.accountType || "N/A",
+          email: response.data.data.email || "N/A", 
+          mobileNumber: response.data.data.mobileNumber || "N/A", 
         };
   
+  
         await AsyncStorage.multiSet([
-          ["accountTitle", userDetails.accountTitle],
+          ["firstName", userDetails.firstName],
+          ["lastName", userDetails.lastName],
           ["accountNumber", userDetails.accountNumber],
           ["accountType", userDetails.accountType],
-          ["email", userDetails.email],
-          ["accountBalance", userDetails.accountBalance], 
+          ["email", userDetails.email], 
           ["mobileNumber", userDetails.mobileNumber], 
         ]);
   
@@ -668,13 +658,12 @@ const HomeScreen = () => {
         Alert.alert("Error", "Unexpected response format");
       }
     } catch (error) {
-      console.error(
-        "Error fetching user details:",
-        error.response ? error.response.data : error.message
-      );
+      console.error("Error fetching user details:", error);
       Alert.alert("Error", `Error fetching user details: ${error.message}`);
     }
   };
+  
+  
   
 
   const fetchCardData = async () => {
@@ -715,7 +704,7 @@ const HomeScreen = () => {
           Alert.alert(
             "Error",
             error.response.data.message ||
-              "Bad request. Please check your input."
+            "Bad request. Please check your input."
           );
         } else {
           Alert.alert("Error", "Card not found");
@@ -733,25 +722,22 @@ const HomeScreen = () => {
 
   const fetchBeneficiaries = async () => {
     try {
-      const customerId = await AsyncStorage.getItem("customerId");
-      const bearerToken = await AsyncStorage.getItem("token");
+      const customerId = await AsyncStorage.getItem('customerId');
+      const bearerToken = await AsyncStorage.getItem('token');
 
       if (customerId && bearerToken) {
-        const response = await axios.get(
-          `${API_BASE_URL}/v1/beneficiary/getAllBeneficiary?customerId=${customerId}&flag=false`,
-          {
-            headers: {
-              Authorization: `Bearer ${bearerToken}`,
-            },
+        const response = await axios.get(`${API_BASE_URL}/v1/beneficiary/getAllBeneficiary?customerId=${customerId}&flag=false`, {
+          headers: {
+            'Authorization': `Bearer ${bearerToken}`
           }
-        );
+        });
 
         const dto = response.data;
 
         if (dto && dto.success && dto.data) {
-          const transformedBeneficiaries = dto.data.map((item) => ({
+          const transformedBeneficiaries = dto.data.map(item => ({
             ...item,
-            liked: item.flag,
+            liked: item.flag
           }));
 
           // Sort beneficiaries first by flag (true first) and within that by id in descending order
@@ -765,34 +751,31 @@ const HomeScreen = () => {
           setBeneficiaries(transformedBeneficiaries);
         } else {
           if (dto.message) {
-            Alert.alert("Error", dto.message);
+            Alert.alert('Error', dto.message);
           } else if (dto.errors && dto.errors.length > 0) {
-            Alert.alert("Error", dto.errors.join("\n"));
+            Alert.alert('Error', dto.errors.join('\n'));
           }
         }
       } else {
-        Alert.alert("Error", "Unexpected error occurred. Try again later!");
+        Alert.alert('Error', 'Unexpected error occurred. Try again later!');
       }
     } catch (error) {
       if (error.response) {
         const statusCode = error.response.status;
 
         if (statusCode === 404) {
-          Alert.alert("Error", "Server timed out. Try again later!");
+          Alert.alert('Error', 'Server timed out. Try again later!');
         } else if (statusCode === 503) {
-          Alert.alert("Error", "Service unavailable. Please try again later.");
+          Alert.alert('Error', 'Service unavailable. Please try again later.');
         } else if (statusCode === 400) {
-          Alert.alert("Error", error.response.data.data.errors[0]);
+          Alert.alert('Error', error.response.data.data.errors[0]);
         } else {
-          Alert.alert("Error", error.message);
+          Alert.alert('Error', error.message);
         }
       } else if (error.request) {
-        Alert.alert(
-          "Error",
-          "No response from the server. Please check your connection."
-        );
+        Alert.alert('Error', 'No response from the server. Please check your connection.');
       } else {
-        Alert.alert("Error", error.message);
+        Alert.alert('Error', error.message);
       }
     }
   };
@@ -826,14 +809,17 @@ const HomeScreen = () => {
       {
         label: "Card Number",
         value: maskCardNumber(card.cardNumber),
+        key: 1
       },
       {
         label: "Card Holder",
         value: card.cardHolderName,
+        key: 2
       },
       {
         label: "Expiry",
         value: card.expiryDate,
+        key:3
       },
     ];
 
@@ -899,6 +885,7 @@ const HomeScreen = () => {
 
   return (
     <SafeAreaView style={styles.container} className="h-full bg-[#f9fafc]">
+
       <Modal
         transparent={true}
         animationType="none"
@@ -952,7 +939,7 @@ const HomeScreen = () => {
         {/* User Info */}
         <View className="flex flex-col justify-center text-lg font-semibold text-gray-800 mr-20">
           <Text className="text-slate-500 text-sm mb-0">Welcome</Text>
-          <Text className="font-bold text-lg mb-0 text-black">{`${userDetails.accountTitle}`}</Text>
+          <Text className="font-bold text-lg mb-0 text-black">{`${userDetails.firstName} ${userDetails.lastName}`}</Text>
         </View>
 
         {/* Notification Bell */}
@@ -978,7 +965,9 @@ const HomeScreen = () => {
 
                 <View className="d-flex flex-row items-center">
                   <Text className="text-white text-2xl font-bold">
-                    {isVisible ? userDetails.accountBalance : "*********"}
+                    {isVisible
+                      ? userDetails.defaultAccountBalance
+                      : "*********"}
                   </Text>
 
                   <TouchableOpacity onPress={() => setIsVisible(!isVisible)}>
@@ -993,7 +982,7 @@ const HomeScreen = () => {
 
               <View className="justify-between ">
                 <View className="flex-row d-flex items-center">
-                  <Text className="text-slate-950 text-lg">
+                  <Text className="text-slate-950 text-lg font-semibold">
                     A/C No: {userDetails.accountNumber}
                   </Text>
                   <TouchableOpacity>
@@ -1101,41 +1090,37 @@ const HomeScreen = () => {
 
             {/* Third Row */}
             <View className="flex-row justify-between mb-4">
-              {["QR Payments", "Utility Pay", "Statement"].map(
-                (item, index) => (
-                  <TouchableOpacity
-                    key={index}
-                    onPress={() => handlePressMenu(item)}
+              {["QR Payments", "Utility Pay", "Statement"].map((item, index) => (
+                <TouchableOpacity
+                  key={index}
+                  onPress={() => handlePressMenu(item)}
+                >
+                  <View
+                    className="w-24 h-24 m-2.5 rounded-lg flex justify-center items-center"
+                    style={[
+                      styles.box,
+                      {
+                        backgroundColor:
+                          activeItem === item
+                            ? Color.PrimaryWebOrient
+                            : "white",
+                      },
+                    ]}
                   >
-                    <View
-                      className="w-24 h-24 m-2.5 rounded-lg flex justify-center items-center"
-                      style={[
-                        styles.box,
-                        {
-                          backgroundColor:
-                            activeItem === item
-                              ? Color.PrimaryWebOrient
-                              : "white",
-                        },
-                      ]}
+                    {item === "QR Payments" && <QR style={styles.icon} />}
+                    {item === "Utility Pay" && <Utility style={styles.icon} />}
+                    {item === "Statement" && <Statment style={styles.icon} />}
+                    <Text
+                      className="text-center font-semibold"
+                      style={{
+                        color: activeItem === item ? "white" : "black",
+                      }}
                     >
-                      {item === "QR Payments" && <QR style={styles.icon} />}
-                      {item === "Utility Pay" && (
-                        <Utility style={styles.icon} />
-                      )}
-                      {item === "Statement" && <Statment style={styles.icon} />}
-                      <Text
-                        className="text-center font-semibold"
-                        style={{
-                          color: activeItem === item ? "white" : "black",
-                        }}
-                      >
-                        {item}
-                      </Text>
-                    </View>
-                  </TouchableOpacity>
-                )
-              )}
+                      {item}
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+              ))}
             </View>
 
             {/* Fourth Row */}
@@ -1169,14 +1154,8 @@ const HomeScreen = () => {
         </View>
         <View className="flex-row justify-between px-5">
           <Text className="text-base font-semibold text-black">My Payees</Text>
-          <TouchableOpacity
-            onPress={() =>
-              navigation.navigate("BeneficiaryList", { source: "dashboard" })
-            }
-          >
-            <Text className="text-xs font-medium text-gray-800 underline">
-              View All
-            </Text>
+          <TouchableOpacity onPress={() => navigation.navigate("BeneficiaryList", { source: 'dashboard' })}>
+            <Text className="text-xs font-medium text-gray-800 underline">View All</Text>
           </TouchableOpacity>
         </View>
         <ScrollView
@@ -1189,12 +1168,7 @@ const HomeScreen = () => {
             <TouchableOpacity
               key={index}
               className="w-24 h-36 bg-white m-2 rounded-lg shadow-lg justify-center items-center"
-              onPress={() =>
-                navigation.navigate("SendFromAccount", {
-                  beneObj: beneficiary,
-                  source: "dashboard",
-                })
-              }
+              onPress={() => navigation.navigate('SendFromAccount', { beneObj: beneficiary, source: 'dashboard' })}
             >
               <View
                 className="w-20 h-20 bg-primary mt-3 rounded-lg shadow-lg justify-center items-center"
@@ -1215,17 +1189,9 @@ const HomeScreen = () => {
             </TouchableOpacity>
           ))}
           {beneficiaries.length === 0 && (
-            <TouchableOpacity
-              className="w-20 h-20 bg-white m-2 rounded-lg shadow-lg justify-center items-center"
-              onPress={() =>
-                navigation.navigate("BankList", { source: "dashboard" })
-              }
-            >
-              <AntDesign
-                name="pluscircleo"
-                size={22}
-                color={Color.PrimaryWebOrient}
-              />
+            <TouchableOpacity className="w-20 h-20 bg-white m-2 rounded-lg shadow-lg justify-center items-center"
+            onPress={() => navigation.navigate("BankList", { source: 'dashboard' })}>
+              <AntDesign name="pluscircleo" size={22} color={Color.PrimaryWebOrient} />
               <Text className="font-InterSemiBold text-sm mt-1.5">Add</Text>
             </TouchableOpacity>
           )}
@@ -1316,14 +1282,18 @@ const HomeScreen = () => {
         <List.Section className="bg-white rounded-xl mx-4 mt-4 ">
           {cards.filter((card) => card.isCreditCard).length > 0
             ? cards
-                .filter((card) => card.isCreditCard)
-                .map((card) => renderCardSection(card, expanded, handlePress))
+              .filter((card) => card.isCreditCard)
+              .map((card) => renderCardSection(card, expanded, handlePress))
             : renderNoDataMessage("Credit")}
         </List.Section>
       </ScrollView>
       <Footer />
 
-      <StatusBar backgroundColor="#ffffff" style="dark" translucent={true} />
+      <StatusBar
+        backgroundColor="#ffffff"
+        style="dark"
+        translucent={true}
+      />
     </SafeAreaView>
   );
 };

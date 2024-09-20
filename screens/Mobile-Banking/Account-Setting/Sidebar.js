@@ -27,7 +27,8 @@ const languageOptions = {
 
 const Sidebar = () => {
   const [userDetails, setUserDetails] = useState({
-    accountTitle: "",
+    firstName: "",
+    lastName: "",
     accountNumber: "",
     accountType: "",
   });
@@ -38,15 +39,16 @@ const Sidebar = () => {
   useEffect(() => {
     const loadUserDetails = async () => {
       try {
-        const accountTitle =
-          (await AsyncStorage.getItem("accountTitle")) || "Name";
+        const firstName = (await AsyncStorage.getItem("firstName")) || "User";
+        const lastName = (await AsyncStorage.getItem("lastName")) || "Name";
         const accountNumber =
           (await AsyncStorage.getItem("accountNumber")) || "1234567890";
         const accountType =
           (await AsyncStorage.getItem("accountType")) || "N/A";
 
         setUserDetails({
-          accountTitle,
+          firstName,
+          lastName,
           accountNumber,
           accountType,
         });
@@ -114,91 +116,69 @@ const Sidebar = () => {
   const menuItems = translations.menuItems;
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "#f9f9f9" }}>
+    <SafeAreaView className="flex-1 bg-gray-50">
       <ScrollView>
-        <View
-          style={{
-            paddingHorizontal: 16,
-            borderBottomWidth: 1,
-            borderBottomColor: "#dcdcdc",
-          }}
-        >
+        <View className="px-5 border-b border-gray-300">
           <View
-            style={{
-              flexDirection: I18nManager.isRTL ? "row-reverse" : "row",
-              alignItems: "center",
-              justifyContent: "space-between",
-            }}
+            className={`flex-row items-center justify-between ${
+              I18nManager.isRTL ? "flex-row-reverse" : ""
+            }`}
           >
             <Text
-              style={{
-                color: "#a0a0a0",
-                fontSize: 18,
-                flex: 1,
-                textAlign: I18nManager.isRTL ? "right" : "left",
-              }}
+              className={`text-gray-500 text-lg flex-1 ${
+                I18nManager.isRTL ? "text-right" : "text-left"
+              }`}
             >
               {translations.welcome}
             </Text>
           </View>
 
           <View
-            style={{
-              flexDirection: I18nManager.isRTL ? "row-reverse" : "row",
-              alignItems: "center",
-              justifyContent: "space-between",
-            }}
+            className={`flex-row items-center justify-between ${
+              I18nManager.isRTL ? "flex-row-reverse" : ""
+            }`}
           >
-            <Text style={{ fontWeight: "bold", fontSize: 24, marginBottom: 4 }}>
-              {`${userDetails.accountTitle || ""} `.trim() || "User Name"}
+            <Text className="font-bold text-2xl mb-1">
+              {`${userDetails.firstName || ""} ${
+                userDetails.lastName || ""
+              }`.trim() || "User"}
             </Text>
             <Entypo
               name="chevron-right"
               size={20}
-              color={Color.PrimaryWebOrient}
+              style={{ color: Color.PrimaryWebOrient }}
             />
           </View>
-          <View
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              paddingVertical: 8,
-            }}
-          >
-            <Text style={{ color: Color.PrimaryWebOrient }}>
+          <View className="flex flex-row items-center py-1">
+            <Text className=" mb-0" style={{ color: Color.PrimaryWebOrient }}>
               A/C No: {userDetails.accountNumber || "N/A"}
             </Text>
-            <TouchableOpacity
-              onPress={() => Clipboard.setString(userDetails.accountNumber)}
-            >
-              <Ionicons name="copy" size={20} style={{ marginLeft: 12 }} />
+            <TouchableOpacity onPress={() => Clipboard.setString(userDetails.accountNumber)}>
+              <View className="ml-3 text-black">
+                <Ionicons name="copy" size={20} />
+              </View>
             </TouchableOpacity>
           </View>
-          <Text style={{ color: "#a0a0a0" }}>
+          <Text className="text-gray-500">
             {userDetails.accountType || "N/A"}
           </Text>
           <View
-            style={{
-              flexDirection: I18nManager.isRTL ? "row-reverse" : "row",
-              justifyContent: "center",
-              marginBottom: 16,
-            }}
+            className={`flex-row items-center justify-center mb-4 ${
+              I18nManager.isRTL ? "flex-row-reverse" : ""
+            }`}
           >
             {Object.keys(languageOptions).map((lang) => (
               <TouchableOpacity
                 key={lang}
+                className={`p-3 mt-3 ${
+                  language === lang ? "bg-primary" : "bg-white"
+                } rounded-l-lg flex-1`}
+                onPress={() => handleLanguageSelect(lang)}
                 style={{
-                  padding: 12,
-                  marginTop: 12,
-                  backgroundColor:
-                    language === lang ? Color.PrimaryWebOrient : "white",
-                  borderRadius: 8,
-                  flex: 1,
+                  width: 100,
                   alignItems: "center",
                   justifyContent: "center",
-                  width: 100,
                 }}
-                onPress={() => handleLanguageSelect(lang)}
               >
                 <Text
                   style={{
@@ -215,13 +195,10 @@ const Sidebar = () => {
         </View>
         {menuItems.map((item, index) => (
           <TouchableOpacity
+            className={`flex-row items-center py-3 px-5 ${
+              I18nManager.isRTL ? "flex-row-reverse" : ""
+            }`}
             key={index}
-            style={{
-              flexDirection: I18nManager.isRTL ? "row-reverse" : "row",
-              alignItems: "center",
-              paddingVertical: 12,
-              paddingHorizontal: 16,
-            }}
             onPress={() => handlePress(item)}
           >
             <Ionicons
@@ -230,11 +207,11 @@ const Sidebar = () => {
               color={Color.Text}
               style={{ marginHorizontal: 10, color: Color.PrimaryWebOrient }}
             />
-            <Text style={{ fontSize: 16, flex: 1 }}>{item.title}</Text>
+            <Text className="text-md flex-1">{item.title}</Text>
             <Entypo
               name="chevron-right"
               size={24}
-              color={Color.PrimaryWebOrient}
+              style={{ color: Color.PrimaryWebOrient }}
             />
           </TouchableOpacity>
         ))}
