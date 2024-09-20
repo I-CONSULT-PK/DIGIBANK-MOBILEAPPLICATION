@@ -70,7 +70,7 @@ const Account_Setting_List = () => {
       id: 9,
       title: "De-Activate PIN",
       image: require("../../../assets/De-Activate Login PIN.png"),
-      link: "DeactivatePinScreen",
+      link: "DeactivatePin",
     },
     {
       id: 10,
@@ -91,7 +91,7 @@ const Account_Setting_List = () => {
         >
           <View className="flex-row items-center justify-center h-full">
             <TouchableOpacity
-               onPress={() => navigation.navigate("Home")}
+              onPress={() => navigation.navigate("Home")}
               className="absolute left-5"
             >
               <Entypo name="chevron-left" size={25} color="white" />
@@ -101,7 +101,6 @@ const Account_Setting_List = () => {
         </View>
         <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
           <View className="flex-1 mt-2">
-            
             <View className="flex-row flex-wrap justify-center">
               {options.map((option) => (
                 <TouchableOpacity
