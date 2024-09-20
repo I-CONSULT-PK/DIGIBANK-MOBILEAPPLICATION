@@ -93,7 +93,24 @@ const ChooseSecurity = ({ navigation }) => {
             <View>
               <View className="w-full bg-white rounded-t-[30px] py-16 px-2 shadow-2xl">
                 <View className=" w-full px-8">
-                  {(hasFingerprint || hasBiometrics) && (<TouchableOpacity
+
+                  {hasBiometrics && (<TouchableOpacity
+                    className="flex-row items-center justify-between bg-white border-gray-200 p-4 mb-2 rounded-xl shadow-2xl"
+                    onPress={() => toggleModal('fingerprint')}
+                  >
+                    <Ionicons name="finger-print" size={28} color="#00C6FF" />
+                    <Text className="flex-1 text-base text-left ml-4">
+                      Add Fingerprint
+                    </Text>
+                    <Ionicons
+                      name="chevron-forward"
+                      size={20}
+                      color="gray"
+                      className="ml-auto"
+                    />
+                  </TouchableOpacity>)}
+
+                  {hasFingerprint && (<TouchableOpacity
                     className="flex-row items-center justify-between bg-white border-gray-200 p-4 mb-2 rounded-xl shadow-2xl"
                     onPress={() => toggleModal('fingerprint')}
                   >
@@ -122,7 +139,9 @@ const ChooseSecurity = ({ navigation }) => {
                       className="ml-auto"
                     />
                   </TouchableOpacity>)}
+                  
                 </View>
+
                 <View className=" mt-4 px-4">
                   <Button
                     text="Skip"
