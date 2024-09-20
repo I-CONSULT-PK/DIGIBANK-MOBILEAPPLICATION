@@ -188,7 +188,7 @@ const OTP = ({ navigation, route }) => {
                   <TextInput
                     key={index}
                     ref={(input) => inputs.current[index] = input}
-                    className="w-12 h-12 text-center text-xl bg-[#F4F5F9] border border-gray-300 rounded-md font-InterSemiBold"
+                    className="w-12 h-12 text-center text-lg bg-[#F4F5F9] border border-gray-300 rounded-md font-InterSemiBold"
                     keyboardType="numeric"
                     maxLength={1}
                     onChangeText={(text) => handleChange(text, index)}
