@@ -262,46 +262,50 @@ const LimitManagement = ({ navigation }) => {
 
       {/* Custom Modal */}
       <CustomModal
-        visible={modalVisible}
-        onClose={handleCloseModal}
-       
-        confirmText="Proceed"
-        onConfirm={handleProceed}
-      >
-        <View className="flex flex-col items-center px-4 py-3.5 bg-white rounded-xl">
-          <View className="flex flex-row justify-between w-full mb-4">
-            <View className="flex flex-col">
-              <Text className="text-md font-medium">Set Count</Text>
-            </View>
-            <View className="flex flex-col items-end">
-              <Text
-                className="text-md font-medium"
-                style={{ color: Color.PrimaryWebOrient }}
-              >
-                {sliderValue} Utility Bills / Day
-              </Text>
-            </View>
-          </View>
+  visible={modalVisible}
+  onClose={handleCloseModal}
+  title="Set Count"
+  message="Adjust the number of utility bills per day."
+  confirmText="Proceed"
+  onConfirm={() => {
+    handleProceed(sliderValue); 
+  }}
+>
+  <View className="flex flex-col items-center px-4 py-3.5 bg-white rounded-xl">
+    <View className="flex flex-row justify-between w-full mb-4">
+      <View className="flex flex-col">
+        <Text className="text-md font-medium">Set Count</Text>
+      </View>
+      <View className="flex flex-col items-end">
+        <Text
+          className="text-md font-medium"
+          style={{ color: Color.PrimaryWebOrient }}
+        >
+          {sliderValue} Utility Bills / Day
+        </Text>
+      </View>
+    </View>
 
-          <View className="w-full">
-            <Slider
-              style={styles.slider}
-              minimumValue={0}
-              maximumValue={5}
-              step={1}
-              value={sliderValue}
-              onValueChange={(value) => setSliderValue(value)}
-              minimumTrackTintColor={Color.PrimaryWebOrient}
-              maximumTrackTintColor="#ccc"
-              thumbTintColor={Color.PrimaryWebOrient}
-            />
-            <View className="flex-row justify-between w-full">
-              <Text className="text-gray-400 font-bold">0</Text>
-              <Text className="text-gray-400 font-bold">{sliderValue}</Text>
-            </View>
-          </View>
-        </View>
-      </CustomModal>
+    <View className="w-full">
+      <Slider
+        style={styles.slider}
+        minimumValue={0}
+        maximumValue={5}
+        step={1}
+        value={sliderValue}
+        onValueChange={(value) => setSliderValue(value)}
+        minimumTrackTintColor={Color.PrimaryWebOrient}
+        maximumTrackTintColor="#ccc"
+        thumbTintColor={Color.PrimaryWebOrient}
+      />
+      <View className="flex-row justify-between w-full">
+        <Text className="text-gray-400 font-bold">0</Text>
+        <Text className="text-gray-400 font-bold">{sliderValue}</Text>
+      </View>
+    </View>
+  </View>
+</CustomModal>
+
     </SafeAreaView>
   );
 };

@@ -210,20 +210,23 @@ const Registration = ({ route }) => {
       Alert.alert("Error", "Unexpected error occured. Try again later");
     } else {
       setOtpLoading(true);
-
+ 
+      const otpDeliveryMethod = await AsyncStorage.getItem('otpDeliveryMethod');
+ 
       const otpData = {
         mobileNumber: initialForm.mobile,
         email: returnedData.email,
         reason: "fund transfer",
+        deliveryPreference: otpDeliveryMethod ? otpDeliveryMethod : "EMAIL"
       };
-
+ 
       try {
         const response = await axios.post(
           `${API_BASE_URL}/v1/otp/createOTP`,
           otpData
         );
         const dto = response.data;
-
+ 
         if (dto && dto.success && dto.data) {
           navigation.navigate("OTP", {
             source: "registration",
@@ -244,7 +247,7 @@ const Registration = ({ route }) => {
       } catch (error) {
         if (error.response) {
           const statusCode = error.response.status;
-
+ 
           if (statusCode === 404) {
             Alert.alert("Error", "Server timed out. Try again later!");
           } else if (statusCode === 503) {
@@ -270,7 +273,6 @@ const Registration = ({ route }) => {
       }
     }
   };
-
   const handleRegister = async () => {
     if (
       finalForm.username === "" ||

@@ -109,13 +109,15 @@ import { TouchableOpacity, Text } from "react-native";
 
 import { Color } from "../GlobalStyles";
 
-const Button = ({ text, styles, textStyles, width, onPress, loading }) => {
+const Button = ({ text, styles, textStyles, width, onPress, loading, color }) => {
+  const backgroundColor = color || Color.PrimaryWebOrient;
+
   return (
     <TouchableOpacity
       className={`py-3.5 rounded-lg ${width || "w-[100%]"} ${styles} ${
         loading ? "opacity-70" : ""
       }`}
-      style={{ backgroundColor: Color.PrimaryWebOrient }}
+      style={{ backgroundColor: backgroundColor }}
       onPress={onPress}
       activeOpacity={0.7}
     >

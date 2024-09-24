@@ -98,6 +98,7 @@ import DeviceManagement from "./screens/Mobile-Banking/Account-Setting/DeviceMan
 import ChangePassword from "./screens/Mobile-Banking/Account-Setting/ChangePassword";
 import Add_Account from "./screens/Mobile-Banking/Account-Setting/Add_Account";
 import DeactivatePin from "./screens/Mobile-Banking/Account-Setting/DeactivatePin";
+import UserActivity from "./screens/Mobile-Banking/Account-Setting/UserActivity";
 const Stack = createNativeStackNavigator();
 
 export default function App() {
@@ -333,6 +334,11 @@ export default function App() {
         <Stack.Screen
           name="To_Up_Transfer"
           component={To_Up_Transfer}
+          options={{ headerShown: false }}
+        />
+         <Stack.Screen
+          name="UserActivity"
+          component={UserActivity}
           options={{ headerShown: false }}
         />
         {/* Account Settings end */}

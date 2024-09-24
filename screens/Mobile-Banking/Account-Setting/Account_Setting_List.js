@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Text,
   View,
@@ -9,14 +9,17 @@ import {
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { LinearGradient } from "expo-linear-gradient";
 import { Entypo } from "@expo/vector-icons";
 import { Color } from "../../../GlobalStyles";
+import CustomModal from "../../../components/CustomModal";
+import Footer from "../../../components/Footer";
 
 const { width } = Dimensions.get("window");
 
 const Account_Setting_List = () => {
   const navigation = useNavigation();
+  const [modalVisible, setModalVisible] = useState(false);
+
   const options = [
     {
       id: 1,
@@ -52,7 +55,7 @@ const Account_Setting_List = () => {
       id: 6,
       title: "User Activity",
       image: require("../../../assets/User Activity.png"),
-      link: "UserActivityScreen",
+      link: "UserActivity",
     },
     {
       id: 7,
@@ -82,6 +85,16 @@ const Account_Setting_List = () => {
 
   const horizontalPadding = 16;
 
+  const handleEnableBiometric = () => {
+    setModalVisible(true);
+  };
+
+  const handleConfirmEnableBiometric = () => {
+    // console.log("Biometric enabled!");
+    setModalVisible(false);
+    navigation.navigate("Home");
+  };
+
   return (
     <SafeAreaView className="flex-1">
       <View className="flex-1 bg-white">
@@ -105,11 +118,15 @@ const Account_Setting_List = () => {
               {options.map((option) => (
                 <TouchableOpacity
                   key={option.id}
-                  onPress={() => navigation.navigate(option.link)}
+                  onPress={
+                    option.link === "ChooseSecurity"
+                      ? handleEnableBiometric
+                      : () => navigation.navigate(option.link)
+                  }
                   className="p-2"
                   style={{ width: (width - horizontalPadding * 1.2) / 2 }}
                 >
-                  <View className="bg-white rounded-lg p-2 shadow-lg  shadow-slate-400 flex-row items-center h-[55px]">
+                  <View className="bg-white rounded-lg p-2 shadow-lg shadow-slate-400 flex-row items-center h-[55px]">
                     <Image
                       source={option.image}
                       className="w-8 h-8 mr-2"
@@ -125,6 +142,16 @@ const Account_Setting_List = () => {
           </View>
         </ScrollView>
       </View>
+      <Footer />
+      <CustomModal
+        visible={modalVisible}
+        onClose={() => setModalVisible(false)}
+        title="Enable Biometric"
+        message="Do you want to enable your fingerprint?"
+        onConfirm={handleConfirmEnableBiometric}
+        confirmText="Yes"
+        cancelText="No"
+      />
     </SafeAreaView>
   );
 };

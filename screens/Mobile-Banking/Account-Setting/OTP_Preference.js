@@ -1,5 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { Text, View, ScrollView, TouchableOpacity, Image, Alert } from "react-native";
+import {
+  Text,
+  View,
+  ScrollView,
+  TouchableOpacity,
+  Image,
+  Alert,
+} from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Entypo } from "@expo/vector-icons";
@@ -7,7 +14,8 @@ import Checkbox from "expo-checkbox";
 import Button from "../../../components/Button";
 import { Divider } from "react-native-paper";
 import { TouchableWithoutFeedback } from "react-native";
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import Footer from "../../../components/Footer";
 
 const OTP_Preference = () => {
   const navigation = useNavigation();
@@ -31,17 +39,15 @@ const OTP_Preference = () => {
       // Save selected method locally
       await AsyncStorage.setItem("otpDeliveryMethod", selectedMethod);
       Alert.alert("Success", "Setting saved successfully!");
-  
+
       setTimeout(() => {
         navigation.navigate("Home");
-      }, 2000); 
-  
+      }, 2000);
     } catch (error) {
       console.error("Error saving delivery method:", error);
       Alert.alert("Error", "Failed to save delivery method. Please try again.");
     }
   };
-  
 
   return (
     <SafeAreaView className="flex-1 bg-white">
@@ -67,7 +73,9 @@ const OTP_Preference = () => {
                 Pick a method to receive your OTP.
               </Text>
 
-              <TouchableWithoutFeedback onPress={() => setSelectedMethod("sms")}>
+              <TouchableWithoutFeedback
+                onPress={() => setSelectedMethod("sms")}
+              >
                 <View className="flex-row items-center mb-2">
                   <Image
                     source={require("../../../assets/sms.png")}
@@ -86,7 +94,9 @@ const OTP_Preference = () => {
                 </View>
               </TouchableWithoutFeedback>
               <Divider />
-              <TouchableWithoutFeedback onPress={() => setSelectedMethod("email")}>
+              <TouchableWithoutFeedback
+                onPress={() => setSelectedMethod("email")}
+              >
                 <View className="flex-row items-center mt-2 mb-2">
                   <Image
                     source={require("../../../assets/mail.png")}
@@ -107,7 +117,9 @@ const OTP_Preference = () => {
 
               <Divider />
 
-              <TouchableWithoutFeedback onPress={() => setSelectedMethod("both")}>
+              <TouchableWithoutFeedback
+                onPress={() => setSelectedMethod("both")}
+              >
                 <View className="flex-row items-center mt-2">
                   <View className="flex-row w-[80%]">
                     <Image
@@ -131,9 +143,15 @@ const OTP_Preference = () => {
           </View>
         </ScrollView>
         <View className="p-4">
-          <Button text="Save" width="w-[100%]" styles="py-4" onPress={handleSave} />
+          <Button
+            text="Save"
+            width="w-[100%]"
+            styles="py-4"
+            onPress={handleSave}
+          />
         </View>
       </View>
+      <Footer />
     </SafeAreaView>
   );
 };

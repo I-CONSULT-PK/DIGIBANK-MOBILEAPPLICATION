@@ -106,7 +106,7 @@ const Update_Profile = () => {
               <View className="flex-row justify-between items-center bg-gray-100 p-1 rounded-md mt-1">
                 <TextInput
                   value={accountNumber}
-                  editable={false} 
+                  editable={false}
                   className="text-black flex-1"
                 />
                 <TouchableOpacity>
@@ -123,7 +123,7 @@ const Update_Profile = () => {
               <Text className="text-gray-500">Mobile Number</Text>
               <TextInput
                 onChange={setMobileNumber}
-                placeholder={mobileNumber} 
+                placeholder={mobileNumber}
               />
             </View>
 
