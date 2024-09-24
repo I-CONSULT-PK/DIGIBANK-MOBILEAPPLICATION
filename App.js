@@ -100,6 +100,7 @@ import Add_Account from "./screens/Mobile-Banking/Account-Setting/Add_Account";
 import DeactivatePin from "./screens/Mobile-Banking/Account-Setting/DeactivatePin";
 import UserActivity from "./screens/Mobile-Banking/Account-Setting/UserActivity";
 import ChangeLoginPin from "./screens/Mobile-Banking/Account-Setting/ChangeLoginPin";
+import ManageLoginPin from "./screens/Mobile-Banking/Account-Setting/ManageLoginPin";
 const Stack = createNativeStackNavigator();
 
 export default function App() {
@@ -282,6 +283,11 @@ export default function App() {
          <Stack.Screen
           name="ChangeLoginPin"
           component={ChangeLoginPin}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="ManageLoginPin"
+          component={ManageLoginPin}
           options={{ headerShown: false }}
         />
 
