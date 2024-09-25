@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, TextInput, Alert } from 'react-native';
 import Modal from "react-native-modal";
 import Button from './Button';
 
-const PINCodeModal = ({ isModalVisible, toggleModal, pinLength, pin, setPin, source, navigation }) => {
+const PINCodeModal = ({ isModalVisible, toggleModal, pinLength, pin, setPin, source, navigation, customerId }) => {
     const inputs = useRef([]);
     const [isConfirmingPIN, setIsConfirmingPIN] = useState(false);
     const [confirmPinInput, setConfirmPinInput] = useState(Array(pinLength).fill(''));
@@ -36,6 +36,11 @@ const PINCodeModal = ({ isModalVisible, toggleModal, pinLength, pin, setPin, sou
 
         if (sanitizedText.length === 1 && index < pinLength - 1) {
             inputs.current[index + 1].focus();
+        } else if (sanitizedText.length === 0 && index > 0) {
+            const prevIndex = index - 1;
+            if (inputs.current[prevIndex]) {
+                inputs.current[prevIndex].focus();
+            }
         }
     };
 
@@ -49,12 +54,12 @@ const PINCodeModal = ({ isModalVisible, toggleModal, pinLength, pin, setPin, sou
                 if (pin.join('') === confirmPinInput.join('')) {
                     toggleModal();
 
-                    const pinValue = pin.join(''); 
-                    
+                    const pinValue = pin.join('');
+
                     if (source === 'fingerprint') {
-                        navigation.navigate('RegisterFingerPrint', { pin: pinValue });
+                        navigation.navigate('RegisterFingerPrint', { pin: pinValue, customerId });
                     } else if (source === 'face') {
-                        navigation.navigate('RegisterFaceDetector', { pin: pinValue });
+                        navigation.navigate('RegisterFaceDetector', { pin: pinValue, customerId });
                     }
                 } else {
                     Alert.alert('Error', 'PINs do not match. Please try again.');

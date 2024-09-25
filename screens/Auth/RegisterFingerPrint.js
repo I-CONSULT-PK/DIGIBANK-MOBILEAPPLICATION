@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -6,6 +6,7 @@ import {
   SafeAreaView,
   Image,
   Alert,
+  Platform
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import Button from "../../components/Button";
@@ -17,15 +18,32 @@ import {
 import { StatusBar } from "expo-status-bar";
 import axios from "axios";
 import API_BASE_URL from '../../config/index';
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import ReactNativeBiometrics from 'react-native-biometrics';
-import { getDeviceName, getDeviceType, getUniqueId, getSystemName, getSystemVersion, getModel, getManufacturer } from 'react-native-device-info';
+import * as Device from 'expo-device';
+import * as Application from 'expo-application';
 
 const RegisterFingerPrint = ({ route }) => {
   const navigation = useNavigation();
   const rnBiometrics = new ReactNativeBiometrics();
 
-  const { pin } = route.params || {};
+  const { pin, customerId } = route.params || {};
+  const [key, setKey] = useState(null);
+
+  const getDeviceTypeString = (deviceType) => {
+    switch (deviceType) {
+      case Device.DeviceType.PHONE:
+        return 'Phone';
+      case Device.DeviceType.TABLET:
+        return 'Tablet';
+      case Device.DeviceType.TV:
+        return 'TV';
+      case Device.DeviceType.DESKTOP:
+        return 'Desktop';
+      case Device.DeviceType.UNKNOWN:
+      default:
+        return 'Unknown';
+    }
+  };
 
   const enableBiometricAccess = async () => {
     try {
@@ -33,54 +51,61 @@ const RegisterFingerPrint = ({ route }) => {
       const { success } = resultObject;
 
       if (success) {
-        const deviceName = await getDeviceName();
-        const deviceType = await getDeviceType();
-        const uniqueId = await getUniqueId();
-        const osn = await getSystemName();
-        const osv = await getSystemVersion();
-        const modelName = await getModel();
-        const manufacture = await getManufacturer();
+        let publicKey = key;
+
+        const resultObject = await rnBiometrics.biometricKeysExist();
+        const { keysExist } = resultObject;
+
+        if (!keysExist) {
+          const createKeyResult = await rnBiometrics.createKeys();
+          publicKey = createKeyResult.publicKey; 
+          setKey(publicKey); 
+        }
+
+        const deviceName = Device.deviceName;
+        const deviceType = Device.deviceType;
+        const uniqueId =
+          Platform.OS === 'android'
+            ? await Application.getAndroidId()
+            : await Application.getIosIdForVendorAsync();
+        const osn = Device.osName;
+        const osv = Device.osVersion;
+        const modelName = Device.modelName;
+        const manufacturer = Device.manufacturer;
 
         const payload = {
           deviceName: deviceName,
-          deviceType: deviceType,
+          deviceType: getDeviceTypeString(deviceType),
           unique: uniqueId,
           osv_osn: osn + "-" + osv,
           modelName: modelName,
-          manufacture: manufacture,
-          devicePin: pin
+          manufacture: manufacturer,
+          devicePin: pin,
+          publicKey: publicKey
         };
 
         try {
-          const bearerToken = await AsyncStorage.getItem('token');
+          const response = await axios.post(`${API_BASE_URL}/api/devices/deviceRegister/${customerId}`, payload);
 
-          if (bearerToken) {
-            const response = await axios.post(`${API_BASE_URL}/api/devices/deviceRegister/228`, payload, {
-              headers: {
-                'Authorization': `Bearer ${bearerToken}`,
-              },
-            });
+          const dto = response.data;
 
-            const dto = response.data;
-            console.log(dto);
+          if (dto && dto.success && dto.data) {
+            Alert.alert("Success", dto.message);
 
-            if (dto && dto.success && dto.data) {
-              Alert.alert("Success", dto.message);
-
-              setTimeout(() => {
-                navigation.navigate("Login");
-              }, 1000);
+            setTimeout(() => {
+              navigation.reset({
+                index: 0,
+                routes: [{ name: 'Login' }],
+              });
+            }, 1000);
+          }
+          else {
+            if (dto.message) {
+              Alert.alert('Error', dto.message);
             }
-            else {
-              if (dto.message) {
-                Alert.alert('Error', dto.message);
-              }
-              else if (dto.errors && dto.errors.length > 0) {
-                Alert.alert('Error', dto.errors);
-              }
+            else if (dto.errors && dto.errors.length > 0) {
+              Alert.alert('Error', dto.errors);
             }
-          } else {
-            Alert.alert('Error', 'Unexpected error occured. Try again later!');
           }
         } catch (error) {
           if (error.response) {

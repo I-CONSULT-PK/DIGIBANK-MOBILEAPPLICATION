@@ -19,7 +19,7 @@ import {
 import ReactNativeBiometrics, { BiometryTypes } from 'react-native-biometrics';
 import PINCodeModal from "../../components/PINCodeModal";
 
-const ChooseSecurity = ({ navigation }) => {
+const ChooseSecurity = ({ navigation, route }) => {
   const [source, setSource] = useState('');
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [hasFingerprint, setHasFingerprint] = useState(false);
@@ -28,6 +28,8 @@ const ChooseSecurity = ({ navigation }) => {
 
   const pinLength = 4;
   const [pin, setPin] = useState(Array(pinLength).fill(''));
+
+  const { customerId } = route.params || {};
 
   const rnBiometrics = new ReactNativeBiometrics();
 
@@ -156,7 +158,7 @@ const ChooseSecurity = ({ navigation }) => {
         </View>
       </LinearGradient>
 
-      <PINCodeModal isModalVisible={isModalVisible} toggleModal={toggleModal} pinLength={pinLength} pin={pin} setPin={setPin} source={source} navigation={navigation} />
+      <PINCodeModal isModalVisible={isModalVisible} toggleModal={toggleModal} pinLength={pinLength} pin={pin} setPin={setPin} source={source} navigation={navigation} customerId={customerId} />
 
       <StatusBar backgroundColor={Color.PrimaryWebOrient} style="light" />
     </SafeAreaView>

@@ -76,16 +76,8 @@ const Sidebar = () => {
         const keys = await AsyncStorage.getAllKeys();
         const items = await AsyncStorage.multiGet(keys);
 
-        console.log("Local Storage before clearing:");
-        items.forEach(([key, value]) => {
-          console.log(`Key: ${key}, Value: ${value}`);
-        });
-
         // Clear local storage
         await AsyncStorage.clear();
-
-        // Log clear confirmation
-        console.log("Local Storage has been cleared.");
 
         navigation.navigate("Login");
       } catch (error) {

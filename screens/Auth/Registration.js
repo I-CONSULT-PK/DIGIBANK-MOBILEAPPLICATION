@@ -12,6 +12,7 @@ import API_BASE_URL from "../../config";
 import { Entypo } from "@expo/vector-icons";
 import Button from "../../components/Button";
 import ReactNativeBiometrics, { BiometryTypes } from 'react-native-biometrics';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Registration = ({ route }) => {
   const navigation = useNavigation();
@@ -63,7 +64,7 @@ const Registration = ({ route }) => {
           setHasFaceDetection(true);
         } else if (available && biometryType === BiometryTypes.Biometrics) {
           setHasBiometrics(true);
-        } 
+        }
       });
   };
 
@@ -164,10 +165,13 @@ const Registration = ({ route }) => {
     } else {
       setOtpLoading(true);
 
+      const otpDeliveryMethod = await AsyncStorage.getItem('otpDeliveryMethod');
+
       const otpData = {
         mobileNumber: initialForm.mobile,
         email: returnedData.email,
         reason: "fund transfer",
+        deliveryPreference: otpDeliveryMethod ? otpDeliveryMethod : "EMAIL"
       };
 
       try {
@@ -261,10 +265,13 @@ const Registration = ({ route }) => {
             Alert.alert("Success", dto.message);
 
             setTimeout(() => {
-              if (hasFaceDetection || hasFingerprint  || hasBiometrics) {
-                navigation.navigate("ChooseSecurity");
+              if (hasFaceDetection || hasFingerprint || hasBiometrics) {
+                navigation.navigate("ChooseSecurity", { customerId: dto.data.id });
               } else {
-                navigation.navigate("Login");
+                navigation.reset({
+                  index: 0,
+                  routes: [{ name: 'Login' }],
+                });
               }
             }, 1000);
           } else {
@@ -469,8 +476,8 @@ const Registration = ({ route }) => {
                     text='Next'
                     width='w-[100%]'
                     styles='mb-4 py-4'
-                    // onPress={handleNext}
-                    onPress={() => navigation.navigate('ChooseSecurity')}
+                    onPress={handleNext}
+                    // onPress={() => navigation.navigate('ChooseSecurity')}
                     loading={nextLoading}
                   />
 

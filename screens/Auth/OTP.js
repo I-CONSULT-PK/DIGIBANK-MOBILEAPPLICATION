@@ -54,6 +54,11 @@ const OTP = ({ navigation, route }) => {
 
     if (sanitizedText.length === 1 && index < otpLength - 1) {
       inputs.current[index + 1].focus();
+    } else if (sanitizedText.length === 0 && index > 0) {
+      const prevIndex = index - 1;
+      if (inputs.current[prevIndex]) {
+        inputs.current[prevIndex].focus();
+      }
     }
   };
 
@@ -73,10 +78,13 @@ const OTP = ({ navigation, route }) => {
     if (enteredOtp.length > 0) {
       setLoading(true);
 
+      const otpDeliveryMethod = await AsyncStorage.getItem('otpDeliveryMethod');
+
       const otpData = {
         mobileNumber: mobileNumber,
         email: email,
-        emailOtp: enteredOtp
+        emailOtp: enteredOtp,
+        deliveryPreference: otpDeliveryMethod ? otpDeliveryMethod : "EMAIL"
       };
 
       try {
@@ -126,10 +134,13 @@ const OTP = ({ navigation, route }) => {
     setIsResendDisabled(true);
 
     try {
+      const otpDeliveryMethod = await AsyncStorage.getItem('otpDeliveryMethod');
+
       const otpData = {
         mobileNumber: mobileNumber,
         email: email,
-        reason: 'verify mobile device'
+        reason: 'verify mobile device',
+        deliveryPreference: otpDeliveryMethod ? otpDeliveryMethod : "EMAIL"
       };
 
       const response = await axios.post(`${API_BASE_URL}/v1/otp/createOTP`, otpData);

@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { ScrollView, Text, TouchableOpacity, StyleSheet, View, Alert, Modal, Image, Keyboard } from "react-native";
+import React, { useState, useEffect } from "react";
+import { ScrollView, Text, TouchableOpacity, StyleSheet, View, Alert, Modal, Image, Keyboard, Platform } from "react-native";
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
@@ -14,23 +14,21 @@ import { StatusBar } from 'expo-status-bar';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import axios from 'axios';
 import API_BASE_URL from '../../config';
-import * as LocalAuthentication from 'expo-local-authentication';
-import * as Device from 'expo-device';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { v4 as uuidv4 } from 'uuid'; // If you are using UUID for visitor ID generation
 import { useFocusEffect } from "@react-navigation/native";
 import ReactNativeBiometrics, { BiometryTypes } from 'react-native-biometrics';
+import * as Application from 'expo-application';
 
 const Login = ({ navigation }) => {
   const [form, setForm] = useState({ username: '', password: '' });
   const [loading, setLoading] = useState(false);
-
-  const [isEnabled, setIsEnabled] = useState(false);
-  const [biometricData, setBiometricData] = useState(null);
-  const [visitorId, setVisitorId] = useState(null);
-  const [modalVisible, setModalVisible] = useState(false);
-  const [modalVisible1, setModalVisible1] = useState(false);
-  const [error1, setError1] = useState("");
+  // const [modalVisible, setModalVisible] = useState(false);
+  // const [modalVisible1, setModalVisible1] = useState(false);
+  // const [error, setError] = useState("");
+  const [bioEnabled, setBioEnabled] = useState(null);
+  const [hasFingerprint, setHasFingerprint] = useState(false);
+  const [hasFaceDetection, setHasFaceDetection] = useState(false);
+  const [hasBiometrics, setHasBiometrics] = useState(false);
 
   const rnBiometrics = new ReactNativeBiometrics();
 
@@ -117,57 +115,93 @@ const Login = ({ navigation }) => {
     }
   };
 
-  const handlePress = async () => {
-    if (!isEnabled) {
-      try {
-        const result = await LocalAuthentication.authenticateAsync();
-        if (result.success) {
-          // const newVisitorId = uuidv4(); // Generate a new unique ID
-          // setVisitorId(newVisitorId); // Set the visitor ID in state
+  const handleLoginWithFingerprint = async () => {
+    try {
+      const resultObject = await rnBiometrics.simplePrompt({ promptMessage: 'Confirm fingerprint' });
+      const { success } = resultObject;
 
-          // // Store the visitor ID locally
-          // await AsyncStorage.setItem("visitorId", newVisitorId);
+      if (success) {
+        const uniqueId =
+          Platform.OS === 'android'
+            ? await Application.getAndroidId()
+            : await Application.getIosIdForVendorAsync();
 
-          setIsEnabled(true);
-          setBiometricData({
-            brand: Device.brand,
-            modelName: Device.modelName,
-            osName: Device.osName,
-            osVersion: Device.osVersion,
-            // visitorId: newVisitorId,
-          });
+        try {
+          const response = await axios.post(`${API_BASE_URL}/api/devices/loginWithPin?devicePin=&uniquePin=${uniqueId}`, { timeout: 10000 });
 
-          // Console log the device and biometric info
-          console.log("Biometric Data:");
-          console.log("Brand:", Device.brand);
-          console.log("Model Name:", Device.modelName);
-          console.log("OS Name:", Device.osName);
-          console.log("OS Version:", Device.osVersion);
-          // console.log("Visitor ID:", newVisitorId);
+          const dto = response.data;
 
-          navigation.navigate('Home');
-        } else {
-          if (result.error !== 'user_cancel') {
-            setError1("No fingerprint enrolled. Please enroll your fingerprint!")
-            setModalVisible1(true);
+          if (dto && dto.success && dto.data && dto.data.customerId) {
+            const customerId = dto.data.customerId.toString();
+            const token = dto.data.token.toString();
+            const expirationTime = dto.data.expirationTime.toString();
+
+            await AsyncStorage.setItem('customerId', customerId);
+            await AsyncStorage.setItem('token', token);
+            await AsyncStorage.setItem('expirationTime', expirationTime);
+
+            navigation.navigate('Home');
+          }
+          else {
+            if (dto.message) {
+              Alert.alert('Error', dto.message);
+            }
+            else if (dto.errors && dto.errors.length > 0) {
+              Alert.alert('Error', dto.errors);
+            }
+          }
+        } catch (error) {
+          if (error.response) {
+            const statusCode = error.response.status;
+
+            if (statusCode === 404) {
+              Alert.alert('Error', 'Server timed out. Try again later!');
+            } else if (statusCode === 503) {
+              Alert.alert('Error', 'Service unavailable. Please try again later.');
+            } else if (statusCode === 400) {
+              Alert.alert('Error', error.response.data.data.errors[0]);
+            } else {
+              Alert.alert('Error', error.message);
+            }
+          } else if (error.request) {
+            Alert.alert('Error', 'No response from the server. Please check your connection.');
+          } else {
+            Alert.alert('Error', error.message);
           }
         }
-      } catch (error) {
-        setError1(error.message);
-        setModalVisible1(true);
       }
-    } else {
-      setIsEnabled(false);
-      setBiometricData(null);
-      // setVisitorId(null);
-
-      // Remove the visitor ID from local storage
-      // await AsyncStorage.removeItem("visitorId");
-
-      // Console log the biometric data reset
-      console.log("Biometric Data Reset");
+    } catch (error) {
+      Alert.alert('Error', 'Biometrics failed. Try again!');
     }
   };
+
+  const checkHardwareSupport = async () => {
+    rnBiometrics.isSensorAvailable()
+      .then((resultObject) => {
+        const { available, biometryType } = resultObject
+
+        if (available && biometryType === BiometryTypes.TouchID) {
+          setHasFingerprint(true);
+        } else if (available && biometryType === BiometryTypes.FaceID) {
+          setHasFaceDetection(true);
+        } else if (available && biometryType === BiometryTypes.Biometrics) {
+          setHasBiometrics(true);
+        }
+      });
+  };
+
+  useEffect(() => {
+    checkHardwareSupport();
+  }, []);
+
+  const isBiometricEnabled = async () => {
+    const enableBio = await AsyncStorage.getItem('enableBio');
+    setBioEnabled(enableBio);
+  };
+
+  useEffect(() => {
+    isBiometricEnabled();
+  }, []);
 
   useFocusEffect(
     React.useCallback(() => {
@@ -324,12 +358,12 @@ const Login = ({ navigation }) => {
                 </View>
               </View>
               {/* Centered Touch ID and Face ID buttons */}
-              <View className="flex justify-center items-center ">
+              {bioEnabled && (<View className="flex justify-center items-center ">
                 <View className="flex flex-row space-x-4">
                   {/* Touch ID Button */}
-                  <TouchableOpacity
+                  {hasBiometrics && (<TouchableOpacity
                     className="flex flex-col items-center"
-                    onPress={handlePress}
+                    onPress={handleLoginWithFingerprint}
                   >
                     <View className="bg-[#1DBBD8] p-4 rounded-lg">
                       <Image
@@ -340,10 +374,25 @@ const Login = ({ navigation }) => {
                     <Text className="mt-2 mb-4 text-center font-sm ">
                       Login with Touch ID
                     </Text>
-                  </TouchableOpacity>
+                  </TouchableOpacity>)}
+
+                  {hasFingerprint && (<TouchableOpacity
+                    className="flex flex-col items-center"
+                    onPress={handleLoginWithFingerprint}
+                  >
+                    <View className="bg-[#1DBBD8] p-4 rounded-lg">
+                      <Image
+                        source={require("../../assets/finger-icon.png")}
+                        className="h-12 w-12"
+                      />
+                    </View>
+                    <Text className="mt-2 mb-4 text-center font-sm ">
+                      Login with Touch ID
+                    </Text>
+                  </TouchableOpacity>)}
 
                   {/* Face ID Button */}
-                  <TouchableOpacity
+                  {hasFaceDetection && (<TouchableOpacity
                     className="flex flex-col items-center"
                     onPress={() => navigation.navigate('CameraScreen')}
                   >
@@ -356,16 +405,17 @@ const Login = ({ navigation }) => {
                     <Text className="mt-2  mb-4 text-center font-sm">
                       Login with Face ID
                     </Text>
-                  </TouchableOpacity>
+                  </TouchableOpacity>)}
                 </View>
-              </View>
+              </View>)}
             </View>
           </View>
         </ScrollView>
       </LinearGradient>
 
       <StatusBar backgroundColor={Color.PrimaryWebOrient} style="light" />
-      <Modal
+
+      {/* <Modal
         transparent={true}
         visible={modalVisible}
         animationType="slide"
@@ -424,7 +474,7 @@ const Login = ({ navigation }) => {
             />
             <Text className="text-lg font-bold mb-2">Alert Notification</Text>
             <Text className="text-center text-gray-500 mb-6">
-              {error1}
+              {error}
             </Text>
             <View className="flex-row justify-between">
               <TouchableOpacity
@@ -447,7 +497,7 @@ const Login = ({ navigation }) => {
             </View>
           </View>
         </View>
-      </Modal>
+      </Modal> */}
     </SafeAreaView>
   );
 };
