@@ -13,10 +13,14 @@ import { Entypo } from "@expo/vector-icons";
 import { Color } from "../../../GlobalStyles";
 import { Divider } from "react-native-paper";
 import Footer from "../../../components/Footer";
-const Card_Payment_Transfer = () => {
+const To_Up_Transfer = ({ route }) => {
   const navigation = useNavigation();
   const { width } = Dimensions.get("window");
   const horizontalPadding = 16;
+  const { networkLogo, networkName, number, amount, actionDate } =
+    route.params || {};
+
+    
   return (
     <SafeAreaView className="flex-1">
       <View className="flex-1 bg-white">
@@ -57,29 +61,29 @@ const Card_Payment_Transfer = () => {
 
             {/* Amount */}
             <Text className="text-black text-center text-4xl font-bold my-4">
-              Rs. 16,058
+              {amount}
             </Text>
 
             {/* Recipient Section */}
             <Text className="text-gray-500 text-center">Send to</Text>
             <View className="flex-row justify-center items-center mt-4">
               <Image
-                source={require("../../../assets/digi-bank.png")} // Replace with PTCL logo
+                source={{ uri: networkLogo }} // Replace with PTCL logo
                 className="w-12 h-12"
                 resizeMode="contain"
               />
             </View>
             <Text className="text-black text-center font-semibold mt-2">
-              Muhammad Hamza
+              {networkName}
             </Text>
-            <Text className="text-gray-500 text-center">************9876</Text>
+            <Text className="text-gray-500 text-center">{number}</Text>
 
             {/* Transaction Details */}
             <View className="mt-6">
               <Text className="text-black font-bold">Transaction Details</Text>
               <View className="flex-row justify-between mt-2">
                 <Text className="text-gray-500">Date / Time:</Text>
-                <Text className="text-black ml-4">9 June, 2024 12:35 PM</Text>
+                <Text className="text-black ml-4">{actionDate}</Text>
               </View>
               <View className="flex-row justify-between mt-2">
                 <Text className="text-gray-500">Transaction ID (TID):</Text>
@@ -126,9 +130,9 @@ const Card_Payment_Transfer = () => {
           </View>
         </View>
       </View>
-      <Footer/>
+      <Footer />
     </SafeAreaView>
   );
 };
 
-export default Card_Payment_Transfer;
+export default To_Up_Transfer;

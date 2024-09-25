@@ -66,28 +66,48 @@ const Sidebar = () => {
   };
 
   const handlePress = async (item) => {
-    const logoutTitle = language === "en"
-      ? enData.translations.menuItems.find(menuItem => menuItem.title === "Logout").title
-      : urData.translations.menuItems.find(menuItem => menuItem.title === "لاگ آؤٹ").title;
+    const logoutTitle =
+      language === "en"
+        ? enData.translations.menuItems.find(
+            (menuItem) => menuItem.title === "Logout"
+          )?.title
+        : urData.translations.menuItems.find(
+            (menuItem) => menuItem.title === "لاگ آؤٹ"
+          )?.title;
 
     if (item.title === logoutTitle) {
       try {
-        // Retrieve and log all keys and their values
+        // Retrieve all keys
         const keys = await AsyncStorage.getAllKeys();
-        const items = await AsyncStorage.multiGet(keys);
 
-        // Clear local storage
-        await AsyncStorage.clear();
+        // Filter out the 'selectedMethod' key
+        const keysToRemove = keys.filter((key) => key !== "otpDeliveryMethod");
 
+        // Remove all keys except 'selectedMethod'
+        await AsyncStorage.multiRemove(keysToRemove);
+
+        // Navigate to Login
         navigation.navigate("Login");
       } catch (error) {
         console.error("Error clearing storage", error);
       }
-    } else if (item.title === translations.menuItems.find(menuItem => menuItem.title === "Change Language").title) {
+    } else if (
+      item.title ===
+      translations.menuItems.find(
+        (menuItem) => menuItem.title === "Change Language"
+      )?.title
+    ) {
       // Navigate to the SelectLanguage screen
       navigation.navigate("SelectLanguage");
+    } else if (
+      item.title ===
+      translations.menuItems.find(
+        (menuItem) => menuItem.title === "Device Management"
+      )?.title
+    ) {
+      // Navigate to the DeviceManagement screen
+      navigation.navigate("DeviceManagement");
     } else {
-      console.log(item.title);
     }
   };
 

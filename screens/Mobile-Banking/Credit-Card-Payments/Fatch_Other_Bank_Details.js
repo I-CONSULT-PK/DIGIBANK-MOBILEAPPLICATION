@@ -14,6 +14,7 @@ import { AntDesign, Entypo } from "@expo/vector-icons";
 import { Color } from "../../../GlobalStyles";
 import TextInput from "../../../components/TextInput";
 import CustomButton from "../../../components/Button";
+import Footer from "../../../components/Footer";
 
 const Fatch_Other_Bank_Details = () => {
   const navigation = useNavigation();
@@ -107,6 +108,7 @@ const Fatch_Other_Bank_Details = () => {
           </ScrollView>
         </View>
       </View>
+      <Footer/>
     </SafeAreaView>
   );
 };

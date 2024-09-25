@@ -1,10 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Text,
   View,
   ScrollView,
   TouchableOpacity,
   Image,
+  Keyboard,
   Dimensions,
 } from "react-native";
 import { SelectList } from "react-native-dropdown-select-list";
@@ -14,9 +15,12 @@ import { AntDesign, Entypo } from "@expo/vector-icons";
 import { Color } from "../../../GlobalStyles";
 import TextInput from "../../../components/TextInput";
 import CustomButton from "../../../components/Button";
+import Footer from "../../../components/Footer";
 
-const Add_Biller = () => {
+const Add_Biller = ({ route }) => {
   const navigation = useNavigation();
+  const { networkName, networkLogo } = route.params || {};
+  const [number, setNumber] = useState(null);
   const { width } = Dimensions.get("window");
   const horizontalPadding = 16;
   return (
@@ -34,9 +38,7 @@ const Add_Biller = () => {
             >
               <Entypo name="chevron-left" size={25} color="white" />
             </TouchableOpacity>
-            <Text className="text-white text-lg font-bold">
-              Mobile Top ups
-            </Text>
+            <Text className="text-white text-lg font-bold">Mobile Top ups</Text>
           </View>
         </View>
 
@@ -48,7 +50,7 @@ const Add_Biller = () => {
             <View className="bg-white p-3 rounded-lg shadow-lg w-full">
               <View className="flex flex-row items-center">
                 <Image
-                  source={require("../../../assets/Jazz.png")}
+                  source={{ uri: networkLogo }}
                   className="mr-1 w-12 h-12"
                   resizeMode="contain"
                 />
@@ -56,7 +58,7 @@ const Add_Biller = () => {
                 <View className="flex-1 flex-row justify-between items-center">
                   <View>
                     <Text className="text-base font-semibold ml-3">
-                      Jazz Prepaid
+                      {networkName}
                     </Text>
                   </View>
                 </View>
@@ -70,18 +72,29 @@ const Add_Biller = () => {
               <TextInput
                 className="mt-2 border border-gray-200 rounded-lg p-2"
                 placeholder="Enter Your Number..."
+                value={number}
+                onChange={(text) => setNumber(text)}
+                onSubmitEditing={Keyboard.dismiss}
+                keyboardType='numeric'
               />
             </View>
 
             <View className=" mt-6">
               <CustomButton
                 text={"Next"}
-                onPress={() => navigation.navigate("Set_Card_Payment")}
+                onPress={() =>
+                  navigation.navigate("Fatch_Details_Top_up", {
+                    networkName,
+                    networkLogo,
+                    number,
+                  })
+                }
               />
             </View>
           </ScrollView>
         </View>
       </View>
+      <Footer />
     </SafeAreaView>
   );
 };
