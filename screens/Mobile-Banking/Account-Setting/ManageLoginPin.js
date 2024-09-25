@@ -1,5 +1,12 @@
 import React, { useState } from "react";
-import { Text, View, ScrollView, TouchableOpacity, Alert, Platform } from "react-native"; // Import Platform
+import {
+  Text,
+  View,
+  ScrollView,
+  TouchableOpacity,
+  Alert,
+  Platform,
+} from "react-native"; // Import Platform
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Entypo } from "@expo/vector-icons";
@@ -37,8 +44,12 @@ const ManageLoginPin = () => {
 
     // Gather device information
     const deviceName = Device.deviceName || "Unknown Device";
-    const deviceType = Device.deviceType === Device.DeviceType.PHONE ? "PHONE" : "OTHER"; // Update as necessary
-    const unique = Platform.OS === 'android' ? await Application.getAndroidId() : await Application.getIosIdForVendorAsync();
+    const deviceType =
+      Device.deviceType === Device.DeviceType.PHONE ? "PHONE" : "OTHER"; // Update as necessary
+    const unique =
+      Platform.OS === "android"
+        ? await Application.getAndroidId()
+        : await Application.getIosIdForVendorAsync();
     const osv_osn = `${Device.osName}-${Device.osVersion}`;
     const modelName = Device.modelName || "Unknown Model";
     const manufacture = Device.manufacturer || "Unknown Manufacturer";
@@ -75,7 +86,10 @@ const ManageLoginPin = () => {
     <SafeAreaView className="flex-1 bg-[#F9FAFC]">
       <View className="flex-1 justify-between">
         <ScrollView className="flex-grow">
-          <View className="h-24" style={{ backgroundColor: Color.PrimaryWebOrient }}>
+          <View
+            className="h-24"
+            style={{ backgroundColor: Color.PrimaryWebOrient }}
+          >
             <View className="flex-row items-center justify-center h-full">
               <TouchableOpacity
                 onPress={() => navigation.navigate("Account_Setting_List")}
@@ -83,14 +97,17 @@ const ManageLoginPin = () => {
               >
                 <Entypo name="chevron-left" size={25} color="white" />
               </TouchableOpacity>
-              <Text className="text-white text-lg font-bold">Create Login PIN</Text>
+              <Text className="text-white text-lg font-bold">
+                Create Login PIN
+              </Text>
             </View>
           </View>
           <Text className="text-xl font-bold p-5">Create Login PIN</Text>
           <Text className="text-gray-500 px-5 mb-0 mt-0">
             You can now set your login pin. Terms and conditions apply!{"\n"}
             <Text className="text-gray-500 px-5">
-              {"\n"}Criteria: Login pin should be numeric, only 4 digits & cannot be sequence e.g (1234)
+              {"\n"}Criteria: Login pin should be numeric, only 4 digits &
+              cannot be sequence e.g (1234)
             </Text>
           </Text>
           <View className="mt-4 px-4">
