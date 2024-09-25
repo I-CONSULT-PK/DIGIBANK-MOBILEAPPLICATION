@@ -101,6 +101,7 @@ import DeactivatePin from "./screens/Mobile-Banking/Account-Setting/DeactivatePi
 import UserActivity from "./screens/Mobile-Banking/Account-Setting/UserActivity";
 import ChangeLoginPin from "./screens/Mobile-Banking/Account-Setting/ChangeLoginPin";
 import ManageLoginPin from "./screens/Mobile-Banking/Account-Setting/ManageLoginPin";
+import Feedback from "./screens/Mobile-Banking/Feedback/Feedback";
 const Stack = createNativeStackNavigator();
 
 export default function App() {
@@ -280,7 +281,7 @@ export default function App() {
           component={DeactivatePin}
           options={{ headerShown: false }}
         />
-         <Stack.Screen
+        <Stack.Screen
           name="ChangeLoginPin"
           component={ChangeLoginPin}
           options={{ headerShown: false }}
@@ -292,6 +293,15 @@ export default function App() {
         />
 
         {/* Account Settings start */}
+
+        {/* Feedback start */}
+        <Stack.Screen
+          name="Feedback"
+          component={Feedback}
+          options={{ headerShown: false }}
+        />
+
+        {/* Feedback start */}
 
         <Stack.Screen
           name="Card_Payment_List"
@@ -348,7 +358,7 @@ export default function App() {
           component={To_Up_Transfer}
           options={{ headerShown: false }}
         />
-         <Stack.Screen
+        <Stack.Screen
           name="UserActivity"
           component={UserActivity}
           options={{ headerShown: false }}
@@ -751,7 +761,7 @@ export default function App() {
               component={Update_Profile}
               options={{ headerShown: false }}
             />
-            
+
             <Stack.Screen
               name="Mobile_Packages"
               component={Packages}

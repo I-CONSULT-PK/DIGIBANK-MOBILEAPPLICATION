@@ -97,6 +97,7 @@ import UserActivity from "../../Mobile-Banking/Account-Setting/UserActivity";
 import ChangeLoginPin from  "../../Mobile-Banking/Account-Setting/ChangeLoginPin";
 import ManageLoginPin from "../../Mobile-Banking/Account-Setting/ManageLoginPin";
 import Add_Account from "../../Mobile-Banking/Account-Setting/Add_Account";
+import Feedback from "../../Mobile-Banking/Feedback/Feedback";
 const Stack = createStackNavigator();
 
 const AppNavigator = () => {
@@ -194,6 +195,12 @@ const AppNavigator = () => {
         <Stack.Screen name="UserActivity" component={UserActivity} />
         <Stack.Screen name="ChangeLoginPin" component={ChangeLoginPin} />
         {/* Account Settings end */}
+
+ {/* Feedback start */}
+ <Stack.Screen name="Feedback" component={Feedback} />
+
+
+  {/* Feedback end */}
         <Stack.Screen name="OTP_Preference" component={OTP_Preference} />
         <Stack.Screen name="Bill_Payment_List" component={Bill_Payment_List} />
         <Stack.Screen name="ManageLoginPin" component={ManageLoginPin} />

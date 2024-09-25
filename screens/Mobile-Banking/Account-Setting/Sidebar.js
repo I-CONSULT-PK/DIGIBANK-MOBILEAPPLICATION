@@ -4,7 +4,6 @@ import {
   Text,
   View,
   TouchableOpacity,
-  Alert,
   Clipboard,
   I18nManager,
 } from "react-native";
@@ -77,13 +76,11 @@ const Sidebar = () => {
 
     if (item.title === logoutTitle) {
       try {
-        // Retrieve all keys
+        // Retrieve and filter keys
         const keys = await AsyncStorage.getAllKeys();
-
-        // Filter out the 'selectedMethod' key
         const keysToRemove = keys.filter((key) => key !== "otpDeliveryMethod");
 
-        // Remove all keys except 'selectedMethod'
+        // Remove keys
         await AsyncStorage.multiRemove(keysToRemove);
 
         // Navigate to Login
@@ -91,23 +88,17 @@ const Sidebar = () => {
       } catch (error) {
         console.error("Error clearing storage", error);
       }
-    } else if (
-      item.title ===
-      translations.menuItems.find(
-        (menuItem) => menuItem.title === "Change Language"
-      )?.title
-    ) {
-      // Navigate to the SelectLanguage screen
-      navigation.navigate("SelectLanguage");
-    } else if (
-      item.title ===
-      translations.menuItems.find(
-        (menuItem) => menuItem.title === "Device Management"
-      )?.title
-    ) {
-      // Navigate to the DeviceManagement screen
-      navigation.navigate("DeviceManagement");
     } else {
+      const translations = {
+        "Change Language": "SelectLanguage",
+        "Device Management": "DeviceManagement",
+        "Feedback": "Feedback",
+      };
+
+      const targetScreen = translations[item.title];
+      if (targetScreen) {
+        navigation.navigate(targetScreen);
+      }
     }
   };
 
@@ -150,11 +141,11 @@ const Sidebar = () => {
             />
           </View>
           <View className="flex flex-row items-center py-1">
-            <Text className=" mb-0" style={{ color: Color.PrimaryWebOrient }}>
+            <Text className="mb-0" style={{ color: Color.PrimaryWebOrient }}>
               A/C No: {userDetails.accountNumber || "N/A"}
             </Text>
             <TouchableOpacity onPress={() => Clipboard.setString(userDetails.accountNumber)}>
-              <View className="ml-3 text-black">
+              <View className="ml-3">
                 <Ionicons name="copy" size={20} />
               </View>
             </TouchableOpacity>
