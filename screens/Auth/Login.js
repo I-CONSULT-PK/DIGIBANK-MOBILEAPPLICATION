@@ -196,20 +196,18 @@ const Login = ({ navigation }) => {
 
   const isBiometricEnabled = async () => {
     const enableBio = await AsyncStorage.getItem('enableBio');
-    setBioEnabled(enableBio);
+    console.log(enableBio);
+    setBioEnabled(enableBio === 'true' ? true : false);
   };
 
-  useEffect(() => {
-    isBiometricEnabled();
-  }, []);
+  const clean = () => {
+    setForm((prevForm) => ({ ...prevForm, password: '' }));
+  }
 
   useFocusEffect(
     React.useCallback(() => {
-      const clean = () => {
-        setForm((prevForm) => ({ ...prevForm, password: '' }));
-      }
-
       clean();
+      isBiometricEnabled();
     }, [])
   );
 

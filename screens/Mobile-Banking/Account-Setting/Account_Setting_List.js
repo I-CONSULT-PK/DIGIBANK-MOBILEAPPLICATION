@@ -102,7 +102,7 @@ const Account_Setting_List = () => {
 
     if (result.success) {
       try {
-        await AsyncStorage.setItem("enableBio", JSON.stringify(true));
+        await AsyncStorage.setItem("enableBio", 'true');
         Alert.alert("Success", "Biometric authentication enabled.");
       } catch (error) {
         console.error("Error saving preference:", error);
