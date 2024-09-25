@@ -41,6 +41,7 @@ const CardManagement = () => {
   const fetchCardData = async () => {
     try {
       const bearerToken = await AsyncStorage.getItem("token");
+      const accountNumber = await AsyncStorage.getItem("accountNumber");
 
       if (!bearerToken) {
         Alert.alert("Error", "Authentication token not found");
@@ -48,7 +49,7 @@ const CardManagement = () => {
       }
 
       const response = await axios.get(
-        `${API_BASE_URL}/v1/customer/card/fetchCardById/zanbeel-9036764`,
+        `${API_BASE_URL}/v1/customer/card/fetchCardById/${accountNumber}`,
         {
           headers: {
             Authorization: `Bearer ${bearerToken}`,
@@ -126,7 +127,7 @@ const CardManagement = () => {
     const isDebitCard = !card.isCreditCard;
 
     return (
-      <List.AccordionGroup style={styles.accordionGroup}  key={card.cardId}>
+      <List.AccordionGroup style={styles.accordionGroup} key={card.cardId}>
         <List.Accordion
           id={card.cardId}
           key={card.cardId}
@@ -215,7 +216,7 @@ const CardManagement = () => {
     <SafeAreaView className="bg-[#f9fafc]" style={{ flex: 1 }}>
       <ScrollView>
         <View className="flex-1">
-        <View className="relative w-full mt-10">
+          <View className="relative w-full mt-10">
             <TouchableOpacity
               onPress={() => navigation.goBack()}
               className="absolute left-5 "
@@ -223,9 +224,7 @@ const CardManagement = () => {
             >
               <Entypo name="chevron-left" size={30} color="black" />
             </TouchableOpacity>
-            <Text className="text-center font-InterBold text-2xl">
-              Cards
-            </Text>
+            <Text className="text-center font-InterBold text-2xl">Cards</Text>
           </View>
           <View className="mt-2">
             <View className="flex flex-row justify-center w-4/5 h-18 my-5 mx-auto">

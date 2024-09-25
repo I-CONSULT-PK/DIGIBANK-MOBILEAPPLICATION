@@ -96,6 +96,7 @@ import DeactivatePin from "../../Mobile-Banking/Account-Setting/DeactivatePin";
 import UserActivity from "../../Mobile-Banking/Account-Setting/UserActivity";
 import ChangeLoginPin from  "../../Mobile-Banking/Account-Setting/ChangeLoginPin";
 import ManageLoginPin from "../../Mobile-Banking/Account-Setting/ManageLoginPin";
+import Add_Account from "../../Mobile-Banking/Account-Setting/Add_Account";
 const Stack = createStackNavigator();
 
 const AppNavigator = () => {

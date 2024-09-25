@@ -7,14 +7,14 @@ import {
   Platform,
   Pressable,
   TextInput,
-  Button,
+  Image,
   Alert,
   TouchableWithoutFeedback,
-  Keyboard,
+  Modal,
 } from "react-native";
 import { Color } from "../../../GlobalStyles";
-import RNHTMLtoPDF from 'react-native-html-to-pdf';
-import * as MailComposer from 'expo-mail-composer';
+import RNHTMLtoPDF from "react-native-html-to-pdf";
+import * as MailComposer from "expo-mail-composer";
 import CustomModal from "../../../components/CustomModal";
 import { useNavigation } from "@react-navigation/native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -25,10 +25,12 @@ import axios from "axios";
 import API_BASE_URL from "./../../../config/index";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { enData } from "./translations/en";
-import * as Print from 'expo-print';
-import * as FileSystem from 'expo-file-system';
+import * as Print from "expo-print";
+import * as FileSystem from "expo-file-system";
+import * as MediaLibrary from "expo-media-library";
+import XLSX from "xlsx";
 
-import * as Sharing from 'expo-sharing';
+import * as Sharing from "expo-sharing";
 
 const Account_Statements = () => {
   const navigation = useNavigation();
@@ -47,6 +49,8 @@ const Account_Statements = () => {
   const [showToPicker, setShowToPicker] = useState(false);
   const [email, setEmail] = useState("");
 
+  const [modalVisible2, setModalVisible2] = useState(false);
+
   useEffect(() => {
     const getEmail = async () => {
       const email = await AsyncStorage.getItem("email");
@@ -54,8 +58,7 @@ const Account_Statements = () => {
     };
 
     getEmail();
-  }, [])
-  
+  }, []);
 
   const handleFromDateChange = (event, selectedDate) => {
     const currentDate = selectedDate || fromDate;
@@ -131,82 +134,91 @@ const Account_Statements = () => {
 
   const formatDate2 = (inputDate) => {
     const date = new Date(inputDate);
-  
+
     // Get the year, month, and day
     const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0'); 
-    const day = String(date.getDate()).padStart(2, '0'); 
-  
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+
     // Format to YYYY-MM-DD
     return `${year}-${month}-${day}`;
   };
-  
 
   const fetchUserFullTransaction = async () => {
-  try {
-    const bearerToken = await AsyncStorage.getItem("token");
-    const accountNumber = await AsyncStorage.getItem("accountNumber");
+    try {
+      const bearerToken = await AsyncStorage.getItem("token");
+      const accountNumber = await AsyncStorage.getItem("accountNumber");
 
-    if (bearerToken && accountNumber) {
-      const response = await axios.get(
-        `${API_BASE_URL}/v1/customer/fund/generateStatement?accountNumber=${accountNumber}&startDate=${formatDate2(fromDate)}&endDate=${formatDate2(toDate)}&statementType=date_range`,
-        {
-          headers: {
-            Authorization: `Bearer ${bearerToken}`,
-          },
-        }
-      );
+      if (bearerToken && accountNumber) {
+        const response = await axios.get(
+          `${API_BASE_URL}/v1/customer/fund/generateStatement?accountNumber=${accountNumber}&startDate=${formatDate2(
+            fromDate
+          )}&endDate=${formatDate2(toDate)}&statementType=date_range`,
+          {
+            headers: {
+              Authorization: `Bearer ${bearerToken}`,
+            },
+          }
+        );
 
-      const dto = response.data;
+        const dto = response.data;
 
-      if (dto && dto.success && dto.data) {
-        const transactions = dto.data.transactionList.data;
-        const htmlContent = generateHTML(transactions);
+        if (dto && dto.success && dto.data) {
+          const transactions = dto.data.transactionList.data;
+          const htmlContent = generateHTML(transactions);
 
-        // Generate PDF and get the temporary URI
-        const { uri: tempUri } = await Print.printToFileAsync({ html: htmlContent });
-        console.log('PDF file generated at:', tempUri);
-
-        // Optionally, you can directly share the PDF
-        if (await Sharing.isAvailableAsync()) {
-          await Sharing.shareAsync(tempUri, {
-            mimeType: 'application/pdf',
-            dialogTitle: 'Share your statement',
+          // Generate PDF and get the temporary URI
+          const { uri: tempUri } = await Print.printToFileAsync({
+            html: htmlContent,
           });
+          console.log("PDF file generated at:", tempUri);
+
+          // Optionally, you can directly share the PDF
+          if (await Sharing.isAvailableAsync()) {
+            await Sharing.shareAsync(tempUri, {
+              mimeType: "application/pdf",
+              dialogTitle: "Share your statement",
+            });
+          } else {
+            Alert.alert(
+              "Sharing not available",
+              "The sharing feature is not available on this device."
+            );
+          }
         } else {
-          Alert.alert("Sharing not available", "The sharing feature is not available on this device.");
+          if (dto.message) {
+            Alert.alert("Error", dto.message);
+          } else if (dto.errors && dto.errors.length > 0) {
+            Alert.alert("Error", dto.errors.join("\n"));
+          }
         }
-
       } else {
-        if (dto.message) {
-          Alert.alert("Error", dto.message);
-        } else if (dto.errors && dto.errors.length > 0) {
-          Alert.alert("Error", dto.errors.join("\n"));
-        }
+        Alert.alert("Error", "Unexpected error occurred. Try again later!");
       }
-    } else {
-      Alert.alert("Error", "Unexpected error occurred. Try again later!");
-    }
-  } catch (error) {
-    if (error.response) {
-      const statusCode = error.response.status;
+    } catch (error) {
+      if (error.response) {
+        const statusCode = error.response.status;
 
-      if (statusCode === 404) {
-        Alert.alert("Error", "Server timed out. Try again later!");
-      } else if (statusCode === 503) {
-        Alert.alert("Error", "Service unavailable. Please try again later.");
-      } else if (statusCode === 400) {
-        Alert.alert("Error", error.response.data.data.errors[0]);
+        if (statusCode === 404) {
+          Alert.alert("Error", "Server timed out. Try again later!");
+        } else if (statusCode === 503) {
+          Alert.alert("Error", "Service unavailable. Please try again later.");
+        } else if (statusCode === 400) {
+          Alert.alert("Error", error.response.data.data.errors[0]);
+        } else {
+          Alert.alert("Error", error.message);
+        }
+      } else if (error.request) {
+        Alert.alert(
+          "Error",
+          "No response from the server. Please check your connection."
+        );
       } else {
         Alert.alert("Error", error.message);
       }
-    } else if (error.request) {
-      Alert.alert("Error", "No response from the server. Please check your connection.");
-    } else {
-      Alert.alert("Error", error.message);
     }
-  }
-};
+  };
+
   const generateHTML = (transactions) => {
     let html = `
       <html>
@@ -230,7 +242,7 @@ const Account_Statements = () => {
             </thead>
             <tbody>
     `;
-  
+
     transactions.forEach((transaction) => {
       const isCredit = transaction.creditAmt > 0;
       const amount = isCredit ? transaction.creditAmt : transaction.debitAmt;
@@ -238,21 +250,20 @@ const Account_Statements = () => {
         <tr>
           <td>${transaction.description}</td>
           <td>${transaction.transactionDate}</td>
-          <td style="color: ${isCredit ? '#3bcb01' : '#fe3105'}">${amount}</td>
+          <td style="color: ${isCredit ? "#3bcb01" : "#fe3105"}">${amount}</td>
         </tr>
       `;
     });
-  
+
     html += `
             </tbody>
           </table>
         </body>
       </html>
     `;
-  
+
     return html;
   };
-  
 
   const fetchUserTransaction = async () => {
     try {
@@ -307,6 +318,128 @@ const Account_Statements = () => {
       } else {
         Alert.alert("Error", error.message);
       }
+    }
+  };
+
+ const downloadMiniStatementPDF = async () => {
+    try {
+      const bearerToken = await AsyncStorage.getItem("token");
+      const accountNumber = await AsyncStorage.getItem("accountNumber");
+
+      if (bearerToken && accountNumber) {
+        const response = await axios.get(
+          `${API_BASE_URL}/v1/customer/fund/generateStatement?accountNumber=${accountNumber}&startDate=2024-09-01&endDate=2024-09-26&statementType=mini`,
+          {
+            headers: {
+              Authorization: `Bearer ${bearerToken}`,
+            },
+          }
+        );
+
+        const dto = response.data;
+
+        if (dto && dto.success && dto.data) {
+          const transactions = dto.data.transactionList.data;
+
+          // Generate HTML content for the PDF
+          const htmlContent = generateHTML(transactions);
+
+          // Generate PDF
+          const { uri: pdfUri } = await Print.printToFileAsync({
+            html: htmlContent,
+          });
+          console.log("PDF generated at:", pdfUri);
+
+          // Define file name and path in the document directory
+          const fileName = `${
+            FileSystem.documentDirectory
+          }mini_statement_${Date.now()}.pdf`;
+          console.log("Saving file to:", fileName);
+          await FileSystem.moveAsync({
+            from: pdfUri,
+            to: fileName,
+          });
+
+          // Share the PDF to enable user to save it in the Downloads folder
+          if (await Sharing.isAvailableAsync()) {
+            await Sharing.shareAsync(fileName, {
+              mimeType: "application/pdf",
+              dialogTitle: "Save your statement",
+            });
+          } else {
+            Alert.alert(
+              "Sharing not available",
+              "The sharing feature is not available on this device."
+            );
+          }
+        } else {
+          Alert.alert("Error", dto.message || "Failed to fetch transactions.");
+        }
+      } else {
+        Alert.alert("Error", "Token or Account Number missing.");
+      }
+    } catch (error) {
+      console.log("Error:", error);
+      Alert.alert("Error", "An error occurred while generating the PDF.");
+    }
+  };
+
+  const downloadMiniStatementExcel = async () => {
+    try {
+      const bearerToken = await AsyncStorage.getItem("token");
+      const accountNumber = await AsyncStorage.getItem("accountNumber");
+
+      if (bearerToken && accountNumber) {
+        const response = await axios.get(
+          `${API_BASE_URL}/v1/customer/fund/generateStatement?accountNumber=${accountNumber}&startDate=2024-09-01&endDate=2024-09-26&statementType=mini`,
+          {
+            headers: {
+              Authorization: `Bearer ${bearerToken}`,
+            },
+          }
+        );
+
+        const dto = response.data;
+
+        if (dto && dto.success && dto.data) {
+          const transactions = dto.data.transactionList.data;
+
+          // Create Excel sheet
+          const ws = XLSX.utils.json_to_sheet(transactions);
+          const wb = XLSX.utils.book_new();
+          XLSX.utils.book_append_sheet(wb, ws, "Mini Statement");
+
+          const wbout = XLSX.write(wb, { type: "base64", bookType: "xlsx" });
+
+          const uri = `${
+            FileSystem.documentDirectory
+          }mini_statement_${Date.now()}.xlsx`;
+          await FileSystem.writeAsStringAsync(uri, wbout, {
+            encoding: FileSystem.EncodingType.Base64,
+          });
+
+          // Share the Excel file
+          if (await Sharing.isAvailableAsync()) {
+            await Sharing.shareAsync(uri, {
+              mimeType:
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+              dialogTitle: "Save your statement",
+            });
+          } else {
+            Alert.alert(
+              "Sharing not available",
+              "The sharing feature is not available on this device."
+            );
+          }
+        } else {
+          Alert.alert("Error", dto.message || "Failed to fetch transactions.");
+        }
+      } else {
+        Alert.alert("Error", "Token or Account Number missing.");
+      }
+    } catch (error) {
+      console.log("Error:", error);
+      Alert.alert("Error", "An error occurred while generating the Excel file.");
     }
   };
 
@@ -468,7 +601,10 @@ const Account_Statements = () => {
               />
             )} */}
           </View>
-          <TouchableOpacity className="p-2 rounded-md border border-gray-300 shadow-xl">
+          <TouchableOpacity
+            className="p-2 rounded-md border border-gray-300 shadow-xl"
+            onPress={() => setModalVisible2(true)}
+          >
             <Ionicons name="download" size={24} color="black" />
           </TouchableOpacity>
         </View>
@@ -523,127 +659,242 @@ const Account_Statements = () => {
         <Text>Loading...</Text>
       )}
 
-      <CustomModal
+      <Modal
+        transparent={true}
         visible={modalVisible}
-        onClose={handleCloseModal}
-        confirmText="Send Now"
-        onConfirm={fetchUserFullTransaction}
+        animationType="slide"
+        onRequestClose={handleCloseModal} // Handles closing with back button
       >
-        {/* Wrap the modal content with TouchableWithoutFeedback */}
-        <TouchableWithoutFeedback onPress={handleCloseModal}>
-          <View className=" justify-center items-center">
-            <TouchableWithoutFeedback onPress={() => {}}>
-              {/* Your modal content */}
-              <View className=" flex-col items-center px-2 py-3.5 bg-white rounded-xl w-full">
-                {/* Icon at the top */}
-                <View className=" items-center justify-center mb-4">
-                  <View className="bg-primary p-3 rounded-full">
-                    <Ionicons
-                      name="document-text-outline"
-                      size={30}
-                      color="white"
-                    />
-                  </View>
-                </View>
+        {/* Outer Pressable to close modal on outside click */}
+        <Pressable
+          onPress={handleCloseModal}
+          style={{
+            flex: 1,
+            justifyContent: "center",
+            alignItems: "center",
+            backgroundColor: "rgba(0, 0, 0, 0.5)",
+          }}
+        >
+          {/* Inner Pressable prevents closing when clicking inside modal */}
+          <Pressable
+            onPress={() => {}}
+            style={{
+              width: "90%",
+              backgroundColor: "white",
+              borderRadius: 20,
+              padding: 20,
+            }}
+          >
+            {/* Check Icon */}
+            <View
+              style={{ position: "absolute", top: -30, alignSelf: "center" }}
+            >
+              <Image
+                source={require("../../../assets/Account_statement.png")}
+                style={{ width: 70, height: 70 }}
+                resizeMode="contain"
+              />
+            </View>
 
-                {/* Modal Title and Subtext */}
-                <Text className="text-lg font-bold mb-2">
-                  Get Statement via Email
-                </Text>
-                <Text className="text-sm text-gray-500 mb-4">
-                  You can get the statement for up to 3 years
-                </Text>
+            {/* Modal Content */}
+            <Text
+              style={{
+                fontSize: 18,
+                fontWeight: "bold",
+                marginBottom: 10,
+                paddingTop: 20,
+                textAlign: "center",
+              }}
+            >
+              Get Statement via Email
+            </Text>
+            <Text
+              style={{
+                fontSize: 14,
+                color: "#6B7280",
+                marginBottom: 20,
+                textAlign: "center",
+              }}
+            >
+              You can get the statement for up to 3 years
+            </Text>
 
-                {/* Date pickers */}
-                <View className="w-full mb-4">
-                  <View className="flex flex-row justify-between mb-2">
-                    <View className="flex flex-row bg-white rounded-xl w-full">
-                      {/* From Date */}
-                      <View>
-                        <Text className="text-sm mb-2 font-InterMedium">
-                          From
-                        </Text>
-                        <Pressable
-                          onPress={() => setShowFromPicker(true)}
-                          className="w-full border p-3 rounded-lg flex flex-row items-center mb-4"
-                        >
-                          <Text className="mr-2">
-                            {fromDate
-                              ? fromDate.toLocaleDateString()
-                              : "Select Date"}
-                          </Text>
-                          <Ionicons
-                            name="calendar-outline"
-                            size={20}
-                            className="ml-auto"
-                          />
-                        </Pressable>
+            {/* Date Pickers */}
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                marginBottom: 20,
+              }}
+            >
+              {/* From Date */}
+              <View style={{ flex: 1, marginRight: 10 }}>
+                <Text style={{ fontSize: 14, marginBottom: 5 }}>From</Text>
+                <Pressable
+                  onPress={() => setShowFromPicker(true)}
+                  style={{
+                    borderWidth: 1,
+                    padding: 10,
+                    borderRadius: 8,
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <Text>
+                    {fromDate ? fromDate.toLocaleDateString() : "Select Date"}
+                  </Text>
+                  <Ionicons name="calendar-outline" size={20} />
+                </Pressable>
 
-                        {showFromPicker && (
-                          <DateTimePicker
-                            value={fromDate || new Date()}
-                            mode="date"
-                            display="default"
-                            // Restrict future dates
-                            maximumDate={new Date()}
-                            onChange={handleFromDateChange}
-                          />
-                        )}
-                      </View>
-
-                      {/* To Date */}
-                      <View className="ml-5">
-                        <Text className="text-sm mb-2 font-InterMedium">
-                          To*
-                        </Text>
-                        <Pressable
-                          onPress={() => setShowToPicker(true)}
-                          className=" w-full border p-3 rounded-lg flex flex-row items-center mb-4"
-                        >
-                          <Text className="mr-2">
-                            {toDate
-                              ? toDate.toLocaleDateString()
-                              : "Select Date"}
-                          </Text>
-                          <Ionicons
-                            name="calendar-outline"
-                            size={20}
-                            className="ml-auto"
-                          />
-                        </Pressable>
-
-                        {showToPicker && (
-                          <DateTimePicker
-                            value={toDate || new Date()}
-                            mode="date"
-                            display="default"
-                            // Ensure "To" date is not earlier than "From" date
-                            minimumDate={fromDate || new Date()}
-                            maximumDate={new Date()}
-                            onChange={handleToDateChange}
-                          />
-                        )}
-                      </View>
-                    </View>
-                  </View>
-                </View>
-
-                {/* Email Input */}
-                <View className="w-full mb-4">
-                  <Text className="text-sm mb-2 font-InterMedium">Email</Text>
-                  <TextInput
-                    value={email}
-                    onChangeText={setEmail}
-                    placeholder="Email"
-                    keyboardType="email-address"
-                    className="border p-3 rounded-lg w-full"
+                {showFromPicker && (
+                  <DateTimePicker
+                    value={fromDate || new Date()}
+                    mode="date"
+                    display="default"
+                    maximumDate={new Date()}
+                    onChange={handleFromDateChange}
                   />
-                </View>
+                )}
               </View>
-            </TouchableWithoutFeedback>
+
+              {/* To Date */}
+              <View style={{ flex: 1, marginLeft: 10 }}>
+                <Text style={{ fontSize: 14, marginBottom: 5 }}>To</Text>
+                <Pressable
+                  onPress={() => setShowToPicker(true)}
+                  style={{
+                    borderWidth: 1,
+                    padding: 10,
+                    borderRadius: 8,
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <Text>
+                    {toDate ? toDate.toLocaleDateString() : "Select Date"}
+                  </Text>
+                  <Ionicons name="calendar-outline" size={20} />
+                </Pressable>
+
+                {showToPicker && (
+                  <DateTimePicker
+                    value={toDate || new Date()}
+                    mode="date"
+                    display="default"
+                    minimumDate={fromDate || new Date()}
+                    maximumDate={new Date()}
+                    onChange={handleToDateChange}
+                  />
+                )}
+              </View>
+            </View>
+
+            {/* Email Input */}
+            <View style={{ marginBottom: 20 }}>
+              <Text style={{ fontSize: 14, marginBottom: 5 }}>Email</Text>
+              <TextInput
+                value={email}
+                onChangeText={setEmail}
+                placeholder="Email"
+                keyboardType="email-address"
+                style={{
+                  borderWidth: 1,
+                  padding: 10,
+                  borderRadius: 8,
+                  width: "100%",
+                }}
+              />
+            </View>
+
+            {/* Confirm Button */}
+            <Pressable
+              onPress={fetchUserFullTransaction}
+              style={{
+                backgroundColor: Color.PrimaryWebOrient,
+                padding: 15,
+                borderRadius: 10,
+                alignItems: "center",
+              }}
+            >
+              <Text style={{ color: "white", fontWeight: "bold" }}>
+                Send Now
+              </Text>
+            </Pressable>
+          </Pressable>
+        </Pressable>
+      </Modal>
+      <Modal
+        transparent={true}
+        animationType="slide"
+        visible={modalVisible2}
+        onRequestClose={() => setModalVisible2(false)}
+      >
+        <View 
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: "rgba(0, 0, 0, 0.5)",
+        }}>
+          <View className="bg-white px-3  py-6 rounded-lg shadow-lg w-[70%]">
+          <View
+              style={{ position: "absolute", top: -30, alignSelf: "center" }}
+            >
+              <Image
+                source={require("../../../assets/Download_modal.png")}
+                style={{ width: 70, height: 70 }}
+                resizeMode="contain"
+              />
+            </View>
+            <Text
+              style={{
+                fontSize: 18,
+                fontWeight: "bold",
+                marginBottom: 10,
+                paddingTop: 20,
+                textAlign: "center",
+              }}
+            >Select Format</Text>
+            <Text
+              style={{
+                fontSize: 14,
+                color: "#6B7280",
+                marginBottom: 20,
+                textAlign: "center",
+              }}
+            >
+              You can download the file in PDF or export it to Excel format for convenience.
+            </Text>
+
+            <TouchableOpacity
+              className="p-2 rounded-md bg-cyan-500 mb-4 mx-8"
+              onPress={() => {
+                setModalVisible2(false);
+                downloadMiniStatementPDF();
+              }}
+            >
+              <Text className="text-white text-center">Download In PDF</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              className="p-2 rounded-md bg-white mx-8 border border-gray-500"
+              onPress={() => {
+                setModalVisible2(false);
+                downloadMiniStatementExcel();
+              }}
+            >
+              <Text className="text-gray-500 text-center">Download In Excel</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              className="mt-4"
+              onPress={() => setModalVisible2(false)}
+            >
+              <Text className="text-center text-red-500">Cancel</Text>
+            </TouchableOpacity>
           </View>
-        </TouchableWithoutFeedback>
-      </CustomModal>
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 };

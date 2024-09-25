@@ -751,6 +751,7 @@ export default function App() {
               component={Update_Profile}
               options={{ headerShown: false }}
             />
+            
             <Stack.Screen
               name="Mobile_Packages"
               component={Packages}
