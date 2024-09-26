@@ -95,6 +95,8 @@ import To_Up_Transfer from "./screens/Mobile-Banking/Mobile-Top-Up/To_Up_Transfe
 import Account from "./screens/Mobile-Banking/Account/Account";
 import Update_Profile from "./screens/Mobile-Banking/Account-Setting/Update_Profile";
 import Add_Account from "./screens/Mobile-Banking/Account-Setting/Add_Account";
+import Fatch_amount_Packges from "./screens/Mobile-Banking/Mobile-Top-Up/Fatch_amount_Packges";
+import Packges_Transfer from "./screens/Mobile-Banking/Mobile-Top-Up/Packges_Transfer";
 const Stack = createNativeStackNavigator();
 
 export default function App() {
@@ -427,6 +429,16 @@ export default function App() {
           options={{ headerShown: false }}
         />
         <Stack.Screen
+          name="Fatch_amount_Packges"
+          component={Fatch_amount_Packges}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="Packges_Transfer"
+          component={Packges_Transfer}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
           name="Nic_DateChange"
           component={Nic_DateChange}
           options={{ headerShown: false }}
@@ -721,6 +733,11 @@ export default function App() {
               options={{ headerShown: false }}
             />
             <Stack.Screen
+              name="Fatch_amount_Packges"
+              component={Fatch_amount_Packges}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
               name="Mobile_Packages"
               component={Packages}
               options={{ headerShown: false }}
@@ -738,6 +755,11 @@ export default function App() {
             <Stack.Screen
               name="To_Up_Transfer"
               component={To_Up_Transfer}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="Packges_Transfer"
+              component={Packges_Transfer}
               options={{ headerShown: false }}
             />
             <Stack.Screen
