@@ -2,32 +2,38 @@ import React from "react";
 import {
   Text,
   View,
-  ScrollView,
   TouchableOpacity,
   Image,
-  Dimensions,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Entypo } from "@expo/vector-icons";
-import { Color } from "../../../GlobalStyles";
 import { Divider } from "react-native-paper";
 import Footer from "../../../components/Footer";
-const To_Up_Transfer = ({ route }) => {
-  const navigation = useNavigation();
-  const { width } = Dimensions.get("window");
-  const horizontalPadding = 16;
-  const { networkLogo, networkName, number, amount, actionDate } =
-    route.params || {};
 
-    
+const Packges_Transfer = ({ route }) => {
+  const navigation = useNavigation();
+  const { dto } = route.params || {};
+
+  // Destructure the required properties from dto
+  const {
+    data: {
+      "Network Name ": networkName,
+      date,
+      mobileNumber,
+      transactionId,
+      "package details": packageDetails = {},
+    } = {},
+    message, // Top-level message
+  } = dto || {}; // Safely access dto
+
+  // Destructure pkgName and price from packageDetails
+  const { pkgName, price } = packageDetails;
+
   return (
     <SafeAreaView className="flex-1">
       <View className="flex-1 bg-white">
-        <View
-          className="h-24"
-          //   style={{ backgroundColor: Color.PrimaryWebOrient }}
-        >
+        <View className="h-24">
           <View className="flex-row items-center justify-center h-full">
             <TouchableOpacity
               onPress={() => navigation.goBack()}
@@ -35,17 +41,17 @@ const To_Up_Transfer = ({ route }) => {
             >
               <Entypo name="chevron-left" size={25} />
             </TouchableOpacity>
-            <Text className=" text-lg font-bold">Card Payment</Text>
+            <Text className="text-lg font-bold">Card Payment</Text>
           </View>
         </View>
 
-        <View className="flex-1 items-center justify-cente">
+        <View className="flex-1 items-center justify-center">
           {/* Card Container */}
-          <View className="w-10/12 mt-4 bg-white rounded-lg p-6 shadow-xl item-center shadow-slate-300">
+          <View className="w-10/12 mt-4 bg-white rounded-lg p-6 shadow-xl shadow-slate-300">
             {/* Success Icon */}
             <View className="items-center w-full mb-4 absolute -top-7 left-5">
               <Image
-                source={require("../../../assets/check.png")} // Replace with your check icon
+                source={require("../../../assets/check.png")}
                 className="w-16 h-16"
                 resizeMode="contain"
               />
@@ -53,41 +59,31 @@ const To_Up_Transfer = ({ route }) => {
 
             {/* Transfer Successful Message */}
             <Text className="text-green-500 text-center text-lg font-semibold mt-5">
-              Transfer Successful
-            </Text>
-            <Text className="text-gray-500 text-center mt-2">
-              Your transaction was successful
-            </Text>
+            {message || 'No message provided'} </Text>
+            <Text className="text-gray-500 text-lg text-center">{pkgName || 'N/A'}</Text>
+            
 
             {/* Amount */}
             <Text className="text-black text-center text-4xl font-bold my-4">
-              {amount}
+              {price !== undefined ? price : 'N/A'}
             </Text>
 
             {/* Recipient Section */}
-            <Text className="text-gray-500 text-center">Send to</Text>
-            <View className="flex-row justify-center items-center mt-4">
-              <Image
-                source={{ uri: networkLogo }} // Replace with PTCL logo
-                className="w-12 h-12"
-                resizeMode="contain"
-              />
-            </View>
             <Text className="text-black text-center font-semibold mt-2">
               {networkName}
             </Text>
-            <Text className="text-gray-500 text-center">{number}</Text>
+            <Text className="text-gray-500 text-center">{mobileNumber}</Text>
 
             {/* Transaction Details */}
             <View className="mt-6">
               <Text className="text-black font-bold">Transaction Details</Text>
               <View className="flex-row justify-between mt-2">
                 <Text className="text-gray-500">Date / Time:</Text>
-                <Text className="text-black ml-4">{actionDate}</Text>
+                <Text className="text-black ml-4">{date}</Text>
               </View>
               <View className="flex-row justify-between mt-2">
                 <Text className="text-gray-500">Transaction ID (TID):</Text>
-                <Text className="text-black">878895</Text>
+                <Text className="text-black">{transactionId}</Text>
               </View>
             </View>
             <Divider className="mt-4" />
@@ -96,35 +92,29 @@ const To_Up_Transfer = ({ route }) => {
             <View className="flex-row justify-around mt-4">
               {/* QR Code Icon */}
               <TouchableOpacity>
-                <View>
-                  <Image
-                    source={require("../../../assets/done.png")} // Replace with QR Code icon
-                    className="w-8 h-8"
-                    resizeMode="contain"
-                  />
-                </View>
+                <Image
+                  source={require("../../../assets/done.png")}
+                  className="w-8 h-8"
+                  resizeMode="contain"
+                />
               </TouchableOpacity>
 
               {/* Share Icon */}
               <TouchableOpacity>
-                <View>
-                  <Image
-                    source={require("../../../assets/Screenshort.png")} // Replace with Share icon
-                    className="w-8 h-8"
-                    resizeMode="contain"
-                  />
-                </View>
+                <Image
+                  source={require("../../../assets/Screenshort.png")}
+                  className="w-8 h-8"
+                  resizeMode="contain"
+                />
               </TouchableOpacity>
 
               {/* Done Icon */}
               <TouchableOpacity>
-                <View>
-                  <Image
-                    source={require("../../../assets/share.png")} // Replace with Done icon
-                    className="w-8 h-8"
-                    resizeMode="contain"
-                  />
-                </View>
+                <Image
+                  source={require("../../../assets/share.png")}
+                  className="w-8 h-8"
+                  resizeMode="contain"
+                />
               </TouchableOpacity>
             </View>
           </View>
@@ -135,4 +125,4 @@ const To_Up_Transfer = ({ route }) => {
   );
 };
 
-export default To_Up_Transfer;
+export default Packges_Transfer;

@@ -27,6 +27,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { enData } from "./translations/en";
 import * as Print from "expo-print";
 import * as FileSystem from "expo-file-system";
+import * as MediaLibrary from "expo-media-library";
+import XLSX from "xlsx";
 
 import * as Sharing from "expo-sharing";
 
@@ -46,6 +48,8 @@ const Account_Statements = () => {
   const [showFromPicker, setShowFromPicker] = useState(false);
   const [showToPicker, setShowToPicker] = useState(false);
   const [email, setEmail] = useState("");
+
+  const [modalVisible2, setModalVisible2] = useState(false);
 
   useEffect(() => {
     const getEmail = async () => {
@@ -214,6 +218,7 @@ const Account_Statements = () => {
       }
     }
   };
+
   const generateHTML = (transactions) => {
     let html = `
       <html>
@@ -313,6 +318,128 @@ const Account_Statements = () => {
       } else {
         Alert.alert("Error", error.message);
       }
+    }
+  };
+
+ const downloadMiniStatementPDF = async () => {
+    try {
+      const bearerToken = await AsyncStorage.getItem("token");
+      const accountNumber = await AsyncStorage.getItem("accountNumber");
+
+      if (bearerToken && accountNumber) {
+        const response = await axios.get(
+          `${API_BASE_URL}/v1/customer/fund/generateStatement?accountNumber=${accountNumber}&startDate=2024-09-01&endDate=2024-09-26&statementType=mini`,
+          {
+            headers: {
+              Authorization: `Bearer ${bearerToken}`,
+            },
+          }
+        );
+
+        const dto = response.data;
+
+        if (dto && dto.success && dto.data) {
+          const transactions = dto.data.transactionList.data;
+
+          // Generate HTML content for the PDF
+          const htmlContent = generateHTML(transactions);
+
+          // Generate PDF
+          const { uri: pdfUri } = await Print.printToFileAsync({
+            html: htmlContent,
+          });
+          console.log("PDF generated at:", pdfUri);
+
+          // Define file name and path in the document directory
+          const fileName = `${
+            FileSystem.documentDirectory
+          }mini_statement_${Date.now()}.pdf`;
+          console.log("Saving file to:", fileName);
+          await FileSystem.moveAsync({
+            from: pdfUri,
+            to: fileName,
+          });
+
+          // Share the PDF to enable user to save it in the Downloads folder
+          if (await Sharing.isAvailableAsync()) {
+            await Sharing.shareAsync(fileName, {
+              mimeType: "application/pdf",
+              dialogTitle: "Save your statement",
+            });
+          } else {
+            Alert.alert(
+              "Sharing not available",
+              "The sharing feature is not available on this device."
+            );
+          }
+        } else {
+          Alert.alert("Error", dto.message || "Failed to fetch transactions.");
+        }
+      } else {
+        Alert.alert("Error", "Token or Account Number missing.");
+      }
+    } catch (error) {
+      console.log("Error:", error);
+      Alert.alert("Error", "An error occurred while generating the PDF.");
+    }
+  };
+
+  const downloadMiniStatementExcel = async () => {
+    try {
+      const bearerToken = await AsyncStorage.getItem("token");
+      const accountNumber = await AsyncStorage.getItem("accountNumber");
+
+      if (bearerToken && accountNumber) {
+        const response = await axios.get(
+          `${API_BASE_URL}/v1/customer/fund/generateStatement?accountNumber=${accountNumber}&startDate=2024-09-01&endDate=2024-09-26&statementType=mini`,
+          {
+            headers: {
+              Authorization: `Bearer ${bearerToken}`,
+            },
+          }
+        );
+
+        const dto = response.data;
+
+        if (dto && dto.success && dto.data) {
+          const transactions = dto.data.transactionList.data;
+
+          // Create Excel sheet
+          const ws = XLSX.utils.json_to_sheet(transactions);
+          const wb = XLSX.utils.book_new();
+          XLSX.utils.book_append_sheet(wb, ws, "Mini Statement");
+
+          const wbout = XLSX.write(wb, { type: "base64", bookType: "xlsx" });
+
+          const uri = `${
+            FileSystem.documentDirectory
+          }mini_statement_${Date.now()}.xlsx`;
+          await FileSystem.writeAsStringAsync(uri, wbout, {
+            encoding: FileSystem.EncodingType.Base64,
+          });
+
+          // Share the Excel file
+          if (await Sharing.isAvailableAsync()) {
+            await Sharing.shareAsync(uri, {
+              mimeType:
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+              dialogTitle: "Save your statement",
+            });
+          } else {
+            Alert.alert(
+              "Sharing not available",
+              "The sharing feature is not available on this device."
+            );
+          }
+        } else {
+          Alert.alert("Error", dto.message || "Failed to fetch transactions.");
+        }
+      } else {
+        Alert.alert("Error", "Token or Account Number missing.");
+      }
+    } catch (error) {
+      console.log("Error:", error);
+      Alert.alert("Error", "An error occurred while generating the Excel file.");
     }
   };
 
@@ -474,7 +601,10 @@ const Account_Statements = () => {
               />
             )} */}
           </View>
-          <TouchableOpacity className="p-2 rounded-md border border-gray-300 shadow-xl">
+          <TouchableOpacity
+            className="p-2 rounded-md border border-gray-300 shadow-xl"
+            onPress={() => setModalVisible2(true)}
+          >
             <Ionicons name="download" size={24} color="black" />
           </TouchableOpacity>
         </View>
@@ -572,7 +702,7 @@ const Account_Statements = () => {
                 fontSize: 18,
                 fontWeight: "bold",
                 marginBottom: 10,
-                paddingTop:20,
+                paddingTop: 20,
                 textAlign: "center",
               }}
             >
@@ -692,6 +822,78 @@ const Account_Statements = () => {
             </Pressable>
           </Pressable>
         </Pressable>
+      </Modal>
+      <Modal
+        transparent={true}
+        animationType="slide"
+        visible={modalVisible2}
+        onRequestClose={() => setModalVisible2(false)}
+      >
+        <View 
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: "rgba(0, 0, 0, 0.5)",
+        }}>
+          <View className="bg-white px-3  py-6 rounded-lg shadow-lg w-[70%]">
+          <View
+              style={{ position: "absolute", top: -30, alignSelf: "center" }}
+            >
+              <Image
+                source={require("../../../assets/Download_modal.png")}
+                style={{ width: 70, height: 70 }}
+                resizeMode="contain"
+              />
+            </View>
+            <Text
+              style={{
+                fontSize: 18,
+                fontWeight: "bold",
+                marginBottom: 10,
+                paddingTop: 20,
+                textAlign: "center",
+              }}
+            >Select Format</Text>
+            <Text
+              style={{
+                fontSize: 14,
+                color: "#6B7280",
+                marginBottom: 20,
+                textAlign: "center",
+              }}
+            >
+              You can download the file in PDF or export it to Excel format for convenience.
+            </Text>
+
+            <TouchableOpacity
+              className="p-2 rounded-md bg-cyan-500 mb-4 mx-8"
+              onPress={() => {
+                setModalVisible2(false);
+                downloadMiniStatementPDF();
+              }}
+            >
+              <Text className="text-white text-center">Download In PDF</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              className="p-2 rounded-md bg-white mx-8 border border-gray-500"
+              onPress={() => {
+                setModalVisible2(false);
+                downloadMiniStatementExcel();
+              }}
+            >
+              <Text className="text-gray-500 text-center">Download In Excel</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              className="mt-4"
+              onPress={() => setModalVisible2(false)}
+            >
+              <Text className="text-center text-red-500">Cancel</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
       </Modal>
     </SafeAreaView>
   );
