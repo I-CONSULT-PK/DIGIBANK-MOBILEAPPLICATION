@@ -15,6 +15,7 @@ import Button from "../../../components/Button";
 
 const ApplyCard = () => {
   const navigation = useNavigation();
+  const [price, setPrice] = useState('');
   return (
     <SafeAreaView className=" bg-[#f9fafc]" style={{ flex: 1 }}>
       <ScrollView>
@@ -42,15 +43,18 @@ const ApplyCard = () => {
                   Net Income Per Month
                 </Text>
                 <View className="flex-row items-center border border-gray-300 rounded-lg px-3 py-2 mb-4 ">
-                  <Text className="text-base text-gray-500 mr-2 ">RUB |</Text>
+                  <Text className="text-base text-gray-500 mr-2 ">PKR |</Text>
                   <TextInput
+                    TextInput
                     className="flex-1"
                     placeholder="50,000"
                     keyboardType="numeric"
+                    value={price}
+                    onChangeText={(text) => setPrice(text)} // Update state when input changes
                   />
                 </View>
 
-                <Text className="text-base font-semibold mb-2">
+                {/* <Text className="text-base font-semibold mb-2">
                   Let's Verify Your Identity
                 </Text>
                 <TouchableOpacity className="flex-row items-center border  border-cyan-300 rounded-lg bg-cyan-50 p-4">
@@ -66,7 +70,7 @@ const ApplyCard = () => {
                       Max file size is 5MB (JPEG, PNG, PDF)
                     </Text>
                   </View>
-                </TouchableOpacity>
+                </TouchableOpacity> */}
               </View>
             </View>
             <View className="px-10 mt-14">
@@ -74,7 +78,10 @@ const ApplyCard = () => {
                 text="Next"
                 width="w-[100%]"
                 styles="mb-4 py-4"
-                onPress={() => navigation.navigate("ApplyForCard")}
+                onPress={() => navigation.navigate("ApplyForCard", {
+                    price
+                  })
+                }
               />
             </View>
           </View>

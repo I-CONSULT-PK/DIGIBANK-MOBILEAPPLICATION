@@ -7,7 +7,7 @@ const CongCard = () => {
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      navigation.navigate("NameOnTheCard");
+      navigation.navigate("Home");
     }, 3000);
 
     return () => clearTimeout(timer);

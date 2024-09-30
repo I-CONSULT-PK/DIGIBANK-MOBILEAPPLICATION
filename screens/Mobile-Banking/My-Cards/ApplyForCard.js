@@ -7,6 +7,7 @@ import {
   Text,
   View,
   StyleSheet,
+  Alert,
 } from "react-native";
 import { Entypo } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
@@ -14,48 +15,83 @@ import Footer from "../../../components/Footer";
 import { Color } from "../../../GlobalStyles";
 import TextInput from "../../../components/TextInput";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { SelectList } from "react-native-dropdown-select-list";
 import Button from "../../../components/Button";
+import axios from "axios";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import API_BASE_URL from "../../../config";
+import { SelectList } from "react-native-dropdown-select-list";
 
-const ApplyForCard = () => {
+const ApplyForCard = ({ route }) => {
   const navigation = useNavigation();
+  const {} = route.params || {};
   const [selectedOption, setSelectedOption] = useState("Salaried");
-  const [selected, setSelected] = React.useState("");
-  const [selectedJob, setSelectedJob] = useState("");
-  const banks = [
-    { key: "1", value: "Standard Chartered Bank" },
-    { key: "2", value: "HBL (Habib Bank Limited)" },
-    { key: "3", value: "UBL (United Bank Limited)" },
-    { key: "4", value: "MCB Bank" },
-    { key: "5", value: "Bank Alfalah" },
-  ];
-
+  const [EmpName, setEmpName] = useState("");
+  const [IbanNumber, setIbanNumber] = useState("");
+  const [banks, setBanks] = useState([]);
   const [selectedId, setSelectedId] = useState(null);
+  const [jobVintage, setJobVintage] = useState(null);
+
+  useEffect(() => {
+    const fetchBanks = async () => {
+      try {
+        const bearerToken = await AsyncStorage.getItem("token");
+        if (!bearerToken) {
+          Alert.alert("Error", "Token not found. Please login again.");
+          return;
+        }
+
+        const response = await axios.get(
+          `${API_BASE_URL}/v1/customer/fund/getBanks`,
+          {
+            headers: {
+              Authorization: `Bearer ${bearerToken}`,
+            },
+          }
+        );
+
+        if (response.data.success && Array.isArray(response.data.data)) {
+          const bankList = response.data.data
+            .map((bank) => {
+              if (bank.bankName) {
+                return {
+                  key: bank.bankCode, // Use bankCode for the key
+                  value: bank.bankName, // Use bankName as the display value
+                };
+              } else {
+                console.warn("Bank entry is missing bankName:", bank);
+                return null; // Return null for missing entries
+              }
+            })
+            .filter(Boolean); // Remove null entries
+
+          setBanks(bankList);
+        } else {
+          Alert.alert("Error", "Unexpected error occurred.");
+        }
+      } catch (error) {
+        console.error(
+          "Error fetching banks:",
+          error.response ? error.response.data : error.message
+        );
+        Alert.alert("Error", "An unexpected error occurred.");
+      }
+    };
+
+    fetchBanks();
+  }, []);
 
   const handleSelect = (id) => {
     setSelectedId(id);
+    // console.log("Selected Bank ID:", id); 
+  };
+
+  const handleJobVintageSelect = (option) => {
+    setJobVintage(option.label);
+    // console.log("Selected Job Vintage:", option.label); 
   };
 
   const handleOptionChange = (option) => {
     setSelectedOption(option);
-  };
-
-  const handlePaymentMethodSelect = (selectedPaymentMethod) => {
-    if (selectedOption === "Salaried") {
-      navigation.navigate("Salaried", {
-        selectedOption: selectedOption,
-        selectedPaymentMethod: selectedPaymentMethod,
-      });
-    } else if (selectedOption === "Self-Employed") {
-      navigation.navigate("Self-Employed", {
-        selectedOption: selectedOption,
-        selectedPaymentMethod: selectedPaymentMethod,
-      });
-    }
-  };
-
-  const handleBack = () => {
-    navigation.goBack();
   };
 
   useEffect(() => {
@@ -75,44 +111,51 @@ const ApplyForCard = () => {
     <SafeAreaView className="flex-1 bg-[#f9fafc] h-full">
       <ScrollView>
         <View>
-        <View className="flex-row items-center justify-center w-full mt-10">
-        <TouchableOpacity
-          onPress={() => navigation.goBack()}
-          className="absolute left-5"
-        >
-          <Entypo name="chevron-left" size={30} color="black" />
-        </TouchableOpacity>
-        <Text className="font-InterBold text-2xl">Apply for Card</Text>
-      </View>
-          <View className="flex flex-row justify-center w-4/5 h-18 my-5 mx-auto" style={styles.container}>
+          <View className="flex-row items-center justify-center w-full mt-10">
             <TouchableOpacity
-              className={`flex-1 p-3 bg-white w-16 h-12 rounded-l-lg ${selectedOption === "Salaried"
+              onPress={() => navigation.goBack()}
+              className="absolute left-5"
+            >
+              <Entypo name="chevron-left" size={30} color="black" />
+            </TouchableOpacity>
+            <Text className="font-InterBold text-2xl">Apply for Card</Text>
+          </View>
+
+          <View
+            className="flex flex-row justify-center w-4/5 h-18 my-5 mx-auto"
+            style={styles.container}
+          >
+            <TouchableOpacity
+              className={`flex-1 p-3 bg-white w-16 h-12 rounded-l-lg ${
+                selectedOption === "Salaried"
                   ? "bg-primary shadow-lg"
                   : "shadow-sm"
-                }`}
-              style={{}}
+              }`}
               onPress={() => handleOptionChange("Salaried")}
             >
               <Text
-                className={`text-center font-bold ${selectedOption === "Salaried" ? "text-white" : "text-black"
-                  }`}
+                className={`text-center font-bold ${
+                  selectedOption === "Salaried" ? "text-white" : "text-black"
+                }`}
               >
                 Salaried
               </Text>
             </TouchableOpacity>
 
             <TouchableOpacity
-              className={`flex-1 p-3 bg-white w-16 h-12 rounded-r-lg ${selectedOption === "Self-Employed"
+              className={`flex-1 p-3 bg-white w-16 h-12 rounded-r-lg ${
+                selectedOption === "Self-Employed"
                   ? "bg-primary shadow-lg"
                   : "shadow-sm"
-                }`}
+              }`}
               onPress={() => handleOptionChange("Self-Employed")}
             >
               <Text
-                className={`text-center font-bold ${selectedOption === "Self-Employed"
+                className={`text-center font-bold ${
+                  selectedOption === "Self-Employed"
                     ? "text-white"
                     : "text-black"
-                  }`}
+                }`}
               >
                 Self Employed
               </Text>
@@ -121,257 +164,101 @@ const ApplyForCard = () => {
 
           {selectedOption === "Salaried" && (
             <View>
-              <View className="flex flex-col px-5 py-7 bg-white rounded-xl shadow-lg max-w-md mx-auto">
-                <View>
-                  <Text className="font-bold">Employment information</Text>
-                </View>
-                <View className="mt-2.5">
-                  <Text className="text-sm font-medium text-neutral-500">
-                    Required to access your eligibility
-                  </Text>
-                </View>
-                <View className="mt-9">
-                  <Text className="text-sm font-medium text-zinc-600">
-                    Enter your Employer name
-                  </Text>
-                  <TextInput className="mt-2" placeholder="Enter Here" />
-                </View>
+              <View className="flex flex-col px-5 py-7 bg-white rounded-xl shadow-lg ">
+                <Text className="font-bold">Employment information</Text>
+                <Text className="text-sm font-medium text-neutral-500">
+                  Required to access your eligibility
+                </Text>
 
-                <View className="mt-5">
-                  <Text className="text-sm font-medium text-zinc-600">
-                    Select your Bank
-                  </Text>
-                </View>
-                <View>
-                  <View className="text-sm font-medium text-zinc-600">
-                    <SelectList
-                      setSelected={(val) => setSelected(val)}
-                      data={banks}
-                      save="value"
-                      placeholder="Select your Bank"
-                      boxStyles={{ marginTop: 10 }}
-                      dropdownStyles={{ borderColor: "gray", borderWidth: 1 }}
-                    />
-                  </View>
-                </View>
-                <View className="mt-6">
-                  <Text className="text-sm font-medium text-zinc-600">
-                    Enter your IBAN number
-                  </Text>
-                  <TextInput className="mt-2" placeholder="Enter Here" />
-                </View>
+                <Text className="mt-9 text-sm font-medium text-zinc-600">
+                  Enter your Employer name
+                </Text>
+                <TextInput
+                  className="mt-2"
+                  placeholder="Enter Here"
+                  value={EmpName}
+                  onChange={(text) =>setEmpName(text)}
+                />
 
-                <View className="mt-7 rounded-lg">
-                  <Text className="text-sm font-medium text-zinc-600">
-                    Select your Job vintage
-                  </Text>
+                <Text className="mt-5 text-sm font-medium text-zinc-600">
+                  Select your Bank
+                </Text>
+                <SelectList
+                  setSelected={handleSelect}
+                  data={banks}
+                  save="key"
+                  placeholder="Select your Bank"
+                  boxStyles={{ marginTop: 10 }}
+                  dropdownStyles={{ borderColor: "gray", borderWidth: 1 }}
+                />
 
-                  <View className="flex-row space-x-2 mt-3">
-                    {[
-                      { id: 1, label: "0 - 1 years" },
-                      { id: 2, label: "1 - 2 years" },
-                      { id: 3, label: "> 6 years" },
-                    ].map((option) => (
-                      <TouchableOpacity
-                        key={option.id}
-                        onPress={() => handleSelect(option.id)}
+                {/* <Text className="mt-6 text-sm font-medium text-zinc-600">
+                  Enter your IBAN number
+                </Text>
+                <TextInput
+                  className="mt-2"
+                  placeholder="Enter Here"
+                  value={IbanNumber}
+                  onChangeText={(text)=>setIbanNumber(text)}
+                /> */}
+                <Text className="mt-6 text-sm font-medium text-zinc-600">
+                  Select your Job vintage
+                </Text>
+                <View className="flex-row space-x-2 mt-3">
+                  {[
+                    { id: 1, label: "0 - 1 years" },
+                    { id: 2, label: "1 - 2 years" },
+                    { id: 3, label: "> 6 years" },
+                  ].map((option) => (
+                    <TouchableOpacity
+                      key={option.id}
+                      onPress={() => handleJobVintageSelect(option)} // Use the new handler
+                      style={{
+                        backgroundColor:
+                          jobVintage === option.label
+                            ? Color.PrimaryWebOrient
+                            : "white",
+                        borderColor:
+                          jobVintage === option.label
+                            ? Color.PrimaryWebOrient
+                            : "gray",
+                      }}
+                      className="py-2 px-4 border-2 rounded-lg"
+                    >
+                      <Text
                         style={{
-                          backgroundColor:
-                            selectedId === option.id
-                              ? Color.PrimaryWebOrient
-                              : "white",
-                          borderColor:
-                            selectedId === option.id
-                              ? Color.PrimaryWebOrient
-                              : "gray",
+                          color:
+                            jobVintage === option.label ? "white" : "black",
                         }}
-                        className="py-2 px-4 border-2 rounded-lg">
-                        <Text
-                          style={{
-                            color: selectedId === option.id ? "white" : "black",
-                          }}
-                          className="text-left"
-                        >
-                          {option.label}
-                        </Text>
-                      </TouchableOpacity>
-                    ))}
-                  </View>
+                        className="text-left"
+                      >
+                        {option.label}
+                      </Text>
+                    </TouchableOpacity>
+                  ))}
                 </View>
               </View>
 
               <View className="p-5 items-center">
                 <Button
-                  text='Next'
-                  width='w-[90%]'
-                  styles='mb-4 py-4'
-                  onPress={() => navigation.navigate("CashUpCard")}
+                  text="Next"
+                  width="w-[90%]"
+                  styles="mb-4 py-4"
+                  onPress={() =>
+                    navigation.navigate("CashUpCard", {
+                      empName: EmpName,
+                      // ibanNumber: IbanNumber,
+                      selectedBankId: selectedId,
+                      jobVintage: jobVintage,
+                    })
+                  }
                 />
               </View>
             </View>
           )}
 
           {selectedOption === "Self-Employed" && (
-            <View>
-              <View className="flex flex-col px-5 py-7 bg-white rounded-xl shadow-lg max-w-md mx-auto">
-                <View>
-                  <Text className="font-bold">Employment information</Text>
-                </View>
-                <View className="mt-2.5">
-                  <Text className="text-sm font-medium text-neutral-500">
-                    Required to access your eligibility
-                  </Text>
-                </View>
-                <View className="py-1 mt-6">
-                  <View>
-                    <Text className="text-sm font-medium text-zinc-600">
-                      Select your Job type
-                    </Text>
-                  </View>
-
-                  {/* Container to align radio buttons and labels in a row */}
-                  <View className="flex flex-row justify-between mt-2.5">
-                    {/* Radio Button for Self Employed */}
-                    <View className="flex flex-row items-center gap-3">
-                      <TouchableOpacity
-                        onPress={() => setSelectedJob("Self Employed")}
-                        className="flex items-center justify-center"
-                      >
-                        <View
-                          style={{
-                            borderColor:
-                              selectedJob === "Self Employed"
-                                ? Color.PrimaryWebOrient
-                                : "gray",
-                            backgroundColor:
-                              selectedJob === "Self Employed"
-                                ? Color.PrimaryWebOrient
-                                : "white",
-                          }}
-                          className="flex items-center justify-center rounded-full border h-5 w-5"
-                        >
-                          {selectedJob === "Self Employed" && (
-                            <View className="bg-white rounded-full h-3 w-3" />
-                          )}
-                        </View>
-                      </TouchableOpacity>
-                      <Text className="text-sm font-medium text-neutral-500">
-                        Self Employed
-                      </Text>
-                    </View>
-
-                    {/* Radio Button for With Organization */}
-                    <View className="flex flex-row items-center gap-3">
-                      <TouchableOpacity
-                        onPress={() => setSelectedJob("With Organization")}
-                        className="flex items-center justify-center"
-                      >
-                        <View
-                          style={{
-                            borderColor:
-                              selectedJob === "With Organization"
-                                ? Color.PrimaryWebOrient
-                                : "gray",
-                            backgroundColor:
-                              selectedJob === "With Organization"
-                                ? Color.PrimaryWebOrient
-                                : "white",
-                          }}
-                          className="flex items-center justify-center rounded-full border h-5 w-5"
-                        >
-                          {selectedJob === "With Organization" && (
-                            <View className="bg-white rounded-full h-3 w-3" />
-                          )}
-                        </View>
-                      </TouchableOpacity>
-                      <Text className="text-sm font-medium text-neutral-500">
-                        With Organization
-                      </Text>
-                    </View>
-                  </View>
-                </View>
-                <View className="mt-4">
-                  <Text className="text-sm font-medium text-zinc-600">
-                    Enter your Employer name
-                  </Text>
-                  <TextInput className="mt-2" placeholder="Enter Here" />
-                </View>
-
-                <View className="mt-5">
-                  <Text className="text-sm font-medium text-zinc-600">
-                    Select your Bank
-                  </Text>
-                </View>
-                <View>
-                  <View className="text-sm font-medium text-zinc-600">
-                    <SelectList
-                      setSelected={(val) => setSelected(val)}
-                      data={banks}
-                      save="value"
-                      placeholder="Select your Bank"
-                      boxStyles={{ marginTop: 10 }}
-                      dropdownStyles={{ borderColor: "gray", borderWidth: 1 }}
-                    />
-                  </View>
-                </View>
-                <View className="mt-6">
-                  <Text className="text-sm font-medium text-zinc-600">
-                    Enter your IBAN number
-                  </Text>
-                  <TextInput className="mt-2" placeholder="Enter Here" />
-                </View>
-
-
-
-                <View className="mt-7 rounded-lg">
-                  <Text className="text-sm font-medium text-zinc-600">
-                    Select your Job vintage
-                  </Text>
-
-                  <View className="flex-row space-x-2 mt-3">
-                    {[
-                      { id: 1, label: "0 - 1 years" },
-                      { id: 2, label: "1 - 2 years" },
-                      { id: 3, label: "5 - 7 years" },
-                    ].map((option) => (
-                      <TouchableOpacity
-                        key={option.id}
-                        onPress={() => handleSelect(option.id)}
-                        style={{
-                          backgroundColor:
-                            selectedId === option.id
-                              ? Color.PrimaryWebOrient
-                              : "white",
-                          borderColor:
-                            selectedId === option.id
-                              ? Color.PrimaryWebOrient
-                              : "gray",
-                        }}
-                        className="py-2 px-4 border-2 rounded-lg"
-                      >
-                        <Text
-                          style={{
-                            color: selectedId === option.id ? "white" : "black",
-                          }}
-                          className="text-left"
-                        >
-                          {option.label}
-                        </Text>
-                      </TouchableOpacity>
-                    ))}
-                  </View>
-                </View>
-              </View>
-
-              <View className="p-5 items-center">
-                <Button
-                  text='Next'
-                  width='w-[90%]'
-                  styles='mb-4 py-4'
-                  onPress={() => navigation.navigate("CashUpCard")}
-                />
-              </View>
-            </View>
+            <View>{/* Add similar structure for Self-Employed option */}</View>
           )}
         </View>
       </ScrollView>
@@ -386,6 +273,5 @@ const styles = StyleSheet.create({
     elevation: 10,
   },
 });
-
 
 export default ApplyForCard;

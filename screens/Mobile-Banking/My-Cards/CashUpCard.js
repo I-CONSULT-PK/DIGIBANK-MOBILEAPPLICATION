@@ -1,5 +1,12 @@
 import React, { useState } from "react";
-import { Text, View, ScrollView, SafeAreaView, Image } from "react-native";
+import {
+  Text,
+  View,
+  ScrollView,
+  SafeAreaView,
+  Image,
+  Alert,
+} from "react-native";
 import { Entypo, Ionicons } from "@expo/vector-icons";
 import { Checkbox } from "react-native-paper";
 import CashUpContainer from "../../../assets/Images/CashUpContainer.png";
@@ -7,13 +14,83 @@ import Button from "../../../components/Button";
 import { useNavigation } from "@react-navigation/native";
 import CashUpCardSvg from "../../../assets/Images/CashUpCardSvg.svg";
 
-const CashUpCard = () => {
-  const navigation = useNavigation();
+import API_BASE_URL from "../../../config";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import axios from "axios";
 
+const CashUpCard = ({ route }) => {
+  const navigation = useNavigation();
+  const { ibanNumber, selectedBankId, jobVintage, empName, price } =
+    route.params;
   const [selectedOption, setSelectedOption] = useState(null);
 
   const handleSelect = (option) => {
     setSelectedOption(selectedOption === option ? null : option);
+  };
+
+  const ApplyCardRequst = async () => {
+    try {
+      const bearerToken = await AsyncStorage.getItem("token");
+      const accountNumber = await AsyncStorage.getItem("accountNumber");
+
+      if (!bearerToken) {
+        Alert.alert("Error", "Authentication token not found");
+        return;
+      }
+
+      const payload = {
+        accountNumber: accountNumber,
+        cardHolderName: empName,
+        ibanCode: accountNumber,
+        bankId: selectedBankId,
+        employerName: empName,
+        jobVintage: jobVintage,
+        income: price,
+      };
+
+      const response = await axios.post(
+        `${API_BASE_URL}/v1/customer/card/cardApprovalRequest`,
+        payload,
+        {
+          headers: {
+            Authorization: `Bearer ${bearerToken}`,
+          },
+        }
+      );
+
+      const dto = response.data;
+
+      if (dto && dto.data.success && dto.data) {
+        // console.log(dto);
+      } else {
+        if (dto.message) {
+          Alert.alert("Error", dto.message);
+        } else if (dto.errors && dto.errors.length > 0) {
+          Alert.alert("Error", dto.errors);
+        }
+      }
+    } catch (error) {
+      if (error.response) {
+        const statusCode = error.response.status;
+
+        if (statusCode === 404) {
+          Alert.alert("Error", "Server timed out. Try again later!");
+        } else if (statusCode === 503) {
+          Alert.alert("Error", "Service unavailable. Please try again later.");
+        } else if (statusCode === 400) {
+          Alert.alert("Error", error.response.data.data.errors[0]);
+        } else {
+          Alert.alert("Error", error.message);
+        }
+      } else if (error.request) {
+        Alert.alert(
+          "Error",
+          "No response from the server. Please check your connection."
+        );
+      } else {
+        Alert.alert("Error", error.message);
+      }
+    }
   };
 
   return (
@@ -22,7 +99,12 @@ const CashUpCard = () => {
         <View className="flex-1">
           <View className="flex flex-col overflow-hidden gap-4 pt-16 pl-6 bg-cyan-500">
             <View className="flex items-center p-2.5 rounded-md bg-white bg-opacity-66 h-10 w-10 justify-center">
-              <Ionicons name="close" size={20} color="black" onPress={() => navigation.navigate("ApplyForCard")} />
+              <Ionicons
+                name="close"
+                size={20}
+                color="black"
+                onPress={() => navigation.navigate("ApplyForCard")}
+              />
             </View>
             <View className="flex flex-row items-center mt-8">
               <Text className="text-3xl font-semibold text-black">
@@ -36,7 +118,12 @@ const CashUpCard = () => {
             </View>
           </View>
         </View>
-
+        <View className="flex flex-col pl-12">
+        <Text className="text-base font-semibold  mt-5 text-red-600">
+                  Optional
+                </Text>
+        </View>
+       
         {/* Container for Credit Shield Plus with Image */}
         <View className="relative mt-5">
           <Image
@@ -44,10 +131,11 @@ const CashUpCard = () => {
             className="w-96 h-40 object-cover mx-auto"
             style={{ resizeMode: "contain" }}
           />
+          
           <View className="absolute inset-0 flex flex-col justify-center items-center p-5">
             <View className="w-full px-4">
               <Entypo name="credit-card" size={20} style={{ marginLeft: 20 }} />
-              <View className="flex flex-row items-center justify-between mb-2 mt-2">
+              <View className="flex flex-row items-center justify-between  mt-2">
                 <Text className="text-base font-semibold ml-5">
                   Credit Shield Plus
                 </Text>
@@ -63,7 +151,7 @@ const CashUpCard = () => {
                   style={{ transform: [{ scale: 0.75 }] }}
                 />
               </View>
-              <View className="text-center ml-7 mt-5 w-72">
+              <View className="text-center ml-7 mt-3 w-72">
                 <Text className="text-xs text-gray-500">
                   Lorem ipsum dolor sit amet consectetur. Ornare lorem velit
                   ultrices blandit nunc nunc viverra vel. Fringilla turpis mi
@@ -84,7 +172,7 @@ const CashUpCard = () => {
           <View className="absolute inset-0 flex flex-col justify-center items-center p-5 ">
             <View className="w-full px-4">
               <Entypo name="credit-card" size={20} style={{ marginLeft: 20 }} />
-              <View className="flex flex-row items-center justify-between mb-2">
+              <View className="flex flex-row items-center justify-between ">
                 <Text className="text-base font-semibold ml-5">
                   Accident Shield
                 </Text>
@@ -100,7 +188,7 @@ const CashUpCard = () => {
                   style={{ transform: [{ scale: 0.75 }] }}
                 />
               </View>
-              <View className="text-center ml-7 mt-5 w-72">
+              <View className="text-center ml-7 mt-3 w-72">
                 <Text className="text-xs text-gray-500">
                   Lorem ipsum dolor sit amet consectetur. Ornare lorem velit
                   ultrices blandit nunc nunc viverra vel. Fringilla turpis mi
@@ -113,10 +201,13 @@ const CashUpCard = () => {
       </ScrollView>
       <View className="p-5">
         <Button
-          text='Confirm'
-          width='w-[100%]'
-          styles='mb-4 py-4'
-          onPress={() => navigation.navigate("CongCard")}
+          text="Confirm"
+          width="w-[100%]"
+          styles="mb-4 py-4"
+          onPress={() => {
+            ApplyCardRequst();
+            navigation.navigate("CongCard");
+          }}
         />
       </View>
     </SafeAreaView>
