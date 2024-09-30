@@ -30,6 +30,7 @@ const ApplyForCard = ({ route }) => {
   const [banks, setBanks] = useState([]);
   const [selectedId, setSelectedId] = useState(null);
   const [jobVintage, setJobVintage] = useState(null);
+  const [errors, setErrors] = useState({}); // State for managing errors
 
   useEffect(() => {
     const fetchBanks = async () => {
@@ -82,16 +83,37 @@ const ApplyForCard = ({ route }) => {
 
   const handleSelect = (id) => {
     setSelectedId(id);
-    // console.log("Selected Bank ID:", id); 
   };
 
   const handleJobVintageSelect = (option) => {
     setJobVintage(option.label);
-    // console.log("Selected Job Vintage:", option.label); 
   };
 
   const handleOptionChange = (option) => {
     setSelectedOption(option);
+  };
+
+  const handleNext = () => {
+    // Validation logic
+    const newErrors = {};
+    if (!EmpName) newErrors.EmpName = "Please enter your employer name.";
+    if (!selectedId) newErrors.selectedId = "Please select your bank.";
+    if (!jobVintage) newErrors.jobVintage = "Please select your job vintage.";
+
+    setErrors(newErrors);
+
+    // Check if any error exists
+    if (Object.keys(newErrors).length === 0) {
+      // No errors, navigate to next screen
+      navigation.navigate("CashUpCard", {
+        empName: EmpName,
+        selectedBankId: selectedId,
+        jobVintage: jobVintage,
+      });
+    } else {
+      // Show alert for missing fields
+      Alert.alert("Error", "Please fill all required fields.");
+    }
   };
 
   useEffect(() => {
@@ -177,8 +199,11 @@ const ApplyForCard = ({ route }) => {
                   className="mt-2"
                   placeholder="Enter Here"
                   value={EmpName}
-                  onChange={(text) =>setEmpName(text)}
+                  onChange={(text) => setEmpName(text)}
                 />
+                {errors.EmpName && (
+                  <Text className="text-red-500">{errors.EmpName}</Text>
+                )}
 
                 <Text className="mt-5 text-sm font-medium text-zinc-600">
                   Select your Bank
@@ -191,16 +216,10 @@ const ApplyForCard = ({ route }) => {
                   boxStyles={{ marginTop: 10 }}
                   dropdownStyles={{ borderColor: "gray", borderWidth: 1 }}
                 />
+                {errors.selectedId && (
+                  <Text className="text-red-500">{errors.selectedId}</Text>
+                )}
 
-                {/* <Text className="mt-6 text-sm font-medium text-zinc-600">
-                  Enter your IBAN number
-                </Text>
-                <TextInput
-                  className="mt-2"
-                  placeholder="Enter Here"
-                  value={IbanNumber}
-                  onChangeText={(text)=>setIbanNumber(text)}
-                /> */}
                 <Text className="mt-6 text-sm font-medium text-zinc-600">
                   Select your Job vintage
                 </Text>
@@ -237,6 +256,9 @@ const ApplyForCard = ({ route }) => {
                     </TouchableOpacity>
                   ))}
                 </View>
+                {errors.jobVintage && (
+                  <Text className="text-red-500">{errors.jobVintage}</Text>
+                )}
               </View>
 
               <View className="p-5 items-center">
@@ -244,14 +266,7 @@ const ApplyForCard = ({ route }) => {
                   text="Next"
                   width="w-[90%]"
                   styles="mb-4 py-4"
-                  onPress={() =>
-                    navigation.navigate("CashUpCard", {
-                      empName: EmpName,
-                      // ibanNumber: IbanNumber,
-                      selectedBankId: selectedId,
-                      jobVintage: jobVintage,
-                    })
-                  }
+                  onPress={handleNext} // Use the validation handler
                 />
               </View>
             </View>
@@ -262,16 +277,17 @@ const ApplyForCard = ({ route }) => {
           )}
         </View>
       </ScrollView>
+
       <Footer />
     </SafeAreaView>
   );
 };
 
+export default ApplyForCard;
+
 const styles = StyleSheet.create({
   container: {
-    shadowColor: "#000",
-    elevation: 10,
+    borderRadius: 10,
+    elevation: 5,
   },
 });
-
-export default ApplyForCard;

@@ -62,6 +62,7 @@ const CashUpCard = ({ route }) => {
 
       if (dto && dto.data.success && dto.data) {
         // console.log(dto);
+        navigation.navigate("CongCard");
       } else {
         if (dto.message) {
           Alert.alert("Error", dto.message);
@@ -206,7 +207,7 @@ const CashUpCard = ({ route }) => {
           styles="mb-4 py-4"
           onPress={() => {
             ApplyCardRequst();
-            navigation.navigate("CongCard");
+           
           }}
         />
       </View>
