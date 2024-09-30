@@ -6,7 +6,7 @@ import {
   TouchableOpacity,
   Alert,
   Platform,
-} from "react-native"; // Import Platform
+} from "react-native";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Entypo } from "@expo/vector-icons";
@@ -36,7 +36,31 @@ const ManageLoginPin = () => {
     }, [])
   );
 
+  const isSequential = (pin) => {
+    return (
+      pin === "1234" ||
+      pin === "2345" ||
+      pin === "3456" ||
+      pin === "4567" ||
+      pin === "5678" ||
+      pin === "6789" ||
+      pin === "0123" ||
+      pin === "3210"
+    );
+  };
+
   const handleActivatePin = async () => {
+    // Validate PIN length and content
+    if (pinCode.length !== 4 || isNaN(pinCode)) {
+      Alert.alert("Error", "PIN must be exactly 4 digits.");
+      return;
+    }
+
+    if (isSequential(pinCode)) {
+      Alert.alert("Error", "PIN cannot be a sequential number (e.g., 1234).");
+      return;
+    }
+
     if (pinCode !== reenterPinCode) {
       Alert.alert("Error", "PIN codes do not match.");
       return;
@@ -45,7 +69,7 @@ const ManageLoginPin = () => {
     // Gather device information
     const deviceName = Device.deviceName || "Unknown Device";
     const deviceType =
-      Device.deviceType === Device.DeviceType.PHONE ? "PHONE" : "OTHER"; // Update as necessary
+      Device.deviceType === Device.DeviceType.PHONE ? "PHONE" : "OTHER";
     const unique =
       Platform.OS === "android"
         ? await Application.getAndroidId()
@@ -82,6 +106,18 @@ const ManageLoginPin = () => {
     }
   };
 
+  const handlePinCodeChange = (text) => {
+    // Allow only numbers and limit to 4 characters
+    const sanitizedText = text.replace(/[^0-9]/g, "").slice(0, 4);
+    setPinCode(sanitizedText);
+  };
+
+  const handleReenterPinCodeChange = (text) => {
+    // Allow only numbers and limit to 4 characters
+    const sanitizedText = text.replace(/[^0-9]/g, "").slice(0, 4);
+    setReenterPinCode(sanitizedText);
+  };
+
   return (
     <SafeAreaView className="flex-1 bg-[#F9FAFC]">
       <View className="flex-1 justify-between">
@@ -116,15 +152,17 @@ const ManageLoginPin = () => {
               <TextInput
                 placeholder="Enter PIN Code"
                 value={pinCode}
-                onChange={setPinCode}
-                keyboardType="numeric" // Use numeric keyboard for PIN
+                onChange={handlePinCodeChange}
+                keyboardType="numeric"
+                maxLength={4}
               />
               <Text className="text-gray-500 mt-5">Re-enter PIN Code</Text>
               <TextInput
                 placeholder="Re-enter PIN Code"
                 value={reenterPinCode}
-                onChange={setReenterPinCode}
-                keyboardType="numeric" // Use numeric keyboard for PIN
+                onChange={handleReenterPinCodeChange}
+                keyboardType="numeric"
+                maxLength={4}
               />
             </View>
           </View>

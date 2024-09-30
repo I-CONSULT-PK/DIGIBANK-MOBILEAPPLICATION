@@ -27,8 +27,11 @@ const OTP_Preference = () => {
     const fetchUserData = async () => {
       const mobile = await AsyncStorage.getItem("mobileNumber");
       const userEmail = await AsyncStorage.getItem("email");
+      const method = await AsyncStorage.getItem("otpDeliveryMethod");
+
       setMobileNumber(mobile || "");
       setEmail(userEmail || "");
+      setSelectedMethod(method || "sms"); // Default to "sms" if nothing is stored
     };
 
     fetchUserData();
