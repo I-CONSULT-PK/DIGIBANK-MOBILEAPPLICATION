@@ -90,7 +90,6 @@ import To_Up_Transfer from "../../Mobile-Banking/Mobile-Top-Up/To_Up_Transfer";
 import Account from "../../Mobile-Banking/Account/Account";
 import Update_Profile from "../../Mobile-Banking/Account-Setting/Update_Profile";
 import Add_Account from "../../Mobile-Banking/Account-Setting/Add_Account";
-import DeviceManagement from "../../Mobile-Banking/Account-Setting/DeviceManagement";
 import ChangePassword from "../../Mobile-Banking/Account-Setting/ChangePassword";
 import DeactivatePin from "../../Mobile-Banking/Account-Setting/DeactivatePin";
 import UserActivity from "../../Mobile-Banking/Account-Setting/UserActivity";
@@ -192,7 +191,6 @@ const AppNavigator = () => {
           name="Account_Statements"
           component={Account_Statements}
         />
-        <Stack.Screen name="DeviceManagement" component={DeviceManagement} />
         <Stack.Screen name="ChangePassword" component={ChangePassword} />
         <Stack.Screen name="DeactivatePin" component={DeactivatePin} />
         <Stack.Screen name="UserActivity" component={UserActivity} />

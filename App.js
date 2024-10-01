@@ -94,7 +94,6 @@ import Fatch_Details from "./screens/Mobile-Banking/Mobile-Top-Up/Fatch_Details"
 import To_Up_Transfer from "./screens/Mobile-Banking/Mobile-Top-Up/To_Up_Transfer";
 import Account from "./screens/Mobile-Banking/Account/Account";
 import Update_Profile from "./screens/Mobile-Banking/Account-Setting/Update_Profile";
-import DeviceManagement from "./screens/Mobile-Banking/Account-Setting/DeviceManagement";
 import ChangePassword from "./screens/Mobile-Banking/Account-Setting/ChangePassword";
 import Add_Account from "./screens/Mobile-Banking/Account-Setting/Add_Account";
 import Fatch_amount_Packges from "./screens/Mobile-Banking/Mobile-Top-Up/Fatch_amount_Packges";
@@ -269,11 +268,7 @@ export default function App() {
           component={Set_Payment}
           options={{ headerShown: false }}
         />
-        <Stack.Screen
-          name="DeviceManagement"
-          component={DeviceManagement}
-          options={{ headerShown: false }}
-        />
+        
         <Stack.Screen
           name="ChangePassword"
           component={ChangePassword}
