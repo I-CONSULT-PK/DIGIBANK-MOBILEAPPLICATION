@@ -18,8 +18,9 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import TextInput from "../../../components/TextInput";
 import API_BASE_URL from "../../../config";
+import { StatusBar } from "expo-status-bar";
 
-const Update_Profile = () => {
+const UpdateProfile = () => {
   const navigation = useNavigation();
   const [accountNumber, setAccountNumber] = useState("");
   const [mobileNumber, setMobileNumber] = useState("");
@@ -27,6 +28,8 @@ const Update_Profile = () => {
   const [customerId, setCustomerId] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
+  const [existingMobileNumber, setExistingMobileNumber] = useState("");
+  const [existingEmail, setExistingEmail] = useState("");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -39,7 +42,9 @@ const Update_Profile = () => {
 
       setAccountNumber(storedAccountNumber || "");
       setMobileNumber(storedMobileNumber || "");
+      setExistingMobileNumber(storedMobileNumber || "");
       setEmail(storedEmail || "");
+      setExistingEmail(storedEmail || "");
       setCustomerId(storedCustomerId || "");
       setFirstName(storedFirstName || "");
       setLastName(storedLastName || "");
@@ -49,33 +54,54 @@ const Update_Profile = () => {
   }, []);
 
   const handleUpdate = async () => {
+    if (!mobileNumber || !email) {
+      Alert.alert("Error", "Mobile number and email cannot be empty");
+      return;
+    }
+  
+    if (mobileNumber.length !== 12) {
+      Alert.alert("Error", "Mobile number must be exactly 12 digits long");
+      return;
+    }
+  
+    const updateData = {
+      clientNo: customerId, 
+      mobileNumber,
+      email
+    };
+  
     try {
-      const response = await axios.post(
-        `${API_BASE_URL}/v1/settings/updateProfile`,
-        {
-          customerId,
-          mobileNumber,
-          email,
-        }
-      );
-
-      if (response.status === 200) {
-        Alert.alert("Success", "Profile updated successfully");
+      const response = await axios.post(`${API_BASE_URL}/v1/settings/updateProfile`, updateData, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+  
+      console.log("Received response from API:", response.data);
+      
+      if (response.data.success) {
+        Alert.alert("Success", "Profile updated successfully", [
+          {
+            text: "OK",
+            onPress: () => navigation.navigate("Home"),
+          },
+        ]);
       } else {
-        Alert.alert("Error", "Failed to update profile");
+        Alert.alert("Error", response.data.message || "Failed to update profile");
       }
     } catch (error) {
-      console.error("Error updating profile:", error);
-      Alert.alert("Error", "Error updating profile: " + error.message);
+      console.error("Error updating profile:", error.response ? error.response.data : error.message);
+      Alert.alert("Error", "Error updating profile: " + (error.response ? error.response.data.message : error.message));
     }
   };
-
+  
+  
+  
+  
+  
   return (
     <SafeAreaView className="flex-1">
-      <View
-        className="h-24"
-        style={{ backgroundColor: Color.PrimaryWebOrient }}
-      >
+      <View className="h-24" style={{ backgroundColor: Color.PrimaryWebOrient }}>
         <View className="flex-row items-center justify-center h-full">
           <TouchableOpacity
             onPress={() => navigation.navigate("Account_Setting_List")}
@@ -122,8 +148,10 @@ const Update_Profile = () => {
             <View className="mb-4">
               <Text className="text-gray-500">Mobile Number</Text>
               <TextInput
+                value={mobileNumber}
                 onChange={setMobileNumber}
-                placeholder={mobileNumber}
+                placeholder="Enter new mobile number"
+                keyboardType="numeric"
               />
             </View>
 
@@ -134,7 +162,11 @@ const Update_Profile = () => {
 
             <View>
               <Text className="text-gray-500">Email</Text>
-              <TextInput onChange={setEmail} placeholder={email} />
+              <TextInput
+                value={email}
+                onChange={setEmail}
+                placeholder="Enter new email"
+              />
             </View>
           </View>
         </View>
@@ -148,8 +180,9 @@ const Update_Profile = () => {
         </View>
       </ScrollView>
       <Footer />
+      <StatusBar backgroundColor={Color.PrimaryWebOrient} style="light" />
     </SafeAreaView>
   );
 };
 
-export default Update_Profile;
+export default UpdateProfile;

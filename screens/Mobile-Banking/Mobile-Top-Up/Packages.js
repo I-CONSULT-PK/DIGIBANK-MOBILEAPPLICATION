@@ -308,7 +308,7 @@ const Packages = () => {
                     <CustomButton
                       text={"Next"}
                       onPress={() =>
-                        navigation.navigate("Fatch_Details_Top_up", {
+                        navigation.navigate("Fatch_amount_Packges", {
                           price: pkg.price,
                           name: pkg.pkgId,
                           id: pkg.pkgId

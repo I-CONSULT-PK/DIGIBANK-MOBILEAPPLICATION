@@ -49,32 +49,29 @@ const ChangePassword = ({ navigation }) => {
       Alert.alert("Current Password Required", "Current password cannot be empty.");
       return;
     }
-  
+
     // Check if the new password matches the confirm password
     if (newPassword !== confirmPassword) {
       Alert.alert("Password Mismatch", "New password and confirm password do not match.");
       return;
     }
-  
-    // Check if the new password length is between 8 and 10 characters
-    if (newPassword.length < 8 || newPassword.length > 10) {
-      Alert.alert("Invalid Password", "Password length must be between 8 and 10 characters.");
+
+    // Check if the new password length is between 8 and 20 characters
+    if (newPassword.length < 8 || newPassword.length > 20) {
+      Alert.alert("Invalid Password", "Password length must be between 8 and 20 characters.");
       return;
     }
-  
-    // Check if the new password contains only numbers
-    const isOnlyNumbers = /^\d+$/.test(newPassword);
-  
-    // Check if the new password contains letters and at least one number
+
+    // Check for alphanumeric criteria
     const hasLetter = /[a-zA-Z]/.test(newPassword);
     const hasNumber = /\d/.test(newPassword);
   
-    if (!isOnlyNumbers && hasLetter && !hasNumber) {
-      Alert.alert("Invalid Password", "Password must contain at least one number if it contains letters.");
+    if (!hasLetter || !hasNumber) {
+      Alert.alert("Invalid Password", "Password should be alphanumeric.");
       return;
     }
   
-    // Optionally: Check for special characters (if needed)
+    // Optional: Check for special characters (if needed)
     const specialCharacterPattern = /[!@#$%^&*(),.?":{}|<>]/;
     if (specialCharacterPattern.test(newPassword)) {
       console.log("Password contains special characters.");
@@ -84,9 +81,9 @@ const ChangePassword = ({ navigation }) => {
       console.log(newPassword);
       console.log(customerId);
       console.log(currentPassword);
-  
+
       const url = `${API_BASE_URL}/v1/settings/changePassword?newPassword=${newPassword}&oldPassword=${currentPassword}&customerId=${customerId}`;
-  
+
       const response = await axios.post(
         url, 
         null, 
@@ -97,7 +94,7 @@ const ChangePassword = ({ navigation }) => {
           },
         }
       );
-  
+
       if (response.status === 200) {
         Alert.alert("Success", "Password changed successfully.");
         navigation.goBack();
@@ -112,6 +109,8 @@ const ChangePassword = ({ navigation }) => {
       );
     }
   };
+
+
   
 
   return (
@@ -147,7 +146,7 @@ const ChangePassword = ({ navigation }) => {
             1. Password should be alphanumeric
           </Text>
           <Text className="text-sm font-semibold text-gray-400 mt-1 pl-4">
-            2. Password length must be between 8 and 10 characters long
+            2. Password length must be between 8 and 20 characters long
           </Text>
         </View>
         <View className="flex flex-col px-8 py-7 mt-4 bg-white rounded-xl shadow-lg max-w-md">

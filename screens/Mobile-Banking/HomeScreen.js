@@ -12,7 +12,8 @@ import {
   Easing,
   TextInput,
   ImageBackground,
-  Alert
+  Alert,
+  RefreshControl
 } from "react-native";
 import { Color } from "../../GlobalStyles";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -49,6 +50,7 @@ const HomeScreen = () => {
   const modalAnim = useRef(new Animated.Value(0)).current;
   const [cards, setCards] = useState([]);
   const backgroundImage = require("../../assets/Images/Cards.png");
+  const [refreshing, setRefreshing] = useState(false);
   const [userDetails, setUserDetails] = useState({
     firstName: "",
     lastName: "",
@@ -413,6 +415,131 @@ const HomeScreen = () => {
       </List.AccordionGroup>
     );
   };
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true);
+
+    const fetchCardData = async () => {
+      try {
+        const bearerToken = await AsyncStorage.getItem("token");
+        const accountNumber = await AsyncStorage.getItem("accountNumber");
+  
+        if (!bearerToken) {
+          Alert.alert("Error", "Authentication token not found");
+          return;
+        }
+  
+        const response = await axios.get(
+          `${API_BASE_URL}/v1/customer/card/fetchCardById/${accountNumber}`,
+          {
+            headers: {
+              Authorization: `Bearer ${bearerToken}`,
+            },
+          }
+        );
+  
+        if (response.data.success && Array.isArray(response.data.data)) {
+          const updatedCards = response.data.data.map((card) => ({
+            ...card,
+            isCreditCard: card.isCreditCard === true,
+          }));
+          setCards(updatedCards);
+        } else {
+          Alert.alert("Error", "Unexpected response format");
+        }
+      } catch (error) {
+        if (error.response) {
+          const statusCode = error.response.status;
+  
+          if (statusCode === 404) {
+            Alert.alert("Error", "Server not found. Please try again later.");
+          } else if (statusCode === 503) {
+            Alert.alert("Error", "Service unavailable. Please try again later.");
+          } else if (statusCode === 400) {
+            Alert.alert(
+              "Error",
+              error.response.data.message ||
+              "Bad request. Please check your input."
+            );
+          } else {
+            Alert.alert("Error", "Card not found");
+          }
+        } else if (error.request) {
+          Alert.alert(
+            "Error",
+            "No response from the server. Please check your connection."
+          );
+        } else {
+          Alert.alert("Error", `Error: ${error.message}`);
+        }
+      } 
+      finally {
+        setRefreshing(false);
+      }
+    };
+    const fetchUserDetails = async () => {
+      try {
+        const bearerToken = await AsyncStorage.getItem("token");
+        const customerId = await AsyncStorage.getItem("customerId");
+    
+        if (!bearerToken) {
+          Alert.alert("Error", "Authentication token not found");
+          return;
+        }
+        if (!customerId) {
+          Alert.alert("Error", "Customer ID not found");
+          return;
+        }
+    
+        const response = await axios.get(
+          `${API_BASE_URL}/v1/customer/fetchUserDetails?userId=${customerId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${bearerToken}`,
+            },
+          }
+        );
+    
+        // console.log("API Response:", response.data); 
+        // console.log("API Response:", API_BASE_URL); 
+    
+        if (response.status === 200 && response.data && response.data.data) {
+          const userDetails = {
+            firstName: response.data.data.firstName || "User",
+            lastName: response.data.data.lastName || "Name",
+            defaultAccountBalance: response.data.data.defaultAccountBalance || "N/A",
+            accountNumber: response.data.data.accountNumber || "N/A",
+            accountType: response.data.data.accountType || "N/A",
+            email: response.data.data.email || "N/A", 
+            mobileNumber: response.data.data.mobileNumber || "N/A", 
+          };
+    
+    
+          await AsyncStorage.multiSet([
+            ["firstName", userDetails.firstName],
+            ["lastName", userDetails.lastName],
+            ["accountNumber", userDetails.accountNumber],
+            ["accountType", userDetails.accountType],
+            ["email", userDetails.email], 
+            ["mobileNumber", userDetails.mobileNumber], 
+          ]);
+    
+          setUserDetails(userDetails);
+        } else {
+          Alert.alert("Error", "Unexpected response format");
+        }
+      } catch (error) {
+        console.error("Error fetching user details:", error);
+        Alert.alert("Error", `Error fetching user details: ${error.message}`);
+      }
+      finally {
+        setRefreshing(false);
+      }
+    };
+
+    fetchCardData();
+    fetchUserDetails();
+
+}, [fetchCardData,fetchUserDetails]);
 
   return (
     <SafeAreaView style={styles.container} className="h-full bg-[#f9fafc]">
@@ -480,7 +607,8 @@ const HomeScreen = () => {
           style={{ color: Color.PrimaryWebOrient }}
         />
       </View>
-      <ScrollView>
+      <ScrollView contentContainerStyle={{ flexGrow: 1 }} scrollEventThrottle={16} refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={[Color.PrimaryWebOrient]} />}>
         <View className="justify-center items-center pt-2">
           {/* <NewCard width={400} /> */}
           <View className="justify-center items-center ">

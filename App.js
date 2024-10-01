@@ -101,6 +101,7 @@ import DeactivatePin from "./screens/Mobile-Banking/Account-Setting/DeactivatePi
 import UserActivity from "./screens/Mobile-Banking/Account-Setting/UserActivity";
 import ChangeLoginPin from "./screens/Mobile-Banking/Account-Setting/ChangeLoginPin";
 import ManageLoginPin from "./screens/Mobile-Banking/Account-Setting/ManageLoginPin";
+import Feedback from "./screens/Mobile-Banking/Feedback/Feedback";
 import CameraScreen from "./screens/Auth/CameraScreen";
 import BeneficiarySuccess from "./screens/Mobile-Banking/Beneficiary/BeneficiarySuccess";
 import TransferSuccess from "./screens/Mobile-Banking/Beneficiary/TransferSuccess";
@@ -285,11 +286,6 @@ export default function App() {
           options={{ headerShown: false }}
         />
         <Stack.Screen
-          name="DeviceManagement"
-          component={DeviceManagement}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
           name="ChangePassword"
           component={ChangePassword}
           options={{ headerShown: false }}
@@ -311,6 +307,15 @@ export default function App() {
         />
 
         {/* Account Settings start */}
+
+        {/* Feedback start */}
+        <Stack.Screen
+          name="Feedback"
+          component={Feedback}
+          options={{ headerShown: false }}
+        />
+
+        {/* Feedback start */}
 
         <Stack.Screen
           name="Card_Payment_List"
@@ -479,6 +484,16 @@ export default function App() {
         <Stack.Screen
           name="MobNoChange"
           component={MobNoChange}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="Fatch_amount_Packges"
+          component={Fatch_amount_Packges}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="Packges_Transfer"
+          component={Packges_Transfer}
           options={{ headerShown: false }}
         />
         <Stack.Screen
@@ -772,6 +787,11 @@ export default function App() {
             />
             
             <Stack.Screen
+              name="Fatch_amount_Packges"
+              component={Fatch_amount_Packges}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
               name="Mobile_Packages"
               component={Packages}
               options={{ headerShown: false }}
@@ -789,6 +809,11 @@ export default function App() {
             <Stack.Screen
               name="To_Up_Transfer"
               component={To_Up_Transfer}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="Packges_Transfer"
+              component={Packges_Transfer}
               options={{ headerShown: false }}
             />
             <Stack.Screen
