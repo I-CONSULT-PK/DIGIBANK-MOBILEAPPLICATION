@@ -44,6 +44,7 @@ const Account_Setting_List = () => {
 
     try {
       const response = await axios.post(`${API_BASE_URL}/devices/fetchDeviceRegister`, { unique: deviceId });
+      console.log(response);
       
       if (response.data) {
         if (response.data.success) {

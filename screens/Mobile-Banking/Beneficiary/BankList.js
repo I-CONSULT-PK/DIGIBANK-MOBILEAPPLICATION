@@ -6,15 +6,13 @@ import { Entypo } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 
+import { decrypt } from '../../../utils/crypto';
+
 import { Color } from '../../../GlobalStyles';
 import API_BASE_URL from '../../../config';
 import SearchBar from '../../../components/SearchBar';
 import OptionBox from '../../../components/OptionBox';
 import Footer from '../../../components/Footer';
-
-const decodeBase64ToUri = (base64String) => {
-  return `data:image/png;base64,${base64String}`;
-};
 
 const BankList = ({ navigation, route }) => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -34,17 +32,19 @@ const BankList = ({ navigation, route }) => {
             },
           });
 
-          if (response && response.data.success) {
+          const dto = response.data;
+
+          if (dto && dto.success && dto.data) {
             const decryptedBanks = response.data.data.map(bank => ({
               ...bank,
-              bankLogo: decodeBase64ToUri(bank.bankLogo),
+              bankLogo: decrypt(bank.bankLogo),
             }));
             setBanks(decryptedBanks);
           } else {
-            if (response.message) {
-              Alert.alert('Error', response.message);
-            } else if (response.errors && response.errors.length > 0) {
-              Alert.alert('Error', response.errors.join(', '));
+            if (dto.message) {
+              Alert.alert("Error", dto.message);
+            } else if (dto.errors && dto.errors.length > 0) {
+              Alert.alert("Error", dto.errors.join("\n"));
             }
           }
         } else {
@@ -90,10 +90,10 @@ const BankList = ({ navigation, route }) => {
           </View>
         </View>
 
-        <View className="w-full h-full px-6 bg-[#F5F5F5] pb-10">
+        <View className="w-full h-full px-6 bg-[#F9FAFC] pb-10">
           <View className="mt-6">
             <SearchBar
-              placeholder='Search bank name'
+              placeholder='Search Bank Name'
               onChangeText={setSearchQuery}
               value={searchQuery} />
           </View>

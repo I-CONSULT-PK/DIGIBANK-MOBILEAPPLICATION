@@ -305,7 +305,7 @@ const ScannerScreen = () => {
           <View className="bg-black justify-around items-center py-4">
             <Text className="text-white text-base mt-1 ">
               {" "}
-              Scan any of the folling QR Codes{" "}
+              Scan any of the following QR Codes{" "}
             </Text>
             <Text className="text-white text-base mt-1 font-semibold ">
               Digi Bank | VISA | MasterCard | Raast
@@ -326,7 +326,7 @@ const ScannerScreen = () => {
 
           {/* Bottom Menu */}
           <View className="bg-black flex-row justify-around items-center py-4">
-            <TouchableOpacity onPress={toggleTorch} className="items-center">
+            {/* <TouchableOpacity onPress={toggleTorch} className="items-center">
               <Ionicons
                 name={torchOn ? "flashlight" : "flashlight-outline"}
                 size={30}
@@ -335,7 +335,7 @@ const ScannerScreen = () => {
               <Text className="text-white text-xs mt-1">
                 {torchOn ? "Torch On" : "Torch Off"}
               </Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
             <TouchableOpacity className="items-center" onPress={openGallery}>
               <Ionicons name="image" size={30} color="white" />
               <Text className="text-white text-xs mt-1">Scan from Gallery</Text>

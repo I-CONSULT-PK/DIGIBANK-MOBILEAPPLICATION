@@ -21,7 +21,7 @@ export default function Input({
         {
           backgroundColor: '#F4F5F9',
           fontSize: 15,
-          height: 40,  
+          height: 37,  
           paddingVertical: 11,
           lineHeight: 20,
         },

@@ -260,6 +260,7 @@ const Registration = ({ route }) => {
             userData
           );
           const dto = response.data;
+          console.log(dto);
 
           if (dto && dto.success && dto.data) {
             Alert.alert("Success", dto.message);

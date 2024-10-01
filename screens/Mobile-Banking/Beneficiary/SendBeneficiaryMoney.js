@@ -54,7 +54,7 @@ const SendBeneficiaryMoney = ({ navigation }) => {
           </View>
         </View>
 
-        <View className="w-full h-full px-6 bg-[#F5F5F5]">
+        <View className="w-full h-full px-6 bg-[#F9FAFC]">
           <View className="mt-8">
             <Text className="font-InterSemiBold text-base">Select Method</Text>
           </View>

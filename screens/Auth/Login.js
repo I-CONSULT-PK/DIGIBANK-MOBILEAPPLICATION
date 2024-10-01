@@ -11,7 +11,7 @@ import Button from "../../components/Button";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { LinearGradient } from 'expo-linear-gradient';
 import { StatusBar } from 'expo-status-bar';
-import AntDesign from '@expo/vector-icons/AntDesign';
+import { Entypo } from "@expo/vector-icons";
 import axios from 'axios';
 import API_BASE_URL from '../../config';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -58,6 +58,7 @@ const Login = ({ navigation }) => {
   const handleLogin = async () => {
     if (form.username === '' || form.password === '') {
       Alert.alert('Error', 'Username and password cannot be null');
+      console.log(API_BASE_URL);
       return;
     }
 
@@ -196,7 +197,6 @@ const Login = ({ navigation }) => {
 
   const isBiometricEnabled = async () => {
     const enableBio = await AsyncStorage.getItem('enableBio');
-    console.log(enableBio);
     setBioEnabled(enableBio === 'true' ? true : false);
   };
 
@@ -220,7 +220,7 @@ const Login = ({ navigation }) => {
         <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
           <View className="flex-row items-center p-4 mt-2">
             <TouchableOpacity onPress={() => navigation.goBack()}>
-              <AntDesign name="arrowleft" size={20} color="white" />
+              <Entypo name="chevron-left" size={24} color="white" />
             </TouchableOpacity>
             <Text className="text-white font-semibold text-lg ml-4 font-InterSemiBold">
               Login
@@ -330,7 +330,7 @@ const Login = ({ navigation }) => {
 
               {/* -----| Security Image End |----- */}
 
-              <View className="mb-2">
+              <View className={`${bioEnabled ? 'mb-2' : 'mb-8'}`}>
                 <Button
                   text="Login"
                   width="w-[100%]"

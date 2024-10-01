@@ -102,6 +102,9 @@ import UserActivity from "./screens/Mobile-Banking/Account-Setting/UserActivity"
 import ChangeLoginPin from "./screens/Mobile-Banking/Account-Setting/ChangeLoginPin";
 import ManageLoginPin from "./screens/Mobile-Banking/Account-Setting/ManageLoginPin";
 import CameraScreen from "./screens/Auth/CameraScreen";
+import BeneficiarySuccess from "./screens/Mobile-Banking/Beneficiary/BeneficiarySuccess";
+import TransferSuccess from "./screens/Mobile-Banking/Beneficiary/TransferSuccess";
+
 const Stack = createNativeStackNavigator();
 
 export default function App() {
@@ -237,6 +240,16 @@ export default function App() {
         <Stack.Screen
           name="SendBeneficiaryMoney"
           component={SendBeneficiaryMoney}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="BeneficiarySuccess"
+          component={BeneficiarySuccess}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="TransferSuccess"
+          component={TransferSuccess}
           options={{ headerShown: false }}
         />
         <Stack.Screen

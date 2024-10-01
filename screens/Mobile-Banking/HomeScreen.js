@@ -37,6 +37,7 @@ import API_BASE_URL from "../../config";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import { StatusBar } from "expo-status-bar";
+import { decrypt } from "../../utils/crypto";
 
 const HomeScreen = () => {
   const navigation = useNavigation();
@@ -155,9 +156,6 @@ const HomeScreen = () => {
         }
       );
   
-      // console.log("API Response:", response.data); 
-      // console.log("API Response:", API_BASE_URL); 
-  
       if (response.status === 200 && response.data && response.data.data) {
         const userDetails = {
           firstName: response.data.data.firstName || "User",
@@ -167,6 +165,7 @@ const HomeScreen = () => {
           accountType: response.data.data.accountType || "N/A",
           email: response.data.data.email || "N/A", 
           mobileNumber: response.data.data.mobileNumber || "N/A", 
+          bankLogo: response.data.data.bankImage || "N/A"
         };
   
   
@@ -177,6 +176,8 @@ const HomeScreen = () => {
           ["accountType", userDetails.accountType],
           ["email", userDetails.email], 
           ["mobileNumber", userDetails.mobileNumber], 
+          ["bankLogo", userDetails.bankLogo], 
+          ["balance", userDetails.defaultAccountBalance], 
         ]);
   
         setUserDetails(userDetails);
@@ -265,6 +266,8 @@ const HomeScreen = () => {
         if (dto && dto.success && dto.data) {
           const transformedBeneficiaries = dto.data.map(item => ({
             ...item,
+            bankUrl: decrypt(item.bankUrl),
+            accountNumber: decrypt(item.accountNumber),
             liked: item.flag
           }));
 
@@ -309,7 +312,7 @@ const HomeScreen = () => {
   };
 
   const getColorForIndex = (index) => {
-    const colors = ["#3b82f6", "#FECC81", "#9683E4", "#5CCAA9", "#yourColor"];
+    const colors = ["#3b82f6", "#FECC81", "#9683E4", "#5CCAA9", "#eb4034"];
     return colors[index % colors.length];
   };
 
@@ -448,7 +451,7 @@ const HomeScreen = () => {
         </View>
       </Modal>
 
-      <View className="flex flex-row items-center justify-between px-5 py-2 mb-2 shadow-md bg-white border-b-[1px] border-gray-100">
+      <View className="flex flex-row items-center justify-between px-5 py-2 shadow-md bg-white border-b-[1px] border-gray-100">
         {/* Menu Icon */}
         <Entypo
           name="menu"
@@ -478,7 +481,7 @@ const HomeScreen = () => {
         />
       </View>
       <ScrollView>
-        <View className="justify-center items-center">
+        <View className="justify-center items-center pt-2">
           {/* <NewCard width={400} /> */}
           <View className="justify-center items-center ">
             {/* <ListSectionCard width={400} /> */}

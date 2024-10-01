@@ -55,6 +55,7 @@ import BeneficiaryAccountDetails from "../../Mobile-Banking/Easy-Cash/Beneficiar
 import Summary from "../../Mobile-Banking/Easy-Cash/Summary";
 import SendFromAccount from "../../Mobile-Banking/Beneficiary/SendFromAccount";
 
+import BeneficiarySuccess from "../../Mobile-Banking/Beneficiary/BeneficiarySuccess";
 import SendBeneficiaryMoney from "../../Mobile-Banking/Beneficiary/SendBeneficiaryMoney";
 import Add_Beneficiary from "../../Mobile-Banking/Beneficiary/Add-Beneficiary";
 import PayNow from "../../Mobile-Banking/Beneficiary/PayNow";
@@ -98,6 +99,8 @@ import ChangeLoginPin from  "../../Mobile-Banking/Account-Setting/ChangeLoginPin
 import ManageLoginPin from "../../Mobile-Banking/Account-Setting/ManageLoginPin";
 import Add_Account from "../../Mobile-Banking/Account-Setting/Add_Account";
 import CameraScreen from "../CameraScreen";
+import TransferSuccess from "../../Mobile-Banking/Beneficiary/TransferSuccess";
+
 const Stack = createStackNavigator();
 
 const AppNavigator = () => {
@@ -131,6 +134,8 @@ const AppNavigator = () => {
         <Stack.Screen name="SetCardPin" component={SetCardPin} />
         <Stack.Screen name="CardActivated" component={CardActivated} />
         <Stack.Screen name="ChooseSecurity" component={ChooseSecurity} />
+        <Stack.Screen name="BeneficiarySuccess" component={BeneficiarySuccess} />
+        <Stack.Screen name="TransferSuccess" component={TransferSuccess} />
         <Stack.Screen
           name="RegisterFingerPrint"
           component={RegisterFingerPrint}
