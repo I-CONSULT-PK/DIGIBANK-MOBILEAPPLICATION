@@ -54,7 +54,7 @@ import AvailCashonCreditCard from "../../Mobile-Banking/Easy-Cash/AvailCashonCre
 import BeneficiaryAccountDetails from "../../Mobile-Banking/Easy-Cash/BeneficiaryAccountDetails";
 import Summary from "../../Mobile-Banking/Easy-Cash/Summary";
 import SendFromAccount from "../../Mobile-Banking/Beneficiary/SendFromAccount";
-
+import DeviceManagement from "../../Mobile-Banking/Device_Management/Device_Management";
 import SendBeneficiaryMoney from "../../Mobile-Banking/Beneficiary/SendBeneficiaryMoney";
 import Add_Beneficiary from "../../Mobile-Banking/Beneficiary/Add-Beneficiary";
 import PayNow from "../../Mobile-Banking/Beneficiary/PayNow";
@@ -137,6 +137,7 @@ const AppNavigator = () => {
         <Stack.Screen name="ChooseSecurity" component={ChooseSecurity} />
         <Stack.Screen name="BeneficiarySuccess" component={BeneficiarySuccess} />
         <Stack.Screen name="TransferSuccess" component={TransferSuccess} />
+        <Stack.Screen name="DeviceManagement" component={DeviceManagement} />
         <Stack.Screen
           name="RegisterFingerPrint"
           component={RegisterFingerPrint}
