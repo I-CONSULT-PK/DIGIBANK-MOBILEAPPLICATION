@@ -157,24 +157,26 @@ const OTP = ({ navigation, route }) => {
 
   const handleResend = async (email, mobileNumber) => {
     setIsResendDisabled(true);
-
+  
     try {
       const otpDeliveryMethod = await AsyncStorage.getItem("otpDeliveryMethod");
-
+  
       const otpData = {
         mobileNumber: mobileNumber,
         email: email,
         reason: "verify mobile device",
         deliveryPreference: otpDeliveryMethod ? otpDeliveryMethod : "EMAIL",
       };
-
+  
       const response = await axios.post(
         `${API_BASE_URL}/v1/otp/createOTP`,
         otpData
       );
       const dto = response.data;
-
-      if (!dto.success) {
+  
+      if (dto.success) {
+        Alert.alert("Success", "OTP resent successfully!");
+      } else {
         if (dto.message) {
           Alert.alert("Error", dto.message);
         } else if (dto.errors && dto.errors.length > 0) {
@@ -184,7 +186,7 @@ const OTP = ({ navigation, route }) => {
     } catch (error) {
       if (error.response) {
         const statusCode = error.response.status;
-
+  
         if (statusCode === 404) {
           Alert.alert("Error", "Server timed out. Try again later!");
         } else if (statusCode === 503) {
@@ -195,10 +197,7 @@ const OTP = ({ navigation, route }) => {
           Alert.alert("Error", error.message);
         }
       } else if (error.request) {
-        Alert.alert(
-          "Error",
-          "No response from the server. Please check your connection."
-        );
+        Alert.alert("Error", "No response from the server. Please check your connection.");
       } else {
         Alert.alert("Error", error.message);
       }
@@ -206,6 +205,7 @@ const OTP = ({ navigation, route }) => {
       setIsResendDisabled(false);
     }
   };
+  
 
   return (
     <SafeAreaView className="h-full flex-1 bg-white">

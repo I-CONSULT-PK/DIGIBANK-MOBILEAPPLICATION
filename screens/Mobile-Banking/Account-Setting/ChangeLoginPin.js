@@ -38,7 +38,7 @@ const ChangeLoginPin = () => {
 
   const handleOldPinChange = (text, index) => {
     const sanitizedText = text.replace(/[^0-9]/g, "");
-    const newOldPin = [...oldPin];
+    const newOldPin = [...oldPin]; 
     newOldPin[index] = sanitizedText;
     setOldPin(newOldPin);
     focusNextInput(sanitizedText, index, 0);
