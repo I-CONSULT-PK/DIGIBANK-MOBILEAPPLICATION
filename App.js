@@ -97,6 +97,7 @@ import Update_Profile from "./screens/Mobile-Banking/Account-Setting/Update_Prof
 import Add_Account from "./screens/Mobile-Banking/Account-Setting/Add_Account";
 import Fatch_amount_Packges from "./screens/Mobile-Banking/Mobile-Top-Up/Fatch_amount_Packges";
 import Packges_Transfer from "./screens/Mobile-Banking/Mobile-Top-Up/Packges_Transfer";
+import Device_Management from "./screens/Mobile-Banking/Device-Management/Device_Management";
 const Stack = createNativeStackNavigator();
 
 export default function App() {
@@ -152,6 +153,11 @@ export default function App() {
         <Stack.Screen
           name="Registration"
           component={Registration}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="Device_Management"
+          component={Device_Management}
           options={{ headerShown: false }}
         />
         <Stack.Screen
@@ -634,6 +640,11 @@ export default function App() {
             <Stack.Screen
               name="RegisterFaceDetector"
               component={RegisterFaceDetector}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="Device_Management"
+              component={Device_Management}
               options={{ headerShown: false }}
             />
             <Stack.Screen

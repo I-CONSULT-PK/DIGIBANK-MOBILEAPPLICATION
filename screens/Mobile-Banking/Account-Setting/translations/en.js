@@ -3,6 +3,7 @@ export const enData = {
     menuItems: [
       { title: "Manage People", icon: "person" },
       { title: "Transfer", icon: "swap-horizontal" },
+      { title: "Device Management", icon: "cog" },
       { title: "Scan to Pay", icon: "qr-code" },
       { title: "Settings", icon: "cog" },
       { title: "Instant Loan", icon: "cash" },
