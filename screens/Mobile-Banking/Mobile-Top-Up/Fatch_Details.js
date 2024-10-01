@@ -23,6 +23,7 @@ const Fatch_Details = ({ route }) => {
   const navigation = useNavigation();
   const { networkLogo, networkName, number, price } = route.params || {};
   const [amount, setAmount] = useState(price ? price.toString() : "");
+   const [number1, setNumber1] = useState(null);
   const { width } = Dimensions.get("window");
   const horizontalPadding = 16;
 
@@ -168,7 +169,19 @@ const Fatch_Details = ({ route }) => {
               onSubmitEditing={Keyboard.dismiss}
             />
           </View>
-          
+          {/* {amount && (
+            <View className="mt-6">
+              <Text className="text-lg font-semibold">Enter Mobile No</Text>
+              <TextInput
+                className="mt-2 border border-gray-200 rounded-lg p-2"
+                placeholder="Enter Number.. "
+                value={number1} 
+                onChangeText={(text) => setNumber1(text)} 
+                onSubmitEditing={Keyboard.dismiss}
+              />
+            </View>
+          )} */}
+
 
           <View className="mt-6">
             <CustomButton text={"Pay Now"} onPress={sendAmount} />
