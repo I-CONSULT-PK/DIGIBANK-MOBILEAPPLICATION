@@ -19,6 +19,7 @@ import * as Application from "expo-application";
 import API_BASE_URL from "../../../config";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as LocalAuthentication from "expo-local-authentication";
+import { StatusBar } from "expo-status-bar";
 
 const { width } = Dimensions.get("window");
 
@@ -163,6 +164,8 @@ const Account_Setting_List = () => {
         confirmText="Yes"
         cancelText="No"
       />
+            <StatusBar backgroundColor={Color.PrimaryWebOrient} style="light" />
+
     </SafeAreaView>
   );
 };

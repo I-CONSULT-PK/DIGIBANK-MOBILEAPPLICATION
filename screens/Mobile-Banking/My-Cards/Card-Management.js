@@ -19,6 +19,7 @@ import {
 } from "react-native-responsive-screen";
 import API_BASE_URL from "../../../config";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { StatusBar } from "expo-status-bar";
 
 const CardManagement = () => {
   const navigation = useNavigation();
@@ -329,6 +330,8 @@ const CardManagement = () => {
           </View>
         </View>
       </ScrollView>
+      <StatusBar backgroundColor="#f9fafc" style="light" />
+
     </SafeAreaView>
   );
 };

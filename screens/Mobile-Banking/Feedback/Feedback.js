@@ -11,10 +11,10 @@ import { Entypo, Ionicons } from "@expo/vector-icons";
 import { Color } from "../../../GlobalStyles";
 import Footer from "../../../components/Footer";
 import { StatusBar } from "expo-status-bar";
-import TextInput from "../../../components/TextInput"; // Ensure this is the correct import
-import Button from "../../../components/Button"; // Ensure this is the correct import
+import TextInput from "../../../components/TextInput"; 
+import Button from "../../../components/Button"; 
 
-const CardManagement = () => {
+const Feedback = () => {
   const navigation = useNavigation();
   const [rating, setRating] = useState(3.5);
   const [suggestion, setSuggestion] = useState("");
@@ -85,4 +85,4 @@ const CardManagement = () => {
   );
 };
 
-export default CardManagement;
+export default Feedback;

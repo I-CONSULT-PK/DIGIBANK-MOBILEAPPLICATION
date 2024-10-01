@@ -10,6 +10,7 @@ import Footer from "../../../components/Footer";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import API_BASE_URL from "../../../config";
+import { StatusBar } from "expo-status-bar";
 
 const Add_Account = () => {
   const navigation = useNavigation();
@@ -193,6 +194,8 @@ const handleAddAccount = async () => {
         </View>
       </View>
       <Footer />
+      <StatusBar backgroundColor={Color.PrimaryWebOrient} style="light" />
+
     </SafeAreaView>
   );
 };

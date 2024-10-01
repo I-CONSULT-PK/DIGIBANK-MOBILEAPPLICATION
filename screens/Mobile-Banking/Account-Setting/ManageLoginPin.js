@@ -18,6 +18,7 @@ import TextInput from "../../../components/TextInput";
 import API_BASE_URL from "../../../config";
 import * as Device from "expo-device";
 import * as Application from "expo-application";
+import { StatusBar } from "expo-status-bar";
 
 const ManageLoginPin = () => {
   const navigation = useNavigation();
@@ -177,6 +178,8 @@ const ManageLoginPin = () => {
           </View>
         </ScrollView>
       </View>
+      <StatusBar backgroundColor={Color.PrimaryWebOrient} style="light" />
+
     </SafeAreaView>
   );
 };

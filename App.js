@@ -98,7 +98,6 @@ import ChangePassword from "./screens/Mobile-Banking/Account-Setting/ChangePassw
 import Add_Account from "./screens/Mobile-Banking/Account-Setting/Add_Account";
 import Fatch_amount_Packges from "./screens/Mobile-Banking/Mobile-Top-Up/Fatch_amount_Packges";
 import Packges_Transfer from "./screens/Mobile-Banking/Mobile-Top-Up/Packges_Transfer";
-
 import DeactivatePin from "./screens/Mobile-Banking/Account-Setting/DeactivatePin";
 import UserActivity from "./screens/Mobile-Banking/Account-Setting/UserActivity";
 import ChangeLoginPin from "./screens/Mobile-Banking/Account-Setting/ChangeLoginPin";

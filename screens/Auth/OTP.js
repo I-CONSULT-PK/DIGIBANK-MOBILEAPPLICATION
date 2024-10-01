@@ -92,6 +92,8 @@ const OTP = ({ navigation, route }) => {
         deliveryPreference: otpDeliveryMethod ? otpDeliveryMethod : "EMAIL",
       };
 
+      console.log(otpData)
+
       try {
         const response = await axios.post(
           `${API_BASE_URL}/v1/otp/verifyOTP`,
@@ -102,7 +104,7 @@ const OTP = ({ navigation, route }) => {
         if (dto && dto.success) {
           source === "username" && navigation.navigate("Login");
           source === "password" &&
-            navigation.navigate("NewPasssword", {
+            navigation.navigate("NewPassword", {
               cnic: cnic,
               accountNumber: accountNumber,
             });

@@ -16,22 +16,23 @@ import { Divider } from "react-native-paper";
 import { TouchableWithoutFeedback } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Footer from "../../../components/Footer";
+import { StatusBar } from "expo-status-bar";
 
 const OTP_Preference = () => {
   const navigation = useNavigation();
-  const [selectedMethod, setSelectedMethod] = useState("sms");
+  const [selectedMethod, setSelectedMethod] = useState("SMS");
   const [mobileNumber, setMobileNumber] = useState("");
   const [email, setEmail] = useState("");
 
   useEffect(() => {
     const fetchUserData = async () => {
       const mobile = await AsyncStorage.getItem("mobileNumber");
-      const userEmail = await AsyncStorage.getItem("email");
+      const userEmail = await AsyncStorage.getItem("EMAIL");
       const method = await AsyncStorage.getItem("otpDeliveryMethod");
 
       setMobileNumber(mobile || "");
       setEmail(userEmail || "");
-      setSelectedMethod(method || "sms"); // Default to "sms" if nothing is stored
+      setSelectedMethod(method || "SMS"); // Default to "sms" if nothing is stored
     };
 
     fetchUserData();
@@ -77,7 +78,7 @@ const OTP_Preference = () => {
               </Text>
 
               <TouchableWithoutFeedback
-                onPress={() => setSelectedMethod("sms")}
+                onPress={() => setSelectedMethod("SMS")}
               >
                 <View className="flex-row items-center mb-2">
                   <Image
@@ -89,16 +90,16 @@ const OTP_Preference = () => {
                     Get your OTP through SMS
                   </Text>
                   <Checkbox
-                    value={selectedMethod === "sms"}
-                    onValueChange={() => setSelectedMethod("sms")}
-                    color={selectedMethod === "sms" ? "#1DBBD8" : undefined}
+                    value={selectedMethod === "SMS"}
+                    onValueChange={() => setSelectedMethod("SMS")}
+                    color={selectedMethod === "SMS" ? "#1DBBD8" : undefined}
                     style={{ marginLeft: "auto" }}
                   />
                 </View>
               </TouchableWithoutFeedback>
               <Divider />
               <TouchableWithoutFeedback
-                onPress={() => setSelectedMethod("email")}
+                onPress={() => setSelectedMethod("EMAIL")}
               >
                 <View className="flex-row items-center mt-2 mb-2">
                   <Image
@@ -110,9 +111,9 @@ const OTP_Preference = () => {
                     Get your OTP through email
                   </Text>
                   <Checkbox
-                    value={selectedMethod === "email"}
-                    onValueChange={() => setSelectedMethod("email")}
-                    color={selectedMethod === "email" ? "#1DBBD8" : undefined}
+                    value={selectedMethod === "EMAIL"}
+                    onValueChange={() => setSelectedMethod("EMAIL")}
+                    color={selectedMethod === "EMAIL" ? "#1DBBD8" : undefined}
                     style={{ marginLeft: "auto" }}
                   />
                 </View>
@@ -155,6 +156,8 @@ const OTP_Preference = () => {
         </View>
       </View>
       <Footer />
+      <StatusBar backgroundColor="#f9fafc" style="light" />
+
     </SafeAreaView>
   );
 };
