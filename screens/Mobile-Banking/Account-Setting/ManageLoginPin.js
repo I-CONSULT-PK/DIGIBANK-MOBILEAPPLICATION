@@ -142,8 +142,7 @@ const ManageLoginPin = () => {
           <Text className="text-gray-500 px-5 mb-0 mt-0">
             You can now set your login pin. Terms and conditions apply!{"\n"}
             <Text className="text-gray-500 px-5">
-              {"\n"}Criteria: Login pin should be numeric, only 4 digits &
-              cannot be sequence e.g (1234)
+              {"\n"}Criteria: Login pin should be numeric, only 4 digits & cannot be sequence e.g (1234)
             </Text>
           </Text>
           <View className="mt-4 px-4">
@@ -155,6 +154,9 @@ const ManageLoginPin = () => {
                 onChange={handlePinCodeChange}
                 keyboardType="numeric"
                 maxLength={4}
+                editable={true} 
+                onFocus={() => {}}
+                onBlur={() => {}} 
               />
               <Text className="text-gray-500 mt-5">Re-enter PIN Code</Text>
               <TextInput
@@ -163,6 +165,9 @@ const ManageLoginPin = () => {
                 onChange={handleReenterPinCodeChange}
                 keyboardType="numeric"
                 maxLength={4}
+                editable={true} 
+                onFocus={() => {}}
+                onBlur={() => {}} 
               />
             </View>
           </View>

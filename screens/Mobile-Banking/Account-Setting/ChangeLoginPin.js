@@ -85,8 +85,15 @@ const ChangeLoginPin = () => {
       return;
     }
   
+    // Check if new PINs match
     if (newPinString !== confirmPinString) {
       Alert.alert("Error", "New PINs do not match.");
+      return;
+    }
+  
+    // Check if old PIN and new PIN are the same
+    if (oldPinString === newPinString) {
+      Alert.alert("Error", "Old PIN and New PIN cannot be the same.");
       return;
     }
   
@@ -131,6 +138,7 @@ const ChangeLoginPin = () => {
       Alert.alert("Error", "Error updating PIN: " + (error.response?.data?.message || error.message));
     }
   };
+  
   
   
 
