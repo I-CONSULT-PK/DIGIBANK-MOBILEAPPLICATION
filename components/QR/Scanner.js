@@ -27,6 +27,7 @@ import * as FileSystem from "expo-file-system";
 import * as MediaLibrary from "expo-media-library";
 import { captureRef } from "react-native-view-shot";
 import * as Sharing from "expo-sharing";
+import { decrypt } from "../../utils/crypto";
 
 const ScannerScreen = () => {
   const [userDetails, setUserDetails] = useState(null);
@@ -57,7 +58,7 @@ const ScannerScreen = () => {
         const dto = response.data;
 
         if (dto && dto.success && dto.data) {
-          setUserDetails(dto.data);
+          setUserDetails(dto.data); 
         } else {
           if (dto.message) {
             Alert.alert("Error", dto.message);
@@ -125,7 +126,9 @@ const ScannerScreen = () => {
       if (
         accountData.accountNumber &&
         accountData.beneficiaryName &&
-        accountData.bankUrl
+        accountData.bankUrl &&
+        accountData.beneficiaryBankName &&
+        accountData.beneficiaryAlias
       ) {
         // Navigate to the next screen with the data
         navigation.navigate("SendFromAccount", { beneObj: accountData });
@@ -258,7 +261,9 @@ const ScannerScreen = () => {
     accountNumber: userDetails && userDetails.accountNumber,
     beneficiaryName:
       userDetails && userDetails.firstName + " " + userDetails.lastName,
-    bankUrl: userDetails && userDetails.bankImage,
+    bankUrl: userDetails && decrypt(userDetails.bankImage),
+    beneficiaryBankName: userDetails && userDetails.bankName,
+    beneficiaryAlias:  userDetails && userDetails.firstName + " " + userDetails.lastName
   };
 
   return (
