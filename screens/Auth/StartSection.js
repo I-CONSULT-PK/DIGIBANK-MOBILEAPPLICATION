@@ -3,37 +3,11 @@ import { View, Image, Text, TouchableOpacity } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
 import { StatusBar } from "expo-status-bar";
-import * as LocalAuthentication from "expo-local-authentication";
 
 import { Color } from "../../GlobalStyles";
 import Button from "../../components/Button";
 
 const StartSection = ({ navigation }) => {
-  const [hasBio, setHasBio] = useState(true);
-  const [hasFaceDetection, setHasFaceDetection] = useState(true);
-
-  const checkHardwareSupport = async () => {
-    const hasHardware = await LocalAuthentication.hasHardwareAsync();
-    const supportedTypes = await LocalAuthentication.supportedAuthenticationTypesAsync();
-    const isEnrolled = await LocalAuthentication.isEnrolledAsync();
-  
-    if (hasHardware) {
-      // Iterate through supported types
-      supportedTypes.forEach((type) => {
-        if (type === LocalAuthentication.AuthenticationType.FINGERPRINT) {
-          setHasBio(true);
-        }
-        if (type === LocalAuthentication.AuthenticationType.FACIAL_RECOGNITION) {
-          setHasFaceDetection(true);
-        }
-      });
-    }
-  };
-
-  useEffect(() => {
-    checkHardwareSupport();
-  }, []);
-
   return (
     <SafeAreaView
       className="h-full flex-1"
@@ -91,7 +65,7 @@ const StartSection = ({ navigation }) => {
                   <Button
                     text="Get Started"
                     onPress={() => {
-                      navigation.navigate("LimitManagement");
+                      navigation.navigate("Registration");
                     }}
                     width="w-[60%]"
                   />

@@ -93,7 +93,7 @@ const PinCode = ({ visible, onClose }) => {
                 <React.Fragment key={index}>
                   <TextInput
                     ref={(ref) => (pinInputs.current[index] = ref)}
-                    className="h-16 w-16 border border-gray-300 rounded-xl border-2 text-center mr-5"
+                    className="h-16 w-16 border border-gray-300 rounded-xl text-center mr-5"
                     maxLength={1}
                     keyboardType="numeric"
                     value={digit}

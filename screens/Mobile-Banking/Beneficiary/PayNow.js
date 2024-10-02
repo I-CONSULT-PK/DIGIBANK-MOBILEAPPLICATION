@@ -3,16 +3,15 @@ import {
   Text,
   View,
   ScrollView,
-  SafeAreaView,
   TouchableOpacity,
-  StyleSheet,
+  Image,
   Alert
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { Entypo } from "@expo/vector-icons";
 import Footer from "../../../components/Footer";
 import { useNavigation } from "@react-navigation/native";
-import { Color } from "../../../GlobalStyles";
-import CustomButton from "../../../components/Button";
+import Button from "../../../components/Button";
 import { StatusBar } from "expo-status-bar";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
@@ -47,11 +46,7 @@ const PayNow = ({ route }) => {
         const dto = response.data;
 
         if (dto && dto.success && dto.data) {
-          Alert.alert('Success', 'Fund has been transfered successfully');
-
-          setTimeout(() => {
-            navigation.navigate('Home');
-          }, 1200);
+          navigation.navigate('TransferSuccess', { amount: dto.data.data.trans_amount, beneObj, currency: dto.data.data.ccy, dateTime: dto.data.data.localDateTime, ref: dto.data.data.paymentReference, bankCharges });
         }
         else {
           if (dto.message) {
@@ -60,7 +55,7 @@ const PayNow = ({ route }) => {
             Alert.alert('Error', dto.errors.join('\n'));
           }
         }
-        
+
       } else {
         Alert.alert('Error', 'Unexpected error occurred. Try again later!');
       }
@@ -86,141 +81,108 @@ const PayNow = ({ route }) => {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-[#f9fafc]">
-      <ScrollView className="flex-1">
-        <View className="relative w-full mt-10">
-          <TouchableOpacity
-            onPress={() => navigation.goBack()}
-            className="absolute left-5 "
-            style={{ zIndex: 1 }}
-          >
-            <Entypo name="chevron-left" size={30} color="black" />
-          </TouchableOpacity>
-          <Text className="text-center font-InterBold text-2xl">
-            Payment
-          </Text>
-        </View>
-        {/* From Account Section */}
-        <Text className="font-semibold mb-1 text-gray-700 mt-7 px-3">
-          From Account
-        </Text>
-        <View className="flex justify-center items-center px-3">
-          <View
-            className="flex flex-row items-center p-4 bg-white rounded-lg shadow-md w-96 max-w-md"
-            style={styles.container}
-          >
-            {/* DIGI BANK section */}
-            <View className="px-3 py-2 text-sm font-medium  text-white bg-cyan-500 rounded-md h-[54px] w-[65px]">
-              <Text className="text-center text-white">DIGI {"\n"}BANK</Text>
-            </View>
-
-            {/* Account details section */}
-            <View className="flex flex-col ml-4">
-              <Text className="text-base font-semibold text-gray-800">
-                {userDetails.firstName + " " + userDetails.lastName}
-              </Text>
-              <Text className="text-sm leading-snug text-neutral-500">
-                {userDetails.accountNumber}
-              </Text>
-            </View>
-          </View>
-        </View>
-        {/* To Account Section */}
-        <View className="flex flex-col text-sm max-w-[328px]">
-          <View className="flex flex-col items-start font-semibold text-gray-800">
-            <Text className="font-semibold mb-1 text-gray-700 mt-7 px-3">
-              To Account
-            </Text>
-          </View>
-          <View className="flex flex-col items-center p-5 bg-white rounded-lg  w-96 mt-5 ml-2">
-            {/* Account Title Section */}
-            <View className="flex flex-col w-full mb-4">
-              <View className="flex flex-row items-center justify-between w-full">
-                <Text className="text-neutral-500">Account Title</Text>
-                <Text className="text-gray-800 font-semibold">{beneObj.beneficiaryName}</Text>
-              </View>
-              <View className="my-2">
-                <View className="border-t border-gray-300" />
-              </View>
-            </View>
-
-            {/* Bank Name Section */}
-            <View className="flex flex-col w-full mb-4">
-              <View className="flex flex-row items-center justify-between w-full">
-                <Text className="text-neutral-500">Bank Name</Text>
-                <Text className="text-gray-800 font-semibold">{beneObj.beneficiaryBankName}</Text>
-              </View>
-              <View className="my-2">
-                <View className="border-t border-gray-300" />
-              </View>
-            </View>
-
-            {/* Nick Name Section */}
-            <View className="flex flex-col w-full">
-              <View className="flex flex-row items-center justify-between w-full">
-                <Text className="text-neutral-500">Alias</Text>
-                <Text className="text-gray-800 font-semibold">{beneObj.beneficiaryAlias}</Text>
-              </View>
-            </View>
-          </View>
-        </View>
-        {/* Balance and Amount Section */}
-        <View className="flex flex-col text-sm max-w-[328px]">
-          <View className="flex flex-col items-start font-semibold text-gray-800">
-            <Text className="font-semibold mb-1 text-gray-700 mt-7 px-3">
-              Transfer Details
-            </Text>
-          </View>
-          <View className="flex flex-col items-center p-5 bg-white rounded-lg  w-96 mt-5 ml-2">
-            {/* Account Title Section */}
-            <View className="flex flex-col w-full mb-4">
-              <View className="flex flex-row items-center justify-between w-full">
-                <Text className="text-neutral-500">Amount</Text>
-                <Text className="text-gray-800 font-semibold">Rs. {amount}</Text>
-              </View>
-              <View className="my-2">
-                <View className="border-t border-gray-300" />
-              </View>
-            </View>
-
-            <View className="flex flex-col w-full mb-4">
-              <View className="flex flex-row items-center justify-between w-full">
-                <Text className="text-neutral-500">Bank Charges</Text>
-                <Text className="text-gray-800 font-semibold">Rs. {bankCharges}</Text>
-              </View>
-              <View className="my-2">
-                <View className="border-t border-gray-300" />
-              </View>
-            </View>
-
-            <View className="flex flex-col w-full">
-              <View className="flex flex-row items-center justify-between w-full">
-                <Text className="text-black">Total Amount</Text>
-                <Text className="text-black font-semibold">Rs. {totalAmount}</Text>
-              </View>
-            </View>
+    <SafeAreaView className="h-full flex-1 bg-[#F9FAFC]">
+      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+        <View style={{ height: 90 }}>
+          <View className="flex-row items-center justify-center w-full h-full">
+            <TouchableOpacity onPress={() => navigation.goBack()} className="absolute left-5">
+              <Entypo name="chevron-left" size={25} color="black" />
+            </TouchableOpacity>
+            <Text className="text-black text-lg font-InterBold">Payment</Text>
           </View>
         </View>
 
-        <View className="p-5">
-          <CustomButton
-            text={"Pay Now"}
-            onPress={fundTransfer}
+        <View className="w-full h-full px-5">
+          <View>
+            <Text className="font-InterSemiBold">From Account</Text>
+            <View className="bg-white p-3 rounded-lg shadow-md shadow-slate-400 w-full mt-3">
+              <View className="flex-row items-center">
+                {userDetails.bankLogo && <Image
+                  source={{ uri: userDetails.bankLogo }}
+                  className=" w-12 h-12"
+                  resizeMode='contain'
+                />}
+                <View className="flex flex-col ml-4">
+                  <Text className="font-InterSemiBold">
+                    {userDetails && userDetails.userName}
+                  </Text>
+                  <Text className="text-sm leading-snug text-neutral-500">
+                    {userDetails && userDetails.accountNumber}
+                  </Text>
+                </View>
+              </View>
+            </View>
+          </View>
+
+          <View className="mt-6">
+            <Text className="font-InterSemiBold">To Account</Text>
+
+            <View className="w-full bg-white rounded-lg py-5 px-5 mt-3 shadow-md shadow-slate-400">
+              <View className="flex-row justify-between items-center">
+                <Text className="text-sm font-InterRegular text-gray-500">Account Title</Text>
+                <Text className="text-sm font-InterSemiBold">{beneObj.beneficiaryName}</Text>
+              </View>
+
+              <View className="my-2.5">
+                <View className="border-t border-gray-300" />
+              </View>
+
+              <View className="flex-row justify-between items-center">
+                <Text className="text-sm font-InterRegular text-gray-500">Bank Name</Text>
+                <Text className="text-sm font-InterSemiBold">{beneObj.beneficiaryBankName}</Text>
+              </View>
+
+              <View className="my-2.5">
+                <View className="border-t border-gray-300" />
+              </View>
+
+              <View className="flex-row justify-between items-center">
+                <Text className="text-sm font-InterRegular text-gray-500">Nick Name</Text>
+                <Text className="text-sm font-InterSemiBold">{beneObj.beneficiaryAlias}</Text>
+              </View>
+            </View>
+          </View>
+
+          <View className="mt-6">
+            <Text className="font-InterSemiBold">Transfer Details</Text>
+
+            <View className="w-full bg-white rounded-lg py-5 px-5 mt-3 shadow-md shadow-slate-400">
+              <View className="flex-row justify-between items-center">
+                <Text className="text-sm font-InterRegular text-gray-500">Amount</Text>
+                <Text className="text-sm font-InterSemiBold">Rs. {amount}</Text>
+              </View>
+
+              <View className="my-2.5">
+                <View className="border-t border-gray-300" />
+              </View>
+
+              <View className="flex-row justify-between items-center">
+                <Text className="text-sm font-InterRegular text-gray-500">Bank Charges</Text>
+                <Text className="text-sm font-InterSemiBold">Rs. {bankCharges}</Text>
+              </View>
+
+              <View className="my-2.5">
+                <View className="border-t border-gray-300" />
+              </View>
+
+              <View className="flex-row justify-between items-center">
+                <Text className="text-sm font-InterRegular text-gray-500">Total Amount</Text>
+                <Text className="text-sm font-InterSemiBold">Rs. {totalAmount}</Text>
+              </View>
+            </View>
+          </View>
+
+          <Button 
+          text="Pay Now"
+          onPress={fundTransfer}
+          styles="mt-10 mb-4"
           />
         </View>
       </ScrollView>
-
       <Footer />
       <StatusBar backgroundColor='#f9fafc' style="dark" />
     </SafeAreaView>
   );
 };
-const styles = StyleSheet.create({
-  container: {
-    shadowColor: "#000",
-    elevation: 30,
-    borderColor: Color.PrimaryWebOrient,
-  },
-});
 
 export default PayNow;

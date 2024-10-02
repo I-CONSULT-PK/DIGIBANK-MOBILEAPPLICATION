@@ -8,11 +8,11 @@ const OptionBox = ({ beneObj, image, text, subtext, payment, icon1, icon2, onPre
         <View className="flex-row justify-between items-center">
             {(source === 'payment' || source === 'dashboard') ? (
                 <TouchableOpacity className="flex-row items-center flex-1" onPress={() => navigation.navigate('SendFromAccount', { beneObj })}>
-                    <View className="p-1.5 rounded-lg shadow-md shadow-gray-300 justify-center items-center bg-white">
+                    <View className="p-1.5 rounded-lg shadow-md shadow-slate-400 justify-center items-center bg-white">
                         <Image
                             source={image}
                             resizeMode="contain"
-                            className="w-10 h-10"
+                            className="w-10 h-10 rounded-lg"
                         />
                     </View>
                     <View className="ml-4 flex-1">
@@ -24,11 +24,11 @@ const OptionBox = ({ beneObj, image, text, subtext, payment, icon1, icon2, onPre
                 </TouchableOpacity>) 
                 : beneficiary ? (
                     <View className="flex-row items-center flex-1">
-                        <TouchableOpacity className="p-0 rounded-lg shadow-md shadow-gray-300 justify-center items-center bg-white relative" onPress={toggleModal}>
+                        <TouchableOpacity className="p-0 rounded-lg shadow-md shadow-slate-400 justify-center items-center bg-white relative" onPress={toggleModal}>
                             <Image
                                 source={image}
                                 resizeMode="contain"
-                                className="w-12 h-12"
+                                className="w-12 h-12 rounded-lg"
                             />
                             <View className="absolute -bottom-1 -right-1 bg-white p-1 rounded-full shadow-md shadow-gray-400">
                                 <Feather name="edit-2" size={11.5} color="black" />
@@ -51,11 +51,11 @@ const OptionBox = ({ beneObj, image, text, subtext, payment, icon1, icon2, onPre
                     </View>
                 ) : (
                 <TouchableOpacity className="flex-row items-center flex-1" onPress={onPress1}>
-                    <View className="p-1.5 rounded-lg shadow-md shadow-gray-300 justify-center items-center bg-white">
+                    <View className="p-1.5 rounded-lg shadow-md shadow-slate-400 justify-center items-center bg-white">
                         <Image
                             source={image}
                             resizeMode="contain"
-                            className="w-10 h-10"
+                            className="w-10 h-10 rounded-lg"
                         />
                     </View>
                     <View className="ml-4 flex-1">
@@ -66,11 +66,11 @@ const OptionBox = ({ beneObj, image, text, subtext, payment, icon1, icon2, onPre
                     </View>
                 </TouchableOpacity>)}
 
-            {(source !== 'payment' && source !== 'dashboard') && icon1 && <TouchableOpacity className="ml-2 p-2 rounded-full shadow-md shadow-gray-300 justify-center items-center bg-white" onPress={onPress1}>
+            {(source !== 'payment' && source !== 'dashboard') && icon1 && <TouchableOpacity className="ml-2 p-2 rounded-full shadow-md shadow-slate-400 justify-center items-center bg-white" onPress={onPress1}>
                 <AntDesign name={icon1} size={icon2 ? 19 : 20} color={iconColor1} />
             </TouchableOpacity>}
 
-            {(source !== 'payment' && source !== 'dashboard') && icon2 && <TouchableOpacity className="ml-2 p-2 rounded-full shadow-md shadow-gray-300 justify-center items-center bg-white" onPress={onPress2}>
+            {(source !== 'payment' && source !== 'dashboard') && icon2 && <TouchableOpacity className="ml-2 p-2 rounded-full shadow-md shadow-slate-400 justify-center items-center bg-white" onPress={onPress2}>
                 <Feather name={icon2} size={icon2 ? 19 : 20} color={iconColor2} />
             </TouchableOpacity>}
         </View>

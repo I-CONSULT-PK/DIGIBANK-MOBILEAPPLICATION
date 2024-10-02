@@ -1,16 +1,17 @@
 import React, { useState, useContext } from "react";
-import Icon from "react-native-vector-icons/FontAwesome";
-import { Text, View, Image, Keyboard, Alert, TouchableOpacity, ScrollView, SafeAreaView } from "react-native";
+import { Text, View, Image, Keyboard, Alert, TouchableOpacity, ScrollView } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { Entypo } from "@expo/vector-icons";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import API_BASE_URL from "../../../config";
-import { AppLoaderContext } from "../../../components/LoaderHOC"; 
-import CustomButton from "../../../components/Button";
-import TextInput from "../../../components/TextInput";
+import { AppLoaderContext } from "../../../components/LoaderHOC";
+import TextInput from '../../../components/TextInput';
+import Button from "../../../components/Button";
 import Footer from "../../../components/Footer";
 import { useNavigation } from "@react-navigation/native";
-
+import { encrypt } from "../../../utils/crypto";
+import { StatusBar } from 'expo-status-bar';
 
 const Fatch_Acc_Beneficiary = ({ route }) => {
   const navigation = useNavigation();
@@ -25,7 +26,8 @@ const Fatch_Acc_Beneficiary = ({ route }) => {
     if (!nickname) {
       Alert.alert("Error", "Nickname is required");
     } else {
-      showLoader(); 
+      setLoading(true);
+      showLoader();
       try {
         const bearerToken = await AsyncStorage.getItem("token");
         const customerId = await AsyncStorage.getItem("customerId");
@@ -34,12 +36,12 @@ const Fatch_Acc_Beneficiary = ({ route }) => {
           const payload = {
             beneficiaryAlias: nickname,
             beneficiaryName: details.accountTitle,
-            accountNumber: details.accountNumber,
+            accountNumber: encrypt(details.accountNumber),
             beneficiaryBankName: details.bankName,
             mobileNumber: mobileNumber || "",
             categoryType: "Individual",
             customerId: customerId,
-            bankUrl: bankLogo,
+            bankUrl: encrypt(bankLogo),
           };
 
           const dto = await axios.post(
@@ -53,8 +55,7 @@ const Fatch_Acc_Beneficiary = ({ route }) => {
           );
 
           if (dto && dto.data.success && dto.data) {
-            Alert.alert("Success", "Beneficiary created successfully");
-            navigation.navigate("BeneficiaryList");
+            navigation.navigate("BeneficiarySuccess", { beneficiaryName: details.accountTitle, bankLogo });
           } else {
             if (dto.data.message) {
               Alert.alert("Error", dto.data.message);
@@ -84,91 +85,92 @@ const Fatch_Acc_Beneficiary = ({ route }) => {
           Alert.alert("Error", error.message);
         }
       } finally {
-        hideLoader(); 
+        setLoading(false);
+        hideLoader();
       }
     }
   };
 
   return (
-    <SafeAreaView className="bg-[#f9fafc]" style={{ flex: 1 }}>
-      <ScrollView>
-        <View className="d-flex flex-row justify-center mt-8">
-          <View className="relative w-full mt-10">
-            <TouchableOpacity
-              onPress={() => navigation.goBack()}
-              className="absolute left-5"
-              style={{ zIndex: 1 }}
-            >
-              <Entypo name="chevron-left" size={30} color="black" />
+    <SafeAreaView className="h-full flex-1 bg-[#F9FAFC]">
+      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+        <View style={{ height: 100 }}>
+          <View className="flex-row items-center justify-center w-full h-full">
+            <TouchableOpacity onPress={() => navigation.goBack()} className="absolute left-5">
+              <Entypo name="chevron-left" size={25} color="black" />
             </TouchableOpacity>
-            <Text className="text-center font-InterBold text-2xl">
-              Add Beneficiary
-            </Text>
-          </View>
-        </View>
-        <View className="px-6 mt-4">
-          <Text className="text-lg font-semibold">From Account</Text>
-        </View>
-        <View className="flex-1 justify-center items-center p-4 shadow-gray-100">
-          <View className="bg-white p-3 rounded-lg shadow-lg w-full">
-            <View className="d-flex flex-row items-center">
-              <Image
-                source={{ uri: bankLogo }}
-                className="mr-1 w-12 h-12"
-                resizeMode="contain"
-              />
-              <Text className="text-lg font-semibold ml-3">{bankName}</Text>
-            </View>
-          </View>
-        </View>
-        <View className="px-6 mt-4">
-          <Text className="text-lg font-semibold">Beneficiary Details</Text>
-        </View>
-        <View className="flex-1 justify-center items-center p-4 shadow-gray-100">
-          <View className="bg-white p-3 rounded-lg shadow-lg w-full">
-            <View className="flex-row items-center justify-between">
-              <Text className="text-sm text-gray-500">Account Title</Text>
-              <Text className="text-sm font-medium">{details.accountTitle}</Text>
-            </View>
-            <View className="my-2">
-              <View className="border-t border-gray-300"></View>
-            </View>
-            <View className="flex-row items-center justify-between">
-              <Text className="text-sm text-gray-500">Bank Name</Text>
-              <Text className="text-sm font-medium">{details.bankName}</Text>
-            </View>
+            <Text className="text-black text-lg font-InterBold">Add Beneficiary</Text>
           </View>
         </View>
 
-        <View className="px-6 mt-4">
-          <Text className="text-lg font-semibold">Nick Name</Text>
-          <TextInput
-            className="mt-2 border border-gray-200 rounded-lg"
-            placeholder="Enter your name here"
-            value={nickname}
-            onChange={(text) => setNickname(text)}
-            onSubmitEditing={Keyboard.dismiss}
-          />
-        </View>
-        <View className="px-6 mt-4">
-          <Text className="text-lg font-semibold">Mobile Number (optional)</Text>
-          <TextInput
-            className="mt-2 border border-gray-200 rounded-lg"
-            placeholder="Enter your mobile number"
-            value={mobileNumber}
-            onChange={(text) => setMobileNumber(text)}
-            onSubmitEditing={Keyboard.dismiss}
-          />
-        </View>
-        <View className="px-6 mt-8">
-          <CustomButton
+        <View className="w-full h-full px-5">
+          <Text className="font-InterSemiBold">From Account</Text>
+
+          <View className="bg-white p-3 rounded-lg shadow-md shadow-slate-400 w-full mt-3">
+            <View className="d-flex flex-row items-center">
+              <Image
+                source={{ uri: bankLogo }}
+                className=" w-12 h-12 rounded-lg"
+                resizeMode='contain'
+              />
+              <Text className="font-InterSemiBold ml-4">
+                {bankName}
+              </Text>
+            </View>
+          </View>
+
+          <View className="mt-6">
+            <Text className="font-InterSemiBold">Beneficiary Details</Text>
+
+            <View className="w-full bg-white rounded-lg py-5 px-5 mt-3 shadow-md shadow-slate-400">
+              <View className="flex-row justify-between items-center">
+                <Text className="text-sm font-InterRegular text-gray-500">Account Title</Text>
+                <Text className="text-sm font-InterSemiBold">{details.accountTitle}</Text>
+              </View>
+
+              <View className="my-2.5">
+                <View className="border-t border-gray-300" />
+              </View>
+
+              <View className="flex-row justify-between items-center">
+                <Text className="text-sm font-InterRegular text-gray-500">Bank Name</Text>
+                <Text className="text-sm font-InterSemiBold">{details.bankName}</Text>
+              </View>
+            </View>
+          </View>
+
+          <View className="mt-6">
+            <Text className="font-InterSemiBold">Nick Name</Text>
+            <TextInput
+              className="mt-3 border border-gray-300 rounded-lg font-InterMedium"
+              placeholder="Enter your name here"
+              placeholderTextColor="#A5A7A8"
+              value={nickname}
+              onChange={(text) => setNickname(text)}
+              onSubmitEditing={Keyboard.dismiss} />
+          </View>
+
+          <View className="mt-6">
+            <Text className="font-InterSemiBold">Mobile Number (optional)</Text>
+            <TextInput
+              className="mt-3 border border-gray-300 rounded-lg text-base font-InterMedium"
+              placeholder="Enter your mobile number"
+              placeholderTextColor="#A5A7A8"
+              value={mobileNumber}
+              onChange={(text) => setMobileNumber(text)}
+              onSubmitEditing={Keyboard.dismiss} />
+          </View>
+
+          <Button
             text="Add"
+            styles="mt-8 mb-4"
             onPress={createBeneficiary}
             loading={loading}
           />
         </View>
       </ScrollView>
       <Footer />
+      <StatusBar backgroundColor="#F9FAFC" style="dark" />
     </SafeAreaView>
   );
 };

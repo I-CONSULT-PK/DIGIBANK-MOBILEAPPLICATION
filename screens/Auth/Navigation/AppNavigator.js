@@ -54,7 +54,6 @@ import AvailCashonCreditCard from "../../Mobile-Banking/Easy-Cash/AvailCashonCre
 import BeneficiaryAccountDetails from "../../Mobile-Banking/Easy-Cash/BeneficiaryAccountDetails";
 import Summary from "../../Mobile-Banking/Easy-Cash/Summary";
 import SendFromAccount from "../../Mobile-Banking/Beneficiary/SendFromAccount";
-
 import SendBeneficiaryMoney from "../../Mobile-Banking/Beneficiary/SendBeneficiaryMoney";
 import Add_Beneficiary from "../../Mobile-Banking/Beneficiary/Add-Beneficiary";
 import PayNow from "../../Mobile-Banking/Beneficiary/PayNow";
@@ -99,13 +98,17 @@ import Add_Account from "../../Mobile-Banking/Account-Setting/Add_Account";
 import Feedback from "../../Mobile-Banking/Feedback/Feedback";
 import Fatch_amount_Packges from "../../Mobile-Banking/Mobile-Top-Up/Fatch_amount_Packges";
 import Packges_Transfer from "../../Mobile-Banking/Mobile-Top-Up/Packges_Transfer";
+import CameraScreen from "../CameraScreen";
+import TransferSuccess from "../../Mobile-Banking/Beneficiary/TransferSuccess";
 import Device_Management from "../../Mobile-Banking/Device-Management/Device_Management";
+
 const Stack = createStackNavigator();
 
 const AppNavigator = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator>
+        <Stack.Screen name="CameraScreen" component={CameraScreen} />
         <Stack.Screen name="StartScreen" component={StartSection} />
         <Stack.Screen name="FingerPrint" component={FingerPrint} />
         <Stack.Screen name="Login" component={Login} />
@@ -132,6 +135,8 @@ const AppNavigator = () => {
         <Stack.Screen name="SetCardPin" component={SetCardPin} />
         <Stack.Screen name="CardActivated" component={CardActivated} />
         <Stack.Screen name="ChooseSecurity" component={ChooseSecurity} />
+        <Stack.Screen name="BeneficiarySuccess" component={BeneficiarySuccess} />
+        <Stack.Screen name="TransferSuccess" component={TransferSuccess} />
         <Stack.Screen
           name="RegisterFingerPrint"
           component={RegisterFingerPrint}

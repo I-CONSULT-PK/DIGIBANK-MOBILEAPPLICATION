@@ -12,18 +12,18 @@ import { Entypo, Ionicons } from "@expo/vector-icons";
 import { SafeAreaView } from "react-native-safe-area-context";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Color } from "../../../GlobalStyles";
- 
+
 // Import translation and icon mapping files
 import { enData } from "./translations/en";
 import { urData } from "./translations/ur";
- 
+
 // Define your language options
 const languageOptions = {
   en: "English",
   ur: "اردو",
   // Add more languages here
 };
- 
+
 const Sidebar = () => {
   const [userDetails, setUserDetails] = useState({
     firstName: "",
@@ -32,9 +32,9 @@ const Sidebar = () => {
     accountType: "",
   });
   const [language, setLanguage] = useState("en");
- 
+
   const navigation = useNavigation();
- 
+
   useEffect(() => {
     const loadUserDetails = async () => {
       try {
@@ -44,7 +44,7 @@ const Sidebar = () => {
           (await AsyncStorage.getItem("accountNumber")) || "1234567890";
         const accountType =
           (await AsyncStorage.getItem("accountType")) || "N/A";
- 
+
         setUserDetails({
           firstName,
           lastName,
@@ -55,34 +55,38 @@ const Sidebar = () => {
         console.error("Error loading user details from AsyncStorage", error);
       }
     };
- 
+
     loadUserDetails();
   }, []);
- 
+
   const handleLanguageSelect = (selectedLanguage) => {
     setLanguage(selectedLanguage);
     I18nManager.forceRTL(selectedLanguage === "ur");
   };
- 
+
   const handlePress = async (item) => {
     const logoutTitle =
       language === "en"
         ? enData.translations.menuItems.find(
-            (menuItem) => menuItem.title === "Logout"
-          )?.title
+          (menuItem) => menuItem.title === "Logout"
+        )?.title
         : urData.translations.menuItems.find(
-            (menuItem) => menuItem.title === "لاگ آؤٹ"
-          )?.title;
- 
+          (menuItem) => menuItem.title === "لاگ آؤٹ"
+        )?.title;
+
     if (item.title === logoutTitle) {
       try {
         // Retrieve and filter keys
         const keys = await AsyncStorage.getAllKeys();
-        const keysToRemove = keys.filter((key) => key !== "otpDeliveryMethod");
- 
-        // Remove keys
+
+        // Filter out the 'otpDeliveryMethod' and 'enableBio' keys
+        const keysToRemove = keys.filter(
+          (key) => key !== "otpDeliveryMethod" && key !== "enableBio"
+        );
+
+        // Remove all keys except 'otpDeliveryMethod' and 'enableBio'
         await AsyncStorage.multiRemove(keysToRemove);
- 
+
         // Navigate to Login
         navigation.navigate("Login");
       } catch (error) {
@@ -94,45 +98,41 @@ const Sidebar = () => {
         "Device Management": "Device_Management",
         "Feedback": "Feedback",
       };
- 
+
       const targetScreen = translations[item.title];
       if (targetScreen) {
         navigation.navigate(targetScreen);
       }
     }
   };
- 
+
   // Select translations and icon mappings based on current language
   const { translations, iconMapping } = language === "en" ? enData : urData;
   const menuItems = translations.menuItems;
- 
+
   return (
     <SafeAreaView className="flex-1 bg-gray-50">
       <ScrollView>
         <View className="px-5 border-b border-gray-300">
           <View
-            className={`flex-row items-center justify-between ${
-              I18nManager.isRTL ? "flex-row-reverse" : ""
-            }`}
+            className={`flex-row items-center justify-between ${I18nManager.isRTL ? "flex-row-reverse" : ""
+              }`}
           >
             <Text
-              className={`text-gray-500 text-lg flex-1 ${
-                I18nManager.isRTL ? "text-right" : "text-left"
-              }`}
+              className={`text-gray-500 text-lg flex-1 ${I18nManager.isRTL ? "text-right" : "text-left"
+                }`}
             >
               {translations.welcome}
             </Text>
           </View>
- 
+
           <View
-            className={`flex-row items-center justify-between ${
-              I18nManager.isRTL ? "flex-row-reverse" : ""
-            }`}
+            className={`flex-row items-center justify-between ${I18nManager.isRTL ? "flex-row-reverse" : ""
+              }`}
           >
             <Text className="font-bold text-2xl mb-1">
-              {`${userDetails.firstName || ""} ${
-                userDetails.lastName || ""
-              }`.trim() || "User"}
+              {`${userDetails.firstName || ""} ${userDetails.lastName || ""
+                }`.trim() || "User"}
             </Text>
             <Entypo
               name="chevron-right"
@@ -154,16 +154,14 @@ const Sidebar = () => {
             {userDetails.accountType || "N/A"}
           </Text>
           <View
-            className={`flex-row items-center justify-center mb-4 ${
-              I18nManager.isRTL ? "flex-row-reverse" : ""
-            }`}
+            className={`flex-row items-center justify-center mb-4 ${I18nManager.isRTL ? "flex-row-reverse" : ""
+              }`}
           >
             {Object.keys(languageOptions).map((lang) => (
               <TouchableOpacity
                 key={lang}
-                className={`p-3 mt-3 ${
-                  language === lang ? "bg-primary" : "bg-white"
-                } rounded-l-lg flex-1`}
+                className={`p-3 mt-3 ${language === lang ? "bg-primary" : "bg-white"
+                  } rounded-l-lg flex-1`}
                 onPress={() => handleLanguageSelect(lang)}
                 style={{
                   width: 100,
@@ -186,9 +184,8 @@ const Sidebar = () => {
         </View>
         {menuItems.map((item, index) => (
           <TouchableOpacity
-            className={`flex-row items-center py-3 px-5 ${
-              I18nManager.isRTL ? "flex-row-reverse" : ""
-            }`}
+            className={`flex-row items-center py-3 px-5 ${I18nManager.isRTL ? "flex-row-reverse" : ""
+              }`}
             key={index}
             onPress={() => handlePress(item)}
           >
@@ -210,5 +207,5 @@ const Sidebar = () => {
     </SafeAreaView>
   );
 };
- 
+
 export default Sidebar;
