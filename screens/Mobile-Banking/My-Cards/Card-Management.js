@@ -41,14 +41,14 @@ const CardManagement = () => {
   const fetchCardData = async () => {
     try {
       const bearerToken = await AsyncStorage.getItem("token");
-
+      const accountNumber = await AsyncStorage.getItem("accountNumber");
       if (!bearerToken) {
         Alert.alert("Error", "Authentication token not found");
         return;
       }
 
       const response = await axios.get(
-        `${API_BASE_URL}/v1/customer/card/fetchCardById/zanbeel-9036764`,
+        `${API_BASE_URL}/v1/customer/card/fetchCardById/${accountNumber}`,
         {
           headers: {
             Authorization: `Bearer ${bearerToken}`,
