@@ -87,7 +87,7 @@ const NewCard = () => {
       cardHolderName: cardHolder,
       expiryDate: selectedDate,
     };
-    console.log(payload);
+    // console.log(payload);
 
     try {
       const response = await axios.post(
