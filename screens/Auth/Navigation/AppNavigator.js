@@ -92,6 +92,7 @@ import Update_Profile from "../../Mobile-Banking/Account-Setting/Update_Profile"
 import Add_Account from "../../Mobile-Banking/Account-Setting/Add_Account";
 import Fatch_amount_Packges from "../../Mobile-Banking/Mobile-Top-Up/Fatch_amount_Packges";
 import Packges_Transfer from "../../Mobile-Banking/Mobile-Top-Up/Packges_Transfer";
+import Device_Management from "../../Mobile-Banking/Device-Management/Device_Management";
 const Stack = createStackNavigator();
 
 const AppNavigator = () => {
@@ -202,6 +203,7 @@ const AppNavigator = () => {
         <Stack.Screen name="Fatch_amount_Packges" component={Fatch_amount_Packges} />
         <Stack.Screen name="To_Up_Transfer" component={To_Up_Transfer} />
         <Stack.Screen name="Packges_Transfer" component={Packges_Transfer} />
+        <Stack.Screen name="Device_Management" component={Device_Management} />
         <Stack.Screen name="Account_Balance" component={Account} />
         <Stack.Screen name="Update_Profile" component={Update_Profile} />
         <Stack.Screen name="Add_Account" component={Add_Account} />
