@@ -18,14 +18,14 @@ const ChangeLoginPin = () => {
   const [newPin, setNewPin] = useState(Array(otpLength).fill(""));
   const [confirmPin, setConfirmPin] = useState(Array(otpLength).fill(""));
   const inputs = useRef([]);
-  const [customerId, setCustomerId] = useState(null);
+  const [deviceTableId, setdeviceTableId] = useState(null);
 
   useEffect(() => {
-    const fetchCustomerId = async () => {
-      const id = await AsyncStorage.getItem("customerId");
-      setCustomerId(id);
+    const fetchDeviceTableId = async () => {
+      const id = await AsyncStorage.getItem("deviceTableId");
+      setdeviceTableId(id);
     };
-    fetchCustomerId();
+    fetchDeviceTableId();
   }, []);
 
   useFocusEffect(
@@ -38,7 +38,7 @@ const ChangeLoginPin = () => {
 
   const handleOldPinChange = (text, index) => {
     const sanitizedText = text.replace(/[^0-9]/g, "");
-    const newOldPin = [...oldPin]; 
+    const newOldPin = [...oldPin];
     newOldPin[index] = sanitizedText;
     setOldPin(newOldPin);
     focusNextInput(sanitizedText, index, 0);
@@ -74,73 +74,107 @@ const ChangeLoginPin = () => {
     }
   };
 
+ 
+
   const handleConfirm = async () => {
     const oldPinString = oldPin.join("");
     const newPinString = newPin.join("");
     const confirmPinString = confirmPin.join("");
-  
+
     // Check if all input fields are filled
-    if (oldPinString.length !== otpLength || newPinString.length !== otpLength || confirmPinString.length !== otpLength) {
+    if (
+      oldPinString.length !== otpLength ||
+      newPinString.length !== otpLength ||
+      confirmPinString.length !== otpLength
+    ) {
       Alert.alert("Error", "Please fill in all fields.");
       return;
     }
-  
+
     // Check if new PINs match
     if (newPinString !== confirmPinString) {
       Alert.alert("Error", "New PINs do not match.");
       return;
     }
-  
+
     // Check if old PIN and new PIN are the same
     if (oldPinString === newPinString) {
       Alert.alert("Error", "Old PIN and New PIN cannot be the same.");
       return;
     }
-  
-    if (!customerId) {
+
+    if (!deviceTableId) {
       Alert.alert("Error", "Customer ID is missing.");
       return;
     }
-  
+
     try {
-      const response = await axios.put(
-        `${API_BASE_URL}/v1/settings/updateDevicePin/${customerId}`,
-        {
-          oldPin: oldPinString,
-          devicePin: newPinString,
-        },
-        {
-          headers: {
-            'Content-Type': 'application/json', 
+      const bearerToken = await AsyncStorage.getItem("token");
+
+      if (bearerToken) {
+        const response = await axios.put(
+          `${API_BASE_URL}/v1/settings/updateDevicePin/${deviceTableId}`,
+          {
+            oldPin: oldPinString,
+            devicePin: newPinString,
+          },
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
+        const dto = response.data;
+
+        if (dto && dto.success) {
+          Alert.alert("Success", "PIN updated successfully", [
+            {
+              text: "OK",
+              onPress: () => {
+                setTimeout(() => {
+                  navigation.navigate("Home");
+                }, 1000);
+              },
+            },
+          ]);
+
+          setOldPin(Array(otpLength).fill(""));
+          setNewPin(Array(otpLength).fill(""));
+          setConfirmPin(Array(otpLength).fill(""));
+        } else {
+          if (dto.message) {
+            Alert.alert("Error", dto.message);
+          } else if (dto.errors && dto.errors.length > 0) {
+            Alert.alert("Error", dto.errors.join("\n"));
           }
         }
-      );
-  
-      if (response.status === 200) {
-        Alert.alert("Success", "PIN updated successfully", [
-          {
-            text: "OK",
-            onPress: () => {
-              setTimeout(() => {
-                navigation.navigate("Home"); 
-              }, 1000);
-            }
-          }
-        ]);
-        setOldPin(Array(otpLength).fill(""));
-        setNewPin(Array(otpLength).fill(""));
-        setConfirmPin(Array(otpLength).fill(""));
       } else {
-        Alert.alert("Error", "Failed to update PIN");
+        Alert.alert("Error", "Unexpected error occurred. Try again later!");
       }
     } catch (error) {
-      console.error("Error updating PIN:", error);
-      Alert.alert("Error", "Error updating PIN: " + (error.response?.data?.message || error.message));
+      if (error.response) {
+        const statusCode = error.response.status;
+
+        if (statusCode === 404) {
+          Alert.alert("Error", "Server timed out. Try again later!");
+        } else if (statusCode === 503) {
+          Alert.alert("Error", "Service unavailable. Please try again later.");
+        } else if (statusCode === 400) {
+          Alert.alert("Error", error.response.data.data.errors[0]);
+        } else {
+          Alert.alert("Error", error.message);
+        }
+      } else if (error.request) {
+        Alert.alert(
+          "Error",
+          "No response from the server. Please check your connection."
+        );
+      } else {
+        Alert.alert("Error", error.message);
+      }
     }
   };
-  
-  
-  
 
   return (
     <SafeAreaView className="flex-1 bg-[#F9FAFC]">
@@ -154,14 +188,20 @@ const ChangeLoginPin = () => {
               >
                 <Entypo name="chevron-left" size={25} color="white" />
               </TouchableOpacity>
-              <Text className="text-white text-lg font-bold">Change Login PIN</Text>
+              <Text className="text-white text-lg font-bold">
+                Change Login PIN
+              </Text>
             </View>
           </View>
 
-          <Text className="text-xl font-bold p-5 text-center">Change Login PIN</Text>
+          <Text className="text-xl font-bold p-5 text-center">
+            Change Login PIN
+          </Text>
 
           <View className="bg-white rounded-xl shadow-lg shadow-gray-300 py-6 px-4 mt-1 mx-8">
-            <Text className="font-semibold text-center text-gray-500">Enter Old PIN</Text>
+            <Text className="font-semibold text-center text-gray-500">
+              Enter Old PIN
+            </Text>
             <View className="flex-row justify-around items-center mt-2">
               {oldPin.map((_, index) => (
                 <TextInput
@@ -177,7 +217,9 @@ const ChangeLoginPin = () => {
               ))}
             </View>
 
-            <Text className="font-semibold text-center text-gray-500 mt-8">Enter New PIN</Text>
+            <Text className="font-semibold text-center text-gray-500 mt-8">
+              Enter New PIN
+            </Text>
             <View className="flex-row justify-around items-center mt-2">
               {newPin.map((_, index) => (
                 <TextInput
@@ -193,12 +235,16 @@ const ChangeLoginPin = () => {
               ))}
             </View>
 
-            <Text className="font-semibold text-center text-gray-500 mt-8">Confirm New PIN</Text>
+            <Text className="font-semibold text-center text-gray-500 mt-8">
+              Confirm New PIN
+            </Text>
             <View className="flex-row justify-around items-center mt-2">
               {confirmPin.map((_, index) => (
                 <TextInput
                   key={index}
-                  ref={(input) => (inputs.current[index + otpLength * 2] = input)}
+                  ref={(input) =>
+                    (inputs.current[index + otpLength * 2] = input)
+                  }
                   className="w-14 h-12 text-center text-lg bg-[#F4F5F9] rounded-md font-InterSemiBold"
                   keyboardType="numeric"
                   maxLength={1}

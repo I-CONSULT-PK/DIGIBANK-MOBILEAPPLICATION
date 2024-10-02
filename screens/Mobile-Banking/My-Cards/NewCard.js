@@ -81,7 +81,7 @@ const NewCard = () => {
 
     const payload = {
       cid: customerId,
-      accountNumber: "zanbeel-9036764",
+      accountNumber: accountNumber,
       cardNumber: cardNumber,
       cvv: cardCvv,
       cardHolderName: cardHolder,
