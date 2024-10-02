@@ -6,7 +6,6 @@ import {
   SafeAreaView,
   Image,
 } from "react-native";
-import { useNavigation } from "@react-navigation/native";
 import { LinearGradient } from "expo-linear-gradient";
 import { StatusBar } from "expo-status-bar";
 import { Color } from "../../GlobalStyles";
@@ -17,34 +16,36 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
-import * as LocalAuthentication from "expo-local-authentication";
+import ReactNativeBiometrics, { BiometryTypes } from 'react-native-biometrics';
 import PINCodeModal from "../../components/PINCodeModal";
 
-const ChooseSecurity = ({ navigation }) => {
-  const [hasBio, setHasBio] = useState(false);
-  const [hasFaceDetection, setHasFaceDetection] = useState(false);
-  const [isModalVisible, setIsModalVisible] = useState(false);
+const ChooseSecurity = ({ navigation, route }) => {
   const [source, setSource] = useState('');
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [hasFingerprint, setHasFingerprint] = useState(false);
+  const [hasFaceDetection, setHasFaceDetection] = useState(false);
+  const [hasBiometrics, setHasBiometrics] = useState(false);
 
-  const otpLength = 5;
-  const [otp, setOtp] = useState(Array(otpLength).fill(''));
+  const pinLength = 4;
+  const [pin, setPin] = useState(Array(pinLength).fill(''));
+
+  const { customerId } = route.params || {};
+
+  const rnBiometrics = new ReactNativeBiometrics();
 
   const checkHardwareSupport = async () => {
-    const hasHardware = await LocalAuthentication.hasHardwareAsync();
-    const supportedTypes = await LocalAuthentication.supportedAuthenticationTypesAsync();
-    const isEnrolled = await LocalAuthentication.isEnrolledAsync();
+    rnBiometrics.isSensorAvailable()
+      .then((resultObject) => {
+        const { available, biometryType } = resultObject
 
-    if (hasHardware) {
-      // Iterate through supported types
-      supportedTypes.forEach((type) => {
-        if (type === LocalAuthentication.AuthenticationType.FINGERPRINT) {
-          setHasBio(true);
-        }
-        if (type === LocalAuthentication.AuthenticationType.FACIAL_RECOGNITION) {
+        if (available && biometryType === BiometryTypes.TouchID) {
+          setHasFingerprint(true);
+        } else if (available && biometryType === BiometryTypes.FaceID) {
           setHasFaceDetection(true);
-        }
+        } else if (available && biometryType === BiometryTypes.Biometrics) {
+          setHasBiometrics(true);
+        } 
       });
-    }
   };
 
   useEffect(() => {
@@ -70,7 +71,7 @@ const ChooseSecurity = ({ navigation }) => {
             name="chevron-left"
             size={wp("8%")}
             color="#fff"
-            marginTop={hp("3%")}
+            marginTop={hp("5%")}
           />
         </TouchableOpacity>
         <View style={{ flexGrow: 1 }}>
@@ -94,7 +95,24 @@ const ChooseSecurity = ({ navigation }) => {
             <View>
               <View className="w-full bg-white rounded-t-[30px] py-16 px-2 shadow-2xl">
                 <View className=" w-full px-8">
-                  {hasBio && (<TouchableOpacity
+
+                  {hasBiometrics && (<TouchableOpacity
+                    className="flex-row items-center justify-between bg-white border-gray-200 p-4 mb-2 rounded-xl shadow-2xl"
+                    onPress={() => toggleModal('fingerprint')}
+                  >
+                    <Ionicons name="finger-print" size={28} color="#00C6FF" />
+                    <Text className="flex-1 text-base text-left ml-4">
+                      Add Fingerprint
+                    </Text>
+                    <Ionicons
+                      name="chevron-forward"
+                      size={20}
+                      color="gray"
+                      className="ml-auto"
+                    />
+                  </TouchableOpacity>)}
+
+                  {hasFingerprint && (<TouchableOpacity
                     className="flex-row items-center justify-between bg-white border-gray-200 p-4 mb-2 rounded-xl shadow-2xl"
                     onPress={() => toggleModal('fingerprint')}
                   >
@@ -123,7 +141,9 @@ const ChooseSecurity = ({ navigation }) => {
                       className="ml-auto"
                     />
                   </TouchableOpacity>)}
+                  
                 </View>
+
                 <View className=" mt-4 px-4">
                   <Button
                     text="Skip"
@@ -138,7 +158,7 @@ const ChooseSecurity = ({ navigation }) => {
         </View>
       </LinearGradient>
 
-      <PINCodeModal isModalVisible={isModalVisible} toggleModal={toggleModal} otpLength={otpLength} otp={otp} setOtp={setOtp} source={source} navigation={navigation} />
+      <PINCodeModal isModalVisible={isModalVisible} toggleModal={toggleModal} pinLength={pinLength} pin={pin} setPin={setPin} source={source} navigation={navigation} customerId={customerId} />
 
       <StatusBar backgroundColor={Color.PrimaryWebOrient} style="light" />
     </SafeAreaView>

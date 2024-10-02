@@ -1,21 +1,16 @@
 import React, { useState } from 'react'
-import Icon from "react-native-vector-icons/FontAwesome";
 import { Text, View, Image, Keyboard, Alert } from "react-native";
 import { ScrollView, StyleSheet, Switch } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { StatusBar } from 'expo-status-bar';
 import { TouchableOpacity } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import TextInput from "../../../components/TextInput";
-import CustomButton from '../../../components/Button';
+import TextInput from '../../../components/TextInput';
+import Button from '../../../components/Button';
 import { Entypo } from "@expo/vector-icons";
 import API_BASE_URL from '../../../config';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
-import {
-  widthPercentageToDP as wp,
-  heightPercentageToDP as hp,
-} from "react-native-responsive-screen";
 import Footer from '../../../components/Footer';
 
 const Add_Beneficiary = ({ route }) => {
@@ -36,7 +31,7 @@ const Add_Beneficiary = ({ route }) => {
         const bearerToken = await AsyncStorage.getItem('token');
 
         if (bearerToken) {
-          const dto = await axios.get(
+          const response = await axios.get(
             `${API_BASE_URL}/v1/beneficiary/getLocalAccountTitle?senderAccountNumber=${accountNumber}`,
             {
               headers: {
@@ -45,12 +40,14 @@ const Add_Beneficiary = ({ route }) => {
             }
           );
 
-          if (dto && dto.data.success && dto.data) {
-            navigation.navigate('Fatch_Acc_Beneficiary', { details: dto.data.data, bankName, bankLogo })
+          const dto = response.data;
+
+          if (dto && dto.success && dto.data) {
+            navigation.navigate('Fatch_Acc_Beneficiary', { details: dto.data, bankName, bankLogo })
           }
           else {
-            if (dto.data.message) {
-              Alert.alert('Error', dto.data.message);
+            if (dto.message) {
+              Alert.alert('Error', dto.message);
             }
             else if (dto.errors && dto.errors.length > 0) {
               Alert.alert('Error', dto.errors);
@@ -68,8 +65,6 @@ const Add_Beneficiary = ({ route }) => {
             Alert.alert('Error', 'Server timed out. Try again later!');
           } else if (statusCode === 503) {
             Alert.alert('Error', 'Service unavailable. Please try again later.');
-          } else if (statusCode === 400) {
-            Alert.alert('Error', error.response.data.data.errors[0]);
           } else {
             Alert.alert('Error', error.message);
           }
@@ -85,57 +80,56 @@ const Add_Beneficiary = ({ route }) => {
   };
 
   return (
-    <SafeAreaView className=" bg-[#f9fafc]" style={{ flex: 1 }}>
-      <ScrollView>
-
-        <View className="d-flex flex-row justify-center mt-8">
-          <TouchableOpacity
-            className=" ml-2 absolute left-2"
-            onPress={() => navigation.goBack()}
-          >
-            <Entypo name="chevron-left" size={30} color="black" />
-          </TouchableOpacity>
-          <View className=" ">
-            <Text className="font-InterBold text-2xl text-center">Add Beneficiary</Text>
+    <SafeAreaView className="h-full flex-1 bg-[#F9FAFC]">
+      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+        <View style={{ height: 100 }}>
+          <View className="flex-row items-center justify-center w-full h-full">
+            <TouchableOpacity onPress={() => navigation.goBack()} className="absolute left-5">
+              <Entypo name="chevron-left" size={25} color="black" />
+            </TouchableOpacity>
+            <Text className="text-black text-lg font-InterBold">Add Beneficiary</Text>
           </View>
         </View>
-        <View className="px-6 mt-4">
-          <Text className="text-lg font-semibold">Personal Details</Text>
-        </View>
-        <View className="flex-1 justify-center items-center p-4 shadow-gray-100">
-          <View className="bg-white p-3 rounded-lg shadow-lg w-full">
-            <View className="d-flex flex-row  items-center">
+
+        <View className="w-full h-full px-5">
+          <Text className="font-InterSemiBold">Personal Details</Text>
+
+          <View className="bg-white p-3 rounded-lg shadow-md shadow-slate-400 w-full mt-3">
+            <View className="d-flex flex-row items-center">
               <Image
                 source={{ uri: bankLogo }}
-                className=" mr-1 w-12 h-12"
+                className="w-12 h-12 rounded-lg"
                 resizeMode='contain'
               />
-              <Text className="text-lg font-semibold ml-3">
+              <Text className="font-InterSemiBold ml-4">
                 {bankName}
               </Text>
             </View>
           </View>
-        </View>
-        <View className="px-6 mt-4">
-          <Text className="text-lg font-semibold">Account Number / IBAN</Text>
-          <TextInput
-            className="mt-2 border border-gray-200 rounded-lg"
-            placeholder="Account number/IBAN"
-            value={accountNumber}
-            onChange={(text) => setAccountNumber(text)}
-            onSubmitEditing={Keyboard.dismiss} />
-        </View>
-        <View className="px-6 mt-8">
-          <CustomButton
-            text={'Add'}
-            onPress={() => { 
+
+          <View className="mt-6">
+            <Text className="font-InterSemiBold">Account Number / IBAN</Text>
+            <TextInput
+              className="mt-3 border border-gray-300 rounded-lg text-base font-InterMedium"
+              placeholder="Account number / IBAN"
+              placeholderTextColor="#A5A7A8"
+              value={accountNumber}
+              onChange={(text) => setAccountNumber(text)}
+              onSubmitEditing={Keyboard.dismiss} />
+          </View>
+
+          <Button
+            text="Add"
+            styles="mt-8 mb-4"
+            onPress={() => {
               bankName === 'DIGI Bank' && fetchLocalAccountDetails();
             }}
-            loading={loading} />
+            loading={loading}
+          />
         </View>
       </ScrollView>
       <Footer />
-      <StatusBar backgroundColor='#f9fafc' style="dark" />
+      <StatusBar backgroundColor="#F9FAFC" style="dark" />
     </SafeAreaView>
   );
 }

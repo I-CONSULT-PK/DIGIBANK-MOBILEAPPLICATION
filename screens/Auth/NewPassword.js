@@ -6,7 +6,8 @@ import {
     TouchableOpacity,
     StyleSheet,
     View,
-    Keyboard
+    Keyboard,
+    Alert
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { Color } from "../../GlobalStyles";
@@ -19,10 +20,11 @@ import { Controller, useForm } from "react-hook-form";
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 import { Entypo } from '@expo/vector-icons';
+import axios from "axios";
 
 import Button from '../../components/Button';
-
-const ForgetPassword = ({ route }) => {
+import API_BASE_URL from '../../config';
+const NewPassword = ({ route }) => {
     const navigation = useNavigation();
     const screenHeight = Dimensions.get("window").height;
     const {
@@ -219,4 +221,4 @@ const styles = StyleSheet.create({
     },
 })
 
-export default ForgetPassword;
+export default NewPassword;

@@ -5,6 +5,7 @@ import {
   TouchableOpacity,
   ScrollView,
   StyleSheet,
+  Alert,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
@@ -15,6 +16,9 @@ import Footer from "../../../components/Footer";
 import { Checkbox } from "react-native-paper";
 import Button from "../../../components/Button";
 import CustomModal from "../../../components/CustomModal";
+import axios from "axios";
+import API_BASE_URL from "../../../config";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const LimitManagement = ({ navigation }) => {
   const options = [
@@ -50,9 +54,83 @@ const LimitManagement = ({ navigation }) => {
   const handleShowModal = () => setModalVisible(true);
   const handleCloseModal = () => setModalVisible(false);
 
-  const handleProceed = () => {
-    handleSelect(selectedOption);
-    handleCloseModal();
+  const handleProceed = async () => {
+    try {
+      const token = await AsyncStorage.getItem("token");
+      const accountNumber = await AsyncStorage.getItem("accountNumber");
+      const customerId = await AsyncStorage.getItem("customerId");
+
+      if (!token || !accountNumber || !customerId) {
+        Alert.alert(
+          "Error",
+          "Missing account information. Please log in again."
+        );
+        return;
+      }
+
+      // Extract the numeric part of the limit and ensure it's a number
+      const limitString = selectedOption.limit
+        .replace("PKR ", "")
+        .replace(",", "");
+      const limit = parseFloat(limitString);
+
+      if (isNaN(limit)) {
+        Alert.alert("Error", "Invalid limit format.");
+        return;
+      }
+
+      const url = `${API_BASE_URL}/v1/customer/fund/setOneDayLimit?account=${accountNumber}&customerId=${customerId}&ondDayLimit=${limit}`;
+
+      const payload = {
+        account: accountNumber,
+        customerId: customerId,
+        ondDayLimit: limit,
+      };
+
+      console.log("Payload:", payload);
+
+      const response = await axios.post(url, payload, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (response.status === 200) {
+        Alert.alert("Success", "Daily limit updated successfully.");
+      } else {
+        Alert.alert("Error", "Failed to update daily limit.");
+      }
+
+      handleSelect(selectedOption);
+      handleCloseModal();
+    } catch (error) {
+      if (error.response) {
+        const statusCode = error.response.status;
+
+        if (statusCode === 404) {
+          Alert.alert("Error", "Server not found. Please try again later.");
+        } else if (statusCode === 503) {
+          Alert.alert("Error", "Service unavailable. Please try again later.");
+        } else if (statusCode === 400) {
+          const errorMessage =
+            error.response.data.message || "Invalid request.";
+          Alert.alert("Error", errorMessage);
+        } else {
+          Alert.alert(
+            "Error",
+            error.response.data.message || "An unexpected error occurred."
+          );
+        }
+      } else if (error.request) {
+        Alert.alert(
+          "Error",
+          "No response from the server. Please check your connection."
+        );
+      } else {
+        Alert.alert("Error", error.message || "An unexpected error occurred.");
+      }
+    }
   };
 
   return (
@@ -170,7 +248,12 @@ const LimitManagement = ({ navigation }) => {
           ))}
         </View>
         <View className="p-4">
-          <Button text="Proceed" width="w-[100%]" styles="py-4" />
+          <Button
+            text="Proceed"
+            width="w-[100%]"
+            styles="py-4"
+            onPress={handleProceed}
+          />
         </View>
       </ScrollView>
 
@@ -179,46 +262,50 @@ const LimitManagement = ({ navigation }) => {
 
       {/* Custom Modal */}
       <CustomModal
-        visible={modalVisible}
-        onClose={handleCloseModal}
-        title="Customize Your Utility Bill Limit"
-        confirmText="Proceed"
-        onConfirm={handleProceed}
-      >
-        <View className="flex flex-col items-center px-4 py-3.5 bg-white rounded-xl">
-          <View className="flex flex-row justify-between w-full mb-4">
-            <View className="flex flex-col">
-              <Text className="text-md font-medium">Set Count</Text>
-            </View>
-            <View className="flex flex-col items-end">
-              <Text
-                className="text-md font-medium"
-                style={{ color: Color.PrimaryWebOrient }}
-              >
-                {sliderValue} Utility Bills / Day
-              </Text>
-            </View>
-          </View>
+  visible={modalVisible}
+  onClose={handleCloseModal}
+  title="Set Count"
+  message="Adjust the number of utility bills per day."
+  confirmText="Proceed"
+  onConfirm={() => {
+    handleProceed(sliderValue); 
+  }}
+>
+  <View className="flex flex-col items-center px-4 py-3.5 bg-white rounded-xl">
+    <View className="flex flex-row justify-between w-full mb-4">
+      <View className="flex flex-col">
+        <Text className="text-md font-medium">Set Count</Text>
+      </View>
+      <View className="flex flex-col items-end">
+        <Text
+          className="text-md font-medium"
+          style={{ color: Color.PrimaryWebOrient }}
+        >
+          {sliderValue} Utility Bills / Day
+        </Text>
+      </View>
+    </View>
 
-          <View className="w-full">
-            <Slider
-              style={styles.slider}
-              minimumValue={0}
-              maximumValue={5}
-              step={1}
-              value={sliderValue}
-              onValueChange={(value) => setSliderValue(value)}
-              minimumTrackTintColor={Color.PrimaryWebOrient}
-              maximumTrackTintColor="#ccc"
-              thumbTintColor={Color.PrimaryWebOrient}
-            />
-            <View className="flex-row justify-between w-full">
-              <Text className="text-gray-400 font-bold">0</Text>
-              <Text className="text-gray-400 font-bold">{sliderValue}</Text>
-            </View>
-          </View>
-        </View>
-      </CustomModal>
+    <View className="w-full">
+      <Slider
+        style={styles.slider}
+        minimumValue={0}
+        maximumValue={5}
+        step={1}
+        value={sliderValue}
+        onValueChange={(value) => setSliderValue(value)}
+        minimumTrackTintColor={Color.PrimaryWebOrient}
+        maximumTrackTintColor="#ccc"
+        thumbTintColor={Color.PrimaryWebOrient}
+      />
+      <View className="flex-row justify-between w-full">
+        <Text className="text-gray-400 font-bold">0</Text>
+        <Text className="text-gray-400 font-bold">{sliderValue}</Text>
+      </View>
+    </View>
+  </View>
+</CustomModal>
+
     </SafeAreaView>
   );
 };

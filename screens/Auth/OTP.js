@@ -54,6 +54,11 @@ const OTP = ({ navigation, route }) => {
 
     if (sanitizedText.length === 1 && index < otpLength - 1) {
       inputs.current[index + 1].focus();
+    } else if (sanitizedText.length === 0 && index > 0) {
+      const prevIndex = index - 1;
+      if (inputs.current[prevIndex]) {
+        inputs.current[prevIndex].focus();
+      }
     }
   };
 
@@ -73,10 +78,13 @@ const OTP = ({ navigation, route }) => {
     if (enteredOtp.length > 0) {
       setLoading(true);
 
+      const otpDeliveryMethod = await AsyncStorage.getItem('otpDeliveryMethod');
+
       const otpData = {
         mobileNumber: mobileNumber,
         email: email,
-        emailOtp: enteredOtp
+        emailOtp: enteredOtp,
+        deliveryPreference: otpDeliveryMethod ? otpDeliveryMethod : "EMAIL"
       };
 
       try {
@@ -85,7 +93,7 @@ const OTP = ({ navigation, route }) => {
 
         if (dto && dto.success) {
           source === 'username' && navigation.navigate('Login');
-          source === 'password' && navigation.navigate('PasswordChange', { cnic: cnic, accountNumber: accountNumber });
+          source === 'password' && navigation.navigate('NewPasssword', { cnic: cnic, accountNumber: accountNumber });
           source === 'registration' && navigation.navigate('SignUp', { source: 'OTP', email: email, mobileNumber: mobileNumber, cnic: cnic, accountNumber: accountNumber, firstName: firstName, lastName: lastName });
         }
         else {
@@ -126,10 +134,13 @@ const OTP = ({ navigation, route }) => {
     setIsResendDisabled(true);
 
     try {
+      const otpDeliveryMethod = await AsyncStorage.getItem('otpDeliveryMethod');
+
       const otpData = {
         mobileNumber: mobileNumber,
         email: email,
-        reason: 'verify mobile device'
+        reason: 'verify mobile device',
+        deliveryPreference: otpDeliveryMethod ? otpDeliveryMethod : "EMAIL"
       };
 
       const response = await axios.post(`${API_BASE_URL}/v1/otp/createOTP`, otpData);
@@ -188,7 +199,7 @@ const OTP = ({ navigation, route }) => {
                   <TextInput
                     key={index}
                     ref={(input) => inputs.current[index] = input}
-                    className="w-12 h-12 text-center text-xl bg-[#F4F5F9] border border-gray-300 rounded-md font-InterSemiBold"
+                    className="w-12 h-12 text-center text-lg bg-[#F4F5F9] border border-gray-300 rounded-md font-InterSemiBold"
                     keyboardType="numeric"
                     maxLength={1}
                     onChangeText={(text) => handleChange(text, index)}

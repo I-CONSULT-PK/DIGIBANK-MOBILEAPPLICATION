@@ -1,59 +1,22 @@
-import React, { useState, useContext, useEffect } from "react";
-import {
-  ScrollView,
-  Text,
-  View,
-  TouchableOpacity,
-  StyleSheet,
-  Alert,
-  Keyboard,
-  Switch,
-} from "react-native";
+import React, { useState, useEffect } from "react";
+import { ScrollView, Text, View, TouchableOpacity, Alert, Keyboard } from "react-native";
 import Input from "../../components/TextInput";
 import InputWithIcon from "../../components/TextInputWithIcon";
 import { Color } from "../../GlobalStyles";
-import LoaderComponent from "../../components/LoaderComponent";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { AppLoaderContext } from "../../components/LoaderHOC";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
 import { StatusBar } from "expo-status-bar";
 import axios from "axios";
 import API_BASE_URL from "../../config";
-import * as LocalAuthentication from "expo-local-authentication";
-import * as Device from "expo-device";
-import { v4 as uuidv4 } from "uuid";
 import { Entypo } from "@expo/vector-icons";
 import Button from "../../components/Button";
+import ReactNativeBiometrics, { BiometryTypes } from 'react-native-biometrics';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Registration = ({ route }) => {
   const navigation = useNavigation();
-  const { showLoader, hideLoader } = useContext(AppLoaderContext);
-
-  // const toggleSwitch = () => setIsEnabled((previousState) => !previousState);
-
-  const [isLoading, setIsLoading] = useState(false);
-
-  const handleLoginPress = () => {
-    // Display loader
-    showLoader();
-    setIsLoading(true);
-
-    // Simulate login process
-    setTimeout(async () => {
-      // Hide loader
-      hideLoader();
-      setIsLoading(false);
-
-      navigation.navigate("OTP", {
-        userEmail: await AsyncStorage.getItem("userEmail"),
-        userNumber: await AsyncStorage.getItem("userMobileNumber"),
-      });
-    }, 5000);
-  };
-
-  // --------------------------------------
+  const rnBiometrics = new ReactNativeBiometrics();
 
   const {
     source,
@@ -86,27 +49,23 @@ const Registration = ({ route }) => {
   const [otpLoading, setOtpLoading] = useState(false);
   const [registerLoading, setRegisterLoading] = useState(false);
 
-  const [hasBio, setHasBio] = useState(true);
-  const [hasFaceDetection, setHasFaceDetection] = useState(true);
+  const [hasFingerprint, setHasFingerprint] = useState(false);
+  const [hasFaceDetection, setHasFaceDetection] = useState(false);
+  const [hasBiometrics, setHasBiometrics] = useState(false);
 
   const checkHardwareSupport = async () => {
-    const hasHardware = await LocalAuthentication.hasHardwareAsync();
-    const supportedTypes =
-      await LocalAuthentication.supportedAuthenticationTypesAsync();
+    rnBiometrics.isSensorAvailable()
+      .then((resultObject) => {
+        const { available, biometryType } = resultObject
 
-    if (hasHardware) {
-      // Iterate through supported types
-      supportedTypes.forEach((type) => {
-        if (type === LocalAuthentication.AuthenticationType.FINGERPRINT) {
-          setHasBio(true);
-        }
-        if (
-          type === LocalAuthentication.AuthenticationType.FACIAL_RECOGNITION
-        ) {
+        if (available && biometryType === BiometryTypes.TouchID) {
+          setHasFingerprint(true);
+        } else if (available && biometryType === BiometryTypes.FaceID) {
           setHasFaceDetection(true);
+        } else if (available && biometryType === BiometryTypes.Biometrics) {
+          setHasBiometrics(true);
         }
       });
-    }
   };
 
   useEffect(() => {
@@ -124,11 +83,6 @@ const Registration = ({ route }) => {
       ...prevState,
       [name]: value,
     }));
-  };
-
-  const handleNumericChange = (name, value) => {
-    const numericValue = value.replace(/[^0-9]/g, "");
-    handleChange(name, numericValue);
   };
 
   const handleNext = async () => {
@@ -211,10 +165,13 @@ const Registration = ({ route }) => {
     } else {
       setOtpLoading(true);
 
+      const otpDeliveryMethod = await AsyncStorage.getItem('otpDeliveryMethod');
+
       const otpData = {
         mobileNumber: initialForm.mobile,
         email: returnedData.email,
         reason: "fund transfer",
+        deliveryPreference: otpDeliveryMethod ? otpDeliveryMethod : "EMAIL"
       };
 
       try {
@@ -292,10 +249,6 @@ const Registration = ({ route }) => {
           email: email,
           userName: finalForm.username,
           password: finalForm.password,
-          status: "00",
-          device: {
-            pinHash: "1234",
-          },
           accountDto: {
             accountNumber: accountNumber,
           },
@@ -303,18 +256,24 @@ const Registration = ({ route }) => {
 
         try {
           const response = await axios.post(
-            `${API_BASE_URL}/api/devices/signUp`,
+            `${API_BASE_URL}/v1/customer/register`,
             userData
           );
           const dto = response.data;
+          console.log(dto);
 
-          if (dto && dto.success) {
+          if (dto && dto.success && dto.data) {
             Alert.alert("Success", dto.message);
 
             setTimeout(() => {
-              hasBio || hasFaceDetection
-                ? navigation.navigate("ChooseSecurity")
-                : navigation.navigate("RegisterFaceDetector");
+              if (hasFaceDetection || hasFingerprint || hasBiometrics) {
+                navigation.navigate("ChooseSecurity", { customerId: dto.data.id });
+              } else {
+                navigation.reset({
+                  index: 0,
+                  routes: [{ name: 'Login' }],
+                });
+              }
             }, 1000);
           } else {
             if (dto.message) {
@@ -354,101 +313,6 @@ const Registration = ({ route }) => {
     }
   };
 
-  const handleBiometricAuth = async () => {
-    try {
-      // Check if hardware supports biometrics
-      const compatible = await LocalAuthentication.hasHardwareAsync();
-      // if (!compatible) {
-      //   Alert.alert(
-      //     "Error",
-      //     "Biometric authentication is not supported on this device."
-      //   );
-      //   return;
-      // }
-
-      // Check if biometric records are enrolled
-      const enrolled = await LocalAuthentication.isEnrolledAsync();
-      // if (!enrolled) {
-      //   Alert.alert(
-      //     "Error",
-      //     "No biometric records found. Please set up biometrics in your device settings."
-      //   );
-      //   return;
-      // }
-
-      // Authenticate with biometrics
-      const result = await LocalAuthentication.authenticateAsync({
-        promptMessage: "Authenticate with Biometrics",
-        fallbackLabel: "Enter Passcode",
-      });
-
-      if (result.success) {
-        Alert.alert("Success", "Biometric authentication successful.");
-        await axios.post(`${API_BASE_URL}/api/devices/biometricAuth`, {
-          userId: userId,
-          authenticated: true,
-        });
-      } else {
-        Alert.alert(
-          "Error",
-          "Biometric authentication failed. Please try again."
-        );
-      }
-    } catch (error) {
-      Alert.alert("Error", error.message);
-    }
-  };
-
-  const [isEnabled, setIsEnabled] = useState(false);
-  const [biometricData, setBiometricData] = useState(null);
-  const [visitorId, setVisitorId] = useState(null);
-
-  const toggleSwitch = async () => {
-    if (!isEnabled) {
-      try {
-        const result = await LocalAuthentication.authenticateAsync();
-        if (result.success) {
-          const newVisitorId = uuidv4();
-          setVisitorId(newVisitorId);
-
-          // Store the visitor ID locally
-          await AsyncStorage.setItem("visitorId", newVisitorId);
-
-          setIsEnabled(true);
-          setBiometricData({
-            brand: Device.brand,
-            modelName: Device.modelName,
-            osName: Device.osName,
-            osVersion: Device.osVersion,
-            visitorId: newVisitorId,
-          });
-
-          // Console log the device and biometric info
-          console.log("Biometric Data:");
-          console.log("Brand:", Device.brand);
-          console.log("Model Name:", Device.modelName);
-          console.log("OS Name:", Device.osName);
-          console.log("OS Version:", Device.osVersion);
-          console.log("Visitor ID:", newVisitorId);
-        } else {
-          Alert.alert("Authentication failed", result.error);
-        }
-      } catch (error) {
-        Alert.alert("Error", error.message);
-      }
-    } else {
-      setIsEnabled(false);
-      setBiometricData(null);
-      setVisitorId(null);
-
-      // Remove the visitor ID from local storage
-      await AsyncStorage.removeItem("visitorId");
-
-      // Console log the biometric data reset
-      console.log("Biometric Data Reset");
-    }
-  };
-
   return (
     <SafeAreaView className="h-full flex-1">
       <LinearGradient
@@ -466,7 +330,7 @@ const Registration = ({ route }) => {
               <Entypo name="chevron-left" size={24} color="white" />
             </TouchableOpacity>
             <Text className="text-white text-lg font-semibold ml-4 font-InterSemiBold">
-              Sign-Up
+              Register yourself
             </Text>
           </View>
 
@@ -529,9 +393,9 @@ const Registration = ({ route }) => {
 
                 <View className="mb-5">
                   <Button
-                    text="Create"
-                    width="w-[100%]"
-                    styles="mb-4 py-4"
+                    text='Create'
+                    width='w-[100%]'
+                    styles='mb-4 py-4'
                     onPress={handleRegister}
                     // onPress={() => navigation.navigate("ChooseSecurity")}
                     loading={registerLoading}
@@ -604,16 +468,17 @@ const Registration = ({ route }) => {
                         onSubmitEditing={Keyboard.dismiss}
                       />
                     </View>
+
                   </View>
                 </View>
 
                 <View className="mb-5">
                   <Button
-                    text="Next"
-                    width="w-[100%]"
-                    styles="mb-4 py-4"
-                    // onPress={handleNext}
-                    onPress={() => navigation.navigate('ChooseSecurity')}
+                    text='Next'
+                    width='w-[100%]'
+                    styles='mb-4 py-4'
+                    onPress={handleNext}
+                    // onPress={() => navigation.navigate('ChooseSecurity')}
                     loading={nextLoading}
                   />
 
@@ -669,9 +534,9 @@ const Registration = ({ route }) => {
 
                 <View className="mb-5">
                   <Button
-                    text="Next"
-                    width="w-[100%]"
-                    styles="mb-4 py-4"
+                    text='Next'
+                    width='w-[100%]'
+                    styles='mb-4 py-4'
                     onPress={handleOTP}
                     // onPress={() => navigation.navigate("OTP", { source: "registration" })}
                     loading={otpLoading}

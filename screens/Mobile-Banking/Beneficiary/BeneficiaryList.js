@@ -7,6 +7,8 @@ import { useFocusEffect } from "@react-navigation/native";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 
+import { decrypt } from "../../../utils/crypto";
+
 import { Color } from "../../../GlobalStyles";
 import API_BASE_URL from '../../../config';
 import SearchBar from "../../../components/SearchBar";
@@ -61,6 +63,8 @@ const BeneficiaryList = ({ navigation, route }) => {
         if (dto && dto.success && dto.data) {
           const transformedBeneficiaries = dto.data.map(item => ({
             ...item,
+            bankUrl: decrypt(item.bankUrl),
+            accountNumber: decrypt(item.accountNumber),
             liked: item.flag
           }));
 
@@ -308,9 +312,7 @@ const BeneficiaryList = ({ navigation, route }) => {
           <View className="flex-row items-center justify-center w-full h-full">
             <TouchableOpacity
               onPress={() => {
-                source === 'beneficiary' && navigation.navigate('Home');
-                source === 'payment' && navigation.goBack();
-                source === 'dashboard' && navigation.navigate('Home');
+                source === 'beneficiary' || 'dashboard' ? navigation.navigate('Home') : navigation.goBack();
               }}
               className="absolute left-5"
             >
@@ -322,7 +324,7 @@ const BeneficiaryList = ({ navigation, route }) => {
           </View>
         </View>
 
-        <View className="w-full h-full px-6 bg-[#F5F5F5] pb-20">
+        <View className="w-full h-full px-6 bg-[#F9FAFC] pb-10">
           <View className="mt-6">
             <SearchBar
               placeholder="Search My Payees"
@@ -331,7 +333,7 @@ const BeneficiaryList = ({ navigation, route }) => {
             />
           </View>
 
-          <View className="mt-7">
+          <View className="mt-8">
             <TouchableOpacity className="flex-row items-center">
               <View className="p-3 rounded-lg shadow-lg shadow-gray-500 justify-center items-center" style={{ backgroundColor: Color.PrimaryWebOrient }}>
                 <Image

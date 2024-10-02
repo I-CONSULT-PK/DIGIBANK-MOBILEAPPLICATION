@@ -30,6 +30,7 @@ const Transfer = () => {
     };
   }, []);
   const navigation = useNavigation();
+  
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
       <ScrollView className=" bg-white ">

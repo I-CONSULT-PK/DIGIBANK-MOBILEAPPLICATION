@@ -6,7 +6,6 @@ export const urData = {
         { title: "افراد کا انتظام", icon: "person" },
         { title: "منتقل کریں", icon: "swap-horizontal" },
         { title: "ادائیگی کے لئے اسکین کریں", icon: "qr-code" },
-        { title: "سہولتیں", icon: "cog" },
         { title: "فوری قرض", icon: "cash" },
         { title: "بیان", icon: "document-text" },
         { title: "خود کو ٹاپ کریں", icon: "cash" },
