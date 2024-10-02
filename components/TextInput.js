@@ -21,9 +21,9 @@ export default function Input({
         {
           backgroundColor: '#F4F5F9',
           fontSize: 15,
-          height: 40, 
-          paddingVertical: 11, 
-          lineHeight: 20, 
+          height: 37,  
+          paddingVertical: 11,
+          lineHeight: 20,
         },
       ]}
       placeholder={placeholder}
@@ -37,9 +37,9 @@ export default function Input({
         },
       }}
       secureTextEntry={isPassword}
-      value={value}
+      value={value} 
       disabled={disabled}
-      onChangeText={onChange}
+      onChangeText={onChange} 
       keyboardType={keyboardType}
       onSubmitEditing={onSubmitEditing}
       blurOnSubmit={false}

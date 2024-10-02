@@ -1,5 +1,12 @@
-import React, { useState } from "react";
-import { Text, View, ScrollView, TouchableOpacity, Image } from "react-native";
+import React, { useState, useEffect } from "react";
+import {
+  Text,
+  View,
+  ScrollView,
+  TouchableOpacity,
+  Image,
+  Alert,
+} from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Entypo } from "@expo/vector-icons";
@@ -7,9 +14,44 @@ import Checkbox from "expo-checkbox";
 import Button from "../../../components/Button";
 import { Divider } from "react-native-paper";
 import { TouchableWithoutFeedback } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import Footer from "../../../components/Footer";
+import { StatusBar } from "expo-status-bar";
+
 const OTP_Preference = () => {
   const navigation = useNavigation();
-  const [selectedMethod, setSelectedMethod] = useState("sms");
+  const [selectedMethod, setSelectedMethod] = useState("SMS");
+  const [mobileNumber, setMobileNumber] = useState("");
+  const [email, setEmail] = useState("");
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      const mobile = await AsyncStorage.getItem("mobileNumber");
+      const userEmail = await AsyncStorage.getItem("EMAIL");
+      const method = await AsyncStorage.getItem("otpDeliveryMethod");
+
+      setMobileNumber(mobile || "");
+      setEmail(userEmail || "");
+      setSelectedMethod(method || "SMS"); // Default to "sms" if nothing is stored
+    };
+
+    fetchUserData();
+  }, []);
+
+  const handleSave = async () => {
+    try {
+      // Save selected method locally
+      await AsyncStorage.setItem("otpDeliveryMethod", selectedMethod);
+      Alert.alert("Success", "Setting saved successfully!");
+
+      setTimeout(() => {
+        navigation.navigate("Home");
+      }, 2000);
+    } catch (error) {
+      console.error("Error saving delivery method:", error);
+      Alert.alert("Error", "Failed to save delivery method. Please try again.");
+    }
+  };
 
   return (
     <SafeAreaView className="flex-1 bg-white">
@@ -36,7 +78,7 @@ const OTP_Preference = () => {
               </Text>
 
               <TouchableWithoutFeedback
-                onPress={() => setSelectedMethod("sms")}
+                onPress={() => setSelectedMethod("SMS")}
               >
                 <View className="flex-row items-center mb-2">
                   <Image
@@ -48,16 +90,16 @@ const OTP_Preference = () => {
                     Get your OTP through SMS
                   </Text>
                   <Checkbox
-                    value={selectedMethod === "sms"}
-                    onValueChange={() => setSelectedMethod("sms")}
-                    color={selectedMethod === "sms" ? "#1DBBD8" : undefined}
+                    value={selectedMethod === "SMS"}
+                    onValueChange={() => setSelectedMethod("SMS")}
+                    color={selectedMethod === "SMS" ? "#1DBBD8" : undefined}
                     style={{ marginLeft: "auto" }}
                   />
                 </View>
               </TouchableWithoutFeedback>
               <Divider />
               <TouchableWithoutFeedback
-                onPress={() => setSelectedMethod("email")}
+                onPress={() => setSelectedMethod("EMAIL")}
               >
                 <View className="flex-row items-center mt-2 mb-2">
                   <Image
@@ -69,9 +111,9 @@ const OTP_Preference = () => {
                     Get your OTP through email
                   </Text>
                   <Checkbox
-                    value={selectedMethod === "email"}
-                    onValueChange={() => setSelectedMethod("email")}
-                    color={selectedMethod === "email" ? "#1DBBD8" : undefined}
+                    value={selectedMethod === "EMAIL"}
+                    onValueChange={() => setSelectedMethod("EMAIL")}
+                    color={selectedMethod === "EMAIL" ? "#1DBBD8" : undefined}
                     style={{ marginLeft: "auto" }}
                   />
                 </View>
@@ -105,9 +147,17 @@ const OTP_Preference = () => {
           </View>
         </ScrollView>
         <View className="p-4">
-          <Button text="Save" width="w-[100%]" styles="py-4" />
+          <Button
+            text="Save"
+            width="w-[100%]"
+            styles="py-4"
+            onPress={handleSave}
+          />
         </View>
       </View>
+      <Footer />
+      <StatusBar backgroundColor="#f9fafc" style="light" />
+
     </SafeAreaView>
   );
 };

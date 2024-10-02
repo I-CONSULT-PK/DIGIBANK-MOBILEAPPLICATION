@@ -8,7 +8,10 @@
       "distribution": "internal"
     },
     "preview": {
-      "distribution": "internal",
+      "android": {
+        "buildType": "apk",
+        "distribution": "internal"
+      },
       "env": {
         "ENV": "SITE"
       }
@@ -26,3 +29,4 @@
     "production": {}
   }
 }
+

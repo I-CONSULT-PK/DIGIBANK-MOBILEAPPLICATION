@@ -10,6 +10,7 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
+import { StatusBar } from "expo-status-bar";
 
 const SelectCards = () => {
   const navigation = useNavigation();
@@ -87,6 +88,8 @@ const SelectCards = () => {
           </View>
         </View>
       </ScrollView>
+      <StatusBar backgroundColor="#f9fafc" style="light" />
+
     </SafeAreaView>
   );
 };

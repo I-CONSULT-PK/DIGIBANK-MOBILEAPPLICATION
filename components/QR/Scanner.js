@@ -310,7 +310,7 @@ const ScannerScreen = () => {
           <View className="bg-black justify-around items-center py-4">
             <Text className="text-white text-base mt-1 ">
               {" "}
-              Scan any of the folling QR Codes{" "}
+              Scan any of the following QR Codes{" "}
             </Text>
             <Text className="text-white text-base mt-1 font-semibold ">
               Digi Bank | VISA | MasterCard | Raast

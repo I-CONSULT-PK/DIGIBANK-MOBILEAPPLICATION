@@ -1,15 +1,6 @@
 import React, { useState, useEffect } from "react";
-import {
-  Text,
-  View,
-  ScrollView,
-  SafeAreaView,
-  TouchableOpacity,
-  StyleSheet,
-  Image,
-  Alert,
-  BackHandler,
-} from "react-native";
+import { Text, View, ScrollView, TouchableOpacity, Image, Alert, BackHandler } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { Entypo } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { SelectList } from "react-native-dropdown-select-list";
@@ -17,9 +8,10 @@ import { StatusBar } from "expo-status-bar";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 
-import { Color } from "../../../GlobalStyles";
+import { decrypt } from "../../../utils/crypto";
+
 import API_BASE_URL from "../../../config";
-import CustomButton from "../../../components/Button";
+import Button from "../../../components/Button";
 import TextInput from "../../../components/TextInput";
 import Footer from "../../../components/Footer";
 
@@ -27,7 +19,12 @@ const SendFromAccount = ({ route }) => {
   const navigation = useNavigation();
   const { beneObj, source } = route.params || {};
 
-  const [userDetails, setUserDetails] = useState(null);
+  const [userDetails, setUserDetails] = useState({
+    userName: null,
+    accountNumber: null,
+    bankLogo: null,
+    balance: null
+  });
   const [amount, setAmount] = useState(0);
   const [selected, setSelected] = useState("");
   const [selectedOption, setSelectedOption] = useState(null);
@@ -67,59 +64,28 @@ const SendFromAccount = ({ route }) => {
 
   const loadUserDetails = async () => {
     try {
-      const customerId = await AsyncStorage.getItem("customerId");
-      const bearerToken = await AsyncStorage.getItem("token");
+      const firstName = await AsyncStorage.getItem("firstName");
+      const lastName = await AsyncStorage.getItem("lastName");
+      const accountNumber = await AsyncStorage.getItem("accountNumber");
+      const encryptedBankLogo = await AsyncStorage.getItem("bankLogo");
+      const balance = await AsyncStorage.getItem("balance");
 
-      if (customerId && bearerToken) {
-        const response = await axios.get(
-          `${API_BASE_URL}/v1/customer/fetchUserDetails?userId=${customerId}`,
-          {
-            headers: {
-              Authorization: `Bearer ${bearerToken}`,
-            },
-          }
-        );
+      const bankLogo = encryptedBankLogo ? await decrypt(encryptedBankLogo) : null;
 
-        const dto = response.data;
-
-        if (dto && dto.success && dto.data) {
-          setUserDetails(dto.data);
-        } else {
-          if (dto.message) {
-            Alert.alert("Error", dto.message);
-          } else if (dto.errors && dto.errors.length > 0) {
-            Alert.alert("Error", dto.errors.join("\n"));
-          }
-        }
-      } else {
-        Alert.alert("Error", "Unexpected error occurred. Try again later!");
-      }
+      setUserDetails({
+        userName: (firstName || "") + " " + (lastName || ""),
+        accountNumber: accountNumber,
+        bankLogo: bankLogo,
+        balance: balance,
+      });
     } catch (error) {
-      if (error.response) {
-        const statusCode = error.response.status;
-
-        if (statusCode === 404) {
-          Alert.alert("Error", "Server timed out. Try again later!");
-        } else if (statusCode === 503) {
-          Alert.alert("Error", "Service unavailable. Please try again later.");
-        } else if (statusCode === 400) {
-          Alert.alert("Error", error.response.data.data.errors[0]);
-        } else {
-          Alert.alert("Error", error.message);
-        }
-      } else if (error.request) {
-        Alert.alert(
-          "Error",
-          "No response from the server. Please check your connection."
-        );
-      } else {
-        Alert.alert("Error", error.message);
-      }
+      console.error("Error loading user details: ", error);
     }
   };
 
   useEffect(() => {
     loadUserDetails();
+
   }, []);
 
   const handleNext = () => {
@@ -145,133 +111,131 @@ const SendFromAccount = ({ route }) => {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-[#f9fafc]">
-      <ScrollView className="flex-1">
-        <View className="relative w-full mt-8">
-          <TouchableOpacity
-            onPress={() => {
+    <SafeAreaView className="h-full flex-1 bg-[#F9FAFC]">
+      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+        <View style={{ height: 90 }}>
+          <View className="flex-row items-center justify-center w-full h-full">
+            <TouchableOpacity onPress={() => {
               source === "dashboard"
                 ? navigation.navigate("Home")
                 : navigation.goBack();
-            }}
-            className="absolute left-3 "
-            style={{ zIndex: 1 }}>
-            <Entypo name="chevron-left" size={30} color="black" />
-          </TouchableOpacity>
-          <Text className="text-center font-InterBold text-2xl">Payment</Text>
-        </View>
-        {/* From Account Section */}
-        <Text className="font-semibold mb-1 text-gray-700 mt-7 px-3">
-          From Account
-        </Text>
-        <View className="flex justify-center px-4 ">
-          <View className="flex flex-row overflow-hidden items-center p-4 bg-white rounded-lg shadow-md">
-            {/* DIGI BANK section */}
-            <View className="px-3 py-2 text-sm font-medium  text-white bg-cyan-500 rounded-md ">
-              <Text className="text-center text-white">DIGI {"\n"}BANK</Text>
-            </View>
-
-            {/* Account details section */}
-            <View className="flex flex-col ml-4">
-              <Text className="text-base font-semibold text-gray-800">
-                {userDetails &&
-                  userDetails.firstName + " " + userDetails.lastName}
-              </Text>
-              <Text className="text-sm leading-snug text-neutral-500">
-                {userDetails && userDetails.accountNumber}
-              </Text>
-            </View>
+            }} className="absolute left-5">
+              <Entypo name="chevron-left" size={25} color="black" />
+            </TouchableOpacity>
+            <Text className="text-black text-lg font-InterBold">Payment</Text>
           </View>
         </View>
-        {/* To Account Section */}
-        <Text className="font-semibold mb-1 text-gray-700 mt-7 px-3">
-          To Account
-        </Text>
-        <View className="flex justify-center px-4 ">
-          <View
-            className="flex flex-row overflow-hidden items-center p-4 bg-white rounded-lg shadow-md"
-            style={styles.container}
-          >
-            {/* UBL BANK section */}
-            <View className="p-2 rounded-md shadow-sm shadow-gray-300 justify-center items-center bg-slate-100">
-              <Image
-                source={{ uri: beneObj.bankUrl }}
-                resizeMode="contain"
-                className="w-10 h-10"
-              />
-            </View>
 
-            {/* Account details section */}
-            <View className="flex flex-col ml-4">
-              <Text className="text-base font-semibold text-gray-800">
-                {beneObj.beneficiaryName}
-              </Text>
-              <Text className="text-sm leading-snug text-neutral-500">
-                {beneObj.accountNumber}
-              </Text>
+        <View className="w-full h-full px-5">
+          <View>
+            <Text className="font-InterSemiBold">From Account</Text>
+            <View className="bg-white p-3 rounded-lg shadow-md shadow-slate-400 w-full mt-3">
+              <View className="flex-row items-center">
+                {userDetails.bankLogo && <Image
+                  source={{ uri: userDetails.bankLogo }}
+                  className=" w-12 h-12"
+                  resizeMode='contain'
+                />}
+                <View className="flex flex-col ml-4">
+                  <Text className="font-InterSemiBold">
+                    {userDetails && userDetails.userName}
+                  </Text>
+                  <Text className="text-sm leading-snug text-neutral-500">
+                    {userDetails && userDetails.accountNumber}
+                  </Text>
+                </View>
+              </View>
             </View>
           </View>
-        </View>
-        {/* Balance and Amount Section */}
-        <Text className="font-semibold mb-1 text-gray-700 mt-4 px-3">
-          Available balance: {userDetails && userDetails.defaultAccountBalance}
-        </Text>
-        <Text className="font-semibold mb-1 text-gray-700 mt-7 px-3">
-          Enter amount
-        </Text>
-        <View className="flex items-center px-4">
-          <TextInput
-            className="mt-2 "
-            placeholder="0.00"
-            keyboardType="numeric"
-            value={amount}
-            onChange={(text) => setAmount(text)}
-            style={{ width: "100%" }}
-          />
-        </View>
-        <Text className="px-3 mt-5">
-          Enter an amount between Rs. 1 and{"\n"}
-          Rs. 5,000,000
-        </Text>
-        <View className="mt-5">
-          <Text className="text-sm font-medium text-zinc-600 px-3">
-            Purpose Of Payment
-          </Text>
-        </View>
-        <View className="flex-1 justify-center p-4 px-4">
-          <View className="w-98">
+
+          <View className="mt-4">
+            <Text className="font-InterSemiBold">To Account</Text>
+            <View className="bg-white p-3 rounded-lg shadow-md shadow-slate-400 w-full mt-3">
+              <View className="flex-row items-center">
+                <Image
+                  source={{ uri: beneObj.bankUrl }}
+                  className=" w-12 h-12"
+                  resizeMode='contain'
+                />
+                <View className="flex flex-col ml-4">
+                  <Text className="font-InterSemiBold">
+                    {beneObj.beneficiaryName}
+                  </Text>
+                  <Text className="text-sm leading-snug text-neutral-500">
+                    {beneObj.accountNumber}
+                  </Text>
+                </View>
+              </View>
+            </View>
+          </View>
+
+          <View className="mt-6">
+            <Text className="font-InterSemiBold text-gray-700">
+              Available balance: {userDetails && userDetails.balance}
+            </Text>
+          </View>
+
+          <View className="mt-6">
+            <Text className="font-InterSemiBold">
+              Enter amount
+            </Text>
+            <TextInput
+              className="mt-3 border border-gray-300 rounded-lg font-InterMedium"
+              placeholder="0.00"
+              keyboardType="numeric"
+              value={amount}
+              onChange={(text) => setAmount(text)}
+              style={{ width: "100%" }}
+            />
+
+            <Text className="mt-2 text-sm font-InterMedium text-gray-500">
+              Enter an amount between Rs. 1 and Rs. 5,000,000
+            </Text>
+          </View>
+
+          <View className="mt-6">
+            <Text className="font-InterSemiBold">
+              Purpose of payment
+            </Text>
+
             <SelectList
               setSelected={(val) => setSelected(val)}
               data={purpose}
               save="value"
+              search={false}
               placeholder="Select a purpose"
               boxStyles={{
-                borderColor: "gray",
+                borderColor: "lightgray",
                 borderWidth: 1,
+                marginTop: 16,
+                height: 51
               }}
               dropdownStyles={{
-                borderColor: "gray",
+                borderColor: "lightgray",
                 borderWidth: 1,
+              }}
+              inputStyles={{
+                fontSize: 14.2,
+                fontFamily: 'InterRegular'
+              }}
+              dropdownTextStyles={{
+                fontSize: 14.2,
+                fontFamily: 'InterRegular'
               }}
             />
           </View>
-        </View>
-        <View className="px-4">
-          <CustomButton text={"Next"} onPress={handleNext} width="w-[100%]" />
+
+          <Button
+            text="Next"
+            onPress={handleNext}
+            styles="mt-8 mb-4"
+          />
         </View>
       </ScrollView>
-
       <Footer />
       <StatusBar backgroundColor="#f9fafc" style="dark" />
     </SafeAreaView>
   );
 };
-const styles = StyleSheet.create({
-  container: {
-    shadowColor: "#000",
-    elevation: 20,
-    borderColor: Color.PrimaryWebOrient,
-  },
-});
 
 export default SendFromAccount;

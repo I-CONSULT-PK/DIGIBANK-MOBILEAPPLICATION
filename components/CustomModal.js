@@ -1,17 +1,27 @@
 import React from "react";
-import { View, Text, Modal } from "react-native";
+import {
+  View,
+  Text,
+  Modal,
+  TouchableOpacity,
+  Dimensions,
+  TouchableWithoutFeedback,
+} from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import Button from "../components/Button"; 
+import { Color } from "../GlobalStyles";
+import Button from "./Button";
+
+const { width } = Dimensions.get("window");
 
 const CustomModal = ({
   visible,
   onClose,
   title,
-  children,
+  message,
   onConfirm,
   confirmText,
-  onCancel,
   cancelText,
+  children,
 }) => {
   const insets = useSafeAreaInsets();
 
@@ -22,38 +32,41 @@ const CustomModal = ({
       visible={visible}
       onRequestClose={onClose}
     >
-      <View
-        style={{
-          flex: 1,
-          justifyContent: 'center',
-          alignItems: 'center',
-          backgroundColor: 'rgba(0, 0, 0, 0.70)', 
-          paddingBottom: insets.bottom,
-        }}
-      >
-        <View className="w-4/5 bg-white rounded-xl p-4">
-          {title && <Text className="text-lg font-bold mb-2">{title}</Text>}
-          <View className="mb-4">{children}</View>
-          <View className="flex-row justify-end">
-            {onCancel && (
-              <Button
-                text={cancelText || "Cancel"}
-                styles="bg-gray-300 rounded px-4 py-2 mr-2"
-                textStyles="text-white font-bold"
-                onPress={onCancel}
-              />
-            )}
-            {onConfirm && (
-              <Button
-                text={confirmText || "Confirm"}
-                styles="bg-blue-500 rounded px-4 py-2"
-                textStyles="text-white font-bold"
-                onPress={onConfirm}
-              />
-            )}
-          </View>
+      <TouchableWithoutFeedback onPress={onClose}>
+        <View
+          className="flex-1 justify-center items-center pb-[env(safe-area-inset-bottom)]"
+          style={{ backgroundColor: "rgba(0, 0, 0, 0.7)" }}
+        >
+          <TouchableWithoutFeedback>
+            <View
+              className="bg-white p-5 rounded-lg shadow-lg w-[80%]"
+              style={{ marginBottom: insets.bottom }}
+            >
+              <Text className="text-xl font-bold mb-3 text-center">
+                {title}
+              </Text>
+              <Text className="text-gray-600 mb-4 text-center">{message}</Text>
+              {children}
+              <View className="flex-row justify-between mt-4">
+                <Button
+                  width="w-[48%]"
+                  styles="px-4"
+                  onPress={onClose}
+                  text={cancelText || "Cancel"}
+                  color="red"
+                />
+
+                <Button
+                  width="w-[48%]"
+                  styles="px-4"
+                  onPress={onConfirm}
+                  text={confirmText || "Proceed"}
+                />
+              </View>
+            </View>
+          </TouchableWithoutFeedback>
         </View>
-      </View>
+      </TouchableWithoutFeedback>
     </Modal>
   );
 };
