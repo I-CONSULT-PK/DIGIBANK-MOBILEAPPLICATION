@@ -1,66 +1,39 @@
-import { pbkdf2Sync, randomBytes, createCipheriv, createDecipheriv } from 'crypto';
-import { SECRET } from '@env';
-
-const ALGORITHM = 'aes-256-gcm';
-const SALT_LENGTH = 16;
-const IV_LENGTH = 12;
-const TAG_LENGTH = 16;
-const KEY_LENGTH = 32;
-const ITERATION = 65535;
-const ENCRYPTED_POSITION = SALT_LENGTH + IV_LENGTH;
-
-class GCM {
-    constructor(secret) {
-        this.secret = secret;
+import CryptoJS from 'crypto-es';
+ 
+// Secret keys for HMAC and AES (use the same keys as in your Java code)
+const hmacKey = '1234567890123456';
+const aesKey = '1234567890123456'; // 16 bytes for AES-128
+ 
+// Encrypt the message
+export const encrypt = (message) => {
+    // Generate a random IV (Initialization Vector)
+    const iv = CryptoJS.lib.WordArray.random(16); // 16 bytes IV for AES
+ 
+    // Encrypt the message using AES with the generated IV
+    const encrypted = CryptoJS.AES.encrypt(message, CryptoJS.enc.Utf8.parse(aesKey), { iv: iv }).toString();
+ 
+    // Generate HMAC for the encrypted message
+    const hmac = CryptoJS.HmacSHA256(encrypted, hmacKey).toString(CryptoJS.enc.Base64);
+ 
+    // Combine IV (Base64 encoded), the encrypted message, and the HMAC
+    const combined = `${CryptoJS.enc.Base64.stringify(iv)}:${encrypted}:${hmac}`;
+ 
+    return combined;
+};
+ 
+// Decrypt the message
+export const decrypt = (combined) => {
+    const [ivBase64, encryptedMessage, receivedHmac] = combined.split(':');
+ 
+    // Verify HMAC
+    const calculatedHmac = CryptoJS.HmacSHA256(encryptedMessage, hmacKey).toString(CryptoJS.enc.Base64);
+    if (calculatedHmac !== receivedHmac) {
+        throw new Error('Invalid HMAC: The message has been tampered with.');
     }
-
-    getKey(salt) {
-        return pbkdf2Sync(this.secret, salt, ITERATION, KEY_LENGTH, 'sha512');
-    }
-
-    encrypt(plainText) {
-        const salt = randomBytes(SALT_LENGTH);
-        const iv = randomBytes(IV_LENGTH);
-
-        const key = this.getKey(salt);
-
-        const cipher = createCipheriv(ALGORITHM, key, iv);
-        const encrypted = Buffer.concat([
-            cipher.update(String(plainText), 'utf8'),
-            cipher.final(),
-        ]);
-
-        const tag = cipher.getAuthTag();
-        return Buffer.concat([salt, iv, encrypted, tag]).toString('base64');
-    }
-
-    decrypt(cipherText) {
-        const stringValue = Buffer.from(String(cipherText), 'base64');
-
-        const salt = stringValue.slice(0, SALT_LENGTH);
-        const iv = stringValue.slice(SALT_LENGTH, ENCRYPTED_POSITION);
-        const encrypted = stringValue.slice(ENCRYPTED_POSITION, stringValue.length - TAG_LENGTH);
-        const tag = stringValue.slice(-TAG_LENGTH);
-
-        const key = this.getKey(salt);
-        const decipher = createDecipheriv(ALGORITHM, key, iv);
-        decipher.setAuthTag(tag);
-
-        return decipher.update(encrypted) + decipher.final('utf8');
-    }
-}
-
-let secretKey = SECRET;
-let plainText = 'Affan';
-
-let gcm = new GCM(secretKey);
-
-let encryptedValue = gcm.encrypt(plainText);
-let decryptedValue = gcm.decrypt(encryptedValue);
-
-console.table({
-    encryptedValue,
-    decryptedValue
-});
-
-export default GCM;
+ 
+    // Decrypt the message using AES
+    const iv = CryptoJS.enc.Base64.parse(ivBase64); // Parse the IV from Base64
+    const decrypted = CryptoJS.AES.decrypt(encryptedMessage, CryptoJS.enc.Utf8.parse(aesKey), { iv: iv });
+    const originalMessage = decrypted.toString(CryptoJS.enc.Utf8);
+    return originalMessage;
+};
