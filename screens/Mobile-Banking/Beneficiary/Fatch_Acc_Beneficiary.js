@@ -1,20 +1,19 @@
 import React, { useState, useContext } from "react";
 import { Text, View, Image, Keyboard, Alert, TouchableOpacity, ScrollView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { StatusBar } from 'expo-status-bar';
 import { Entypo } from "@expo/vector-icons";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import API_BASE_URL from "../../../config";
+
+import { encrypt } from "../../../utils/crypto";
 import { AppLoaderContext } from "../../../components/LoaderHOC";
+import API_BASE_URL from "../../../config";
 import TextInput from '../../../components/TextInput';
 import Button from "../../../components/Button";
 import Footer from "../../../components/Footer";
-import { useNavigation } from "@react-navigation/native";
-import { encrypt } from "../../../utils/crypto";
-import { StatusBar } from 'expo-status-bar';
 
-const Fatch_Acc_Beneficiary = ({ route }) => {
-  const navigation = useNavigation();
+const Fatch_Acc_Beneficiary = ({ route, navigation }) => {
   const { showLoader, hideLoader } = useContext(AppLoaderContext);
   const { details, bankName, bankLogo } = route.params || {};
 
@@ -31,6 +30,7 @@ const Fatch_Acc_Beneficiary = ({ route }) => {
       try {
         const bearerToken = await AsyncStorage.getItem("token");
         const customerId = await AsyncStorage.getItem("customerId");
+        const accountNumber = await AsyncStorage.getItem("accountNumber");
 
         if (bearerToken) {
           const payload = {
@@ -42,6 +42,8 @@ const Fatch_Acc_Beneficiary = ({ route }) => {
             categoryType: "Individual",
             customerId: customerId,
             bankUrl: encrypt(bankLogo),
+            bankCode: details.branchCode || "0000",
+            ownAccount: encrypt(accountNumber)
           };
 
           const dto = await axios.post(
@@ -93,16 +95,16 @@ const Fatch_Acc_Beneficiary = ({ route }) => {
 
   return (
     <SafeAreaView className="h-full flex-1 bg-[#F9FAFC]">
-      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-        <View style={{ height: 100 }}>
-          <View className="flex-row items-center justify-center w-full h-full">
-            <TouchableOpacity onPress={() => navigation.goBack()} className="absolute left-5">
-              <Entypo name="chevron-left" size={25} color="black" />
-            </TouchableOpacity>
-            <Text className="text-black text-lg font-InterBold">Add Beneficiary</Text>
-          </View>
+      <View style={{ height: 100 }}>
+        <View className="flex-row items-center justify-center w-full h-full">
+          <TouchableOpacity onPress={() => navigation.goBack()} className="absolute left-5">
+            <Entypo name="chevron-left" size={25} color="black" />
+          </TouchableOpacity>
+          <Text className="text-black text-lg font-InterBold">Add Beneficiary</Text>
         </View>
+      </View>
 
+      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
         <View className="w-full h-full px-5">
           <Text className="font-InterSemiBold">From Account</Text>
 

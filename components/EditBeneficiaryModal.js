@@ -36,13 +36,13 @@ const EditBeneficiaryModal = ({ isModalVisible, toggleModal, beneficiary, handle
             onRequestClose={handleModalClose}
             onDismiss={handleModalClose}
         >
-            <View className="justify-start px-5 py-6">
+            <View className="justify-start px-5 py-5">
                 <View className="flex-row items-center justify-center">
                     <AntDesign name="edit" size={22} color={Color.PrimaryWebOrientTxtColor} />
-                    <Text className="text-base font-InterSemiBold ml-2">Edit Details</Text>
+                    <Text className="font-InterBold ml-2">Edit Details</Text>
                 </View>
 
-                <View className="w-full border-b-[1px] border-cyan-200 my-3" />
+                <View className="w-full border-b-[1px] border-gray-400 border-dashed my-3" />
 
                 <View className="mt-2">
                     <Text className="text-sm mb-2 font-InterMedium">Nick Name</Text>

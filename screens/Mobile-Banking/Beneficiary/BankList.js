@@ -6,9 +6,8 @@ import { Entypo } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 
-import { decrypt } from '../../../utils/crypto';
-
 import { Color } from '../../../GlobalStyles';
+import { decrypt } from '../../../utils/crypto';
 import API_BASE_URL from '../../../config';
 import SearchBar from '../../../components/SearchBar';
 import OptionBox from '../../../components/OptionBox';
@@ -80,25 +79,25 @@ const BankList = ({ navigation, route }) => {
 
   return (
     <SafeAreaView className="h-full flex-1" style={{ backgroundColor: Color.PrimaryWebOrient }}>
-      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-        <View style={{ backgroundColor: Color.PrimaryWebOrient, height: 100 }}>
-          <View className="flex-row items-center justify-center w-full h-full">
-            <TouchableOpacity onPress={() => source === 'dashboard' ? navigation.navigate('Home') : navigation.goBack()} className="absolute left-5">
-              <Entypo name="chevron-left" size={25} color="white" />
-            </TouchableOpacity>
-            <Text className="text-white text-lg font-InterBold">Select Bank</Text>
-          </View>
+      <View style={{ backgroundColor: Color.PrimaryWebOrient, height: 100 }}>
+        <View className="flex-row items-center justify-center w-full h-full">
+          <TouchableOpacity onPress={() => source === 'dashboard' ? navigation.navigate('Home') : navigation.goBack()} className="absolute left-5">
+            <Entypo name="chevron-left" size={25} color="white" />
+          </TouchableOpacity>
+          <Text className="text-white text-lg font-InterBold">Select Bank</Text>
         </View>
+      </View>
 
+      <View className="pt-6 pb-2 px-6 bg-[#F9FAFC]">
+        <SearchBar
+          placeholder='Search Bank Name'
+          onChangeText={setSearchQuery}
+          value={searchQuery} />
+      </View>
+
+      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
         <View className="w-full h-full px-6 bg-[#F9FAFC] pb-10">
           <View className="mt-6">
-            <SearchBar
-              placeholder='Search Bank Name'
-              onChangeText={setSearchQuery}
-              value={searchQuery} />
-          </View>
-
-          <View className="mt-8">
             {filteredBanks.map((bank, index) => (
               <React.Fragment key={index}>
                 <OptionBox
@@ -106,7 +105,7 @@ const BankList = ({ navigation, route }) => {
                   text={bank.bankName}
                   icon1='arrowright'
                   iconColor1={Color.PrimaryWebOrient}
-                  onPress1={() => { navigation.navigate('Add_Beneficiary', { bankName: bank.bankName, bankLogo: bank.bankLogo }) }}
+                  onPress1={() => { navigation.navigate('Add_Beneficiary', { bankName: bank.bankName, bankLogo: bank.bankLogo, shortBank: bank.shortBank }) }}
                 />
                 <View className="my-3 w-full border-b border-gray-300" />
               </React.Fragment>

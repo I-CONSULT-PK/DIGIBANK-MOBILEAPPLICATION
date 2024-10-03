@@ -24,11 +24,13 @@ const BeneficiarySuccess = ({ route, navigation }) => {
                     <Text className="text-2xl font-InterBold text-center">Beneficiary Added Successfully</Text>
                 </View>
 
-                <View className="mt-16 shadow-md shadow-slate-400">
-                    <Image source={{ uri: bankLogo }} resizeMode='contain' className="w-14 h-14 rounded-lg" />
+                <View className="mt-16">
+                    <View className="bg-white shadow-md shadow-slate-400 rounded-lg p-1"> 
+                        <Image source={{ uri: bankLogo }} resizeMode='contain' className="w-14 h-14 rounded-lg" />
+                    </View>
                 </View>
 
-                <View className="mt-3 items-center justify-center">
+                <View className="mt-3.5 items-center justify-center">
                     <Text className="font-InterMedium">You have successfully added</Text>
                     <Text className="text-primary font-InterBold">{beneficiaryName}</Text>
                     <Text className="font-InterMedium">as a beneficiary</Text>

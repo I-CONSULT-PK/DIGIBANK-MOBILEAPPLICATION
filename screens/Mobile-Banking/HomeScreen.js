@@ -167,9 +167,9 @@ const HomeScreen = () => {
           accountType: response.data.data.accountType || "N/A",
           email: response.data.data.email || "N/A", 
           mobileNumber: response.data.data.mobileNumber || "N/A", 
-          bankLogo: response.data.data.bankImage || "N/A"
+          bankLogo: response.data.data.bankImage || "N/A",
+          bankName: response.data.data.bankName || "N/A"
         };
-  
   
         await AsyncStorage.multiSet([
           ["firstName", userDetails.firstName],
@@ -180,6 +180,7 @@ const HomeScreen = () => {
           ["mobileNumber", userDetails.mobileNumber], 
           ["bankLogo", userDetails.bankLogo], 
           ["balance", userDetails.defaultAccountBalance], 
+          ["bankName", userDetails.bankName], 
         ]);
   
         setUserDetails(userDetails);
@@ -255,24 +256,27 @@ const HomeScreen = () => {
     try {
       const customerId = await AsyncStorage.getItem('customerId');
       const bearerToken = await AsyncStorage.getItem('token');
-
+  
       if (customerId && bearerToken) {
         const response = await axios.get(`${API_BASE_URL}/v1/beneficiary/getAllBeneficiary?customerId=${customerId}&flag=false`, {
           headers: {
             'Authorization': `Bearer ${bearerToken}`
           }
         });
-
+  
         const dto = response.data;
-
+  
         if (dto && dto.success && dto.data) {
-          const transformedBeneficiaries = dto.data.map(item => ({
+          // Ensure dto.data is an array
+          const beneficiariesArray = Array.isArray(dto.data) ? dto.data : [dto.data];
+  
+          const transformedBeneficiaries = beneficiariesArray.map(item => ({
             ...item,
             bankUrl: decrypt(item.bankUrl),
             accountNumber: decrypt(item.accountNumber),
             liked: item.flag
           }));
-
+  
           // Sort beneficiaries first by flag (true first) and within that by id in descending order
           transformedBeneficiaries.sort((a, b) => {
             if (b.flag === a.flag) {
@@ -280,7 +284,7 @@ const HomeScreen = () => {
             }
             return b.flag - a.flag;
           });
-
+  
           setBeneficiaries(transformedBeneficiaries);
         } else {
           if (dto.message) {
@@ -295,7 +299,7 @@ const HomeScreen = () => {
     } catch (error) {
       if (error.response) {
         const statusCode = error.response.status;
-
+  
         if (statusCode === 404) {
           Alert.alert('Error', 'Server timed out. Try again later!');
         } else if (statusCode === 503) {

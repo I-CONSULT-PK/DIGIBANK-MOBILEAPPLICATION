@@ -1,9 +1,6 @@
-import React, { useState, useEffect } from "react";
-import { ScrollView, Text, TouchableOpacity, StyleSheet, View, Alert, Modal, Image, Keyboard, Platform } from "react-native";
-import {
-  widthPercentageToDP as wp,
-  heightPercentageToDP as hp,
-} from "react-native-responsive-screen";
+import React, { useState, useEffect, useRef } from "react";
+import { ScrollView, Text, TouchableOpacity, View, Alert, Image, Keyboard, Platform, TextInput } from "react-native";
+import Modal from 'react-native-modal';
 import Input from "../../components/TextInput";
 import InputWithIcon from "../../components/TextInputWithIcon";
 import { Color } from "../../GlobalStyles";
@@ -22,13 +19,15 @@ import * as Application from 'expo-application';
 const Login = ({ navigation }) => {
   const [form, setForm] = useState({ username: '', password: '' });
   const [loading, setLoading] = useState(false);
-  // const [modalVisible, setModalVisible] = useState(false);
-  // const [modalVisible1, setModalVisible1] = useState(false);
-  // const [error, setError] = useState("");
+  const [modalVisible, setModalVisible] = useState(false);
   const [bioEnabled, setBioEnabled] = useState(null);
   const [hasFingerprint, setHasFingerprint] = useState(false);
   const [hasFaceDetection, setHasFaceDetection] = useState(false);
   const [hasBiometrics, setHasBiometrics] = useState(false);
+  const [pin, setPin] = useState(Array(pinLength).fill(''));
+
+  const pinLength = 4;
+  const inputs = useRef([]);
 
   const rnBiometrics = new ReactNativeBiometrics();
 
@@ -48,6 +47,33 @@ const Login = ({ navigation }) => {
     require('../../assets/security-img-10.png'),
   ];
 
+  const handlePINChange = (text, index) => {
+    const sanitizedText = text.replace(/[^0-9]/g, '');
+    const newPin = [...pin];
+    newPin[index] = sanitizedText;
+
+    setPin(newPin);
+
+    if (sanitizedText.length === 1 && index < pinLength - 1) {
+      inputs.current[index + 1].focus();
+    } else if (sanitizedText.length === 0 && index > 0) {
+      const prevIndex = index - 1;
+      if (inputs.current[prevIndex]) {
+        inputs.current[prevIndex].focus();
+      }
+    }
+  };
+
+  useEffect(() => {
+    const toggleModal = () => {
+      setModalVisible(true);
+    };
+
+    setTimeout(() => {
+      toggleModal();
+    }, 200);
+  }, []);
+
   const handleChange = (name, value) => {
     setForm({
       ...form,
@@ -58,7 +84,6 @@ const Login = ({ navigation }) => {
   const handleLogin = async () => {
     if (form.username === '' || form.password === '') {
       Alert.alert('Error', 'Username and password cannot be null');
-      console.log(API_BASE_URL);
       return;
     }
 
@@ -88,8 +113,6 @@ const Login = ({ navigation }) => {
         Alert.alert('Error', message);
       }
     } catch (error) {
-      console.error("Login error:", error); // Log detailed error
-
       if (error.response) {
         // Server responded with a status code outside the range of 2xx
         const statusCode = error.response.status;
@@ -133,6 +156,8 @@ const Login = ({ navigation }) => {
           const dto = response.data;
 
           if (dto && dto.success && dto.data && dto.data.customerId) {
+            setModalVisible(false);
+
             const customerId = dto.data.customerId.toString();
             const token = dto.data.token.toString();
             const expirationTime = dto.data.expirationTime.toString();
@@ -173,6 +198,66 @@ const Login = ({ navigation }) => {
       }
     } catch (error) {
       Alert.alert('Error', 'Biometrics failed. Try again!');
+    }
+  };
+
+  const handleLoginWithPin = async () => {
+    const enteredPin = pin.join('');
+
+    if (enteredPin.length > 0) {
+      const uniqueId =
+        Platform.OS === 'android'
+          ? await Application.getAndroidId()
+          : await Application.getIosIdForVendorAsync();
+
+      try {
+        const response = await axios.post(`${API_BASE_URL}/api/devices/loginWithPin?devicePin=${enteredPin}&uniquePin=${uniqueId}`, { timeout: 10000 });
+
+        const dto = response.data;
+
+        if (dto && dto.success && dto.data && dto.data.customerId) {
+          setModalVisible(false);
+
+          const customerId = dto.data.customerId.toString();
+          const token = dto.data.token.toString();
+          const expirationTime = dto.data.expirationTime.toString();
+
+          await AsyncStorage.setItem('customerId', customerId);
+          await AsyncStorage.setItem('token', token);
+          await AsyncStorage.setItem('expirationTime', expirationTime);
+
+          navigation.navigate('Home');
+        }
+        else {
+          if (dto.message) {
+            Alert.alert('Error', dto.message);
+          }
+          else if (dto.errors && dto.errors.length > 0) {
+            Alert.alert('Error', dto.errors);
+          }
+        }
+      } catch (error) {
+        if (error.response) {
+          const statusCode = error.response.status;
+
+          if (statusCode === 404) {
+            Alert.alert('Error', 'Server timed out. Try again later!');
+          } else if (statusCode === 503) {
+            Alert.alert('Error', 'Service unavailable. Please try again later.');
+          } else if (statusCode === 400) {
+            Alert.alert('Error', error.response.data.data.errors[0]);
+          } else {
+            Alert.alert('Error', error.message);
+          }
+        } else if (error.request) {
+          Alert.alert('Error', 'No response from the server. Please check your connection.');
+        } else {
+          Alert.alert('Error', error.message);
+        }
+      }
+    }
+    else {
+      Alert.alert('Error', 'Please enter your PIN');
     }
   };
 
@@ -356,14 +441,14 @@ const Login = ({ navigation }) => {
                 </View>
               </View>
               {/* Centered Touch ID and Face ID buttons */}
-              {bioEnabled && (<View className="flex justify-center items-center ">
+              {bioEnabled && (<View className="flex justify-center items-center mb-2">
                 <View className="flex flex-row space-x-4">
                   {/* Touch ID Button */}
                   {hasBiometrics && (<TouchableOpacity
                     className="flex flex-col items-center"
                     onPress={handleLoginWithFingerprint}
                   >
-                    <View className="bg-[#1DBBD8] p-4 rounded-lg">
+                    <View className="bg-[#1DBBD8] p-3.5 rounded-lg">
                       <Image
                         source={require("../../assets/finger-icon.png")}
                         className="h-12 w-12"
@@ -378,7 +463,7 @@ const Login = ({ navigation }) => {
                     className="flex flex-col items-center"
                     onPress={handleLoginWithFingerprint}
                   >
-                    <View className="bg-[#1DBBD8] p-4 rounded-lg">
+                    <View className="bg-[#1DBBD8] p-3.5 rounded-lg">
                       <Image
                         source={require("../../assets/finger-icon.png")}
                         className="h-12 w-12"
@@ -394,7 +479,7 @@ const Login = ({ navigation }) => {
                     className="flex flex-col items-center"
                     onPress={() => navigation.navigate('CameraScreen')}
                   >
-                    <View className="bg-[#1DBBD8] p-4 rounded-lg">
+                    <View className="bg-[#1DBBD8] p-3.5 rounded-lg">
                       <Image
                         source={require("../../assets/Face Icon.png")}
                         className="h-12 w-12"
@@ -414,16 +499,17 @@ const Login = ({ navigation }) => {
       <StatusBar backgroundColor={Color.PrimaryWebOrient} style="light" />
 
       {/* <Modal
+        style={{ backgroundColor: 'rgba(0,0,0,0.5)', margin: 0 }}
         transparent={true}
         visible={modalVisible}
         animationType="slide"
         onRequestClose={() => setModalVisible(false)}
+        onBackdropPress={() => setModalVisible(false)}
+        hasBackdrop={true}
+        backdropColor="black"
+        backdropOpacity={0.5}
       >
-        <View
-          className="flex-1 justify-center items-center"
-          style={{ backgroundColor: "rgba(0, 0, 0, 0.7)" }}
-        >
-          <View className="bg-white p-5 rounded-lg w-11/12 max-w-xs justify-center items-center ">
+          <View className="bg-white p-5 rounded-lg w-11/12 max-w-xs justify-center items-center self-center shadow-md shadow-slate-400">
             <Image
               source={require("../../assets/alerrt-icon.png")}
               className="w-16 h-14 mb-4"
@@ -453,58 +539,71 @@ const Login = ({ navigation }) => {
               />
             </View>
           </View>
-        </View>
-      </Modal>
+      </Modal> */}
+
       <Modal
+        style={{ backgroundColor: 'rgba(0,0,0,0.5)', margin: 0 }}
         transparent={true}
-        visible={modalVisible1}
+        visible={modalVisible}
         animationType="slide"
-        onRequestClose={() => setModalVisible1(false)}
+        onRequestClose={() => setModalVisible(false)}
+        onBackdropPress={() => setModalVisible(false)}
+        hasBackdrop={true}
+        backdropColor="black"
+        backdropOpacity={0.5}
       >
-        <View
-          className="flex-1 justify-center items-center"
-          style={{ backgroundColor: "rgba(0, 0, 0, 0.7)" }}
-        >
-          <View className="bg-white p-5 rounded-lg w-11/12 max-w-xs justify-center items-center ">
-            <Image
-              source={require("../../assets/alerrt-icon.png")}
-              className="w-16 h-14 mb-4"
-            />
-            <Text className="text-lg font-bold mb-2">Alert Notification</Text>
-            <Text className="text-center text-gray-500 mb-6">
-              {error}
-            </Text>
-            <View className="flex-row justify-between">
-              <TouchableOpacity
-                onPress={() => setModalVisible1(false)}
-                className="flex-1 bg-white border border-gray-300 rounded-lg py-2 mr-2 items-center justify-center"
-              >
-                <Text className="text-center text-black text-base">Cancel</Text>
-              </TouchableOpacity>
-              <Button
-                text="Ok"
-                onPress={() => {
-                  setModalVisible1(false);
-                }}
-                width="w-32"
-                backgroundColor="#1D4ED8"
-                textColor="#FFF"
-                fontSize="text-sm"
-                styles="mr-4"
-              />
+        <View className="bg-white p-5 rounded-lg w-11/12 max-w-xs justify-center items-center self-center shadow-md shadow-slate-400">
+          <View className="mb-5 px-2">
+            <Text className="mb-4 text-center font-InterSemiBold">Enter Your 4 Digit PIN</Text>
+
+            <View className="flex-row justify-around items-center w-full self-center -left-1">
+              {Array.from({ length: pinLength }).map((_, index) => (
+                <TextInput
+                  key={index}
+                  ref={(input) => inputs.current[index] = input}
+                  className="w-12 h-12 text-center text-lg bg-[#F4F5F9] border border-gray-300 rounded-md font-InterSemiBold"
+                  keyboardType="numeric"
+                  maxLength={1}
+                  onChangeText={(text) => handlePINChange(text, index)}
+                  returnKeyType={index === pinLength - 1 ? "done" : "next"}
+                />
+              ))}
             </View>
           </View>
+
+          <View className="border-t border-gray-300 w-[95%] self-center border-dotted mb-2" />
+
+          <TouchableOpacity className="bg-white p-2 shadow-md shadow-slate-300 rounded-full justify-center items-center mb-2.5" onPress={handleLoginWithFingerprint}>
+            <Image
+              source={require("../../assets/fingerprint-login.png")}
+              className="w-14 h-14"
+            />
+          </TouchableOpacity>
+          <Text className="text-center font-InterSemiBold text-gray-700">
+            Login with Touch / Face ID
+          </Text>
+
+          <View className="flex-row justify-between w-full px-1 mt-6">
+            <Button
+              text="Cancel"
+              onPress={() => setModalVisible(false)}
+              width="w-[48%]"
+              color="white"
+              textStyles="text-gray-700"
+              styles="border border-gray-300 py-3"
+            />
+
+            <Button
+              text="Done"
+              onPress={handleLoginWithPin}
+              width="w-[48%]"
+              styles="py-3"
+            />
+          </View>
         </View>
-      </Modal> */}
+      </Modal>
     </SafeAreaView>
   );
 };
-
-const styles = StyleSheet.create({
-  loader: {
-    width: wp("20%"),
-    height: wp("20%"),
-  },
-});
 
 export default Login;

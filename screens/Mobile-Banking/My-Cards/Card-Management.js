@@ -33,6 +33,7 @@ const CardManagement = () => {
     try {
       const bearerToken = await AsyncStorage.getItem("token");
       const accountNumber = await AsyncStorage.getItem("accountNumber");
+      
       if (!bearerToken) {
         Alert.alert("Error", "Authentication token not found");
         return;

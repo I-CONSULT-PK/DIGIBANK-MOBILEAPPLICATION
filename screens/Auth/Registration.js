@@ -173,7 +173,7 @@ const Registration = ({ route }) => {
         reason: "fund transfer",
         deliveryPreference: otpDeliveryMethod ? otpDeliveryMethod : "EMAIL"
       };
-
+      
       try {
         const response = await axios.post(
           `${API_BASE_URL}/v1/otp/createOTP`,

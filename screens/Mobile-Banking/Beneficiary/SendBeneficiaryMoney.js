@@ -1,13 +1,5 @@
 import React, { useEffect } from 'react';
-
-import {
-  View,
-  Text,
-  ScrollView,
-  TouchableOpacity,
-  BackHandler,
-  
-} from "react-native";
+import { View, Text, ScrollView, TouchableOpacity, BackHandler } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
 import { Entypo } from "@expo/vector-icons";
@@ -20,9 +12,6 @@ import BankIcon from "../../../assets/bank-icon.png";
 import RaastIcon from "../../../assets/raast-icon.png";
 
 const SendBeneficiaryMoney = ({ navigation }) => {
-  const handleBack = () => {
-    navigation.goBack();
-  };
   useEffect(() => {
     const handleBackPress = () => {
       navigation.navigate("Home");
@@ -37,23 +26,20 @@ const SendBeneficiaryMoney = ({ navigation }) => {
   }, []);
 
   return (
-    <SafeAreaView
-      className="h-full flex-1"
-      style={{ backgroundColor: Color.PrimaryWebOrient }}
-    >
-      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-        <View style={{ backgroundColor: Color.PrimaryWebOrient, height: 100 }}>
-          <View className="flex-row items-center justify-center w-full h-full">
-            <TouchableOpacity
-              onPress={() => navigation.navigate("Home")}
-              className="absolute left-5"
-            >
-              <Entypo name="chevron-left" size={25} color="white" />
-            </TouchableOpacity>
-            <Text className="text-white text-lg font-InterBold">Send Money</Text>
-          </View>
+    <SafeAreaView className="h-full flex-1" style={{ backgroundColor: Color.PrimaryWebOrient }}>
+      <View style={{ backgroundColor: Color.PrimaryWebOrient, height: 100 }}>
+        <View className="flex-row items-center justify-center w-full h-full">
+          <TouchableOpacity
+            onPress={() => navigation.navigate("Home")}
+            className="absolute left-5"
+          >
+            <Entypo name="chevron-left" size={25} color="white" />
+          </TouchableOpacity>
+          <Text className="text-white text-lg font-InterBold">Send Money</Text>
         </View>
+      </View>
 
+      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
         <View className="w-full h-full px-6 bg-[#F9FAFC]">
           <View className="mt-8">
             <Text className="font-InterSemiBold text-base">Select Method</Text>
