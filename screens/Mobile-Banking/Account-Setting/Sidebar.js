@@ -12,18 +12,18 @@ import { Entypo, Ionicons } from "@expo/vector-icons";
 import { SafeAreaView } from "react-native-safe-area-context";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Color } from "../../../GlobalStyles";
-
+ 
 // Import translation and icon mapping files
 import { enData } from "./translations/en";
 import { urData } from "./translations/ur";
-
+ 
 // Define your language options
 const languageOptions = {
   en: "English",
   ur: "اردو",
   // Add more languages here
 };
-
+ 
 const Sidebar = () => {
   const [userDetails, setUserDetails] = useState({
     firstName: "",
@@ -32,9 +32,9 @@ const Sidebar = () => {
     accountType: "",
   });
   const [language, setLanguage] = useState("en");
-
+ 
   const navigation = useNavigation();
-
+ 
   useEffect(() => {
     const loadUserDetails = async () => {
       try {
@@ -44,7 +44,7 @@ const Sidebar = () => {
           (await AsyncStorage.getItem("accountNumber")) || "1234567890";
         const accountType =
           (await AsyncStorage.getItem("accountType")) || "N/A";
-
+ 
         setUserDetails({
           firstName,
           lastName,
@@ -55,25 +55,25 @@ const Sidebar = () => {
         console.error("Error loading user details from AsyncStorage", error);
       }
     };
-
+ 
     loadUserDetails();
   }, []);
-
+ 
   const handleLanguageSelect = (selectedLanguage) => {
     setLanguage(selectedLanguage);
     I18nManager.forceRTL(selectedLanguage === "ur");
   };
-
+ 
   const handlePress = async (item) => {
     const logoutTitle =
       language === "en"
         ? enData.translations.menuItems.find(
-          (menuItem) => menuItem.title === "Logout"
-        )?.title
+            (menuItem) => menuItem.title === "Logout"
+          )?.title
         : urData.translations.menuItems.find(
-          (menuItem) => menuItem.title === "لاگ آؤٹ"
-        )?.title;
-
+            (menuItem) => menuItem.title === "لاگ آؤٹ"
+          )?.title;
+ 
     if (item.title === logoutTitle) {
       try {
         // Retrieve and filter keys
@@ -95,7 +95,7 @@ const Sidebar = () => {
     } else {
       const translations = {
         "Change Language": "SelectLanguage",
-        "Device Management": "DeviceManagement",
+        "Device Management": "Device_Management",
         "Feedback": "Feedback",
       };
 
@@ -105,11 +105,11 @@ const Sidebar = () => {
       }
     }
   };
-
+ 
   // Select translations and icon mappings based on current language
   const { translations, iconMapping } = language === "en" ? enData : urData;
   const menuItems = translations.menuItems;
-
+ 
   return (
     <SafeAreaView className="flex-1 bg-gray-50">
       <ScrollView>
@@ -125,7 +125,7 @@ const Sidebar = () => {
               {translations.welcome}
             </Text>
           </View>
-
+ 
           <View
             className={`flex-row items-center justify-between ${I18nManager.isRTL ? "flex-row-reverse" : ""
               }`}
@@ -207,5 +207,5 @@ const Sidebar = () => {
     </SafeAreaView>
   );
 };
-
+ 
 export default Sidebar;

@@ -21,7 +21,7 @@ const AccountCard = ({
   accountBalance,
   isFavorite,
   onSelect,
-  isDefault // New prop to check if it's the default account
+  isDefault, // New prop to check if it's the default account
 }) => {
   const [isFavorite1, setIsFavorite1] = useState(isFavorite || false);
 
@@ -51,12 +51,16 @@ const AccountCard = ({
       <Divider className="mt-1" />
       <View className="mt-2 flex-row justify-between mb-1">
         <Text className="text-sm text-gray-500">Balance:</Text>
-        <Text className="text-sm font-bold text-black">PKR {accountBalance}</Text>
+        <Text className="text-sm font-bold text-black">
+          PKR {accountBalance}
+        </Text>
       </View>
       <Divider />
       <View className="mt-2 flex-row justify-between mb-1">
         <Text className="text-sm text-gray-500">Branch Name:</Text>
-        <Text className="text-sm font-bold text-black">{branchName || "N/A"}</Text>
+        <Text className="text-sm font-bold text-black">
+          {branchName || "N/A"}
+        </Text>
       </View>
       <Divider />
       <View className="mt-1 flex-row justify-between mb-1">
@@ -85,7 +89,7 @@ const Account = () => {
     try {
       const bearerToken = await AsyncStorage.getItem("token");
       const customerId = await AsyncStorage.getItem("customerId");
-  
+
       if (bearerToken && customerId) {
         const response = await axios.get(
           `${API_BASE_URL}/v1/customer/dashboard?customerId=${customerId}`,
@@ -95,16 +99,18 @@ const Account = () => {
             },
           }
         );
-  
+
         if (response && response.data.success && response.data) {
           const { accountList } = response.data.data;
-  
+
           // Set default account from the fetched data
-          const defaultAccountData = accountList.find(account => account.defaultAccount);
+          const defaultAccountData = accountList.find(
+            (account) => account.defaultAccount
+          );
           if (defaultAccountData) {
             setDefaultAccount(defaultAccountData.accountNumber);
           }
-  
+
           // Sort the accountList to put the favorite account on top
           const sortedAccountList = accountList.sort(
             (a, b) => b.defaultAccount - a.defaultAccount
@@ -120,7 +126,6 @@ const Account = () => {
       // ... (existing error handling remains unchanged)
     }
   };
-  
 
   const setAccountDefault = async (accountNo) => {
     try {
@@ -203,6 +208,7 @@ const Account = () => {
             >
               <Entypo name="chevron-left" size={25} color="white" />
             </TouchableOpacity>
+
             <Text className="text-white text-lg font-bold">Account</Text>
           </View>
           <View className="py-4 px-6 mb-4">
@@ -211,7 +217,10 @@ const Account = () => {
             </Text>
 
             <View className="flex items-center justify-center mt-4">
-              <TouchableOpacity className="bg-white rounded-lg py-2 flex-row justify-center items-center w-32">
+              <TouchableOpacity
+                className="bg-white rounded-lg py-2 flex-row justify-center items-center w-32"
+                onPress={() => navigation.navigate("Add_Account")}
+              >
                 <Text className="text-cyan-500 font-bold">+ Add Account</Text>
               </TouchableOpacity>
             </View>

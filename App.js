@@ -94,7 +94,6 @@ import Fatch_Details from "./screens/Mobile-Banking/Mobile-Top-Up/Fatch_Details"
 import To_Up_Transfer from "./screens/Mobile-Banking/Mobile-Top-Up/To_Up_Transfer";
 import Account from "./screens/Mobile-Banking/Account/Account";
 import Update_Profile from "./screens/Mobile-Banking/Account-Setting/Update_Profile";
-import DeviceManagement from "./screens/Mobile-Banking/Device_Management/Device_Management";
 import ChangePassword from "./screens/Mobile-Banking/Account-Setting/ChangePassword";
 import Add_Account from "./screens/Mobile-Banking/Account-Setting/Add_Account";
 import DeactivatePin from "./screens/Mobile-Banking/Account-Setting/DeactivatePin";
@@ -106,8 +105,8 @@ import CameraScreen from "./screens/Auth/CameraScreen";
 import BeneficiarySuccess from "./screens/Mobile-Banking/Beneficiary/BeneficiarySuccess";
 import TransferSuccess from "./screens/Mobile-Banking/Beneficiary/TransferSuccess";
 import Fatch_amount_Packges from "./screens/Mobile-Banking/Mobile-Top-Up/Fatch_amount_Packges";
-import Packges_Transfer from "./screens/Mobile-Banking/Mobile-Top-Up/Packges_Transfer"
-
+import Packges_Transfer from "./screens/Mobile-Banking/Mobile-Top-Up/Packges_Transfer";
+import Device_Management from "./screens/Mobile-Banking/Device-Management/Device_Management";
 const Stack = createNativeStackNavigator();
 
 export default function App() {
@@ -168,6 +167,11 @@ export default function App() {
         <Stack.Screen
           name="Registration"
           component={Registration}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="Device_Management"
+          component={Device_Management}
           options={{ headerShown: false }}
         />
         <Stack.Screen
@@ -297,6 +301,7 @@ export default function App() {
           component={DeactivatePin}
           options={{ headerShown: false }}
         />
+       
          <Stack.Screen
           name="ChangeLoginPin"
           component={ChangeLoginPin}
@@ -374,6 +379,8 @@ export default function App() {
           component={To_Up_Transfer}
           options={{ headerShown: false }}
         />
+       
+
          <Stack.Screen
           name="UserActivity"
           component={UserActivity}
@@ -458,11 +465,7 @@ export default function App() {
           component={Domestic}
           options={{ headerShown: false }}
         />
-        <Stack.Screen
-          name="DeviceManagement"
-          component={DeviceManagement}
-          options={{ headerShown: false }}
-        />
+        
         <Stack.Screen
           name="MyPayees"
           component={MyPayess}
@@ -699,6 +702,12 @@ export default function App() {
             <Stack.Screen
               name="RegisterFaceDetector"
               component={RegisterFaceDetector}
+              options={{ headerShown: false }}
+            />
+            
+            <Stack.Screen
+              name="Device_Management"
+              component={Device_Management}
               options={{ headerShown: false }}
             />
             <Stack.Screen
