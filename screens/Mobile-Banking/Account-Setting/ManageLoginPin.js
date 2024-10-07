@@ -19,7 +19,7 @@ import API_BASE_URL from "../../../config";
 import * as Device from "expo-device";
 import * as Application from "expo-application";
 import { StatusBar } from "expo-status-bar";
-
+ 
 const ManageLoginPin = () => {
   const navigation = useNavigation();
   const [customerId, setCustomerId] = useState("");
@@ -99,9 +99,14 @@ const ManageLoginPin = () => {
         Alert.alert("Success", "PIN activated successfully.");
         setPinCode("");
         setReenterPinCode("");
-      } else {
+        // Ensure data is a string before saving it
+        const data = response.data.data.toString(); 
+        await AsyncStorage.setItem('deviceTableId', data);
+        console.log(data);
+    } else {
         Alert.alert("Error", response.data.message || "Something went wrong.");
-      }
+    }
+    
     } catch (error) {
       Alert.alert("Error", error.message || "An error occurred.");
     }
