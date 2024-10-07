@@ -15,6 +15,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFocusEffect } from "@react-navigation/native";
 import ReactNativeBiometrics, { BiometryTypes } from 'react-native-biometrics';
 import * as Application from 'expo-application';
+import { encrypt } from "../../utils/crypto";
 
 const Login = ({ navigation }) => {
   const [form, setForm] = useState({ username: '', password: '' });
@@ -83,19 +84,27 @@ const Login = ({ navigation }) => {
 
   const handleLogin = async () => {
     if (form.username === '' || form.password === '') {
+      console.log(API_BASE_URL);
       Alert.alert('Error', 'Username and password cannot be null');
       return;
     }
 
+    // const encryptedPassword = encrypt(form.password);
+
     const loginData = {
       emailorUsername: form.username,
-      password: form.password
+      password: form.password,
+      // password: encryptedPassword
     };
 
     setLoading(true);
 
     try {
-      const response = await axios.post(`${API_BASE_URL}/v1/customer/login`, loginData, { timeout: 10000 });
+      const response = await axios.post(`${API_BASE_URL}/v1/customer/login`, loginData, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
       const dto = response.data;
 
       if (dto && dto.success && dto.data && dto.data.customerId) {

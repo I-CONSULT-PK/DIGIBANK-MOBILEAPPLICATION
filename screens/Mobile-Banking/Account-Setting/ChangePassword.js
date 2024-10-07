@@ -17,6 +17,7 @@ import axios from "axios";
 import API_BASE_URL from "../../../config";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import InputWithIcon from "../../../components/TextInputWithIcon";
+import { encrypt } from "../../../utils/crypto";
 
 const ChangePassword = ({ navigation }) => {
   const [currentPassword, setCurrentPassword] = useState("");
@@ -65,53 +66,75 @@ const ChangePassword = ({ navigation }) => {
     // Check for alphanumeric criteria
     const hasLetter = /[a-zA-Z]/.test(newPassword);
     const hasNumber = /\d/.test(newPassword);
-  
+
     if (!hasLetter || !hasNumber) {
       Alert.alert("Invalid Password", "Password should be alphanumeric.");
       return;
     }
-  
+
     // Optional: Check for special characters (if needed)
     const specialCharacterPattern = /[!@#$%^&*(),.?":{}|<>]/;
     if (specialCharacterPattern.test(newPassword)) {
       console.log("Password contains special characters.");
     }
-  
+
     try {
-      console.log(newPassword);
-      console.log(customerId);
-      console.log(currentPassword);
+      const bearerToken = await AsyncStorage.getItem('token');
+      const customerId = await AsyncStorage.getItem('customerId');
 
-      const url = `${API_BASE_URL}/v1/settings/changePassword?newPassword=${newPassword}&oldPassword=${currentPassword}&customerId=${customerId}`;
+      if (bearerToken && customerId) {
+        const encryptedNewPassword = encrypt(newPassword);
+        const encryptedOldPassword = encrypt(currentPassword);
 
-      const response = await axios.post(
-        url, 
-        null, 
-        {
+        const payload = {
+          newPassword: encryptedNewPassword,
+          oldPassword: encryptedOldPassword
+        };
+
+        const response = await axios.post(`${API_BASE_URL}/v1/settings/changePassword?customerId=${customerId}`, payload, {
           headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
+            'Authorization': `Bearer ${bearerToken}`
+          }
+        });
 
-      if (response.status === 200) {
-        Alert.alert("Success", "Password changed successfully.");
-        navigation.goBack();
+        const dto = response.data;
+
+        if (dto && dto.success) {
+          Alert.alert("Success", "Password changed successfully.");
+          navigation.goBack();
+        } else {
+          if (dto.message) {
+            Alert.alert('Error', dto.message);
+          } else if (dto.errors && dto.errors.length > 0) {
+            Alert.alert('Error', dto.errors.join('\n'));
+          }
+        }
       } else {
-        Alert.alert("Error", `Failed to change password. Status code: ${response.status}`);
+        Alert.alert('Error', 'Unexpected error occurred. Try again later!');
       }
     } catch (error) {
-      console.error("Error changing password", error.response ? error.response.data : error.message);
-      Alert.alert(
-        "Error",
-        `An error occurred while changing the password. ${error.response ? JSON.stringify(error.response.data) : error.message}`
-      );
+      if (error.response) {
+        const statusCode = error.response.status;
+
+        if (statusCode === 404) {
+          Alert.alert('Error', 'Server timed out. Try again later!');
+        } else if (statusCode === 503) {
+          Alert.alert('Error', 'Service unavailable. Please try again later.');
+        } else if (statusCode === 400) {
+          Alert.alert('Error', error.response.data.data.errors[0]);
+        } else {
+          Alert.alert('Error', error.message);
+        }
+      } else if (error.request) {
+        Alert.alert('Error', 'No response from the server. Please check your connection.');
+      } else {
+        Alert.alert('Error', error.message);
+      }
     }
   };
 
 
-  
+
 
   return (
     <SafeAreaView className="flex-1 bg-[#f9fafc]">
