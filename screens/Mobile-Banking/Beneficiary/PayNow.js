@@ -13,8 +13,8 @@ import Button from "../../../components/Button";
 const PayNow = ({ route, navigation }) => {
   const { userDetails, beneObj, amount, selected } = route.params || {};
 
-  const [bankCharges, setBankCharges] = useState(5);
-  const [totalAmount, setTotalAmount] = useState(parseInt(bankCharges) + parseInt(amount));
+  const [bankCharges, setBankCharges] = useState(userDetails.bankName === beneObj.beneficiaryBankName ? 0 : (parseFloat(amount) * 0.01));
+  const [totalAmount, setTotalAmount] = useState(parseFloat(bankCharges) + parseFloat(amount));
 
   const fundTransfer = async () => {
     try {

@@ -107,7 +107,7 @@ const Stack = createStackNavigator();
 const AppNavigator = () => {
   return (
     <NavigationContainer>
-      <Stack.Navigator>
+      <Stack.Navigator initialRouteName="StartScreen">
         <Stack.Screen name="CameraScreen" component={CameraScreen} />
         <Stack.Screen name="StartScreen" component={StartSection} />
         <Stack.Screen name="FingerPrint" component={FingerPrint} />

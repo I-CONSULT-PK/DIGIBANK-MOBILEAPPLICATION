@@ -15,7 +15,7 @@ import Footer from "../../../components/Footer";
 const SendFromAccount = ({ route }) => {
   const navigation = useNavigation();
   const { beneObj, source } = route.params || {};
-
+  
   const [userDetails, setUserDetails] = useState({
     userName: null,
     accountNumber: null,
