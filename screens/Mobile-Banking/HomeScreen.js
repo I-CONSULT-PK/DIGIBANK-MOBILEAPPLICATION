@@ -73,6 +73,7 @@ const HomeScreen = () => {
     useCallback(() => {
       fetchCardData();
       fetchUserDetails();
+      setActiveItem(null);
     }, [])
   );
 
@@ -193,9 +194,6 @@ const HomeScreen = () => {
     }
   };
   
-  
-  
-
   const fetchCardData = async () => {
     try {
       const bearerToken = await AsyncStorage.getItem("token");
@@ -419,6 +417,7 @@ const HomeScreen = () => {
       </List.AccordionGroup>
     );
   };
+  
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
 

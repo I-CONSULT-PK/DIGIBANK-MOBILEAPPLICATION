@@ -260,8 +260,7 @@ const Registration = ({ route }) => {
             userData
           );
           const dto = response.data;
-          console.log(dto);
-
+          
           if (dto && dto.success && dto.data) {
             Alert.alert("Success", dto.message);
 
@@ -269,10 +268,7 @@ const Registration = ({ route }) => {
               if (hasFaceDetection || hasFingerprint || hasBiometrics) {
                 navigation.navigate("ChooseSecurity", { customerId: dto.data.id });
               } else {
-                navigation.reset({
-                  index: 0,
-                  routes: [{ name: 'Login' }],
-                });
+                navigation.navigate("Login");
               }
             }, 1000);
           } else {
