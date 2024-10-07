@@ -7,16 +7,28 @@ import {
   Image,
   Dimensions,
 } from "react-native";
+import { StatusBar } from "expo-status-bar";
 import { useNavigation } from "@react-navigation/native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Entypo } from "@expo/vector-icons";
 import { Color } from "../../../GlobalStyles";
 import TextInput from "../../../components/TextInput";
 import CustomButton from "../../../components/Button";
-const Fatch_Payment_Details = () => {
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import axios from "axios";
+import API_BASE_URL from "../../../config";
+
+const Fatch_Payment_Details = ({ route }) => {
   const navigation = useNavigation();
+  const { serviceCode, name, image} = route.params || {};
+
   const { width } = Dimensions.get("window");
   const horizontalPadding = 16;
+
+  const convertDriveUrl = (url) => {
+    const fileId = url.match(/d\/(.*?)\//)[1];
+    return `https://drive.google.com/uc?export=view&id=${fileId}`;
+  };
   return (
     <SafeAreaView className="flex-1">
       <View className="flex-1 bg-white">
@@ -44,15 +56,15 @@ const Fatch_Payment_Details = () => {
           <View className="shadow-gray-100">
             <View className="bg-white p-3 rounded-lg shadow-lg w-full">
               <View className="flex flex-row items-center">
-                <Image
-                  source={require('../../../assets/Qubee.png')}
+                <Image  
+                  source={{ uri: convertDriveUrl(image) }}
                   className="mr-1 w-12 h-12"
                   resizeMode="contain"
                 />
                 <View>
-                  <Text className="text-base font-semibold ml-3">Internet</Text>
+                  <Text className="text-base font-semibold ml-3">{name}</Text>
                   <Text className="text-sm text-gray-300 ml-3 mt-1">
-                    PTCL EVO Postpaid
+                   {serviceCode}
                   </Text>
                 </View>
               </View>
@@ -74,6 +86,7 @@ const Fatch_Payment_Details = () => {
           </View>
         </View>
       </View>
+      <StatusBar backgroundColor={Color.PrimaryWebOrient} style="light" />
     </SafeAreaView>
   );
 };

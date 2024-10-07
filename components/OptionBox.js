@@ -8,14 +8,14 @@ const OptionBox = ({ beneObj, image, text, subtext, payment, icon1, icon2, onPre
         <View className="flex-row justify-between items-center">
             {(source === 'payment' || source === 'dashboard') ? (
                 <TouchableOpacity className="flex-row items-center flex-1" onPress={() => navigation.navigate('SendFromAccount', { beneObj })}>
-                    <View className="p-1.5 rounded-lg shadow-md shadow-slate-400 justify-center items-center bg-white">
+                    <View className="p-1 rounded-lg shadow-md shadow-slate-400 justify-center items-center bg-white">
                         <Image
                             source={image}
                             resizeMode="contain"
-                            className="w-10 h-10 rounded-lg"
+                            className="w-11 h-11 rounded-lg"
                         />
                     </View>
-                    <View className="ml-4 flex-1">
+                    <View className="ml-3 flex-1">
                         <Text className="font-InterSemiBold mb-0.5">{text}</Text>
                         {subtext && (<Text className="font-InterMedium text-xs text-gray-400">
                             {subtext}
@@ -24,11 +24,11 @@ const OptionBox = ({ beneObj, image, text, subtext, payment, icon1, icon2, onPre
                 </TouchableOpacity>) 
                 : beneficiary ? (
                     <View className="flex-row items-center flex-1">
-                        <TouchableOpacity className="p-0 rounded-lg shadow-md shadow-slate-400 justify-center items-center bg-white relative" onPress={toggleModal}>
+                        <TouchableOpacity className="p-1 rounded-lg shadow-md shadow-slate-400 justify-center items-center bg-white relative" onPress={toggleModal}>
                             <Image
                                 source={image}
                                 resizeMode="contain"
-                                className="w-12 h-12 rounded-lg"
+                                className="w-11 h-11 rounded-lg"
                             />
                             <View className="absolute -bottom-1 -right-1 bg-white p-1 rounded-full shadow-md shadow-gray-400">
                                 <Feather name="edit-2" size={11.5} color="black" />
@@ -51,11 +51,11 @@ const OptionBox = ({ beneObj, image, text, subtext, payment, icon1, icon2, onPre
                     </View>
                 ) : (
                 <TouchableOpacity className="flex-row items-center flex-1" onPress={onPress1}>
-                    <View className="p-1.5 rounded-lg shadow-md shadow-slate-400 justify-center items-center bg-white">
+                    <View className="p-1 rounded-lg shadow-md shadow-slate-400 justify-center items-center bg-white">
                         <Image
                             source={image}
                             resizeMode="contain"
-                            className="w-10 h-10 rounded-lg"
+                            className="w-11 h-11 rounded-lg"
                         />
                     </View>
                     <View className="ml-4 flex-1">

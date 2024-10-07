@@ -54,6 +54,7 @@ import AvailCashonCreditCard from "../../Mobile-Banking/Easy-Cash/AvailCashonCre
 import BeneficiaryAccountDetails from "../../Mobile-Banking/Easy-Cash/BeneficiaryAccountDetails";
 import Summary from "../../Mobile-Banking/Easy-Cash/Summary";
 import SendFromAccount from "../../Mobile-Banking/Beneficiary/SendFromAccount";
+import DeviceManagement from "../../Mobile-Banking/Device_Management/Device_Management";
 import SendBeneficiaryMoney from "../../Mobile-Banking/Beneficiary/SendBeneficiaryMoney";
 import Add_Beneficiary from "../../Mobile-Banking/Beneficiary/Add-Beneficiary";
 import PayNow from "../../Mobile-Banking/Beneficiary/PayNow";
@@ -100,14 +101,13 @@ import Fatch_amount_Packges from "../../Mobile-Banking/Mobile-Top-Up/Fatch_amoun
 import Packges_Transfer from "../../Mobile-Banking/Mobile-Top-Up/Packges_Transfer";
 import CameraScreen from "../CameraScreen";
 import TransferSuccess from "../../Mobile-Banking/Beneficiary/TransferSuccess";
-import Device_Management from "../../Mobile-Banking/Device-Management/Device_Management";
 
 const Stack = createStackNavigator();
 
 const AppNavigator = () => {
   return (
     <NavigationContainer>
-      <Stack.Navigator>
+      <Stack.Navigator initialRouteName="StartScreen">
         <Stack.Screen name="CameraScreen" component={CameraScreen} />
         <Stack.Screen name="StartScreen" component={StartSection} />
         <Stack.Screen name="FingerPrint" component={FingerPrint} />
@@ -137,6 +137,7 @@ const AppNavigator = () => {
         <Stack.Screen name="ChooseSecurity" component={ChooseSecurity} />
         <Stack.Screen name="BeneficiarySuccess" component={BeneficiarySuccess} />
         <Stack.Screen name="TransferSuccess" component={TransferSuccess} />
+        <Stack.Screen name="DeviceManagement" component={DeviceManagement} />
         <Stack.Screen
           name="RegisterFingerPrint"
           component={RegisterFingerPrint}
@@ -249,7 +250,6 @@ const AppNavigator = () => {
         <Stack.Screen name="Fatch_amount_Packges" component={Fatch_amount_Packges} />
         <Stack.Screen name="To_Up_Transfer" component={To_Up_Transfer} />
         <Stack.Screen name="Packges_Transfer" component={Packges_Transfer} />
-        <Stack.Screen name="Device_Management" component={Device_Management} />
         <Stack.Screen name="Account_Balance" component={Account} />
         <Stack.Screen name="Update_Profile" component={Update_Profile} />
         <Stack.Screen name="Add_Account" component={Add_Account} />

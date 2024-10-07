@@ -21,6 +21,7 @@ import API_BASE_URL from '../../config/index';
 import ReactNativeBiometrics from 'react-native-biometrics';
 import * as Device from 'expo-device';
 import * as Application from 'expo-application';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const RegisterFingerPrint = ({ route }) => {
   const navigation = useNavigation();
@@ -90,6 +91,9 @@ const RegisterFingerPrint = ({ route }) => {
           const dto = response.data;
 
           if (dto && dto.success && dto.data) {
+            const deviceTableId = dto.data.toString();
+            await AsyncStorage.setItem('deviceTableId', deviceTableId);
+
             Alert.alert("Success", dto.message);
 
             setTimeout(() => {

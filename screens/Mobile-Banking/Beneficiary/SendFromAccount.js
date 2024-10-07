@@ -1,16 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { Text, View, ScrollView, TouchableOpacity, Image, Alert, BackHandler } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { StatusBar } from "expo-status-bar";
 import { Entypo } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { SelectList } from "react-native-dropdown-select-list";
-import { StatusBar } from "expo-status-bar";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import axios from "axios";
 
 import { decrypt } from "../../../utils/crypto";
-
-import API_BASE_URL from "../../../config";
 import Button from "../../../components/Button";
 import TextInput from "../../../components/TextInput";
 import Footer from "../../../components/Footer";
@@ -18,22 +15,20 @@ import Footer from "../../../components/Footer";
 const SendFromAccount = ({ route }) => {
   const navigation = useNavigation();
   const { beneObj, source } = route.params || {};
-
+  
   const [userDetails, setUserDetails] = useState({
     userName: null,
     accountNumber: null,
     bankLogo: null,
-    balance: null
+    balance: null,
+    bankName: null
   });
   const [amount, setAmount] = useState(0);
   const [selected, setSelected] = useState("");
-  const [selectedOption, setSelectedOption] = useState(null);
 
   useEffect(() => {
     const handleBackPress = () => {
-      source === "dashboard"
-        ? navigation.navigate("Home")
-        : navigation.goBack();
+      source === "dashboard" ? navigation.navigate("Home") : navigation.goBack();
       return true;
     };
 
@@ -58,10 +53,6 @@ const SendFromAccount = ({ route }) => {
     { key: "11", value: "Other" },
   ];
 
-  const handleSelect = (option) => {
-    setSelectedOption(selectedOption === option ? null : option);
-  };
-
   const loadUserDetails = async () => {
     try {
       const firstName = await AsyncStorage.getItem("firstName");
@@ -69,6 +60,7 @@ const SendFromAccount = ({ route }) => {
       const accountNumber = await AsyncStorage.getItem("accountNumber");
       const encryptedBankLogo = await AsyncStorage.getItem("bankLogo");
       const balance = await AsyncStorage.getItem("balance");
+      const bankName = await AsyncStorage.getItem("bankName");
 
       const bankLogo = encryptedBankLogo ? await decrypt(encryptedBankLogo) : null;
 
@@ -77,6 +69,7 @@ const SendFromAccount = ({ route }) => {
         accountNumber: accountNumber,
         bankLogo: bankLogo,
         balance: balance,
+        bankName: bankName
       });
     } catch (error) {
       console.error("Error loading user details: ", error);
@@ -85,7 +78,6 @@ const SendFromAccount = ({ route }) => {
 
   useEffect(() => {
     loadUserDetails();
-
   }, []);
 
   const handleNext = () => {
@@ -112,20 +104,20 @@ const SendFromAccount = ({ route }) => {
 
   return (
     <SafeAreaView className="h-full flex-1 bg-[#F9FAFC]">
-      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-        <View style={{ height: 90 }}>
-          <View className="flex-row items-center justify-center w-full h-full">
-            <TouchableOpacity onPress={() => {
-              source === "dashboard"
-                ? navigation.navigate("Home")
-                : navigation.goBack();
-            }} className="absolute left-5">
-              <Entypo name="chevron-left" size={25} color="black" />
-            </TouchableOpacity>
-            <Text className="text-black text-lg font-InterBold">Payment</Text>
-          </View>
+      <View style={{ height: 90 }}>
+        <View className="flex-row items-center justify-center w-full h-full">
+          <TouchableOpacity onPress={() => {
+            source === "dashboard"
+              ? navigation.navigate("Home")
+              : navigation.goBack();
+          }} className="absolute left-5">
+            <Entypo name="chevron-left" size={25} color="black" />
+          </TouchableOpacity>
+          <Text className="text-black text-lg font-InterBold">Payment</Text>
         </View>
+      </View>
 
+      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
         <View className="w-full h-full px-5">
           <View>
             <Text className="font-InterSemiBold">From Account</Text>
@@ -208,7 +200,7 @@ const SendFromAccount = ({ route }) => {
                 borderColor: "lightgray",
                 borderWidth: 1,
                 marginTop: 16,
-                height: 51
+                height: 52
               }}
               dropdownStyles={{
                 borderColor: "lightgray",
@@ -233,7 +225,7 @@ const SendFromAccount = ({ route }) => {
         </View>
       </ScrollView>
       <Footer />
-      <StatusBar backgroundColor="#f9fafc" style="dark" />
+      <StatusBar backgroundColor="#F9FAFC" style="dark" />
     </SafeAreaView>
   );
 };

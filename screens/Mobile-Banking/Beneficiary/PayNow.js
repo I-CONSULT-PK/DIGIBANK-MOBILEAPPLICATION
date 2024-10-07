@@ -1,28 +1,20 @@
 import React, { useState } from "react";
-import {
-  Text,
-  View,
-  ScrollView,
-  TouchableOpacity,
-  Image,
-  Alert
-} from "react-native";
+import { Text, View, ScrollView, TouchableOpacity, Image, Alert } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Entypo } from "@expo/vector-icons";
-import Footer from "../../../components/Footer";
-import { useNavigation } from "@react-navigation/native";
-import Button from "../../../components/Button";
 import { StatusBar } from "expo-status-bar";
+import { Entypo } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
-import API_BASE_URL from '../../../config';
 
-const PayNow = ({ route }) => {
-  const navigation = useNavigation();
+import API_BASE_URL from '../../../config';
+import Footer from "../../../components/Footer";
+import Button from "../../../components/Button";
+
+const PayNow = ({ route, navigation }) => {
   const { userDetails, beneObj, amount, selected } = route.params || {};
 
-  const [bankCharges, setBankCharges] = useState(5);
-  const [totalAmount, setTotalAmount] = useState(parseInt(bankCharges) + parseInt(amount));
+  const [bankCharges, setBankCharges] = useState(userDetails.bankName === beneObj.beneficiaryBankName ? 0 : (parseFloat(amount) * 0.01));
+  const [totalAmount, setTotalAmount] = useState(parseFloat(bankCharges) + parseFloat(amount));
 
   const fundTransfer = async () => {
     try {
@@ -80,18 +72,74 @@ const PayNow = ({ route }) => {
     }
   };
 
+  const IBFT = async () => {
+    try {
+      const bearerToken = await AsyncStorage.getItem('token');
+
+      const fundData = {
+        bankCode: beneObj.bankCode,
+        fromAccountNumber: userDetails.accountNumber,
+        toAccountNumber: beneObj.accountNumber,
+        amount: parseFloat(amount),
+        purpose: selected
+      };
+
+      if (bearerToken) {
+        const response = await axios.post(`${API_BASE_URL}/v1/customer/fund/interBankFundsTransfer`, fundData, {
+          headers: {
+            'Authorization': `Bearer ${bearerToken}`
+          }
+        });
+
+        const dto = response.data;
+
+        if (dto && dto.success && dto.data) {
+          navigation.navigate('TransferSuccess', { amount: dto.data.data.amount, beneObj, currency: "PKR", dateTime: dto.data.data.transactionDate, ref: dto.data.data.transactionId, bankCharges });
+        }
+        else {
+          if (dto.message) {
+            Alert.alert('Error', dto.message);
+          } else if (dto.errors && dto.errors.length > 0) {
+            Alert.alert('Error', dto.errors.join('\n'));
+          }
+        }
+
+      } else {
+        Alert.alert('Error', 'Unexpected error occurred. Try again later!');
+      }
+    } catch (error) {
+      if (error.response) {
+        const statusCode = error.response.status;
+
+        if (statusCode === 404) {
+          Alert.alert('Error', 'Server timed out. Try again later!');
+        } else if (statusCode === 503) {
+          Alert.alert('Error', 'Service unavailable. Please try again later.');
+        } else if (statusCode === 400) {
+          Alert.alert('Error', error.response.data.data.errors[0]);
+        } else {
+          Alert.alert('Error', error.message);
+        }
+      } else if (error.request) {
+        Alert.alert('Error', 'No response from the server. Please check your connection.');
+      } else {
+        Alert.alert('Error', error.message);
+      }
+    }
+  };
+
   return (
     <SafeAreaView className="h-full flex-1 bg-[#F9FAFC]">
-      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-        <View style={{ height: 90 }}>
-          <View className="flex-row items-center justify-center w-full h-full">
-            <TouchableOpacity onPress={() => navigation.goBack()} className="absolute left-5">
-              <Entypo name="chevron-left" size={25} color="black" />
-            </TouchableOpacity>
-            <Text className="text-black text-lg font-InterBold">Payment</Text>
-          </View>
+      <View style={{ height: 90 }}>
+        <View className="flex-row items-center justify-center w-full h-full">
+          <TouchableOpacity onPress={() => navigation.goBack()} className="absolute left-5">
+            <Entypo name="chevron-left" size={25} color="black" />
+          </TouchableOpacity>
+          <Text className="text-black text-lg font-InterBold">Payment</Text>
         </View>
+      </View>
 
+      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
         <View className="w-full h-full px-5">
           <View>
             <Text className="font-InterSemiBold">From Account</Text>
@@ -172,15 +220,15 @@ const PayNow = ({ route }) => {
             </View>
           </View>
 
-          <Button 
-          text="Pay Now"
-          onPress={fundTransfer}
-          styles="mt-10 mb-4"
+          <Button
+            text="Pay Now"
+            onPress={() => userDetails.bankName === beneObj.beneficiaryBankName ? fundTransfer() : IBFT()}
+            styles="mt-10 mb-4"
           />
         </View>
       </ScrollView>
       <Footer />
-      <StatusBar backgroundColor='#f9fafc' style="dark" />
+      <StatusBar backgroundColor="#F9FAFC" style="dark" />
     </SafeAreaView>
   );
 };

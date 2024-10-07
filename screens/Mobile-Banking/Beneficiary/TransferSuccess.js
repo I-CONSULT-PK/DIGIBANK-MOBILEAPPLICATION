@@ -1,12 +1,13 @@
 import React, { useRef } from 'react'
 import { View, Text, TouchableOpacity, ScrollView, Image, Alert } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { Entypo } from '@expo/vector-icons'
-import { Color } from "../../../GlobalStyles";
 import { StatusBar } from "expo-status-bar";
+import { Entypo } from '@expo/vector-icons'
 import ViewShot from "react-native-view-shot";
 import * as Sharing from 'expo-sharing';
 import * as MediaLibrary from 'expo-media-library';
+
+import { Color } from "../../../GlobalStyles";
 
 const TransferSuccess = ({ navigation, route }) => {
     const { amount, beneObj, currency, dateTime, ref, bankCharges } = route.params || {};

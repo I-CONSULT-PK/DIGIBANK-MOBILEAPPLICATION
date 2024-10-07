@@ -122,9 +122,9 @@ const Button = ({ text, styles, textStyles, width, onPress, loading, color }) =>
       activeOpacity={0.7}
     >
       <Text
-        className={`text-base ${
+        className={`text-base font-InterSemiBold ${
           textStyles || "text-white"
-        } font-medium text-center font-InterSemiBold`}
+        } text-center`}
       >
         {text}
       </Text>

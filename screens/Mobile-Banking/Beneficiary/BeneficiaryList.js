@@ -8,7 +8,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 
 import { decrypt } from "../../../utils/crypto";
-
 import { Color } from "../../../GlobalStyles";
 import API_BASE_URL from '../../../config';
 import SearchBar from "../../../components/SearchBar";
@@ -61,7 +60,10 @@ const BeneficiaryList = ({ navigation, route }) => {
         const dto = response.data;
 
         if (dto && dto.success && dto.data) {
-          const transformedBeneficiaries = dto.data.map(item => ({
+          // Ensure dto.data is an array
+          const beneficiariesArray = Array.isArray(dto.data) ? dto.data : [dto.data];
+
+          const transformedBeneficiaries = beneficiariesArray.map(item => ({
             ...item,
             bankUrl: decrypt(item.bankUrl),
             accountNumber: decrypt(item.accountNumber),
@@ -107,6 +109,16 @@ const BeneficiaryList = ({ navigation, route }) => {
       }
     }
   };
+
+  useEffect(() => {
+    fetchBeneficiaries();
+  }, []);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      fetchBeneficiaries();
+    }, [])
+  );
 
   const handleUpdateBeneficiary = async (nickname, mobileNumber, beneId, beneficiary) => {
     if (nickname !== beneficiary.beneficiaryAlias || mobileNumber !== beneficiary.mobileNumber) {
@@ -174,16 +186,6 @@ const BeneficiaryList = ({ navigation, route }) => {
       handleModalClose();
     }
   };
-
-  useEffect(() => {
-    fetchBeneficiaries();
-  }, []);
-
-  useFocusEffect(
-    React.useCallback(() => {
-      fetchBeneficiaries();
-    }, [])
-  );
 
   const handleSearchChange = (query) => {
     setSearchQuery(query);
@@ -306,34 +308,33 @@ const BeneficiaryList = ({ navigation, route }) => {
 
   return (
     <SafeAreaView className="h-full flex-1" style={{ backgroundColor: Color.PrimaryWebOrient }}>
-      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-
-        <View style={{ backgroundColor: Color.PrimaryWebOrient, height: 100 }}>
-          <View className="flex-row items-center justify-center w-full h-full">
-            <TouchableOpacity
-              onPress={() => {
-                source === 'beneficiary' || 'dashboard' ? navigation.navigate('Home') : navigation.goBack();
-              }}
-              className="absolute left-5"
-            >
-              <Entypo name="chevron-left" size={25} color="white" />
-            </TouchableOpacity>
-            <Text className="text-white text-lg font-InterBold">
-              {source === 'payment' ? 'Payment' : 'Beneficiary'}
-            </Text>
-          </View>
+      <View style={{ backgroundColor: Color.PrimaryWebOrient, height: 100 }}>
+        <View className="flex-row items-center justify-center w-full h-full">
+          <TouchableOpacity
+            onPress={() => {
+              source === 'beneficiary' || 'dashboard' ? navigation.navigate('Home') : navigation.goBack();
+            }}
+            className="absolute left-5"
+          >
+            <Entypo name="chevron-left" size={25} color="white" />
+          </TouchableOpacity>
+          <Text className="text-white text-lg font-InterBold">
+            {source === 'payment' ? 'Payment' : 'Beneficiary'}
+          </Text>
         </View>
+      </View>
 
+      <View className="pt-6 pb-2 px-6 bg-[#F9FAFC]">
+        <SearchBar
+          placeholder="Search My Payees"
+          onChangeText={handleSearchChange}
+          value={searchQuery}
+        />
+      </View>
+
+      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
         <View className="w-full h-full px-6 bg-[#F9FAFC] pb-10">
-          <View className="mt-6">
-            <SearchBar
-              placeholder="Search My Payees"
-              onChangeText={handleSearchChange}
-              value={searchQuery}
-            />
-          </View>
-
-          <View className="mt-8">
+          <View className="mt-7">
             <TouchableOpacity className="flex-row items-center">
               <View className="p-3 rounded-lg shadow-lg shadow-gray-500 justify-center items-center" style={{ backgroundColor: Color.PrimaryWebOrient }}>
                 <Image

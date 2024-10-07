@@ -1,24 +1,31 @@
-import React, { useState } from 'react'
-import { Text, View, Image, Keyboard, Alert } from "react-native";
-import { ScrollView, StyleSheet, Switch } from "react-native";
+import React, { useState, useEffect } from 'react'
+import { Text, View, Image, Keyboard, Alert, TouchableOpacity, ScrollView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { StatusBar } from 'expo-status-bar';
-import { TouchableOpacity } from "react-native";
-import { useNavigation } from "@react-navigation/native";
-import TextInput from '../../../components/TextInput';
-import Button from '../../../components/Button';
 import { Entypo } from "@expo/vector-icons";
-import API_BASE_URL from '../../../config';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
+
+import API_BASE_URL from '../../../config';
+import TextInput from '../../../components/TextInput';
+import Button from '../../../components/Button';
 import Footer from '../../../components/Footer';
 
-const Add_Beneficiary = ({ route }) => {
-  const navigation = useNavigation();
-  const { bankName, bankLogo } = route.params || {};
+const Add_Beneficiary = ({ route, navigation }) => {
+  const { bankName, bankLogo, shortBank } = route.params || {};
 
   const [accountNumber, setAccountNumber] = useState('');
+  const [userBankName, setUserBankName] = useState('');
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const getUserBank = async () => {
+      const bankName = await AsyncStorage.getItem('bankName');
+      setUserBankName(bankName);
+    };
+
+    getUserBank();
+  }, []);
 
   const fetchLocalAccountDetails = async () => {
     if (accountNumber === '') {
@@ -43,7 +50,66 @@ const Add_Beneficiary = ({ route }) => {
           const dto = response.data;
 
           if (dto && dto.success && dto.data) {
-            navigation.navigate('Fatch_Acc_Beneficiary', { details: dto.data, bankName, bankLogo })
+            navigation.navigate('Fatch_Acc_Beneficiary', { details: dto.data, bankName, bankLogo });
+          }
+          else {
+            if (dto.message) {
+              Alert.alert('Error', dto.message);
+            }
+            else if (dto.errors && dto.errors.length > 0) {
+              Alert.alert('Error', dto.errors);
+            }
+          }
+        }
+        else {
+          Alert.alert('Error', 'Unexpected error occured. Try again later!');
+        }
+      } catch (error) {
+        if (error.response) {
+          const statusCode = error.response.status;
+
+          if (statusCode === 404) {
+            Alert.alert('Error', 'Server timed out. Try again later!');
+          } else if (statusCode === 503) {
+            Alert.alert('Error', 'Service unavailable. Please try again later.');
+          } else {
+            Alert.alert('Error', error.message);
+          }
+        } else if (error.request) {
+          Alert.alert('Error', 'No response from the server. Please check your connection.');
+        } else {
+          Alert.alert('Error', error.message);
+        }
+      } finally {
+        setLoading(false);
+      }
+    }
+  };
+
+  const fetchOtherAccountDetails = async () => {
+    if (accountNumber === '') {
+      Alert.alert('Error', 'Please provide a valid Account number / IBAN');
+    }
+    else {
+      setLoading(true);
+
+      try {
+        const bearerToken = await AsyncStorage.getItem('token');
+
+        if (bearerToken) {
+          const response = await axios.get(
+            `${API_BASE_URL}/v1/beneficiary/getAccount?accountNumber=${accountNumber}&bankName=${shortBank}`,
+            {
+              headers: {
+                Authorization: `Bearer ${bearerToken}`,
+              },
+            }
+          );
+
+          const dto = response.data;
+
+          if (dto && dto.success && dto.data) {
+            navigation.navigate('Fatch_Acc_Beneficiary', { details: dto.data, bankName, bankLogo });
           }
           else {
             if (dto.message) {
@@ -81,16 +147,16 @@ const Add_Beneficiary = ({ route }) => {
 
   return (
     <SafeAreaView className="h-full flex-1 bg-[#F9FAFC]">
-      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-        <View style={{ height: 100 }}>
-          <View className="flex-row items-center justify-center w-full h-full">
-            <TouchableOpacity onPress={() => navigation.goBack()} className="absolute left-5">
-              <Entypo name="chevron-left" size={25} color="black" />
-            </TouchableOpacity>
-            <Text className="text-black text-lg font-InterBold">Add Beneficiary</Text>
-          </View>
+      <View style={{ height: 100 }}>
+        <View className="flex-row items-center justify-center w-full h-full">
+          <TouchableOpacity onPress={() => navigation.goBack()} className="absolute left-5">
+            <Entypo name="chevron-left" size={25} color="black" />
+          </TouchableOpacity>
+          <Text className="text-black text-lg font-InterBold">Add Beneficiary</Text>
         </View>
+      </View>
 
+      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
         <View className="w-full h-full px-5">
           <Text className="font-InterSemiBold">Personal Details</Text>
 
@@ -122,7 +188,7 @@ const Add_Beneficiary = ({ route }) => {
             text="Add"
             styles="mt-8 mb-4"
             onPress={() => {
-              bankName === 'DIGI Bank' && fetchLocalAccountDetails();
+              bankName === userBankName ? fetchLocalAccountDetails() : fetchOtherAccountDetails();
             }}
             loading={loading}
           />
