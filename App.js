@@ -66,7 +66,7 @@ import Summary from "./screens/Mobile-Banking/Easy-Cash/Summary";
 import SendFromAccount from "./screens/Mobile-Banking/Beneficiary/SendFromAccount";
 import PayNow from "./screens/Mobile-Banking/Beneficiary/PayNow";
 import BankList from "./screens/Mobile-Banking/Beneficiary/BankList";
-import Fatch_Acc_Beneficiary from "./screens/Mobile-Banking/Beneficiary/Fatch_Acc_Beneficiary";
+import fatch_Acc_Beneficiary from "./screens/Mobile-Banking/Beneficiary/Fatch_Acc_Beneficiary";
 import ChooseSecurity from "./screens/Auth/ChooseSecurity";
 import RegisterFingerPrint from "./screens/Auth/RegisterFingerPrint";
 import RegisterFaceDetector from "./screens/Auth/RegisterFaceDetector";
@@ -77,20 +77,20 @@ import Account_Setting_List from "./screens/Mobile-Banking/Account-Setting/Accou
 import LimitManagement from "./screens/Mobile-Banking/Account-Setting/LimitManagement";
 import Bill_Payment_List from "./screens/Mobile-Banking/Bill-Payments/Bill_Payment_List";
 import Bill_Payment_Transfer from "./screens/Mobile-Banking/Bill-Payments/Bill_Payment_Transfer";
-import Fatch_Payment_Details from "./screens/Mobile-Banking/Bill-Payments/Fatch_Payment_Details";
+import fatch_Payment_Details from "./screens/Mobile-Banking/Bill-Payments/Fatch_Payment_Details";
 import Net_Bill_Pyament_List from "./screens/Mobile-Banking/Bill-Payments/Net_Bill_Pyament_List";
 import Set_Payment from "./screens/Mobile-Banking/Bill-Payments/Set_Payment";
 import Card_Payment_List from "./screens/Mobile-Banking/Credit-Card-Payments/Card_Payment_List";
-import Fatch_Bank_Details from "./screens/Mobile-Banking/Credit-Card-Payments/Fatch_Bank_Details";
+import fatch_Bank_Details from "./screens/Mobile-Banking/Credit-Card-Payments/Fatch_Bank_Details";
 import Set_Card_Payment from "./screens/Mobile-Banking/Credit-Card-Payments/Set_Card_Payment";
 import Card_Payment_Transfer from "./screens/Mobile-Banking/Credit-Card-Payments/Card_Payment_Transfer";
-import Fatch_Other_Bank_Details from "./screens/Mobile-Banking/Credit-Card-Payments/Fatch_Other_Bank_Details";
+import fatch_Other_Bank_Details from "./screens/Mobile-Banking/Credit-Card-Payments/Fatch_Other_Bank_Details";
 import Top_up_List from "./screens/Mobile-Banking/Mobile-Top-Up/Top-up-List";
 import Add_Biller from "./screens/Mobile-Banking/Mobile-Top-Up/Add_Biller";
 import SelectOption_Top_up from "./screens/Mobile-Banking/Mobile-Top-Up/SelectOption_Top_up";
 import Packages from "./screens/Mobile-Banking/Mobile-Top-Up/Packages";
 import Enter_No_Top_up from "./screens/Mobile-Banking/Mobile-Top-Up/Enter_No_Top_up";
-import Fatch_Details from "./screens/Mobile-Banking/Mobile-Top-Up/Fatch_Details";
+import fatch_Details from "./screens/Mobile-Banking/Mobile-Top-Up/Fatch_Details";
 import To_Up_Transfer from "./screens/Mobile-Banking/Mobile-Top-Up/To_Up_Transfer";
 import Account from "./screens/Mobile-Banking/Account/Account";
 import Update_Profile from "./screens/Mobile-Banking/Account-Setting/Update_Profile";
@@ -104,7 +104,7 @@ import Feedback from "./screens/Mobile-Banking/Feedback/Feedback";
 import CameraScreen from "./screens/Auth/CameraScreen";
 import BeneficiarySuccess from "./screens/Mobile-Banking/Beneficiary/BeneficiarySuccess";
 import TransferSuccess from "./screens/Mobile-Banking/Beneficiary/TransferSuccess";
-import Fatch_amount_Packges from "./screens/Mobile-Banking/Mobile-Top-Up/Fatch_amount_Packges";
+import fatch_amount_Packges from "./screens/Mobile-Banking/Mobile-Top-Up/Fatch_amount_Packges";
 import Packges_Transfer from "./screens/Mobile-Banking/Mobile-Top-Up/Packges_Transfer";
 import Device_Management from "./screens/Mobile-Banking/Device-Management/Device_Management";
 const Stack = createNativeStackNavigator();
@@ -277,8 +277,8 @@ export default function App() {
           options={{ headerShown: false }}
         />
         <Stack.Screen
-          name="Fatch_Payment_Details"
-          component={Fatch_Payment_Details}
+          name="fatch_Payment_Details"
+          component={fatch_Payment_Details}
           options={{ headerShown: false }}
         />
         <Stack.Screen
@@ -330,8 +330,8 @@ export default function App() {
           options={{ headerShown: false }}
         />
         <Stack.Screen
-          name="Fatch_Bank_Details"
-          component={Fatch_Bank_Details}
+          name="fatch_Bank_Details"
+          component={fatch_Bank_Details}
           options={{ headerShown: false }}
         />
         <Stack.Screen
@@ -345,8 +345,8 @@ export default function App() {
           options={{ headerShown: false }}
         />
         <Stack.Screen
-          name="Fatch_Other_Bank_Details"
-          component={Fatch_Other_Bank_Details}
+          name="fatch_Other_Bank_Details"
+          component={fatch_Other_Bank_Details}
           options={{ headerShown: false }}
         />
         <Stack.Screen
@@ -394,8 +394,8 @@ export default function App() {
           options={{ headerShown: false }}
         />
         <Stack.Screen
-          name="Fatch_Details_Top_up"
-          component={Fatch_Details}
+          name="fatch_Details_Top_up"
+          component={fatch_Details}
           options={{ headerShown: false }}
         />
         <Stack.Screen
@@ -497,8 +497,8 @@ export default function App() {
           options={{ headerShown: false }}
         />
         <Stack.Screen
-          name="Fatch_amount_Packges"
-          component={Fatch_amount_Packges}
+          name="fatch_amount_Packges"
+          component={fatch_amount_Packges}
           options={{ headerShown: false }}
         />
         <Stack.Screen
@@ -625,8 +625,8 @@ export default function App() {
           options={{ headerShown: false }}
         />
         <Stack.Screen
-          name="Fatch_Acc_Beneficiary"
-          component={Fatch_Acc_Beneficiary}
+          name="fatch_Acc_Beneficiary"
+          component={fatch_Acc_Beneficiary}
           options={{ headerShown: false }}
         />
         <Stack.Screen
@@ -654,8 +654,8 @@ export default function App() {
               options={{ headerShown: false }}
             />
             <Stack.Screen
-              name="Fatch_Acc_Beneficiary"
-              component={Fatch_Acc_Beneficiary}
+              name="fatch_Acc_Beneficiary"
+              component={fatch_Acc_Beneficiary}
               options={{ headerShown: false }}
             />
 
@@ -742,8 +742,8 @@ export default function App() {
               options={{ headerShown: false }}
             />
             <Stack.Screen
-              name="Fatch_Payment_Details"
-              component={Fatch_Payment_Details}
+              name="fatch_Payment_Details"
+              component={fatch_Payment_Details}
               options={{ headerShown: false }}
             />
             <Stack.Screen
@@ -762,8 +762,8 @@ export default function App() {
               options={{ headerShown: false }}
             />
             <Stack.Screen
-              name="Fatch_Bank_Details"
-              component={Fatch_Bank_Details}
+              name="fatch_Bank_Details"
+              component={fatch_Bank_Details}
               options={{ headerShown: false }}
             />
             <Stack.Screen
@@ -777,8 +777,8 @@ export default function App() {
               options={{ headerShown: false }}
             />
             <Stack.Screen
-              name="Fatch_Other_Bank_Details"
-              component={Fatch_Other_Bank_Details}
+              name="fatch_Other_Bank_Details"
+              component={fatch_Other_Bank_Details}
               options={{ headerShown: false }}
             />
             <Stack.Screen
@@ -814,8 +814,8 @@ export default function App() {
               options={{ headerShown: false }}
             />
             <Stack.Screen
-              name="Fatch_Details_Top_up"
-              component={Fatch_Details}
+              name="fatch_Details_Top_up"
+              component={fatch_Details}
               options={{ headerShown: false }}
             />
             <Stack.Screen
