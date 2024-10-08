@@ -16,7 +16,7 @@ import CustomButton from "../../components/Button";
 import InputWithIcon from "../../components/TextInputWithIcon";
 import { useNavigation } from "@react-navigation/native";
 import { Controller, useForm } from "react-hook-form";
-
+import { encrypt } from "../../utils/crypto";
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 import { Entypo } from '@expo/vector-icons';
@@ -62,7 +62,7 @@ const NewPassword = ({ route }) => {
                 const data = {
                     accountNumber: accountNumber,
                     cnic: cnic,
-                    password: form.password,
+                    password: encrypt(form.password),
                 }
 
                 try {
@@ -108,61 +108,6 @@ const NewPassword = ({ route }) => {
     };
 
     return (
-        // <SafeAreaView style={{ flex: 1, backgroundColor: Color.PrimaryWebOrientLayer2 }}>
-        //     <ScrollView style={styles.container}>
-        //         <LinearGradient
-        //             colors={[Color.PrimaryWebOrientLayer2, Color.PrimaryWebOrientLayer2]}
-        //             style={[styles.linearGradient, { height: screenHeight }]}
-        //         >
-        //             <Choice
-        //                 fill={Color.PrimaryWebOrient}
-        //                 style={{ alignSelf: "center", marginTop: 5 }}
-        //             />
-        //             <View style={styles.roundedContainer}>
-
-        //                 <View className="justify-center text-center">
-        //                     <Text className="font-InterBold text-center text-2xl">New Password</Text>
-        //                     <Text className="text-sm text-center mt-3 font-InterMedium text-text-gray">
-        //                         Enter New Password to Access your Account
-        //                     </Text>
-        //                 </View>
-
-        //                 <View className="mt-5">
-        //                     <View className="space-y-1 ">
-        //                         <Text className="text-sm ml-2 font-InterMedium text-text-gray">
-        //                             Enter New Password
-        //                         </Text>
-        //                         <Input
-        //                             placeholder="Enter New Password"
-        //                             secureTextEntry
-        //                             control={control}
-        //                             name="newPassword"
-        //                             rules={{ required: true }}
-        //                         />
-        //                     </View>
-        //                 </View>
-        //                 <View className="mt-3">
-        //                     <View className="space-y-1 ">
-        //                         <Text className="text-sm ml-2 font-InterMedium text-text-gray">
-        //                             Retype Password
-        //                         </Text>
-        //                         <Input
-        //                             placeholder="Retype Password"
-        //                             secureTextEntry
-        //                             control={control}
-        //                             name="retypePassword"
-        //                             rules={{ required: true }}
-        //                         />
-        //                     </View>
-        //                     <View style={{ margin: 8 }}>
-        //                         <CustomButton text={"Reset"} onPress={() => navigation.navigate("Login")} />
-        //                     </View>
-        //                 </View>
-        //             </View>
-        //         </LinearGradient>
-        //     </ScrollView>
-        // </SafeAreaView>
-
         <SafeAreaView className="h-full flex-1 bg-white">
             <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
 

@@ -13,6 +13,7 @@ import { Entypo } from "@expo/vector-icons";
 import Button from "../../components/Button";
 import ReactNativeBiometrics, { BiometryTypes } from 'react-native-biometrics';
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { encrypt } from "../../utils/crypto";
 
 const Registration = ({ route }) => {
   const navigation = useNavigation();
@@ -248,7 +249,7 @@ const Registration = ({ route }) => {
           cnic: cnic,
           email: email,
           userName: finalForm.username,
-          password: finalForm.password,
+          password: encrypt(finalForm.password),
           accountDto: {
             accountNumber: accountNumber,
           },
