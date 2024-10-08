@@ -38,9 +38,9 @@ const Fatch_amount_Packges = ({ route }) => {
       const accountNumber = await AsyncStorage.getItem("accountNumber");
       const trimmedNumber = number1.trim(); // Trim whitespace
 
-      console.log("Account Number:", accountNumber);
-      console.log("Mobile Number:", trimmedNumber);
-      console.log("amount:", amount);
+      // console.log("Account Number:", accountNumber);
+      // console.log("Mobile Number:", trimmedNumber);
+      // console.log("amount:", amount);
 
       if (bearerToken && accountNumber) {
         const response = await axios.post(

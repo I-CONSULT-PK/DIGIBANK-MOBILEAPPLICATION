@@ -1,134 +1,158 @@
-import React from "react";
+import React, { useRef } from "react";
 import {
   Text,
   View,
   ScrollView,
   TouchableOpacity,
   Image,
-  Dimensions,
+  Alert,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Entypo } from "@expo/vector-icons";
-import { Color } from "../../../GlobalStyles";
-import { Divider } from "react-native-paper";
+import { StatusBar } from "expo-status-bar";
+import ViewShot from "react-native-view-shot";
+import * as Sharing from 'expo-sharing';
+import * as MediaLibrary from 'expo-media-library';
 
-const Bill_Payment_Transfer = () => {
+const Bill_Payment_Transfer = ({ route }) => {
   const navigation = useNavigation();
-  const { width } = Dimensions.get("window");
-  const horizontalPadding = 16;
-  return (
-    <SafeAreaView className="flex-1">
-      <View className="flex-1 bg-white">
-        <View
-          className="h-24"
-          //   style={{ backgroundColor: Color.PrimaryWebOrient }}
-        >
-          <View className="flex-row items-center justify-center h-full">
-            <TouchableOpacity
-              onPress={() => navigation.goBack()}
-              className="absolute left-5"
-            >
-              <Entypo name="chevron-left" size={25} />
-            </TouchableOpacity>
-            <Text className=" text-lg font-bold">Bill Payments</Text>
-          </View>
-        </View>
+  const { name, image,date, 
+    referenceNumber, Consumer, amount } =
+    route.params || {};
+    const viewShotRef = useRef();
 
-        <View className="flex-1 items-center justify-cente">
-      {/* Card Container */}
-      <View className="w-10/12 mt-4 bg-white rounded-lg p-6 shadow-xl item-center shadow-slate-300">
-        
-        {/* Success Icon */}
-        <View className="items-center w-full mb-4 absolute -top-7 left-5">
-          <Image
-            source={require("../../../assets/check.png")} // Replace with your check icon
-            className="w-16 h-16"
-            resizeMode="contain"
-          />
-        </View>
+    const convertDriveUrl = (url) => {
+      const fileId = url.match(/d\/(.*?)\//)[1];
+      return `https://drive.google.com/uc?export=view&id=${fileId}`;
+    };
 
-        {/* Transfer Successful Message */}
-        <Text className="text-green-500 text-center text-lg font-semibold mt-5">
-          Transfer Successful
-        </Text>
-        <Text className="text-gray-500 text-center mt-2">
-          Your transaction was successful
-        </Text>
+     // Function to share the receipt
+     const shareReceipt = async () => {
+      try {
+          // Introduce a delay of 500ms (or adjust as needed) to allow button press effects to complete
+          setTimeout(async () => {
+              // Capture the view as an image
+              const uri = await viewShotRef.current.capture();
 
-        {/* Amount */}
-        <Text className="text-black text-center text-4xl font-bold my-4">
-          Rs. 10,000
-        </Text>
+              // Request permission to access the media library
+              const { status } = await MediaLibrary.requestPermissionsAsync();
+              if (status === 'granted') {
+                  // Save the image to the media library
+                  const asset = await MediaLibrary.createAssetAsync(uri);
 
-        {/* Recipient Section */}
-        <Text className="text-gray-500 text-center">Send to</Text>
-        <View className="flex-row justify-center items-center mt-4">
-          <Image
-            source={require("../../../assets/Ptcl-Bill.png")} // Replace with PTCL logo
-            className="w-12 h-12"
-            resizeMode="contain"
-          />
-        </View>
-        <Text className="text-black text-center font-semibold mt-2">
-          PTCL EVO Postpaid
-        </Text>
-        <Text className="text-gray-500 text-center">************9877</Text>
+                  // Share the captured image
+                  await Sharing.shareAsync(asset.uri);
+              } else {
+                  console.error("Media library permissions not granted");
+              }
+          }, 500); // Delay in milliseconds
+      } catch (error) {
+          console.error("Error sharing receipt:", error);
+      }
+  };
 
-        {/* Transaction Details */}
-        <View className="mt-6">
-          <Text className="text-black font-bold">Transaction Details</Text>
-          <View className="flex-row justify-between mt-2">
-            <Text className="text-gray-500">Date / Time:</Text>
-            <Text className="text-black ml-4">9 June, 2024 12:35 PM</Text>
-          </View>
-          <View className="flex-row justify-between mt-2">
-            <Text className="text-gray-500">Transaction ID (TID):</Text>
-            <Text className="text-black">878895</Text>
-          </View>
-        </View>
-        <Divider className="mt-4"/>
+  // Function to save the screenshot to gallery
+  const saveScreenshot = async () => {
+      try {
+          // Introduce a delay of 500ms (or adjust as needed) to allow button press effects to complete
+          setTimeout(async () => {
+              // Capture the view as an image
+              const uri = await viewShotRef.current.capture();
 
-        {/* Icons Row */}
-        <View className="flex-row justify-around mt-4">
-          {/* QR Code Icon */}
-          <TouchableOpacity>
-            <View>
-              <Image
-                source={require("../../../assets/done.png")} // Replace with QR Code icon
-                className="w-8 h-8"
+              // Request permission to access the media library
+              const { status } = await MediaLibrary.requestPermissionsAsync();
+              if (status === 'granted') {
+                  // Save the image to the media library
+                  await MediaLibrary.createAssetAsync(uri);
+                  Alert.alert('Success', 'Screenshot saved to gallery');
+              } else {
+                  console.error("Media library permissions not granted");
+              }
+          }, 500); // Delay in milliseconds
+      } catch (error) {
+          console.error("Error saving screenshot:", error);
+      }
+  };
+    return (
+      <SafeAreaView className="h-full flex-1 bg-[#F9FAFC]">
+          <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+              <View style={{ height: 80 }}>
+                  <View className="flex-row items-center justify-center w-full h-full">
+                      <TouchableOpacity onPress={() => navigation.goBack()} className="absolute left-5">
+                          <Entypo name="chevron-left" size={25} color="black" />
+                      </TouchableOpacity>
+                      <Text className="text-black text-lg font-InterBold">Bill Payments</Text>
+                  </View>
+              </View>
+
+              <ViewShot ref={viewShotRef} options={{ format: "jpg", quality: 1 }}>
+                  <View className="flex flex-col bg-white rounded-lg py-5 w-[90%] m-auto mt-7 shadow-md shadow-slate-400">
+                      <View className="shadow-md shadow-slate-400 bg-white rounded-full p-2 absolute left-[37%] -top-10 items-center justify-center">
+                          <Image source={require('../../../assets/check.png')} resizeMode='contain' className="w-18 h-18" />
+                      </View>
+                      <View className="mt-9">
+                          <Text className="text-lg font-InterBold text-center text-green-500">
+                              Transfer Successful
+                          </Text>
+                          <Text className="text-center font-InterMedium text-gray-500">
+                              Your transaction was successful
+                          </Text>
+
+                          <View className="mt-6 mb-4 px-3">
+                              <Text className="text-center font-InterBold text-2xl"> {amount}
+                              </Text>
+                          </View>
+
+                          <View className="items-center justify-center">
+                              <Text className="text-center font-InterMedium">Sent to</Text>
+                              <Image
+                source={{ uri: convertDriveUrl(image) }}// Replace with PTCL logo
+                className="w-12 h-12"
                 resizeMode="contain"
               />
-            </View>
-          </TouchableOpacity>
-          
-          {/* Share Icon */}
-          <TouchableOpacity>
-            <View>
-              <Image
-                source={require("../../../assets/Screenshort.png")} // Replace with Share icon
-                className="w-8 h-8"
-                resizeMode="contain"
-              />
-            </View>
-          </TouchableOpacity>
+                              <Text className="font-InterSemiBold text-gray-700">{name}</Text>
+                              <Text className="font-InterMedium text-gray-500 mt-0.5">{Consumer}</Text>
+                          </View>
 
-          {/* Done Icon */}
-          <TouchableOpacity>
-            <View>
-              <Image
-                source={require("../../../assets/share.png")} // Replace with Done icon
-                className="w-8 h-8"
-                resizeMode="contain"
-              />
-            </View>
-          </TouchableOpacity>
-        </View>
-      </View>
-    </View>
-      </View>
-    </SafeAreaView>
-  );
+                          <View className="mt-6 px-6">
+                              <Text className="text-base font-InterBold">Transaction Details</Text>
+
+                              <View className="mt-4">
+                                  
+                                  <View className="flex-row justify-between mt-1">
+                                      <Text className="font-InterMedium text-gray-500">Date / Time:</Text>
+                                      <Text className="font-InterSemiBold text-gray-700">{date}</Text>
+                                  </View>
+                                  <View className="flex-row justify-between mt-1">
+                                      <Text className="font-InterMedium text-gray-500">Reference N0:</Text>
+                                      <Text className="font-InterSemiBold text-gray-700">{referenceNumber}</Text>
+                                  </View>
+                              
+                              </View>
+                          </View>
+
+                          <View className="mt-6 flex-row justify-between px-10">
+                              <TouchableOpacity onPress={saveScreenshot}>
+                                  <Image source={require('../../../assets/screenshot-icon.png')} resizeMode='contain' className="w-6 h-6" />
+                              </TouchableOpacity>
+
+                              <TouchableOpacity onPress={shareReceipt}>
+                                  <Image source={require('../../../assets/share-icon.png')} resizeMode='contain' className="w-6 h-6" />
+                              </TouchableOpacity>
+
+                              <TouchableOpacity onPress={() => navigation.navigate('Home')}>
+                                  <Image source={require('../../../assets/tick-icon.png')} resizeMode='contain' className="w-6 h-6" />
+                              </TouchableOpacity>
+                          </View>
+                      </View>
+                  </View>
+              </ViewShot>
+          </ScrollView>
+
+          <StatusBar backgroundColor="#F9FAFC" style="dark" />
+      </SafeAreaView>
+  )
 };
 
 export default Bill_Payment_Transfer;

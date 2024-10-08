@@ -1,8 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Text,
   View,
-  ScrollView,
+  Alert,
   TouchableOpacity,
   Image,
   Dimensions,
@@ -20,15 +20,97 @@ import API_BASE_URL from "../../../config";
 
 const Fatch_Payment_Details = ({ route }) => {
   const navigation = useNavigation();
-  const { serviceCode, name, image} = route.params || {};
+  const { serviceCode, name, image, utilityType, } = route.params || {};
 
   const { width } = Dimensions.get("window");
   const horizontalPadding = 16;
+
+  const [Consumer, setConsumer] = useState([]);
 
   const convertDriveUrl = (url) => {
     const fileId = url.match(/d\/(.*?)\//)[1];
     return `https://drive.google.com/uc?export=view&id=${fileId}`;
   };
+
+  const fetchConsumer = async () => {
+    try {
+      const bearerToken = await AsyncStorage.getItem("token");
+      const accountNumber = await AsyncStorage.getItem("accountNumber");
+  
+      if (bearerToken && accountNumber) {
+        const response = await axios.get(
+          `${API_BASE_URL}/v1/billpayment/getBillDetails?consumerNumber=${Consumer}&serviceCode=${serviceCode}&utilityType=${utilityType}`,
+          {
+            headers: {
+              Authorization: `Bearer ${bearerToken}`,
+            },
+          }
+        );
+  
+        const dto = response.data;
+  
+        if (dto && dto.success && dto.data && dto.data.bill) {
+          const { amount, amountDueAfterDueDate, dueDate } = dto.data.bill; // Extracting values from bill
+          const billerName = dto.data.billerName;
+          const id = dto.data.bill.id;
+  
+          // Convert dueDate to a Date object
+          const dueDateObj = new Date(dueDate);
+  
+          // Get the current date
+          const currentDate = new Date();
+  
+          // Determine the correct amount to use
+          const paymentAmount =
+            currentDate > dueDateObj ? amountDueAfterDueDate : amount;
+  
+          // Navigate to the next screen with the correct amount
+          navigation.navigate("Set_Payment", {
+            serviceCode,
+            id,
+            name,
+            image,
+            amount: paymentAmount, 
+            billerName,
+            Consumer,
+          });
+        } else {
+          if (dto.message) {
+            Alert.alert("Error", dto.message);
+          } else if (dto.errors && dto.errors.length > 0) {
+            Alert.alert("Error", dto.errors);
+          }
+        }
+      } else {
+        Alert.alert("Error", "Unexpected error occurred. Try again later!");
+      }
+    } catch (error) {
+      if (error.response) {
+        const statusCode = error.response.status;
+        if (statusCode === 404) {
+          Alert.alert("Error", "Server timed out. Try again later!");
+        } else if (statusCode === 503) {
+          Alert.alert("Error", "Service unavailable. Please try again later.");
+        } else if (statusCode === 400) {
+          Alert.alert("Error", error.response.data.errors[0]);
+        } else {
+          Alert.alert("Error", error.message);
+        }
+      } else if (error.request) {
+        Alert.alert(
+          "Error",
+          "No response from the server. Please check your connection."
+        );
+      } else {
+        Alert.alert("Error", error.message);
+      }
+    }
+  };
+  
+  
+
+
+  
   return (
     <SafeAreaView className="flex-1">
       <View className="flex-1 bg-white">
@@ -77,12 +159,16 @@ const Fatch_Payment_Details = ({ route }) => {
             <TextInput
               className="mt-2 border border-gray-200 rounded-lg p-2"
               placeholder="Account number/IBAN"
+              value={Consumer}
+              onChange={(text) => setConsumer(text) }
             />
           </View>
 
           <View className=" mt-6">
             <CustomButton text={"Next"}
-            onPress={()=>navigation.navigate("Set_Payment") }/>
+            onPress={() => {
+              fetchConsumer();
+            }}/>
           </View>
         </View>
       </View>

@@ -17,8 +17,9 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import API_BASE_URL from "../../../config";
 
-const Bill_Payment_List = ({ navigation, route } ) => {
+const Bill_Payment_List = ({  route } ) => {
   const { name} = route.params || {};
+  const navigation = useNavigation();
   const { width } = Dimensions.get("window");
   const horizontalPadding = 16;
 

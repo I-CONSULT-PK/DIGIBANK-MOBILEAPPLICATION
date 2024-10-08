@@ -35,7 +35,8 @@ const Net_Bill_Payment_List = ({ route }) => {
           const dto = response.data;
 
           if (dto && dto.success && dto.data) {
-            setBillers(dto.data); // Store the biller data in state
+            setBillers(dto.data);
+            // console.log(dto.data)
           } else {
             if (dto.message) {
               Alert.alert("Error", dto.message);
@@ -74,7 +75,7 @@ const Net_Bill_Payment_List = ({ route }) => {
     };
 
     fetchBillPaymentList();
-  }, [name]);
+  }, []);
 
   // Helper function to convert Google Drive URL to direct image link
   const convertDriveUrl = (url) => {
@@ -118,6 +119,7 @@ const Net_Bill_Payment_List = ({ route }) => {
                     onPress1={() =>
                       navigation.navigate("Fatch_Payment_Details", {
                         serviceCode: biller.serviceCode,
+                        utilityType: name,
                         name: biller.name,
                         image: biller.iconUrl,
                       })
