@@ -554,7 +554,7 @@ const HomeScreen = ({ navigation }) => {
         </View>
       </Modal>
 
-      <View className="bg-white flex-row shadow-xl shadow-slate-400 border-b-gray-200 justify-between items-center border-b-[1px] w-full pl-5 pr-8 py-3">
+      <View className="bg-white flex-row shadow-xl shadow-slate-400 border-b-gray-200 justify-between items-center border-b-[1px] w-full pl-5 pr-8 py-2.5">
         <View className="flex-row items-center justify-between">
           <TouchableOpacity onPress={toggleSidebar}>
             <Entypo name="menu" size={28} color={Color.PrimaryWebOrient} />

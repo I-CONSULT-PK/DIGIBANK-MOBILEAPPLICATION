@@ -15,7 +15,11 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSFaceIDUsageDescription": "DigiBank needs to use Face ID / Touch ID to authenticate you.",
+        "NSCameraUsageDescription": "This app uses the camera to scan barcodes on event tickets."
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -41,7 +45,9 @@
     "plugins": [
       [
         "expo-local-authentication",
-        "expo-font"
+        {
+          "faceIDPermission": "Allow DigiBank to use Face ID."
+        }
       ],
       [
         "expo-build-properties",
@@ -50,7 +56,8 @@
             "usesCleartextTraffic": true
           }
         }
-      ]
+      ],
+      "expo-font"
     ]
   },
   "name": "zanbeel-ui"
