@@ -89,12 +89,11 @@ const Login = ({ navigation }) => {
       return;
     }
 
-    // const encryptedPassword = encrypt(form.password);
+    const encryptedPassword = encrypt(form.password);
 
     const loginData = {
       emailorUsername: form.username,
-      password: form.password,
-      // password: encryptedPassword
+      password: encryptedPassword
     };
 
     setLoading(true);
@@ -563,7 +562,7 @@ const Login = ({ navigation }) => {
       >
         <View className="bg-white p-5 rounded-lg w-11/12 max-w-xs justify-center items-center self-center shadow-md shadow-slate-400">
           <View className="mb-5 px-2">
-            <Text className="mb-4 text-center font-InterSemiBold">Enter Your 4 Digit PIN</Text>
+            <Text className="mb-4 text-center font-InterSemiBold">Enter Your {pinLength} Digit PIN</Text>
 
             <View className="flex-row justify-around items-center w-full self-center -left-1">
               {Array.from({ length: pinLength }).map((_, index) => (

@@ -132,7 +132,7 @@ const UpdateProfile = () => {
               <View className="flex-row justify-between items-center bg-gray-100 p-1 rounded-md mt-1">
                 <TextInput
                   value={accountNumber}
-                  editable={false}
+                  disabled={true}
                   className="text-black flex-1"
                 />
                 <TouchableOpacity>

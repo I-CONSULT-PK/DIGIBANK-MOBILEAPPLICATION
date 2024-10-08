@@ -80,7 +80,7 @@ const PINCodeModal = ({ isModalVisible, toggleModal, pinLength, pin, setPin, sou
                     inputs.current[0].focus();
                 }
             } else {
-                Alert.alert('Error', 'Please enter all 5 digits of the PIN.');
+                Alert.alert('Error', 'Please enter all 4 digits of the PIN.');
             }
         }
     };

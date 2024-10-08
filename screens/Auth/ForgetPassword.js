@@ -8,6 +8,7 @@ import { StatusBar } from "expo-status-bar";
 import API_BASE_URL from "../../config";
 import { Entypo } from "@expo/vector-icons";
 import Button from "../../components/Button"; 
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const ForgetPassword = ({ route }) => {
   const navigation = useNavigation();
@@ -38,21 +39,19 @@ const ForgetPassword = ({ route }) => {
       accountNumber: form.accountNumber.trim(),
       cnic: form.cnic.trim(),
     };
-  
-    console.log("Sending data:", JSON.stringify(data));
-  
+
     try {
       const response = await axios.post(`${API_BASE_URL}/v1/customer/forgetUser`, data);
       const dto = response.data;
   
-      console.log("Response:", dto);
+      const otpDeliveryMethod = await AsyncStorage.getItem('otpDeliveryMethod');
       
       if (dto && dto.success && dto.data) {
         const otpData = {
           mobileNumber: dto.data.mobileNumber,
           email: dto.data.email,
           reason: 'forget password',  
-          deliveryPreference: "EMAIL" 
+          deliveryPreference: otpDeliveryMethod ? otpDeliveryMethod : "EMAIL"
         };
   
         await handleOTP(otpData, dto.data); 

@@ -150,11 +150,6 @@ export default function App() {
           options={{ headerShown: false }}
         />
         <Stack.Screen
-          name="NewPassword"
-          component={NewPassword}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
           name="SignUp"
           component={Registration}
           options={{ headerShown: false }}

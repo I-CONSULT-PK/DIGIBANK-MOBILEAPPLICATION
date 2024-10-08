@@ -1,47 +1,21 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
-import {
-  FlatList,
-  ScrollView,
-  View,
-  StyleSheet,
-  Image,
-  Text,
-  Pressable,
-  Modal,
-  Animated,
-  Easing,
-  TextInput,
-  ImageBackground,
-  Alert,
-  RefreshControl
-} from "react-native";
-import { Color } from "../../GlobalStyles";
+import { ScrollView, View, StyleSheet, Text, Modal, Animated, Easing, ImageBackground, Alert, RefreshControl, TouchableOpacity, Image } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useNavigation, useFocusEffect } from "@react-navigation/native";
-import { TouchableOpacity } from "react-native";
-import { Entypo, FontAwesome } from "@expo/vector-icons";
-import { Avatar, List, Divider } from "react-native-paper";
-import Statment from "../../assets/Images/Statment.svg";
-import Utility from "../../assets/Images/UtilityPay.svg";
-import QR from "../../assets/Images/QR.svg";
-import Discount from "../../assets/Images/Discount.svg";
-import Topup from "../../assets/Images/Top-Up.svg";
-import Cards from "../../assets/Images/Cards.svg";
-import Payment from "../../assets/Images/Payment.svg";
-import Account from "../../assets/Images/Account.svg";
-import Transfer from "../../assets/Images/Transfer.svg";
-import Beneficiary from "../../assets/Images/Beneficiary.svg";
-import Footer from "../../components/Footer";
-import Sidebar from "./Account-Setting/Sidebar";
-import { Ionicons, AntDesign } from "@expo/vector-icons";
-import API_BASE_URL from "../../config";
+import { StatusBar } from "expo-status-bar";
+import { useFocusEffect } from "@react-navigation/native";
+import { List } from "react-native-paper";
+import { Entypo, Ionicons, AntDesign } from "@expo/vector-icons";
+import Icon from "react-native-vector-icons/MaterialIcons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
-import { StatusBar } from "expo-status-bar";
-import { decrypt } from "../../utils/crypto";
 
-const HomeScreen = () => {
-  const navigation = useNavigation();
+import { Color } from "../../GlobalStyles";
+import { decrypt } from "../../utils/crypto";
+import API_BASE_URL from "../../config";
+import Footer from "../../components/Footer";
+import Sidebar from "./Account-Setting/Sidebar";
+
+const HomeScreen = ({ navigation }) => {
   const [beneficiaries, setBeneficiaries] = useState([]);
   const [expanded, setExpanded] = useState(false);
   const [expanded1, setExpanded1] = useState(false);
@@ -51,6 +25,7 @@ const HomeScreen = () => {
   const [cards, setCards] = useState([]);
   const backgroundImage = require("../../assets/Images/Cards.png");
   const [refreshing, setRefreshing] = useState(false);
+  const [isVisible, setIsVisible] = useState(true);
   const [userDetails, setUserDetails] = useState({
     firstName: "",
     lastName: "",
@@ -66,8 +41,6 @@ const HomeScreen = () => {
     Clipboard.setString(text);
     alert("Copied to clipboard");
   };
-
-  const [isVisible, setIsVisible] = useState(true);
 
   useFocusEffect(
     useCallback(() => {
@@ -123,11 +96,11 @@ const HomeScreen = () => {
         case "QR Payments":
           break;
         case "Utility Pay":
-            navigation.navigate("Bill_Payment_List")
+          navigation.navigate("Bill_Payment_List")
           break;
-          case "Statement":
-            navigation.navigate("Account_Statements"); 
-            break;
+        case "Statement":
+          navigation.navigate("Account_Statements");
+          break;
         case "Discount":
           break;
         default:
@@ -140,7 +113,7 @@ const HomeScreen = () => {
     try {
       const bearerToken = await AsyncStorage.getItem("token");
       const customerId = await AsyncStorage.getItem("customerId");
-  
+
       if (!bearerToken) {
         Alert.alert("Error", "Authentication token not found");
         return;
@@ -149,7 +122,7 @@ const HomeScreen = () => {
         Alert.alert("Error", "Customer ID not found");
         return;
       }
-  
+
       const response = await axios.get(
         `${API_BASE_URL}/v1/customer/fetchUserDetails?userId=${customerId}`,
         {
@@ -158,7 +131,7 @@ const HomeScreen = () => {
           },
         }
       );
-  
+
       if (response.status === 200 && response.data && response.data.data) {
         const userDetails = {
           firstName: response.data.data.firstName || "User",
@@ -166,24 +139,24 @@ const HomeScreen = () => {
           defaultAccountBalance: response.data.data.defaultAccountBalance || "N/A",
           accountNumber: response.data.data.accountNumber || "N/A",
           accountType: response.data.data.accountType || "N/A",
-          email: response.data.data.email || "N/A", 
-          mobileNumber: response.data.data.mobileNumber || "N/A", 
+          email: response.data.data.email || "N/A",
+          mobileNumber: response.data.data.mobileNumber || "N/A",
           bankLogo: response.data.data.bankImage || "N/A",
           bankName: response.data.data.bankName || "N/A"
         };
-  
+
         await AsyncStorage.multiSet([
           ["firstName", userDetails.firstName],
           ["lastName", userDetails.lastName],
           ["accountNumber", userDetails.accountNumber],
           ["accountType", userDetails.accountType],
-          ["email", userDetails.email], 
-          ["mobileNumber", userDetails.mobileNumber], 
-          ["bankLogo", userDetails.bankLogo], 
-          ["balance", userDetails.defaultAccountBalance], 
-          ["bankName", userDetails.bankName], 
+          ["email", userDetails.email],
+          ["mobileNumber", userDetails.mobileNumber],
+          ["bankLogo", userDetails.bankLogo],
+          ["balance", userDetails.defaultAccountBalance],
+          ["bankName", userDetails.bankName],
         ]);
-  
+
         setUserDetails(userDetails);
       } else {
         Alert.alert("Error", "Unexpected response format");
@@ -193,7 +166,7 @@ const HomeScreen = () => {
       Alert.alert("Error", `Error fetching user details: ${error.message}`);
     }
   };
-  
+
   const fetchCardData = async () => {
     try {
       const bearerToken = await AsyncStorage.getItem("token");
@@ -254,27 +227,27 @@ const HomeScreen = () => {
     try {
       const customerId = await AsyncStorage.getItem('customerId');
       const bearerToken = await AsyncStorage.getItem('token');
-  
+
       if (customerId && bearerToken) {
         const response = await axios.get(`${API_BASE_URL}/v1/beneficiary/getAllBeneficiary?customerId=${customerId}&flag=false`, {
           headers: {
             'Authorization': `Bearer ${bearerToken}`
           }
         });
-  
+
         const dto = response.data;
-  
+
         if (dto && dto.success && dto.data) {
           // Ensure dto.data is an array
           const beneficiariesArray = Array.isArray(dto.data) ? dto.data : [dto.data];
-  
+
           const transformedBeneficiaries = beneficiariesArray.map(item => ({
             ...item,
             bankUrl: decrypt(item.bankUrl),
             accountNumber: decrypt(item.accountNumber),
             liked: item.flag
           }));
-  
+
           // Sort beneficiaries first by flag (true first) and within that by id in descending order
           transformedBeneficiaries.sort((a, b) => {
             if (b.flag === a.flag) {
@@ -282,7 +255,7 @@ const HomeScreen = () => {
             }
             return b.flag - a.flag;
           });
-  
+
           setBeneficiaries(transformedBeneficiaries);
         } else {
           if (dto.message) {
@@ -297,7 +270,7 @@ const HomeScreen = () => {
     } catch (error) {
       if (error.response) {
         const statusCode = error.response.status;
-  
+
         if (statusCode === 404) {
           Alert.alert('Error', 'Server timed out. Try again later!');
         } else if (statusCode === 503) {
@@ -335,7 +308,7 @@ const HomeScreen = () => {
 
   const renderNoDataMessage = (type) => (
     <View className="flex-1 justify-center items-center mt-5">
-      <Text className="text-gray-500 text-lg">No {type} Cards Found</Text>
+      <Text className="text-gray-500 text-lg text-center -top-2">No {type} Cards Found</Text>
     </View>
   );
 
@@ -354,7 +327,7 @@ const HomeScreen = () => {
       {
         label: "Expiry",
         value: card.expiryDate,
-        key:3
+        key: 3
       },
     ];
 
@@ -417,7 +390,7 @@ const HomeScreen = () => {
       </List.AccordionGroup>
     );
   };
-  
+
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
 
@@ -425,12 +398,12 @@ const HomeScreen = () => {
       try {
         const bearerToken = await AsyncStorage.getItem("token");
         const accountNumber = await AsyncStorage.getItem("accountNumber");
-  
+
         if (!bearerToken) {
           Alert.alert("Error", "Authentication token not found");
           return;
         }
-  
+
         const response = await axios.get(
           `${API_BASE_URL}/v1/customer/card/fetchCardById/${accountNumber}`,
           {
@@ -439,7 +412,7 @@ const HomeScreen = () => {
             },
           }
         );
-  
+
         if (response.data.success && Array.isArray(response.data.data)) {
           const updatedCards = response.data.data.map((card) => ({
             ...card,
@@ -452,7 +425,7 @@ const HomeScreen = () => {
       } catch (error) {
         if (error.response) {
           const statusCode = error.response.status;
-  
+
           if (statusCode === 404) {
             Alert.alert("Error", "Server not found. Please try again later.");
           } else if (statusCode === 503) {
@@ -474,7 +447,7 @@ const HomeScreen = () => {
         } else {
           Alert.alert("Error", `Error: ${error.message}`);
         }
-      } 
+      }
       finally {
         setRefreshing(false);
       }
@@ -483,7 +456,7 @@ const HomeScreen = () => {
       try {
         const bearerToken = await AsyncStorage.getItem("token");
         const customerId = await AsyncStorage.getItem("customerId");
-    
+
         if (!bearerToken) {
           Alert.alert("Error", "Authentication token not found");
           return;
@@ -492,7 +465,7 @@ const HomeScreen = () => {
           Alert.alert("Error", "Customer ID not found");
           return;
         }
-    
+
         const response = await axios.get(
           `${API_BASE_URL}/v1/customer/fetchUserDetails?userId=${customerId}`,
           {
@@ -501,10 +474,10 @@ const HomeScreen = () => {
             },
           }
         );
-    
+
         // console.log("API Response:", response.data); 
         // console.log("API Response:", API_BASE_URL); 
-    
+
         if (response.status === 200 && response.data && response.data.data) {
           const userDetails = {
             firstName: response.data.data.firstName || "User",
@@ -512,20 +485,20 @@ const HomeScreen = () => {
             defaultAccountBalance: response.data.data.defaultAccountBalance || "N/A",
             accountNumber: response.data.data.accountNumber || "N/A",
             accountType: response.data.data.accountType || "N/A",
-            email: response.data.data.email || "N/A", 
-            mobileNumber: response.data.data.mobileNumber || "N/A", 
+            email: response.data.data.email || "N/A",
+            mobileNumber: response.data.data.mobileNumber || "N/A",
           };
-    
-    
+
+
           await AsyncStorage.multiSet([
             ["firstName", userDetails.firstName],
             ["lastName", userDetails.lastName],
             ["accountNumber", userDetails.accountNumber],
             ["accountType", userDetails.accountType],
-            ["email", userDetails.email], 
-            ["mobileNumber", userDetails.mobileNumber], 
+            ["email", userDetails.email],
+            ["mobileNumber", userDetails.mobileNumber],
           ]);
-    
+
           setUserDetails(userDetails);
         } else {
           Alert.alert("Error", "Unexpected response format");
@@ -542,7 +515,7 @@ const HomeScreen = () => {
     fetchCardData();
     fetchUserDetails();
 
-}, [fetchCardData,fetchUserDetails]);
+  }, [fetchCardData, fetchUserDetails]);
 
   return (
     <SafeAreaView style={styles.container} className="h-full bg-[#f9fafc]">
@@ -581,38 +554,33 @@ const HomeScreen = () => {
         </View>
       </Modal>
 
-      <View className="flex flex-row items-center justify-between px-5 py-2 shadow-md bg-white border-b-[1px] border-gray-100">
-        {/* Menu Icon */}
-        <Entypo
-          name="menu"
-          size={30}
-          style={{ color: Color.PrimaryWebOrient }}
-          onPress={toggleSidebar}
-        />
+      <View className="bg-white flex-row shadow-xl shadow-slate-400 border-b-gray-200 justify-between items-center border-b-[1px] w-full pl-5 pr-8 py-3">
+        <View className="flex-row items-center justify-between">
+          <TouchableOpacity onPress={toggleSidebar}>
+            <Entypo name="menu" size={28} color={Color.PrimaryWebOrient} />
+          </TouchableOpacity>
 
-        {/* Avatar Image */}
-        <View className="w-16 h-16 flex items-center justify-center">
-          <Avatar.Image
-            source={require("../../assets/Images/profile-icon.png")}
-          />
+          <View className="flex-row items-center ml-2">
+            <View className="w-14 h-14 rounded-full border-primary border-[1px] p-2 justify-center items-center">
+              <Image source={require('../../assets/user-icon.png')} resizeMode='contain' className="w-12 h-12" />
+            </View>
+
+            <View className="ml-3 w-[65%]">
+              <Text className="font-InterRegular text-sm text-gray-500">Welcome</Text>
+              <Text className="font-InterBold text-base">{`${userDetails.firstName} ${userDetails.lastName}`}</Text>
+            </View>
+
+          </View>
         </View>
 
-        {/* User Info */}
-        <View className="flex flex-col justify-center text-lg font-semibold text-gray-800 mr-20">
-          <Text className="text-slate-500 text-sm mb-0">Welcome</Text>
-          <Text className="font-bold text-lg mb-0 text-black">{`${userDetails.firstName} ${userDetails.lastName}`}</Text>
-        </View>
-
-        {/* Notification Bell */}
-        <Entypo
-          name="bell"
-          size={30}
-          style={{ color: Color.PrimaryWebOrient }}
-        />
+        <TouchableOpacity>
+          <Entypo name="bell" size={27} color={Color.PrimaryWebOrient} />
+        </TouchableOpacity>
       </View>
+
       <ScrollView contentContainerStyle={{ flexGrow: 1 }} scrollEventThrottle={16} refreshControl={
         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={[Color.PrimaryWebOrient]} />}>
-        <View className="justify-center items-center pt-2">
+        <View className="justify-center items-center pt-4">
           {/* <NewCard width={400} /> */}
           <View className="justify-center items-center ">
             {/* <ListSectionCard width={400} /> */}
@@ -663,9 +631,11 @@ const HomeScreen = () => {
             </View>
           </View>
         </View>
+
         <View className="flex flex-col px-5 pt-5">
           <Text className="font-bold text-black text-lg">Activity</Text>
         </View>
+
         <View className="flex justify-center items-center">
           <View className="flex flex-col justify-center items-center">
             {/* First Row */}
@@ -676,37 +646,42 @@ const HomeScreen = () => {
                   onPress={() => handlePressMenu(item)}
                 >
                   <View
-                    className="w-24 h-24 m-2.5 rounded-lg flex justify-center items-center"
-                    style={[
-                      styles.box,
-                      {
-                        backgroundColor:
-                          activeItem === item
-                            ? Color.PrimaryWebOrient
-                            : "white",
-                      },
-                    ]}
+                    className="w-24 h-24 m-2.5 rounded-lg flex justify-center items-center shadow-md shadow-slate-300"
+                    style={{
+                      backgroundColor:
+                        activeItem === item ? Color.PrimaryWebOrient : "white",
+                    }}
                   >
                     {item === "Transfer" && (
-                      <Transfer
-                        color={activeItem === item ? "white" : "black"}
+                      <Icon
+                        name="arrow-forward"
+                        size={30}
+                        color={
+                          activeItem === item ? "white" : Color.PrimaryWebOrient
+                        }
                       />
                     )}
                     {item === "Payment" && (
-                      <Payment
-                        color={activeItem === item ? "white" : "black"}
+                      <Icon
+                        name="payment"
+                        size={30}
+                        color={
+                          activeItem === item ? "white" : Color.PrimaryWebOrient
+                        }
                       />
                     )}
                     {item === "My Payees" && (
-                      <Beneficiary
-                        color={activeItem === item ? "white" : "black"}
+                      <Icon
+                        name="group"
+                        size={30}
+                        color={
+                          activeItem === item ? "white" : Color.PrimaryWebOrient
+                        }
                       />
                     )}
                     <Text
-                      className="text-center font-semibold"
-                      style={{
-                        color: activeItem === item ? "white" : "black",
-                      }}
+                      className="text-center font-InterSemiBold"
+                      style={{ color: activeItem === item ? "white" : "black" }}
                     >
                       {item}
                     </Text>
@@ -714,7 +689,7 @@ const HomeScreen = () => {
                 </TouchableOpacity>
               ))}
             </View>
-
+ 
             {/* Second Row */}
             <View className="flex-row justify-between mb-4">
               {["Cards", "Top up", "Accounts"].map((item, index) => (
@@ -723,25 +698,42 @@ const HomeScreen = () => {
                   onPress={() => handlePressMenu(item)}
                 >
                   <View
-                    className="w-24 h-24 m-2.5 rounded-lg flex justify-center items-center"
-                    style={[
-                      styles.box,
-                      {
-                        backgroundColor:
-                          activeItem === item
-                            ? Color.PrimaryWebOrient
-                            : "white",
-                      },
-                    ]}
+                    className="w-24 h-24 m-2.5 rounded-lg flex justify-center items-center shadow-md shadow-slate-300"
+                    style={{
+                      backgroundColor:
+                        activeItem === item ? Color.PrimaryWebOrient : "white",
+                    }}
                   >
-                    {item === "Cards" && <Cards style={styles.icon} />}
-                    {item === "Top up" && <Topup style={styles.icon} />}
-                    {item === "Accounts" && <Account style={styles.icon} />}
+                    {item === "Cards" && (
+                      <Icon
+                        name="credit-card"
+                        size={30}
+                        color={
+                          activeItem === item ? "white" : Color.PrimaryWebOrient
+                        }
+                      />
+                    )}
+                    {item === "Top up" && (
+                      <Icon
+                        name="attach-money"
+                        size={30}
+                        color={
+                          activeItem === item ? "white" : Color.PrimaryWebOrient
+                        }
+                      />
+                    )}
+                    {item === "Accounts" && (
+                      <Icon
+                        name="account-balance"
+                        size={30}
+                        color={
+                          activeItem === item ? "white" : Color.PrimaryWebOrient
+                        }
+                      />
+                    )}
                     <Text
-                      className="text-center font-semibold"
-                      style={{
-                        color: activeItem === item ? "white" : "black",
-                      }}
+                      className="text-center font-InterSemiBold"
+                      style={{ color: activeItem === item ? "white" : "black" }}
                     >
                       {item}
                     </Text>
@@ -749,60 +741,94 @@ const HomeScreen = () => {
                 </TouchableOpacity>
               ))}
             </View>
-
+ 
             {/* Third Row */}
             <View className="flex-row justify-between mb-4">
-              {["QR Payments", "Utility Pay", "Statement"].map((item, index) => (
-                <TouchableOpacity
-                  key={index}
-                  onPress={() => handlePressMenu(item)}
-                >
-                  <View
-                    className="w-24 h-24 m-2.5 rounded-lg flex justify-center items-center"
-                    style={[
-                      styles.box,
-                      {
+              {["QR Payments", "Utility Pay", "Statement"].map(
+                (item, index) => (
+                  <TouchableOpacity
+                    key={index}
+                    onPress={() => handlePressMenu(item)}
+                  >
+                    <View
+                      className="w-24 h-24 m-2.5 rounded-lg flex justify-center items-center shadow-md shadow-slate-300"
+                      style={{
                         backgroundColor:
                           activeItem === item
                             ? Color.PrimaryWebOrient
                             : "white",
-                      },
-                    ]}
-                  >
-                    {item === "QR Payments" && <QR style={styles.icon} />}
-                    {item === "Utility Pay" && <Utility style={styles.icon} />}
-                    {item === "Statement" && <Statment style={styles.icon} />}
-                    <Text
-                      className="text-center font-semibold"
-                      style={{
-                        color: activeItem === item ? "white" : "black",
                       }}
                     >
-                      {item}
-                    </Text>
-                  </View>
-                </TouchableOpacity>
-              ))}
+                      {item === "QR Payments" && (
+                        <Icon
+                          name="qr-code"
+                          size={30}
+                          color={
+                            activeItem === item
+                              ? "white"
+                              : Color.PrimaryWebOrient
+                          }
+                        />
+                      )}
+                      {item === "Utility Pay" && (
+                        <Icon
+                          name="payment"
+                          size={30}
+                          color={
+                            activeItem === item
+                              ? "white"
+                              : Color.PrimaryWebOrient
+                          }
+                        />
+                      )}
+                      {item === "Statement" && (
+                        <Icon
+                          name="description"
+                          size={30}
+                          color={
+                            activeItem === item
+                              ? "white"
+                              : Color.PrimaryWebOrient
+                          }
+                        />
+                      )}
+                      <Text
+                        className="text-center font-InterSemiBold"
+                        style={{
+                          color: activeItem === item ? "white" : "black",
+                        }}
+                      >
+                        {item}
+                      </Text>
+                    </View>
+                  </TouchableOpacity>
+                )
+              )}
             </View>
-
+ 
             {/* Fourth Row */}
             <View className="flex-row justify-between mb-4">
               <TouchableOpacity onPress={() => handlePressMenu("Discount")}>
                 <View
-                  className="w-24 h-24 m-2.5 rounded-lg flex justify-center items-center"
-                  style={[
-                    styles.box,
-                    {
-                      backgroundColor:
-                        activeItem === "Discount"
-                          ? Color.PrimaryWebOrient
-                          : "white",
-                    },
-                  ]}
+                  className="w-24 h-24 m-2.5 rounded-lg flex justify-center items-center shadow-md shadow-slate-300"
+                  style={{
+                    backgroundColor:
+                      activeItem === "Discount"
+                        ? Color.PrimaryWebOrient
+                        : "white",
+                  }}
                 >
-                  <Discount style={styles.icon} />
+                  <Icon
+                    name="attach-money"
+                    size={30}
+                    color={
+                      activeItem === "Discount"
+                        ? "white"
+                        : Color.PrimaryWebOrient
+                    }
+                  />
                   <Text
-                    className="text-center font-semibold"
+                    className="text-center font-InterSemiBold"
                     style={{
                       color: activeItem === "Discount" ? "white" : "black",
                     }}
@@ -852,7 +878,7 @@ const HomeScreen = () => {
           ))}
           {beneficiaries.length === 0 && (
             <TouchableOpacity className="w-20 h-20 bg-white m-2 rounded-lg shadow-lg justify-center items-center"
-            onPress={() => navigation.navigate("BankList", { source: 'dashboard' })}>
+              onPress={() => navigation.navigate("BankList", { source: 'dashboard' })}>
               <AntDesign name="pluscircleo" size={22} color={Color.PrimaryWebOrient} />
               <Text className="font-InterSemiBold text-sm mt-1.5">Add</Text>
             </TouchableOpacity>
@@ -941,7 +967,7 @@ const HomeScreen = () => {
             Credit Cards
           </Text>
         </View>
-        <List.Section className="bg-white rounded-xl mx-4 mt-4 ">
+        <List.Section className="bg-white rounded-xl mx-4 mt-4 mb-4">
           {cards.filter((card) => card.isCreditCard).length > 0
             ? cards
               .filter((card) => card.isCreditCard)

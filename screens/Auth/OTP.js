@@ -93,7 +93,7 @@ const OTP = ({ navigation, route }) => {
 
         if (dto && dto.success) {
           source === 'username' && navigation.navigate('Login');
-          source === 'password' && navigation.navigate('NewPasssword', { cnic: cnic, accountNumber: accountNumber });
+          source === 'password' && navigation.navigate('NewPassword', { cnic: cnic, accountNumber: accountNumber });
           source === 'registration' && navigation.navigate('SignUp', { source: 'OTP', email: email, mobileNumber: mobileNumber, cnic: cnic, accountNumber: accountNumber, firstName: firstName, lastName: lastName });
         }
         else {
