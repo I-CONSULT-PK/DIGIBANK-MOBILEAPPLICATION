@@ -4,20 +4,20 @@ import {
   View,
   ScrollView,
   TouchableOpacity,
+  Alert,
   Dimensions,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { AntDesign, Entypo } from "@expo/vector-icons";
+import { Entypo, AntDesign } from "@expo/vector-icons";
 import { Color } from "../../../GlobalStyles";
 import Footer from "../../../components/Footer";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import API_BASE_URL from "../../../config";
+
 const Device_Management = () => {
   const navigation = useNavigation();
-  const { width } = Dimensions.get("window");
-  const horizontalPadding = 16;
   const [device, setdevice] = useState([]);
 
   useEffect(() => {
@@ -36,13 +36,8 @@ const Device_Management = () => {
             }
           );
 
-          // Print the entire response for debugging
-          //   console.log("API Response DTO: ", dto);
-
           if (dto && dto.data.success && dto.data) {
             setdevice(dto.data.data);
-            // Print the device data specifically
-            // console.log("Device Data: ", dto.data.data);
           } else {
             if (dto.message) {
               Alert.alert("Error", dto.message);
@@ -82,6 +77,35 @@ const Device_Management = () => {
 
     fetchDeviceManagement();
   }, []);
+
+  const handleDeleteDevice = async (deviceId) => {
+    try {
+      const bearerToken = await AsyncStorage.getItem("token");
+      if (bearerToken) {
+        const response = await axios.delete(
+          `${API_BASE_URL}/api/devices/delete/${deviceId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${bearerToken}`,
+            },
+          }
+        );
+
+        if (response.data.success) {
+          Alert.alert("Success", "Device deleted successfully");
+          setdevice((prevDevices) =>
+            prevDevices.filter((device) => device.deviceId !== deviceId)
+          );
+        } else {
+          Alert.alert("Error", response.data.message || "Failed to delete device");
+        }
+      } else {
+        Alert.alert("Error", "Authorization failed. Please try again.");
+      }
+    } catch (error) {
+      Alert.alert("Error", "Failed to delete device. Try again later.");
+    }
+  };
 
   return (
     <SafeAreaView className="flex-1">
@@ -150,6 +174,18 @@ const Device_Management = () => {
                         {new Date(item.dateAndTime).toLocaleDateString()}
                       </Text>
                     </View>
+
+                    {/* Show Delete button for INACTIVE devices */}
+                    {item.pinStatus === "INACTIVE" && (
+                      <TouchableOpacity
+                        onPress={() => handleDeleteDevice(item.deviceId)}
+                        className="mt-4 bg-[#ffb7b7] p-3 rounded-md"
+                      >
+                        <Text className="text-red-600 text-center font-bold">
+                        Remove this device
+                        </Text>
+                      </TouchableOpacity>
+                    )}
                   </View>
                 </View>
               ))}

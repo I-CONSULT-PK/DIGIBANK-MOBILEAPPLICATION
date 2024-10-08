@@ -112,7 +112,7 @@ const Sidebar = () => {
  
   return (
     <SafeAreaView className="flex-1 bg-gray-50">
-      <ScrollView>
+     
         <View className="px-5 border-b border-gray-300">
           <View
             className={`flex-row items-center justify-between ${I18nManager.isRTL ? "flex-row-reverse" : ""
@@ -182,6 +182,7 @@ const Sidebar = () => {
             ))}
           </View>
         </View>
+        <ScrollView>
         {menuItems.map((item, index) => (
           <TouchableOpacity
             className={`flex-row items-center py-3 px-5 ${I18nManager.isRTL ? "flex-row-reverse" : ""
