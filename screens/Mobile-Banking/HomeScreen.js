@@ -452,6 +452,7 @@ const HomeScreen = ({ navigation }) => {
         setRefreshing(false);
       }
     };
+    
     const fetchUserDetails = async () => {
       try {
         const bearerToken = await AsyncStorage.getItem("token");
@@ -580,7 +581,8 @@ const HomeScreen = ({ navigation }) => {
 
       <ScrollView contentContainerStyle={{ flexGrow: 1 }} scrollEventThrottle={16} refreshControl={
         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={[Color.PrimaryWebOrient]} />}>
-        <View className="justify-center items-center pt-4">
+
+        <View className="justify-center items-center pt-4 pb-2">
           {/* <NewCard width={400} /> */}
           <View className="justify-center items-center ">
             {/* <ListSectionCard width={400} /> */}
@@ -632,8 +634,8 @@ const HomeScreen = ({ navigation }) => {
           </View>
         </View>
 
-        <View className="flex flex-col px-5 pt-5">
-          <Text className="font-bold text-black text-lg">Activity</Text>
+        <View className="flex flex-col px-5 mt-5 mb-1">
+          <Text className="font-InterBold text-black text-base">Activity</Text>
         </View>
 
         <View className="flex justify-center items-center">
@@ -646,7 +648,7 @@ const HomeScreen = ({ navigation }) => {
                   onPress={() => handlePressMenu(item)}
                 >
                   <View
-                    className="w-24 h-24 m-2.5 rounded-lg flex justify-center items-center shadow-md shadow-slate-300"
+                    className="w-24 h-24 m-2 p-2 rounded-lg flex justify-center items-center shadow-md shadow-slate-300"
                     style={{
                       backgroundColor:
                         activeItem === item ? Color.PrimaryWebOrient : "white",
@@ -698,7 +700,7 @@ const HomeScreen = ({ navigation }) => {
                   onPress={() => handlePressMenu(item)}
                 >
                   <View
-                    className="w-24 h-24 m-2.5 rounded-lg flex justify-center items-center shadow-md shadow-slate-300"
+                    className="w-24 h-24 m-2 p-2 rounded-lg flex justify-center items-center shadow-md shadow-slate-300"
                     style={{
                       backgroundColor:
                         activeItem === item ? Color.PrimaryWebOrient : "white",
@@ -751,7 +753,7 @@ const HomeScreen = ({ navigation }) => {
                     onPress={() => handlePressMenu(item)}
                   >
                     <View
-                      className="w-24 h-24 m-2.5 rounded-lg flex justify-center items-center shadow-md shadow-slate-300"
+                      className="w-24 h-24 m-2 p-2 rounded-lg flex justify-center items-center shadow-md shadow-slate-300"
                       style={{
                         backgroundColor:
                           activeItem === item
@@ -810,7 +812,7 @@ const HomeScreen = ({ navigation }) => {
             <View className="flex-row justify-between mb-4">
               <TouchableOpacity onPress={() => handlePressMenu("Discount")}>
                 <View
-                  className="w-24 h-24 m-2.5 rounded-lg flex justify-center items-center shadow-md shadow-slate-300"
+                  className="w-24 h-24 m-2 rounded-lg flex justify-center items-center shadow-md shadow-slate-300"
                   style={{
                     backgroundColor:
                       activeItem === "Discount"
@@ -841,7 +843,7 @@ const HomeScreen = ({ navigation }) => {
           </View>
         </View>
         <View className="flex-row justify-between px-5">
-          <Text className="text-base font-semibold text-black">My Payees</Text>
+          <Text className="font-InterBold text-black text-base">My Payees</Text>
           <TouchableOpacity onPress={() => navigation.navigate("BeneficiaryList", { source: 'dashboard' })}>
             <Text className="text-xs font-medium text-gray-800 underline">View All</Text>
           </TouchableOpacity>
@@ -885,7 +887,7 @@ const HomeScreen = ({ navigation }) => {
           )}
         </ScrollView>
         <View className="flex-row justify-between px-5 mt-5">
-          <Text className="text-base font-semibold text-black">Quick Pay</Text>
+          <Text className="font-InterBold text-black text-base">Quick Pay</Text>
           <Text className="text-xs font-medium text-gray-800 underline">
             View All
           </Text>
@@ -963,7 +965,7 @@ const HomeScreen = ({ navigation }) => {
           </View>
         </ScrollView>
         <View className="px-5 mt-5">
-          <Text className="text-base font-semibold text-black">
+          <Text className="font-InterBold text-black text-base">
             Credit Cards
           </Text>
         </View>

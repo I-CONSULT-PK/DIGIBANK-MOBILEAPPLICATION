@@ -40,7 +40,7 @@ const SendBeneficiaryMoney = ({ navigation }) => {
       </View>
 
       <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-        <View className="w-full h-full px-6 bg-[#F9FAFC]">
+        <View className="w-full h-full px-5 bg-[#F9FAFC]">
           <View className="mt-8">
             <Text className="font-InterSemiBold text-base">Select Method</Text>
           </View>
