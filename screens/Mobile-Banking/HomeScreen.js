@@ -308,7 +308,7 @@ const HomeScreen = ({ navigation }) => {
 
   const renderNoDataMessage = (type) => (
     <View className="flex-1 justify-center items-center mt-5">
-      <Text className="text-gray-500 text-lg text-center -top-2">No {type} Cards Found</Text>
+      <Text className="text-gray-500 text-base text-center -top-2">No {type} Cards Found</Text>
     </View>
   );
 
@@ -452,7 +452,7 @@ const HomeScreen = ({ navigation }) => {
         setRefreshing(false);
       }
     };
-    
+
     const fetchUserDetails = async () => {
       try {
         const bearerToken = await AsyncStorage.getItem("token");
@@ -587,16 +587,18 @@ const HomeScreen = ({ navigation }) => {
           <View className="justify-center items-center ">
             {/* <ListSectionCard width={400} /> */}
             <View className="bg-primary p-4 rounded-lg justify-between shadow-md w-80 h-44">
-              <View className="justify-between  mb-4">
+              <View className="justify-between mb-4">
                 <View className=" flex-row items-center justify-between">
-                  <Text className="text-slate-950  text-base">
+                  <Text className="text-slate-900 text-base font-InterMedium">
                     Total Balance:
                   </Text>
-                  <Entypo name="dots-three-vertical" size={20} />
+                  <TouchableOpacity>
+                    <Entypo name="dots-three-vertical" color="white" size={19} />
+                  </TouchableOpacity>
                 </View>
 
-                <View className="d-flex flex-row items-center">
-                  <Text className="text-white text-2xl font-bold">
+                <View className="d-flex flex-row items-center mt-1">
+                  <Text className="text-white text-2xl font-InterBold">
                     {isVisible
                       ? userDetails.defaultAccountBalance
                       : "*********"}
@@ -605,7 +607,7 @@ const HomeScreen = ({ navigation }) => {
                   <TouchableOpacity onPress={() => setIsVisible(!isVisible)}>
                     <Ionicons
                       name={isVisible ? "eye" : "eye-off"}
-                      size={22}
+                      size={21}
                       style={[styles.icon, { color: "white" }]}
                     />
                   </TouchableOpacity>
@@ -614,19 +616,19 @@ const HomeScreen = ({ navigation }) => {
 
               <View className="justify-between ">
                 <View className="flex-row d-flex items-center">
-                  <Text className="text-slate-950 text-lg font-semibold">
+                  <Text className="text-slate-900 text-base font-InterSemiBold mr-1">
                     A/C No: {userDetails.accountNumber}
                   </Text>
                   <TouchableOpacity>
                     <Ionicons
                       name="copy"
-                      size={20}
+                      size={19}
                       style={[styles.icon, { color: "white" }]}
                     />
                   </TouchableOpacity>
                 </View>
 
-                <Text className="text-white text-base font-semibold">
+                <Text className="text-white font-InterSemiBold">
                   {userDetails.accountType}
                 </Text>
               </View>
@@ -648,7 +650,7 @@ const HomeScreen = ({ navigation }) => {
                   onPress={() => handlePressMenu(item)}
                 >
                   <View
-                    className="w-24 h-24 m-2 p-2 rounded-lg flex justify-center items-center shadow-md shadow-slate-300"
+                    className="w-24 h-24 m-2 p-2 rounded-lg flex justify-center items-center shadow-md shadow-slate-400"
                     style={{
                       backgroundColor:
                         activeItem === item ? Color.PrimaryWebOrient : "white",
@@ -682,7 +684,7 @@ const HomeScreen = ({ navigation }) => {
                       />
                     )}
                     <Text
-                      className="text-center font-InterSemiBold"
+                      className="text-center font-InterSemiBold mt-1"
                       style={{ color: activeItem === item ? "white" : "black" }}
                     >
                       {item}
@@ -691,7 +693,7 @@ const HomeScreen = ({ navigation }) => {
                 </TouchableOpacity>
               ))}
             </View>
- 
+
             {/* Second Row */}
             <View className="flex-row justify-between mb-4">
               {["Cards", "Top up", "Accounts"].map((item, index) => (
@@ -700,7 +702,7 @@ const HomeScreen = ({ navigation }) => {
                   onPress={() => handlePressMenu(item)}
                 >
                   <View
-                    className="w-24 h-24 m-2 p-2 rounded-lg flex justify-center items-center shadow-md shadow-slate-300"
+                    className="w-24 h-24 m-2 p-2 rounded-lg flex justify-center items-center shadow-md shadow-slate-400"
                     style={{
                       backgroundColor:
                         activeItem === item ? Color.PrimaryWebOrient : "white",
@@ -734,7 +736,7 @@ const HomeScreen = ({ navigation }) => {
                       />
                     )}
                     <Text
-                      className="text-center font-InterSemiBold"
+                      className="text-center font-InterSemiBold mt-1"
                       style={{ color: activeItem === item ? "white" : "black" }}
                     >
                       {item}
@@ -743,7 +745,7 @@ const HomeScreen = ({ navigation }) => {
                 </TouchableOpacity>
               ))}
             </View>
- 
+
             {/* Third Row */}
             <View className="flex-row justify-between mb-4">
               {["QR Payments", "Utility Pay", "Statement"].map(
@@ -753,7 +755,7 @@ const HomeScreen = ({ navigation }) => {
                     onPress={() => handlePressMenu(item)}
                   >
                     <View
-                      className="w-24 h-24 m-2 p-2 rounded-lg flex justify-center items-center shadow-md shadow-slate-300"
+                      className="w-24 h-24 m-2 p-2 rounded-lg flex justify-center items-center shadow-md shadow-slate-400"
                       style={{
                         backgroundColor:
                           activeItem === item
@@ -795,7 +797,7 @@ const HomeScreen = ({ navigation }) => {
                         />
                       )}
                       <Text
-                        className="text-center font-InterSemiBold"
+                        className="text-center font-InterSemiBold mt-1"
                         style={{
                           color: activeItem === item ? "white" : "black",
                         }}
@@ -807,12 +809,12 @@ const HomeScreen = ({ navigation }) => {
                 )
               )}
             </View>
- 
+
             {/* Fourth Row */}
             <View className="flex-row justify-between mb-4">
               <TouchableOpacity onPress={() => handlePressMenu("Discount")}>
                 <View
-                  className="w-24 h-24 m-2 rounded-lg flex justify-center items-center shadow-md shadow-slate-300"
+                  className="w-24 h-24 m-2 rounded-lg flex justify-center items-center shadow-md shadow-slate-400"
                   style={{
                     backgroundColor:
                       activeItem === "Discount"
@@ -830,7 +832,7 @@ const HomeScreen = ({ navigation }) => {
                     }
                   />
                   <Text
-                    className="text-center font-InterSemiBold"
+                    className="text-center font-InterSemiBold mt-1"
                     style={{
                       color: activeItem === "Discount" ? "white" : "black",
                     }}
@@ -842,12 +844,14 @@ const HomeScreen = ({ navigation }) => {
             </View>
           </View>
         </View>
-        <View className="flex-row justify-between px-5">
+
+        <View className="flex-row justify-between px-5 mt-2">
           <Text className="font-InterBold text-black text-base">My Payees</Text>
           <TouchableOpacity onPress={() => navigation.navigate("BeneficiaryList", { source: 'dashboard' })}>
-            <Text className="text-xs font-medium text-gray-800 underline">View All</Text>
+            <Text className="text-xs font-medium text-gray-600 underline">View All</Text>
           </TouchableOpacity>
         </View>
+
         <ScrollView
           className="pt-1 mx-2"
           horizontal
@@ -886,9 +890,12 @@ const HomeScreen = ({ navigation }) => {
             </TouchableOpacity>
           )}
         </ScrollView>
+
+        <View className="w-[90%] self-center border-b border-gray-300 mt-2" />
+
         <View className="flex-row justify-between px-5 mt-5">
           <Text className="font-InterBold text-black text-base">Quick Pay</Text>
-          <Text className="text-xs font-medium text-gray-800 underline">
+          <Text className="text-xs font-medium text-gray-600 underline">
             View All
           </Text>
         </View>
@@ -964,12 +971,12 @@ const HomeScreen = ({ navigation }) => {
             </View>
           </View>
         </ScrollView>
-        <View className="px-5 mt-5">
+        <View className="px-5 mt-6">
           <Text className="font-InterBold text-black text-base">
             Credit Cards
           </Text>
         </View>
-        <List.Section className="bg-white rounded-xl mx-4 mt-4 mb-4">
+        <List.Section className="bg-white rounded-xl mx-4 mt-4 mb-6">
           {cards.filter((card) => card.isCreditCard).length > 0
             ? cards
               .filter((card) => card.isCreditCard)

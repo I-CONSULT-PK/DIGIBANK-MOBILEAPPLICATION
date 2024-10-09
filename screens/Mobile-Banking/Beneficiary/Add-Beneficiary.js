@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { Text, View, Image, Keyboard, Alert, TouchableOpacity, ScrollView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { StatusBar } from 'expo-status-bar';
 import { Entypo } from "@expo/vector-icons";
+import { useFocusEffect } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 
@@ -13,6 +14,7 @@ import Footer from '../../../components/Footer';
 
 const Add_Beneficiary = ({ route, navigation }) => {
   const { bankName, bankLogo, shortBank } = route.params || {};
+  const scrollRef = useRef();
 
   const [accountNumber, setAccountNumber] = useState('');
   const [userBankName, setUserBankName] = useState('');
@@ -145,6 +147,15 @@ const Add_Beneficiary = ({ route, navigation }) => {
     }
   };
 
+  useFocusEffect(
+    React.useCallback(() => {
+      scrollRef.current?.scrollTo({
+        y: 0,
+        animated: true,
+      });
+    }, [])
+  );
+
   return (
     <SafeAreaView className="h-full flex-1 bg-[#F9FAFC]">
       <View style={{ height: 100 }}>
@@ -156,7 +167,7 @@ const Add_Beneficiary = ({ route, navigation }) => {
         </View>
       </View>
 
-      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+      <ScrollView contentContainerStyle={{ flexGrow: 1 }} ref={scrollRef}>
         <View className="w-full h-full px-5">
           <Text className="font-InterSemiBold">Personal Details</Text>
 

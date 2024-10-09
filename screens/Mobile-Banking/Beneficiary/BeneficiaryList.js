@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { View, Text, ScrollView, TouchableOpacity, Image, Alert, BackHandler } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
@@ -22,6 +22,7 @@ const BeneficiaryList = ({ navigation, route }) => {
   const [selectedBeneficiary, setSelectedBeneficiary] = useState(null);
 
   const { source } = route.params || {};
+  const scrollRef = useRef();
 
   useEffect(() => {
     const handleBackPress = () => {
@@ -311,6 +312,15 @@ const BeneficiaryList = ({ navigation, route }) => {
     beneficiary.beneficiaryAlias.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
+  useFocusEffect(
+    React.useCallback(() => {
+      scrollRef.current?.scrollTo({
+        y: 0,
+        animated: true,
+      });
+    }, [])
+  );
+
   return (
     <SafeAreaView className="h-full flex-1" style={{ backgroundColor: Color.PrimaryWebOrient }}>
       <View style={{ backgroundColor: Color.PrimaryWebOrient, height: 100 }}>
@@ -337,7 +347,7 @@ const BeneficiaryList = ({ navigation, route }) => {
         />
       </View>
 
-      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+      <ScrollView contentContainerStyle={{ flexGrow: 1 }} ref={scrollRef}>
         <View className="w-full h-full px-5 bg-[#F9FAFC] pb-10">
           <View className="mt-7">
             <TouchableOpacity className="flex-row items-center">

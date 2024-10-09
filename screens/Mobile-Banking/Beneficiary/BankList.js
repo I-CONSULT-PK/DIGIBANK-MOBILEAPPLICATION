@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 import { Entypo } from '@expo/vector-icons';
+import { useFocusEffect } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 
@@ -18,6 +19,7 @@ const BankList = ({ navigation, route }) => {
   const [banks, setBanks] = useState([]);
 
   const { source } = route.params || {};
+  const scrollRef = useRef();
 
   useEffect(() => {
     const fetchBanks = async () => {
@@ -77,6 +79,15 @@ const BankList = ({ navigation, route }) => {
     bank.bankName.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
+  useFocusEffect(
+    React.useCallback(() => {
+      scrollRef.current?.scrollTo({
+        y: 0,
+        animated: true,
+      });
+    }, [])
+  );
+
   return (
     <SafeAreaView className="h-full flex-1" style={{ backgroundColor: Color.PrimaryWebOrient }}>
       <View style={{ backgroundColor: Color.PrimaryWebOrient, height: 100 }}>
@@ -95,7 +106,7 @@ const BankList = ({ navigation, route }) => {
           value={searchQuery} />
       </View>
 
-      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+      <ScrollView contentContainerStyle={{ flexGrow: 1 }} ref={scrollRef}>
         <View className="w-full h-full px-5 bg-[#F9FAFC] pb-10">
           <View className="mt-6">
             {filteredBanks.map((bank, index) => (

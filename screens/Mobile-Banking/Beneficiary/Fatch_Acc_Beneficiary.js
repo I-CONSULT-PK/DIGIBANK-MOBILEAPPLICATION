@@ -1,8 +1,9 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useRef } from "react";
 import { Text, View, Image, Keyboard, Alert, TouchableOpacity, ScrollView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { StatusBar } from 'expo-status-bar';
 import { Entypo } from "@expo/vector-icons";
+import { useFocusEffect } from "@react-navigation/native";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
@@ -16,6 +17,7 @@ import Footer from "../../../components/Footer";
 const Fatch_Acc_Beneficiary = ({ route, navigation }) => {
   const { showLoader, hideLoader } = useContext(AppLoaderContext);
   const { details, bankName, bankLogo } = route.params || {};
+  const scrollRef = useRef();
 
   const [nickname, setNickname] = useState("");
   const [mobileNumber, setMobileNumber] = useState("");
@@ -37,7 +39,7 @@ const Fatch_Acc_Beneficiary = ({ route, navigation }) => {
             beneficiaryAlias: nickname,
             beneficiaryName: details.accountTitle,
             accountNumber: encrypt(details.accountNumber),
-            beneficiaryBankName: details.bankName,
+            beneficiaryBankName: details.bankName || bankName,
             mobileNumber: mobileNumber || "",
             categoryType: "Individual",
             customerId: customerId,
@@ -93,6 +95,15 @@ const Fatch_Acc_Beneficiary = ({ route, navigation }) => {
     }
   };
 
+  useFocusEffect(
+    React.useCallback(() => {
+      scrollRef.current?.scrollTo({
+        y: 0,
+        animated: true,
+      });
+    }, [])
+  );
+
   return (
     <SafeAreaView className="h-full flex-1 bg-[#F9FAFC]">
       <View style={{ height: 100 }}>
@@ -104,7 +115,7 @@ const Fatch_Acc_Beneficiary = ({ route, navigation }) => {
         </View>
       </View>
 
-      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+      <ScrollView contentContainerStyle={{ flexGrow: 1 }} ref={scrollRef}>
         <View className="w-full h-full px-5">
           <Text className="font-InterSemiBold">From Account</Text>
 
@@ -136,7 +147,7 @@ const Fatch_Acc_Beneficiary = ({ route, navigation }) => {
 
               <View className="flex-row justify-between items-center">
                 <Text className="text-sm font-InterRegular text-gray-500">Bank Name</Text>
-                <Text className="text-sm font-InterSemiBold">{details.bankName}</Text>
+                <Text className="text-sm font-InterSemiBold">{details.bankName || bankName}</Text>
               </View>
             </View>
           </View>
