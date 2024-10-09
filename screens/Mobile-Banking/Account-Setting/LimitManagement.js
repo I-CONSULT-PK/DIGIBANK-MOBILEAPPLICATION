@@ -17,7 +17,7 @@ import CustomModal from "../../../components/CustomModal";
 import axios from "axios";
 import API_BASE_URL from "../../../config";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-
+import { ProgressBar } from "react-native-paper";
 const LimitManagement = ({ navigation }) => {
   const [accountData, setAccountData] = useState(null);
   const [dailyLimits, setDailyLimits] = useState({
@@ -254,9 +254,11 @@ const LimitManagement = ({ navigation }) => {
                   </Text>
                 </View>
                 <View className="flex flex-col mt-3 w-full rounded-xl">
-                  <View className="flex flex-col items-start bg-[#f9fafc] rounded-xl">
-                    <View className="h-3 bg-cyan-500 rounded-xl w-[66px]" />
-                  </View>
+                  <ProgressBar
+                    className="h-2.5 rounded-full"
+                    progress={0.5}
+                    color={Color.PrimaryWebOrient}
+                  />
                 </View>
                 <View className="flex flex-row items-center justify-between mt-4 w-full">
                   <Text className="ml-2 text-md font-medium text-neutral-500">
