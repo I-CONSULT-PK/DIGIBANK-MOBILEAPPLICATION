@@ -121,69 +121,74 @@ const BeneficiaryList = ({ navigation, route }) => {
   );
 
   const handleUpdateBeneficiary = async (nickname, mobileNumber, beneId, beneficiary) => {
-    if (nickname !== beneficiary.beneficiaryAlias || mobileNumber !== beneficiary.mobileNumber) {
-      try {
-        const bearerToken = await AsyncStorage.getItem('token');
-        const customerId = parseInt(await AsyncStorage.getItem('customerId'), 10);
+    if (nickname === "") {
+      Alert.alert('Error', 'Nickname cannot be null');
+    }
+    else {
+      if (nickname !== beneficiary.beneficiaryAlias || mobileNumber !== beneficiary.mobileNumber) {
+        try {
+          const bearerToken = await AsyncStorage.getItem('token');
+          const customerId = parseInt(await AsyncStorage.getItem('customerId'), 10);
 
-        if (bearerToken && customerId) {
-          const updateData = {
-            beneficiaryAlias: nickname,
-            mobileNumber: mobileNumber,
-            beneId: beneId,
-            customerId: customerId
-          };
+          if (bearerToken && customerId) {
+            const updateData = {
+              beneficiaryAlias: nickname,
+              mobileNumber: mobileNumber,
+              beneId: beneId,
+              customerId: customerId
+            };
 
-          const response = await axios.post(`${API_BASE_URL}/v1/beneficiary/updateBeneficiary`,
-            updateData,
-            {
-              headers: {
-                'Authorization': `Bearer ${bearerToken}`
+            const response = await axios.post(`${API_BASE_URL}/v1/beneficiary/updateBeneficiary`,
+              updateData,
+              {
+                headers: {
+                  'Authorization': `Bearer ${bearerToken}`
+                }
+              }
+            );
+
+            const dto = response.data;
+
+            if (dto && dto.success && dto.data) {
+              fetchBeneficiaries();
+              handleModalClose();
+
+              Alert.alert('Success', 'Beneficiary updated successfully');
+            }
+            else {
+              if (dto.message) {
+                Alert.alert('Error', dto.message);
+              }
+              else if (dto.errors && dto.errors.length > 0) {
+                Alert.alert('Error', dto.errors);
               }
             }
-          );
-
-          const dto = response.data;
-
-          if (dto && dto.success && dto.data) {
-            fetchBeneficiaries();
-            handleModalClose();
-
-            Alert.alert('Success', 'Beneficiary updated successfully');
+          } else {
+            Alert.alert('Error', 'Unexpected error occured. Try again later!');
           }
-          else {
-            if (dto.message) {
-              Alert.alert('Error', dto.message);
-            }
-            else if (dto.errors && dto.errors.length > 0) {
-              Alert.alert('Error', dto.errors);
-            }
-          }
-        } else {
-          Alert.alert('Error', 'Unexpected error occured. Try again later!');
-        }
-      } catch (error) {
-        if (error.response) {
-          const statusCode = error.response.status;
+        } catch (error) {
+          if (error.response) {
+            const statusCode = error.response.status;
 
-          if (statusCode === 404) {
-            Alert.alert('Error', 'Server timed out. Try again later!');
-          } else if (statusCode === 503) {
-            Alert.alert('Error', 'Service unavailable. Please try again later.');
-          } else if (statusCode === 400) {
-            Alert.alert('Error', error.response.data.data.errors[0]);
+            if (statusCode === 404) {
+              Alert.alert('Error', 'Server timed out. Try again later!');
+            } else if (statusCode === 503) {
+              Alert.alert('Error', 'Service unavailable. Please try again later.');
+            } else if (statusCode === 400) {
+              Alert.alert('Error', error.response.data.data.errors[0]);
+            } else {
+              Alert.alert('Error', error.message);
+            }
+          } else if (error.request) {
+            Alert.alert('Error', 'No response from the server. Please check your connection.');
           } else {
             Alert.alert('Error', error.message);
           }
-        } else if (error.request) {
-          Alert.alert('Error', 'No response from the server. Please check your connection.');
-        } else {
-          Alert.alert('Error', error.message);
         }
       }
-    }
-    else {
-      handleModalClose();
+      else {
+        handleModalClose();
+      }
     }
   };
 
@@ -324,7 +329,7 @@ const BeneficiaryList = ({ navigation, route }) => {
         </View>
       </View>
 
-      <View className="pt-6 pb-2 px-6 bg-[#F9FAFC]">
+      <View className="pt-6 pb-2 px-5 bg-[#F9FAFC]">
         <SearchBar
           placeholder="Search My Payees"
           onChangeText={handleSearchChange}
@@ -333,7 +338,7 @@ const BeneficiaryList = ({ navigation, route }) => {
       </View>
 
       <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-        <View className="w-full h-full px-6 bg-[#F9FAFC] pb-10">
+        <View className="w-full h-full px-5 bg-[#F9FAFC] pb-10">
           <View className="mt-7">
             <TouchableOpacity className="flex-row items-center">
               <View className="p-3 rounded-lg shadow-lg shadow-gray-500 justify-center items-center" style={{ backgroundColor: Color.PrimaryWebOrient }}>

@@ -88,7 +88,7 @@ const BankList = ({ navigation, route }) => {
         </View>
       </View>
 
-      <View className="pt-6 pb-2 px-6 bg-[#F9FAFC]">
+      <View className="pt-6 pb-2 px-5 bg-[#F9FAFC]">
         <SearchBar
           placeholder='Search Bank Name'
           onChangeText={setSearchQuery}
@@ -96,7 +96,7 @@ const BankList = ({ navigation, route }) => {
       </View>
 
       <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-        <View className="w-full h-full px-6 bg-[#F9FAFC] pb-10">
+        <View className="w-full h-full px-5 bg-[#F9FAFC] pb-10">
           <View className="mt-6">
             {filteredBanks.map((bank, index) => (
               <React.Fragment key={index}>

@@ -123,7 +123,7 @@ const TransferSuccess = ({ navigation, route }) => {
                                 <Text className="text-center font-InterMedium">Sent to</Text>
                                 <Image source={{ uri: beneObj.bankUrl }} resizeMode='contain' className="w-14 h-14 my-1.5 rounded-lg" />
                                 <Text className="font-InterSemiBold text-gray-700">{beneObj.beneficiaryName}</Text>
-                                <Text className="font-InterMedium text-gray-500 mt-0.5">{maskAccountNumber(beneObj.accountNumber)}</Text>
+                                <Text className="font-InterSemiBold text-gray-500 mt-0.5">{maskAccountNumber(beneObj.accountNumber)}</Text>
                             </View>
 
                             <View className="mt-6 px-6">
