@@ -19,7 +19,7 @@ import API_BASE_URL from "../../../config";
 import * as Device from "expo-device";
 import * as Application from "expo-application";
 import { StatusBar } from "expo-status-bar";
- 
+
 const ManageLoginPin = () => {
   const navigation = useNavigation();
   const [customerId, setCustomerId] = useState("");
@@ -96,17 +96,22 @@ const ManageLoginPin = () => {
       );
 
       if (response.data && response.data.success) {
-        Alert.alert("Success", "PIN activated successfully.");
         setPinCode("");
         setReenterPinCode("");
-        // Ensure data is a string before saving it
-        const data = response.data.data.toString(); 
-        await AsyncStorage.setItem('deviceTableId', data);
-        console.log(data);
-    } else {
+
+        Alert.alert("Success", "PIN updated successfully", [
+          {
+            text: "OK",
+            onPress: () => {
+              setTimeout(() => {
+                navigation.navigate("Home");
+              }, 1000);
+            },
+          },
+        ]);
+      } else {
         Alert.alert("Error", response.data.message || "Something went wrong.");
-    }
-    
+      }
     } catch (error) {
       Alert.alert("Error", error.message || "An error occurred.");
     }
@@ -148,7 +153,8 @@ const ManageLoginPin = () => {
           <Text className="text-gray-500 px-5 mb-0 mt-0">
             You can now set your login pin. Terms and conditions apply!{"\n"}
             <Text className="text-gray-500 px-5">
-              {"\n"}Criteria: Login pin should be numeric, only 4 digits & cannot be sequence e.g (1234)
+              {"\n"}Criteria: Login pin should be numeric, only 4 digits &
+              cannot be sequence e.g (1234)
             </Text>
           </Text>
           <View className="mt-4 px-4">
@@ -160,9 +166,9 @@ const ManageLoginPin = () => {
                 onChange={handlePinCodeChange}
                 keyboardType="numeric"
                 maxLength={4}
-                editable={true} 
+                editable={true}
                 onFocus={() => {}}
-                onBlur={() => {}} 
+                onBlur={() => {}}
               />
               <Text className="text-gray-500 mt-5">Re-enter PIN Code</Text>
               <TextInput
@@ -171,9 +177,9 @@ const ManageLoginPin = () => {
                 onChange={handleReenterPinCodeChange}
                 keyboardType="numeric"
                 maxLength={4}
-                editable={true} 
+                editable={true}
                 onFocus={() => {}}
-                onBlur={() => {}} 
+                onBlur={() => {}}
               />
             </View>
           </View>
@@ -184,7 +190,6 @@ const ManageLoginPin = () => {
         </ScrollView>
       </View>
       <StatusBar backgroundColor={Color.PrimaryWebOrient} style="light" />
-
     </SafeAreaView>
   );
 };

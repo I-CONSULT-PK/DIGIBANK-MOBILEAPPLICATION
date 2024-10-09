@@ -37,9 +37,18 @@ const LimitManagement = ({ navigation }) => {
 
   const paymentTypes = [
     { label: "Send Money to Other Banks", limitKey: "transferToOtherBank" },
-    { label: "Funds Transfer to Digi-Bank Account", limitKey: "transferToDigiBank" },
-    { label: "Funds Transfer to Own Account", limitKey: "transferToOwnAccount" },
-    { label: "Mobile Prepaid and Postpaid Payments", limitKey: "mobilePayments" },
+    {
+      label: "Funds Transfer to Digi-Bank Account",
+      limitKey: "transferToDigiBank",
+    },
+    {
+      label: "Funds Transfer to Own Account",
+      limitKey: "transferToOwnAccount",
+    },
+    {
+      label: "Mobile Prepaid and Postpaid Payments",
+      limitKey: "mobilePayments",
+    },
     { label: "Utility Bills and Other Payments", limitKey: "utilityBills" },
     { label: "QR Payments", limitKey: "qrPayments" },
   ];
@@ -79,7 +88,7 @@ const LimitManagement = ({ navigation }) => {
         Alert.alert("Error", dto.message || "Failed to retrieve account data.");
       }
     } catch (error) {
-      console.error('Fetch Account Data Error:', error);
+      console.error("Fetch Account Data Error:", error);
       if (error.response) {
         const statusCode = error.response.status;
         const message =
@@ -93,13 +102,18 @@ const LimitManagement = ({ navigation }) => {
           Alert.alert("Error", message);
         }
       } else {
-        Alert.alert("Error", "No response from the server. Please check your connection.");
+        Alert.alert(
+          "Error",
+          "No response from the server. Please check your connection."
+        );
       }
     }
   };
 
   const handleShowModal = (paymentType) => {
-    const selected = paymentTypes.find(payment => payment.label === paymentType);
+    const selected = paymentTypes.find(
+      (payment) => payment.label === paymentType
+    );
     setSelectedPayment(paymentType);
     setSliderValue(dailyLimits[selected.limitKey] || allowedValues[0]);
     setMaxLimit(allowedValues[allowedValues.length - 1]);
@@ -119,7 +133,7 @@ const LimitManagement = ({ navigation }) => {
 
   const handleSliderValueChange = (value) => {
     const closestValue = allowedValues.reduce((prev, curr) => {
-      return (Math.abs(curr - value) < Math.abs(prev - value) ? curr : prev);
+      return Math.abs(curr - value) < Math.abs(prev - value) ? curr : prev;
     });
     setSliderValue(closestValue);
   };
@@ -130,7 +144,9 @@ const LimitManagement = ({ navigation }) => {
       const customerId = await AsyncStorage.getItem("customerId");
       const bearerToken = await AsyncStorage.getItem("token");
 
-      const selectedLimitKey = paymentTypes.find(payment => payment.label === selectedPayment)?.limitKey;
+      const selectedLimitKey = paymentTypes.find(
+        (payment) => payment.label === selectedPayment
+      )?.limitKey;
 
       if (!selectedLimitKey) {
         Alert.alert("Error", "Invalid payment type selected.");
@@ -140,7 +156,10 @@ const LimitManagement = ({ navigation }) => {
       const limitType = limitTypeMap[selectedLimitKey];
 
       if (sliderValue > maxLimit) {
-        Alert.alert("Error", `The limit cannot exceed ${maxLimit.toLocaleString()}.`);
+        Alert.alert(
+          "Error",
+          `The limit cannot exceed ${maxLimit.toLocaleString()}.`
+        );
         return;
       }
 
@@ -155,15 +174,26 @@ const LimitManagement = ({ navigation }) => {
       );
 
       if (response.data.success) {
-        Alert.alert("Success", `Daily limit updated successfully for ${selectedPayment}.`);
+        Alert.alert(
+          "Success",
+          `Daily limit updated successfully for ${selectedPayment}.`
+        );
         fetchAccountData();
       } else {
-        Alert.alert("Error", response.data.message || "Failed to update limit.");
+        Alert.alert(
+          "Error",
+          response.data.message || "Failed to update limit."
+        );
       }
     } catch (error) {
-      console.error('Confirm Limit Change Error:', error);
+      console.error("Confirm Limit Change Error:", error);
       if (error.response) {
-        Alert.alert("Error", `Failed to update limit: ${error.response.data.message || "Server error"}`);
+        Alert.alert(
+          "Error",
+          `Failed to update limit: ${
+            error.response.data.message || "Server error"
+          }`
+        );
       } else {
         Alert.alert("Error", "Failed to update limit. Please try again.");
       }
@@ -182,7 +212,10 @@ const LimitManagement = ({ navigation }) => {
 
   return (
     <SafeAreaView className="flex-1 bg-[#f9fafc]">
-      <View className="h-24" style={{ backgroundColor: Color.PrimaryWebOrient }}>
+      <View
+        className="h-24"
+        style={{ backgroundColor: Color.PrimaryWebOrient }}
+      >
         <View className="flex-row items-center justify-center h-full">
           <TouchableOpacity
             onPress={() => navigation.navigate("Account_Setting_List")}
@@ -197,18 +230,28 @@ const LimitManagement = ({ navigation }) => {
       <ScrollView>
         {paymentTypes.map((payment, index) => (
           <View key={index} className="w-full mt-5 px-4">
-            <Text className="text-base font-semibold text-gray-800">{payment.label}</Text>
+            <Text className="text-base font-semibold text-gray-800">
+              {payment.label}
+            </Text>
             <View className="z-10 p-4">
               <View className="flex items-center px-4 py-3.5 bg-white rounded-xl">
                 <View className="flex flex-row justify-between w-full">
-                  <Text className="text-base font-semibold text-gray-800">Total Authorization (Per Day)</Text>
                   <Text className="text-base font-semibold text-gray-800">
-                    {dailyLimits[payment.limitKey] !== undefined ? dailyLimits[payment.limitKey].toLocaleString() : "Loading..."}
+                    Total Authorization (Per Day)
+                  </Text>
+                  <Text className="text-base font-semibold text-gray-800">
+                    {dailyLimits[payment.limitKey] !== undefined
+                      ? dailyLimits[payment.limitKey].toLocaleString()
+                      : "Loading..."}
                   </Text>
                 </View>
                 <View className="flex flex-row justify-between w-full">
-                  <Text className="text-xs font-medium text-neutral-500 flex-1 text-left">Availed</Text>
-                  <Text className="text-xs font-medium text-neutral-500 flex-1 text-right">Remaining</Text>
+                  <Text className="text-xs font-medium text-neutral-500 flex-1 text-left">
+                    Availed
+                  </Text>
+                  <Text className="text-xs font-medium text-neutral-500 flex-1 text-right">
+                    Remaining
+                  </Text>
                 </View>
                 <View className="flex flex-col mt-3 w-full rounded-xl">
                   <View className="flex flex-col items-start bg-[#f9fafc] rounded-xl">
@@ -217,8 +260,10 @@ const LimitManagement = ({ navigation }) => {
                 </View>
                 <View className="flex flex-row items-center justify-between mt-4 w-full">
                   <Text className="ml-2 text-md font-medium text-neutral-500">
-                    Per Transaction - 
-                    {dailyLimits[payment.limitKey] !== undefined ? (dailyLimits[payment.limitKey] / 5).toLocaleString() : "Loading..."}
+                    Per Transaction -
+                    {dailyLimits[payment.limitKey] !== undefined
+                      ? (dailyLimits[payment.limitKey] / 5).toLocaleString()
+                      : "Loading..."}
                   </Text>
                   <TouchableOpacity
                     className="bg-primary w-8 h-8 rounded-full flex items-center justify-center"
@@ -242,8 +287,13 @@ const LimitManagement = ({ navigation }) => {
       >
         <View className="flex flex-col items-center px-5 bg-white rounded-xl">
           <View className="flex flex-row justify-between w-full mb-4">
-            <Text className="text-md font-medium text-gray-500">Total Authorized (Per Day)</Text>
-            <Text className="text-md font-medium" style={{ color: Color.PrimaryWebOrient }}>
+            <Text className="text-md font-medium text-gray-500">
+              Total Authorized (Per Day)
+            </Text>
+            <Text
+              className="text-md font-medium"
+              style={{ color: Color.PrimaryWebOrient }}
+            >
               {dailyLimits[selectedLimitKey] !== undefined
                 ? dailyLimits[selectedLimitKey].toLocaleString()
                 : "Loading..."}
@@ -270,7 +320,9 @@ const LimitManagement = ({ navigation }) => {
                 ? dailyLimits[selectedLimitKey].toLocaleString()
                 : "Loading..."}
             </Text>
-            <Text className="text-gray-400 font-bold">{sliderValue.toLocaleString()}</Text>
+            <Text className="text-gray-400 font-bold">
+              {sliderValue.toLocaleString()}
+            </Text>
           </View>
         </View>
       </CustomModal>

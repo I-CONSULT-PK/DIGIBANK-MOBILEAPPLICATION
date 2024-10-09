@@ -1,14 +1,22 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Text, View, ScrollView, TouchableOpacity, Alert } from "react-native";
+import {
+  Text,
+  View,
+  ScrollView,
+  TouchableOpacity,
+  Alert,
+  Platform,
+} from "react-native";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Entypo } from "@expo/vector-icons";
 import axios from "axios";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import CustomButton from "../../../components/Button";
 import Footer from "../../../components/Footer";
 import API_BASE_URL from "../../../config";
 import { TextInput } from "react-native-paper";
+import * as Application from "expo-application";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const otpLength = 4;
 
@@ -18,14 +26,22 @@ const ChangeLoginPin = () => {
   const [newPin, setNewPin] = useState(Array(otpLength).fill(""));
   const [confirmPin, setConfirmPin] = useState(Array(otpLength).fill(""));
   const inputs = useRef([]);
-  const [deviceTableId, setdeviceTableId] = useState(null);
+  const [uniqueId, setUniqueId] = useState(null);
 
   useEffect(() => {
-    const fetchDeviceTableId = async () => {
-      const id = await AsyncStorage.getItem("deviceTableId");
-      setdeviceTableId(id);
+    const getUniqueDeviceId = async () => {
+      try {
+        const unique =
+          Platform.OS === "android"
+            ? await Application.getAndroidId()
+            : await Application.getIosIdForVendor();
+        setUniqueId(unique);
+      } catch (error) {
+        console.error("Error getting unique ID:", error);
+      }
     };
-    fetchDeviceTableId();
+
+    getUniqueDeviceId();
   }, []);
 
   useFocusEffect(
@@ -74,14 +90,11 @@ const ChangeLoginPin = () => {
     }
   };
 
- 
-
   const handleConfirm = async () => {
     const oldPinString = oldPin.join("");
     const newPinString = newPin.join("");
     const confirmPinString = confirmPin.join("");
 
-    // Check if all input fields are filled
     if (
       oldPinString.length !== otpLength ||
       newPinString.length !== otpLength ||
@@ -91,20 +104,13 @@ const ChangeLoginPin = () => {
       return;
     }
 
-    // Check if new PINs match
     if (newPinString !== confirmPinString) {
       Alert.alert("Error", "New PINs do not match.");
       return;
     }
 
-    // Check if old PIN and new PIN are the same
     if (oldPinString === newPinString) {
       Alert.alert("Error", "Old PIN and New PIN cannot be the same.");
-      return;
-    }
-
-    if (!deviceTableId) {
-      Alert.alert("Error", "Customer ID is missing.");
       return;
     }
 
@@ -112,15 +118,25 @@ const ChangeLoginPin = () => {
       const bearerToken = await AsyncStorage.getItem("token");
 
       if (bearerToken) {
+        if (!uniqueId) {
+          Alert.alert(
+            "Error",
+            "Unique ID is missing. Please ensure your device is registered."
+          );
+          return;
+        }
+
         const response = await axios.put(
-          `${API_BASE_URL}/v1/settings/updateDevicePin/${deviceTableId}`,
+          `${API_BASE_URL}/v1/settings/updateDevicePin`,
           {
             oldPin: oldPinString,
             devicePin: newPinString,
+            unique: uniqueId,
           },
           {
             headers: {
               "Content-Type": "application/json",
+              Authorization: `Bearer ${bearerToken}`,
             },
           }
         );
