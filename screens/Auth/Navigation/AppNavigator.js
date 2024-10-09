@@ -101,6 +101,7 @@ import Packges_Transfer from "../../Mobile-Banking/Mobile-Top-Up/Packges_Transfe
 import CameraScreen from "../CameraScreen";
 import TransferSuccess from "../../Mobile-Banking/Beneficiary/TransferSuccess";
 import Device_Management from "../../Mobile-Banking/Device-Management/Device_Management";
+import SuccessfullFeedback from "../../Mobile-Banking/Feedback/SuccessfullFeedback";
 
 const Stack = createStackNavigator();
 
@@ -204,7 +205,7 @@ const AppNavigator = () => {
 
  {/* Feedback start */}
  <Stack.Screen name="Feedback" component={Feedback} />
-
+ <Stack.Screen name="SuccessfullFeedback" component={SuccessfullFeedback} />
 
   {/* Feedback end */}
         <Stack.Screen name="OTP_Preference" component={OTP_Preference} />
