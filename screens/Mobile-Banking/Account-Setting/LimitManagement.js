@@ -1,12 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  ScrollView,
-  StyleSheet,
-  Alert,
-} from "react-native";
+import { View, Text, TouchableOpacity, ScrollView, Alert } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
 import Slider from "@react-native-community/slider";
@@ -18,20 +11,16 @@ import axios from "axios";
 import API_BASE_URL from "../../../config";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { ProgressBar } from "react-native-paper";
+import { useFocusEffect } from "@react-navigation/native";
+
 const LimitManagement = ({ navigation }) => {
   const [accountData, setAccountData] = useState(null);
-  const [dailyLimits, setDailyLimits] = useState({
-    transferToOtherBank: 0,
-    transferToDigiBank: 0,
-    transferToOwnAccount: 0,
-    mobilePayments: 0,
-    utilityBills: 0,
-    qrPayments: 0,
-  });
+  const [dailyLimits, setDailyLimits] = useState({});
   const [modalVisible, setModalVisible] = useState(false);
   const [sliderValue, setSliderValue] = useState(0);
   const [selectedPayment, setSelectedPayment] = useState(null);
   const [maxLimit, setMaxLimit] = useState(0);
+  const [progressData, setProgressData] = useState({});
 
   const allowedValues = [50000, 100000, 250000, 500000, 1000000];
 
@@ -89,24 +78,67 @@ const LimitManagement = ({ navigation }) => {
       }
     } catch (error) {
       console.error("Fetch Account Data Error:", error);
-      if (error.response) {
-        const statusCode = error.response.status;
-        const message =
-          error.response.data.message || "An error occurred. Please try again.";
+      Alert.alert("Error", "Failed to fetch account data. Please try again.");
+    }
+  };
+  const fetchProgressData = async () => {
+    try {
+      const bearerToken = await AsyncStorage.getItem("token");
+      const accountNumber = await AsyncStorage.getItem("accountNumber");
 
-        if (statusCode === 404) {
-          Alert.alert("Error", "Server timed out. Try again later!");
-        } else if (statusCode === 503) {
-          Alert.alert("Error", "Service unavailable. Please try again later.");
-        } else {
-          Alert.alert("Error", message);
+      const response = await axios.get(
+        `http://192.168.0.63:8088/v1/account/limits?accountNumber=zanbeel-9447e65`,
+        {
+          headers: {
+            Authorization: `Bearer ${bearerToken}`,
+          },
         }
+      );
+
+      if (response.data.success) {
+        const { data } = response.data;
+        const newProgressData = {
+          mobilePayments: {
+            maxLimit: data.remainingTopUpLimit + data.availedTopUpLimit,
+            usedLimit: data.availedTopUpLimit,
+          },
+          utilityBills: {
+            maxLimit: data.remainingBillPayLimit + data.availedBillPayLimit,
+            usedLimit: data.availedBillPayLimit,
+          },
+          transferToOwnAccount: {
+            maxLimit: data.remainingOwnLimit + data.availedOwnLimit,
+            usedLimit: data.availedOwnLimit,
+          },
+          transferToOtherBank: {
+            maxLimit:
+              data.remainingSendToOtherBankLimit +
+              data.availedSendToOtherBankLimit,
+            usedLimit: data.availedSendToOtherBankLimit,
+          },
+          qrPayments: {
+            maxLimit: data.remainingQRLimit + data.availedQRLimit,
+            usedLimit: data.availedQRLimit,
+          },
+        };
+
+        setProgressData(newProgressData);
+        console.log("Progress Data Set:", newProgressData); // Log the progress data
       } else {
         Alert.alert(
           "Error",
-          "No response from the server. Please check your connection."
+          response.data.message || "Failed to retrieve progress data."
         );
       }
+    } catch (error) {
+      console.error(
+        "Fetch Progress Data Error:",
+        error.response || error.message
+      );
+      Alert.alert(
+        "Error",
+        "Failed to retrieve progress data. Please try again."
+      );
     }
   };
 
@@ -179,6 +211,7 @@ const LimitManagement = ({ navigation }) => {
           `Daily limit updated successfully for ${selectedPayment}.`
         );
         fetchAccountData();
+        fetchProgressData(); // Refresh progress data after limit change
       } else {
         Alert.alert(
           "Error",
@@ -187,24 +220,26 @@ const LimitManagement = ({ navigation }) => {
       }
     } catch (error) {
       console.error("Confirm Limit Change Error:", error);
-      if (error.response) {
-        Alert.alert(
-          "Error",
-          `Failed to update limit: ${
-            error.response.data.message || "Server error"
-          }`
-        );
-      } else {
-        Alert.alert("Error", "Failed to update limit. Please try again.");
-      }
+      Alert.alert("Error", "Failed to update limit. Please try again.");
     } finally {
       handleCloseModal();
     }
   };
 
-  useEffect(() => {
-    fetchAccountData();
-  }, []);
+  const calculateProgress = (limitKey) => {
+    const totalLimit = progressData[limitKey]?.maxLimit || 1; // Avoid division by zero
+    const usedLimit = progressData[limitKey]?.usedLimit || 0;
+
+    // Calculate percentage as a fraction of 1 (0 to 1)
+    return totalLimit > 0 ? usedLimit / totalLimit : 0; // Returns a fraction (0 to 1)
+  };
+
+  useFocusEffect(
+    React.useCallback(() => {
+      fetchAccountData();
+      fetchProgressData();
+    }, [])
+  );
 
   const selectedLimitKey = paymentTypes.find(
     (payment) => payment.label === selectedPayment
@@ -253,13 +288,15 @@ const LimitManagement = ({ navigation }) => {
                     Remaining
                   </Text>
                 </View>
-                <View className="flex flex-col mt-3 w-full rounded-xl">
-                  <ProgressBar
-                    className="h-2.5 rounded-full"
-                    progress={0.5}
-                    color={Color.PrimaryWebOrient}
-                  />
-                </View>
+                <View className="flex flex-col mt-3 w-full rounded-xl relative">
+  <ProgressBar
+    className="h-2.5 rounded-full"
+    progress={calculateProgress(payment.limitKey)} 
+    color={Color.PrimaryWebOrient}
+  />
+</View>
+
+
                 <View className="flex flex-row items-center justify-between mt-4 w-full">
                   <Text className="ml-2 text-md font-medium text-neutral-500">
                     Per Transaction -
@@ -306,7 +343,7 @@ const LimitManagement = ({ navigation }) => {
             <Text className="text-gray-400 font-bold">Max</Text>
           </View>
           <Slider
-            style={styles.slider}
+            style={{ width: "100%" }}
             minimumValue={allowedValues[0]}
             maximumValue={allowedValues[allowedValues.length - 1]}
             step={1}
@@ -333,11 +370,5 @@ const LimitManagement = ({ navigation }) => {
     </SafeAreaView>
   );
 };
-
-const styles = StyleSheet.create({
-  slider: {
-    width: "100%",
-  },
-});
 
 export default LimitManagement;
