@@ -161,7 +161,7 @@ const LimitManagement = ({ navigation }) => {
           },
         };
 
-        console.log("Progress Data:", newProgressData);
+        // console.log("Progress Data:", newProgressData);
         setProgressData(newProgressData);
       } else {
         Alert.alert(
@@ -177,16 +177,22 @@ const LimitManagement = ({ navigation }) => {
       );
     }
   };
+const handleShowModal = (paymentType) => {
+  const selected = paymentTypes.find(
+    (payment) => payment.label === paymentType
+  );
 
-  const handleShowModal = (paymentType) => {
-    const selected = paymentTypes.find(
-      (payment) => payment.label === paymentType
-    );
-    setSelectedPayment(paymentType);
+  if (selected) {
+    setSelectedPayment(selected); // Store the whole object
     setSliderValue(dailyLimits[selected.limitKey] || allowedValues[0]);
     setMaxLimit(allowedValues[allowedValues.length - 1]);
     setModalVisible(true);
-  };
+  } else {
+    console.error("Selected payment type not found:", paymentType);
+  }
+};
+
+
 
   const handleCloseModal = () => setModalVisible(false);
 
@@ -197,66 +203,66 @@ const LimitManagement = ({ navigation }) => {
     setSliderValue(closestValue);
   };
 
-  const handleConfirmLimitChange = async () => {
-    try {
-      const accountNumber = await AsyncStorage.getItem("accountNumber");
-      const customerId = await AsyncStorage.getItem("customerId");
-      const bearerToken = await AsyncStorage.getItem("token");
+const handleConfirmLimitChange = async () => {
+  try {
+    const accountNumber = await AsyncStorage.getItem("accountNumber");
+    const customerId = await AsyncStorage.getItem("customerId");
+    const bearerToken = await AsyncStorage.getItem("token");
 
-      const selectedLimitKey = paymentTypes.find(
-        (payment) => payment.label === selectedPayment
-      )?.limitKey;
+    // Use limitKey from selectedPayment object
+    const selectedLimitKey = selectedPayment?.limitKey;
 
-      if (!selectedLimitKey) {
-        Alert.alert("Error", "Invalid payment type selected.");
-        return;
-      }
-
-      const limitTypeMap = {
-        transferToOtherBank: "sendtootherbank",
-        transferToDigiBank: "singleday",
-        transferToOwnAccount: "owntransfer",
-        mobilePayments: "topup",
-        utilityBills: "billpay",
-        qrPayments: "qrpay",
-      };
-
-      const limitType = limitTypeMap[selectedLimitKey];
-
-      if (sliderValue > maxLimit) {
-        Alert.alert(
-          "Error",
-          `The limit cannot exceed ${maxLimit.toLocaleString()}.`
-        );
-        return;
-      }
-
-      const response = await axios.put(
-        `${API_BASE_URL}/v1/settings/setDailyLimit?accountNumber=${accountNumber}&customerId=${customerId}&limitValue=${sliderValue}&limitType=${limitType}`,
-        null,
-        { headers: { Authorization: `Bearer ${bearerToken}` } }
-      );
-
-      if (response.data.success) {
-        Alert.alert(
-          "Success",
-          `Daily limit updated successfully for ${selectedPayment}.`
-        );
-        fetchAccountData();
-        fetchProgressData();
-      } else {
-        Alert.alert(
-          "Error",
-          response.data.message || "Failed to update limit."
-        );
-      }
-    } catch (error) {
-      console.error("Confirm Limit Change Error:", error);
-      Alert.alert("Error", "Failed to update limit. Please try again.");
-    } finally {
-      handleCloseModal();
+    if (!selectedLimitKey) {
+      Alert.alert("Error", "Invalid payment type selected.");
+      return;
     }
-  };
+
+    const limitTypeMap = {
+      transferToOtherBank: "sendtootherbank",
+      transferToDigiBank: "singleday",
+      transferToOwnAccount: "owntransfer",
+      mobilePayments: "topup",
+      utilityBills: "billpay",
+      qrPayments: "qrpay",
+    };
+
+    const limitType = limitTypeMap[selectedLimitKey];
+
+    if (sliderValue > maxLimit) {
+      Alert.alert(
+        "Error",
+        `The limit cannot exceed ${maxLimit.toLocaleString()}.`
+      );
+      return;
+    }
+
+    const response = await axios.put(
+      `${API_BASE_URL}/v1/settings/setDailyLimit?accountNumber=${accountNumber}&customerId=${customerId}&limitValue=${sliderValue}&limitType=${limitType}`,
+      null,
+      { headers: { Authorization: `Bearer ${bearerToken}` } }
+    );
+
+    if (response.data.success) {
+      Alert.alert(
+        "Success",
+        `Daily limit updated successfully for ${selectedPayment}.`
+      );
+      fetchAccountData();
+      fetchProgressData();
+    } else {
+      Alert.alert(
+        "Error",
+        response.data.message || "Failed to update limit."
+      );
+    }
+  } catch (error) {
+    console.error("Confirm Limit Change Error:", error);
+    Alert.alert("Error", "Failed to update limit. Please try again.");
+  } finally {
+    handleCloseModal();
+  }
+};
+
 
   useEffect(() => {
     fetchAccountData();
@@ -347,52 +353,51 @@ const LimitManagement = ({ navigation }) => {
         })}
       </ScrollView>
 
-      <CustomModal
-        visible={modalVisible}
-        onClose={handleCloseModal}
-        title={selectedPayment}
-        confirmText="Proceed"
-        onConfirm={handleConfirmLimitChange}
+     <CustomModal
+  visible={modalVisible}
+  onClose={handleCloseModal}
+  title={selectedPayment?.label || "Limit Management"} // Ensure this is a string
+  confirmText="Proceed"
+  onConfirm={handleConfirmLimitChange}
+>
+  <View className="flex flex-col items-center px-5 bg-white rounded-xl">
+    <View className="flex flex-row justify-between w-full mb-4">
+      <Text className="text-md font-medium text-gray-500">
+        Total Authorized (Per Day)
+      </Text>
+      <Text
+        className="text-md font-medium"
+        style={{ color: Color.PrimaryWebOrient }}
       >
-        <View className="flex flex-col items-center px-5 bg-white rounded-xl">
-          <View className="flex flex-row justify-between w-full mb-4">
-            <Text className="text-md font-medium text-gray-500">
-              Total Authorized (Per Day)
-            </Text>
-            <Text
-              className="text-md font-medium"
-              style={{ color: Color.PrimaryWebOrient }}
-            >
-              {dailyLimits[selectedPayment] !== undefined
-                ? dailyLimits[selectedPayment].toLocaleString()
-                : "Loading..."}
-            </Text>
-          </View>
-          <View className="flex-row justify-between w-full">
-            <Text className="text-gray-400 font-bold">Min</Text>
-            <Text className="text-gray-400 font-bold">Max</Text>
-          </View>
-          <Slider
-            style={{ width: "100%" }}
-            minimumValue={allowedValues[0]}
-            maximumValue={allowedValues[allowedValues.length - 1]}
-            step={1}
-            value={sliderValue}
-            onValueChange={handleSliderValueChange}
-            minimumTrackTintColor={Color.PrimaryWebOrient}
-            maximumTrackTintColor="#ccc"
-            thumbTintColor={Color.PrimaryWebOrient}
-          />
-          <View className="flex-row justify-between w-full">
-            <Text className="text-gray-400 font-bold">
-              {dailyLimits[selectedPayment]?.toLocaleString() || "Loading..."}
-            </Text>
-            <Text className="text-gray-400 font-bold">
-              {sliderValue.toLocaleString()}
-            </Text>
-          </View>
-        </View>
-      </CustomModal>
+        {dailyLimits[selectedPayment?.limitKey]?.toLocaleString() || "0"}
+      </Text>
+    </View>
+    <View className="flex-row justify-between w-full">
+      <Text className="text-gray-400 font-bold">Min</Text>
+      <Text className="text-gray-400 font-bold">Max</Text>
+    </View>
+    <Slider
+      style={{ width: "100%" }}
+      minimumValue={allowedValues[0]}
+      maximumValue={allowedValues[allowedValues.length - 1]}
+      step={1}
+      value={sliderValue}
+      onValueChange={handleSliderValueChange}
+      minimumTrackTintColor={Color.PrimaryWebOrient}
+      maximumTrackTintColor="#ccc"
+      thumbTintColor={Color.PrimaryWebOrient}
+    />
+    <View className="flex-row justify-between w-full">
+      <Text className="text-gray-400 font-bold">
+        {dailyLimits[selectedPayment?.limitKey]?.toLocaleString() || "0"}
+      </Text>
+      <Text className="text-gray-400 font-bold">
+        {sliderValue.toLocaleString()}
+      </Text>
+    </View>
+  </View>
+</CustomModal>
+
 
       <CustomAlert
         alertVisible={alertVisible}
