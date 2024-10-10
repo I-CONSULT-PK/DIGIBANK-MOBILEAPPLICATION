@@ -12,6 +12,7 @@ import API_BASE_URL from "../../../config";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { ProgressBar } from "react-native-paper";
 import CustomAlert from "../../../components/CustomAlert";
+
 const LimitManagement = ({ navigation }) => {
   const [accountData, setAccountData] = useState(null);
   const [dailyLimits, setDailyLimits] = useState({});
@@ -20,12 +21,12 @@ const LimitManagement = ({ navigation }) => {
   const [selectedPayment, setSelectedPayment] = useState(null);
   const [maxLimit, setMaxLimit] = useState(0);
   const [progressData, setProgressData] = useState({});
-   const [alertVisible, setAlertVisible] = useState(false);
+  const [alertVisible, setAlertVisible] = useState(false);
   const [alertObj, setAlertObj] = useState({
     text: "",
     subtext: "",
     success: null,
-    onPress: null
+    onPress: null,
   });
 
   const allowedValues = [50000, 100000, 250000, 500000, 1000000];
@@ -60,9 +61,7 @@ const LimitManagement = ({ navigation }) => {
 
       const response = await axios.get(
         `${API_BASE_URL}/v1/customer/getAccount?accountNumber=${accountNumber}`,
-        {
-          headers: { Authorization: `Bearer ${bearerToken}` },
-        }
+        { headers: { Authorization: `Bearer ${bearerToken}` } }
       );
 
       if (response.data.success) {
@@ -94,72 +93,76 @@ const LimitManagement = ({ navigation }) => {
       const accountNumber = await AsyncStorage.getItem("accountNumber");
 
       const response = await axios.get(
-        `http://192.168.0.63:8088/v1/account/limits?accountNumber=zanbeel-9447e65`,
-        {
-          headers: { Authorization: `Bearer ${bearerToken}` },
-        }
+        `${API_BASE_URL}/v1/account/limits?accountNumber=zanbeel-9447e65`,
+        { headers: { Authorization: `Bearer ${bearerToken}` } }
       );
 
       if (response.data.success) {
         const data = response.data.data;
-        console.log("Fetched Data:", data);
+
+        const calculateProgress = (availed, remaining) => {
+          return remaining > 0
+            ? ((availed / remaining) * 100).toFixed(2)
+            : "0.00";
+        };
 
         const newProgressData = {
           transferToOtherBank: {
             maxLimit:
               data.remainingSendToOtherBankLimit +
+                data.availedSendToOtherBankLimit || 0,
+            usedLimit: data.availedSendToOtherBankLimit || 0,
+            percentage: calculateProgress(
               data.availedSendToOtherBankLimit,
-            usedLimit: data.availedSendToOtherBankLimit,
-            percentage: (
-              (data.availedSendToOtherBankLimit /
-                (data.remainingSendToOtherBankLimit +
-                  data.availedSendToOtherBankLimit)) *
-              100
-            ).toFixed(2), 
+              data.remainingSendToOtherBankLimit
+            ),
           },
-          utilityBills: {
-            maxLimit: data.remainingBillPayLimit + data.availedBillPayLimit,
-            usedLimit: data.availedBillPayLimit,
-            percentage: (
-              (data.availedBillPayLimit /
-                (data.remainingBillPayLimit + data.availedBillPayLimit)) *
-              100
-            ).toFixed(2),
+          transferToDigiBank: {
+            maxLimit:
+              data.remainingDigiBankLimit + data.availedDigiBankLimit || 0,
+            usedLimit: data.availedDigiBankLimit || 0,
+            percentage: calculateProgress(
+              data.availedDigiBankLimit,
+              data.remainingDigiBankLimit
+            ),
           },
           transferToOwnAccount: {
-            maxLimit: data.remainingOwnLimit + data.availedOwnLimit,
-            usedLimit: data.availedOwnLimit,
-            percentage: (
-              (data.availedOwnLimit /
-                (data.remainingOwnLimit + data.availedOwnLimit)) *
-              100
-            ).toFixed(2),
+            maxLimit: data.remainingOwnLimit + data.availedOwnLimit || 0,
+            usedLimit: data.availedOwnLimit || 0,
+            percentage: calculateProgress(
+              data.availedOwnLimit,
+              data.remainingOwnLimit
+            ),
           },
-          transferToOtherBank: {
+          mobilePayments: {
+            maxLimit: data.remainingTopUpLimit + data.availedTopUpLimit || 0,
+            usedLimit: data.availedTopUpLimit || 0,
+            percentage: calculateProgress(
+              data.availedTopUpLimit,
+              data.remainingTopUpLimit
+            ),
+          },
+          utilityBills: {
             maxLimit:
-              data.remainingSendToOtherBankLimit +
-              data.availedSendToOtherBankLimit,
-            usedLimit: data.availedSendToOtherBankLimit,
-            percentage: (
-              (data.availedSendToOtherBankLimit /
-                (data.remainingSendToOtherBankLimit +
-                  data.availedSendToOtherBankLimit)) *
-              100
-            ).toFixed(2),
+              data.remainingBillPayLimit + data.availedBillPayLimit || 0,
+            usedLimit: data.availedBillPayLimit || 0,
+            percentage: calculateProgress(
+              data.availedBillPayLimit,
+              data.remainingBillPayLimit
+            ),
           },
           qrPayments: {
-            maxLimit: data.remainingQRLimit + data.availedQRLimit,
-            usedLimit: data.availedQRLimit,
-            percentage: (
-              (data.availedQRLimit /
-                (data.remainingQRLimit + data.availedQRLimit)) *
-              100
-            ).toFixed(2),
+            maxLimit: data.remainingQRLimit + data.availedQRLimit || 0,
+            usedLimit: data.availedQRLimit || 0,
+            percentage: calculateProgress(
+              data.availedQRLimit,
+              data.remainingQRLimit
+            ),
           },
         };
 
+        console.log("Progress Data:", newProgressData);
         setProgressData(newProgressData);
-        console.log("Progress Data Set:", newProgressData);
       } else {
         Alert.alert(
           "Error",
@@ -187,19 +190,10 @@ const LimitManagement = ({ navigation }) => {
 
   const handleCloseModal = () => setModalVisible(false);
 
-  const limitTypeMap = {
-    transferToOtherBank: "sendtootherbank",
-    transferToDigiBank: "singleday",
-    transferToOwnAccount: "owntransfer",
-    mobilePayments: "topup",
-    utilityBills: "billpay",
-    qrPayments: "qrpay",
-  };
-
   const handleSliderValueChange = (value) => {
-    const closestValue = allowedValues.reduce((prev, curr) => {
-      return Math.abs(curr - value) < Math.abs(prev - value) ? curr : prev;
-    });
+    const closestValue = allowedValues.reduce((prev, curr) =>
+      Math.abs(curr - value) < Math.abs(prev - value) ? curr : prev
+    );
     setSliderValue(closestValue);
   };
 
@@ -218,6 +212,15 @@ const LimitManagement = ({ navigation }) => {
         return;
       }
 
+      const limitTypeMap = {
+        transferToOtherBank: "sendtootherbank",
+        transferToDigiBank: "singleday",
+        transferToOwnAccount: "owntransfer",
+        mobilePayments: "topup",
+        utilityBills: "billpay",
+        qrPayments: "qrpay",
+      };
+
       const limitType = limitTypeMap[selectedLimitKey];
 
       if (sliderValue > maxLimit) {
@@ -231,9 +234,7 @@ const LimitManagement = ({ navigation }) => {
       const response = await axios.put(
         `${API_BASE_URL}/v1/settings/setDailyLimit?accountNumber=${accountNumber}&customerId=${customerId}&limitValue=${sliderValue}&limitType=${limitType}`,
         null,
-        {
-          headers: { Authorization: `Bearer ${bearerToken}` },
-        }
+        { headers: { Authorization: `Bearer ${bearerToken}` } }
       );
 
       if (response.data.success) {
@@ -242,7 +243,7 @@ const LimitManagement = ({ navigation }) => {
           `Daily limit updated successfully for ${selectedPayment}.`
         );
         fetchAccountData();
-        fetchProgressData(); 
+        fetchProgressData();
       } else {
         Alert.alert(
           "Error",
@@ -257,24 +258,10 @@ const LimitManagement = ({ navigation }) => {
     }
   };
 
-  const calculateProgress = (limitKey) => {
-    const totalLimit = progressData[limitKey]?.maxLimit || 1; 
-    const usedLimit = progressData[limitKey]?.usedLimit || 0;
-
-    console.log(
-      `Calculating progress for ${limitKey}: usedLimit=${usedLimit}, totalLimit=${totalLimit}`
-    );
-    return totalLimit > 0 ? usedLimit / totalLimit : 0; 
-  };
-
   useEffect(() => {
     fetchAccountData();
     fetchProgressData();
   }, []);
-
-  const selectedLimitKey = paymentTypes.find(
-    (payment) => payment.label === selectedPayment
-  )?.limitKey;
 
   return (
     <SafeAreaView className="flex-1 bg-[#f9fafc]">
@@ -295,7 +282,10 @@ const LimitManagement = ({ navigation }) => {
 
       <ScrollView>
         {paymentTypes.map((payment, index) => {
-          const limitKey = payment.limitKey; 
+          const limitKey = payment.limitKey;
+          const usedLimit = progressData[limitKey]?.usedLimit || 0;
+          const maxLimit = progressData[limitKey]?.maxLimit || 0;
+          const percentage = maxLimit > 0 ? (usedLimit / maxLimit) * 100 : 0;
 
           return (
             <View key={index} className="w-full mt-5 px-4">
@@ -309,34 +299,37 @@ const LimitManagement = ({ navigation }) => {
                       Total Authorization (Per Day)
                     </Text>
                     <Text className="text-base font-semibold text-gray-800">
-                      {dailyLimits[limitKey] !== undefined
-                        ? dailyLimits[limitKey].toLocaleString()
-                        : "Loading..."}
+                      {dailyLimits[limitKey]?.toLocaleString() || "Loading..."}
                     </Text>
                   </View>
                   <View className="flex flex-row justify-between w-full">
-                    <Text className="text-xs font-medium text-neutral-500 flex-1 text-left">
+                    <Text className="text-xs font-medium text-neutral-500">
                       Availed
                     </Text>
-                    <Text className="text-xs font-medium text-neutral-500 flex-1 text-right">
+                    <Text className="text-xs font-medium text-neutral-500">
                       Remaining
                     </Text>
                   </View>
                   <View className="flex flex-col mt-3 w-full rounded-xl relative">
                     <ProgressBar
                       className="h-2.5 rounded-full"
-                      progress={
-                        progressData[limitKey]?.percentage
-                          ? parseFloat(progressData[limitKey].percentage) / 100
-                          : 0 
-                      }
+                      progress={percentage} 
                       color={Color.PrimaryWebOrient}
                     />
                   </View>
+                  <View className="flex flex-row justify-between w-full">
+                    <Text className="text-xs font-medium text-neutral-500">
+                      {usedLimit.toLocaleString()}
+                    </Text>
+                    <Text className="text-xs font-medium text-neutral-500">
+                      {maxLimit.toLocaleString()}
+                    </Text>
+                  </View>
+
                   <View className="flex flex-row items-center justify-between mt-4 w-full">
                     <Text className="ml-2 text-md font-medium text-neutral-500">
-                      Per Transaction -
-                      {dailyLimits[limitKey] !== undefined
+                      Per Transaction -{" "}
+                      {dailyLimits[limitKey]
                         ? (dailyLimits[limitKey] / 5).toLocaleString()
                         : "Loading..."}
                     </Text>
@@ -370,8 +363,8 @@ const LimitManagement = ({ navigation }) => {
               className="text-md font-medium"
               style={{ color: Color.PrimaryWebOrient }}
             >
-              {dailyLimits[selectedLimitKey] !== undefined
-                ? dailyLimits[selectedLimitKey].toLocaleString()
+              {dailyLimits[selectedPayment] !== undefined
+                ? dailyLimits[selectedPayment].toLocaleString()
                 : "Loading..."}
             </Text>
           </View>
@@ -392,9 +385,7 @@ const LimitManagement = ({ navigation }) => {
           />
           <View className="flex-row justify-between w-full">
             <Text className="text-gray-400 font-bold">
-              {dailyLimits[selectedLimitKey] !== undefined
-                ? dailyLimits[selectedLimitKey].toLocaleString()
-                : "Loading..."}
+              {dailyLimits[selectedPayment]?.toLocaleString() || "Loading..."}
             </Text>
             <Text className="text-gray-400 font-bold">
               {sliderValue.toLocaleString()}
@@ -402,6 +393,7 @@ const LimitManagement = ({ navigation }) => {
           </View>
         </View>
       </CustomModal>
+
       <CustomAlert
         alertVisible={alertVisible}
         setAlertVisible={setAlertVisible}
