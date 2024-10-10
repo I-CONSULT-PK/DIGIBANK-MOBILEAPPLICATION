@@ -174,7 +174,7 @@ const DeactivatePin = () => {
 
     const deactivateData = {
       customerId: customerId,
-      deviceId: deviceId,
+      unique: deviceId,
     };
 
     try {
