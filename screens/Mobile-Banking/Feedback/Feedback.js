@@ -23,7 +23,6 @@ const Feedback = () => {
   const [rating, setRating] = useState(3.5);
   const [suggestion, setSuggestion] = useState("");
 
-  // Function to render stars
   const renderStars = () =>
     [...Array(5)].map((_, index) => (
       <TouchableOpacity key={index + 1} onPress={() => setRating(index + 1)}>
@@ -50,17 +49,15 @@ const Feedback = () => {
       }
   
       const url = `${API_BASE_URL}/v1/feedback/createFeedback`;
-  
-      // Prepare the feedback data
+
       const accountData = {
-        customerId: parseInt(customerId, 10), // Ensure customerId is an integer
+        customerId: parseInt(customerId, 10),
         message: suggestion,
-        rating: rating, // Pass the rating value
+        rating: rating, 
       };
   
       // Log the data before making the API request
-      // console.log("Feedback data being sent:", accountData);
-  
+      // console.log("Feedback data being sent:", accountData);  
       const response = await axios.post(url, accountData, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -69,10 +66,8 @@ const Feedback = () => {
       });
   
       if (response.status === 200 && response.data.success) {
-        const { message, data: { timestamp } } = response.data; // Extract message and timestamp
+        const { message, data: { timestamp } } = response.data; 
         // Alert.alert("Success", message);
-  
-        // Navigate to the success screen with the message and timestamp
         navigation.navigate("SuccessfullFeedback", {
           successMessage: message,
           timestamp: timestamp,
