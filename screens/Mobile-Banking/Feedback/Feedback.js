@@ -5,14 +5,18 @@ import {
   TouchableOpacity,
   ScrollView,
   SafeAreaView,
+  TextInput,
+  Alert,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { Entypo, Ionicons } from "@expo/vector-icons";
 import { Color } from "../../../GlobalStyles";
 import Footer from "../../../components/Footer";
 import { StatusBar } from "expo-status-bar";
-import TextInput from "../../../components/TextInput"; 
-import Button from "../../../components/Button"; 
+import CustomButton from "../../../components/Button";
+import axios from "axios";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import API_BASE_URL from "../../../config";
 
 const Feedback = () => {
   const navigation = useNavigation();
@@ -29,6 +33,59 @@ const Feedback = () => {
         />
       </TouchableOpacity>
     ));
+
+  // Function to handle feedback submission
+  const handleAddFeedback = async () => {
+    try {
+      const token = await AsyncStorage.getItem("token");
+      const customerId = await AsyncStorage.getItem("customerId");
+  
+      if (!token || !customerId) {
+        Alert.alert(
+          "Error",
+          "Missing account information. Please log in again."
+        );
+        return;
+      }
+  
+      const url = `${API_BASE_URL}/v1/feedback/createFeedback`;
+
+      const accountData = {
+        customerId: parseInt(customerId, 10),
+        message: suggestion,
+        rating: rating, 
+      };
+  
+      // Log the data before making the API request
+      // console.log("Feedback data being sent:", accountData);  
+      const response = await axios.post(url, accountData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+  
+      if (response.status === 200 && response.data.success) {
+        const { message, data: { timestamp } } = response.data; 
+        // Alert.alert("Success", message);
+        navigation.navigate("SuccessfullFeedback", {
+          successMessage: message,
+          timestamp: timestamp,
+        });
+      } else {
+        Alert.alert("Error", `Unexpected response: ${response.status}`);
+      }
+    } catch (error) {
+      if (error.response) {
+        const serverMessage =
+          error.response.data.message || "An unexpected error occurred.";
+        Alert.alert("Error", serverMessage);
+      } else {
+        Alert.alert("Error", error.message || "An unexpected error occurred.");
+      }
+    }
+  };
+  
 
   return (
     <SafeAreaView className="flex-1 bg-[#f9fafc]">
@@ -69,13 +126,20 @@ const Feedback = () => {
             <TextInput
               placeholder="Enter Here"
               value={suggestion}
-              onChange={setSuggestion}
-              className=" rounded-md p-2 w-72 text-base mb-5"
-              multiline
+              onChangeText={setSuggestion}
+              className="rounded-md p-2 w-72 text-base mb-5 border border-gray-300"
+              multiline={true}
+              numberOfLines={8}
+              textAlignVertical="top"
             />
           </View>
           <View className="w-full">
-            <Button text="Send Now" width="auto" styles="py-4" />
+            <CustomButton
+              text="Send Now"
+              width="auto"
+              styles="py-4"
+              onPress={handleAddFeedback}
+            />
           </View>
         </View>
       </ScrollView>

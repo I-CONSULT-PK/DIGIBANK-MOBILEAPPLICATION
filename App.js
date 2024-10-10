@@ -107,6 +107,7 @@ import TransferSuccess from "./screens/Mobile-Banking/Beneficiary/TransferSucces
 import Fatch_amount_Packges from "./screens/Mobile-Banking/Mobile-Top-Up/Fatch_amount_Packges";
 import Packges_Transfer from "./screens/Mobile-Banking/Mobile-Top-Up/Packges_Transfer";
 import Device_Management from "./screens/Mobile-Banking/Device-Management/Device_Management";
+import SuccessfullFeedback from "./screens/Mobile-Banking/Feedback/SuccessfullFeedback";
 const Stack = createNativeStackNavigator();
 
 export default function App() {
@@ -301,8 +302,8 @@ export default function App() {
           component={DeactivatePin}
           options={{ headerShown: false }}
         />
-       
-         <Stack.Screen
+
+        <Stack.Screen
           name="ChangeLoginPin"
           component={ChangeLoginPin}
           options={{ headerShown: false }}
@@ -321,7 +322,11 @@ export default function App() {
           component={Feedback}
           options={{ headerShown: false }}
         />
-
+        <Stack.Screen
+          name="SuccessfullFeedback"
+          component={SuccessfullFeedback}
+          options={{ headerShown: false }}
+        />
         {/* Feedback start */}
 
         <Stack.Screen
@@ -379,9 +384,8 @@ export default function App() {
           component={To_Up_Transfer}
           options={{ headerShown: false }}
         />
-       
 
-         <Stack.Screen
+        <Stack.Screen
           name="UserActivity"
           component={UserActivity}
           options={{ headerShown: false }}
@@ -465,7 +469,7 @@ export default function App() {
           component={Domestic}
           options={{ headerShown: false }}
         />
-        
+
         <Stack.Screen
           name="MyPayees"
           component={MyPayess}
@@ -658,7 +662,11 @@ export default function App() {
               component={Fatch_Acc_Beneficiary}
               options={{ headerShown: false }}
             />
-
+            <Stack.Screen
+              name="SuccessfullFeedback"
+              component={SuccessfullFeedback}
+              options={{ headerShown: false }}
+            />
             <Stack.Screen
               name="Auth"
               component={Auth}
@@ -704,7 +712,7 @@ export default function App() {
               component={RegisterFaceDetector}
               options={{ headerShown: false }}
             />
-            
+
             <Stack.Screen
               name="Device_Management"
               component={Device_Management}
@@ -801,7 +809,6 @@ export default function App() {
               component={Update_Profile}
               options={{ headerShown: false }}
             />
-            
 
             <Stack.Screen
               name="Mobile_Packages"
