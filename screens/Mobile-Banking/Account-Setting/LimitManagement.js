@@ -22,9 +22,9 @@ const LimitManagement = ({ navigation }) => {
   const [maxLimit, setMaxLimit] = useState(0);
   const [progressData, setProgressData] = useState({});
   const [alertVisible, setAlertVisible] = useState(false);
-const [alertText, setAlertText] = useState("");
-const [alertSubtext, setAlertSubtext] = useState("");
-const [alertSuccess, setAlertSuccess] = useState(null);
+  const [alertText, setAlertText] = useState("");
+  const [alertSubtext, setAlertSubtext] = useState("");
+  const [alertSuccess, setAlertSuccess] = useState(null);
 
   const [alertObj, setAlertObj] = useState({
     text: "",
@@ -100,6 +100,7 @@ const [alertSuccess, setAlertSuccess] = useState(null);
         `${API_BASE_URL}/v1/account/limits?accountNumber=zanbeel-9447e65`,
         { headers: { Authorization: `Bearer ${bearerToken}` } }
       );
+      // console.log("Progress Data Response:", response.data);
 
       if (response.data.success) {
         const data = response.data.data;
@@ -112,61 +113,38 @@ const [alertSuccess, setAlertSuccess] = useState(null);
 
         const newProgressData = {
           transferToOtherBank: {
-            maxLimit:
-              data.remainingSendToOtherBankLimit +
-                data.availedSendToOtherBankLimit || 0,
-            usedLimit: data.availedSendToOtherBankLimit || 0,
-            percentage: calculateProgress(
-              data.availedSendToOtherBankLimit,
-              data.remainingSendToOtherBankLimit
-            ),
+              maxLimit: data.remainingSendToOtherBankLimit + data.availedSendToOtherBankLimit || 0,
+              usedLimit: data.availedSendToOtherBankLimit || 0,
+              percentage: calculateProgress(data.availedSendToOtherBankLimit, data.remainingSendToOtherBankLimit),
           },
           transferToDigiBank: {
-            maxLimit:
-              data.remainingDigiBankLimit + data.availedDigiBankLimit || 0,
-            usedLimit: data.availedDigiBankLimit || 0,
-            percentage: calculateProgress(
-              data.availedDigiBankLimit,
-              data.remainingDigiBankLimit
-            ),
+              maxLimit: data.remainingOwnLimit + data.availedOwnLimit || 0,
+              usedLimit: data.availedOwnLimit || 0,
+              percentage: calculateProgress(data.availedOwnLimit, data.remainingOwnLimit),
           },
           transferToOwnAccount: {
-            maxLimit: data.remainingOwnLimit + data.availedOwnLimit || 0,
-            usedLimit: data.availedOwnLimit || 0,
-            percentage: calculateProgress(
-              data.availedOwnLimit,
-              data.remainingOwnLimit
-            ),
+              maxLimit: data.remainingOwnLimit + data.availedOwnLimit || 0,
+              usedLimit: data.availedOwnLimit || 0,
+              percentage: calculateProgress(data.availedOwnLimit, data.remainingOwnLimit),
           },
           mobilePayments: {
-            maxLimit: data.remainingTopUpLimit + data.availedTopUpLimit || 0,
-            usedLimit: data.availedTopUpLimit || 0,
-            percentage: calculateProgress(
-              data.availedTopUpLimit,
-              data.remainingTopUpLimit
-            ),
+              maxLimit: data.remainingTopUpLimit + data.availedTopUpLimit || 0,
+              usedLimit: data.availedTopUpLimit || 0,
+              percentage: calculateProgress(data.availedTopUpLimit, data.remainingTopUpLimit),
           },
           utilityBills: {
-            maxLimit:
-              data.remainingBillPayLimit + data.availedBillPayLimit || 0,
-            usedLimit: data.availedBillPayLimit || 0,
-            percentage: calculateProgress(
-              data.availedBillPayLimit,
-              data.remainingBillPayLimit
-            ),
+              maxLimit: data.remainingBillPayLimit + data.availedBillPayLimit || 0,
+              usedLimit: data.availedBillPayLimit || 0,
+              percentage: calculateProgress(data.availedBillPayLimit, data.remainingBillPayLimit),
           },
           qrPayments: {
-            maxLimit: data.remainingQRLimit + data.availedQRLimit || 0,
-            usedLimit: data.availedQRLimit || 0,
-            percentage: calculateProgress(
-              data.availedQRLimit,
-              data.remainingQRLimit
-            ),
+              maxLimit: data.remainingQRLimit + data.availedQRLimit || 0,
+              usedLimit: data.availedQRLimit || 0,
+              percentage: calculateProgress(data.availedQRLimit, data.remainingQRLimit),
           },
-        };
+      };
 
-        // console.log("Progress Data:", newProgressData);
-        setProgressData(newProgressData);
+      setProgressData(newProgressData);
       } else {
         Alert.alert(
           "Error",
@@ -187,7 +165,7 @@ const [alertSuccess, setAlertSuccess] = useState(null);
     );
 
     if (selected) {
-      setSelectedPayment(selected); // Store the whole object
+      setSelectedPayment(selected);
       setSliderValue(dailyLimits[selected.limitKey] || allowedValues[0]);
       setMaxLimit(allowedValues[allowedValues.length - 1]);
       setModalVisible(true);
@@ -210,9 +188,9 @@ const [alertSuccess, setAlertSuccess] = useState(null);
       const accountNumber = await AsyncStorage.getItem("accountNumber");
       const customerId = await AsyncStorage.getItem("customerId");
       const bearerToken = await AsyncStorage.getItem("token");
-  
+
       const selectedLimitKey = selectedPayment?.limitKey;
-  
+
       if (!selectedLimitKey) {
         setAlertObj({
           text: "Error",
@@ -222,7 +200,7 @@ const [alertSuccess, setAlertSuccess] = useState(null);
         setAlertVisible(true);
         return;
       }
-  
+
       const limitTypeMap = {
         transferToOtherBank: "sendtootherbank",
         transferToDigiBank: "singleday",
@@ -231,9 +209,9 @@ const [alertSuccess, setAlertSuccess] = useState(null);
         utilityBills: "billpay",
         qrPayments: "qrpay",
       };
-  
+
       const limitType = limitTypeMap[selectedLimitKey];
-  
+
       if (sliderValue > maxLimit) {
         setAlertObj({
           text: "Error",
@@ -243,13 +221,13 @@ const [alertSuccess, setAlertSuccess] = useState(null);
         setAlertVisible(true);
         return;
       }
-  
+
       const response = await axios.put(
         `${API_BASE_URL}/v1/settings/setDailyLimit?accountNumber=${accountNumber}&customerId=${customerId}&limitValue=${sliderValue}&limitType=${limitType}`,
         null,
         { headers: { Authorization: `Bearer ${bearerToken}` } }
       );
-  
+
       if (response.data.success) {
         setAlertObj({
           text: "Success",
@@ -279,8 +257,6 @@ const [alertSuccess, setAlertSuccess] = useState(null);
       handleCloseModal();
     }
   };
-  
-  
 
   useEffect(() => {
     fetchAccountData();
@@ -374,7 +350,7 @@ const [alertSuccess, setAlertSuccess] = useState(null);
       <CustomModal
         visible={modalVisible}
         onClose={handleCloseModal}
-        title={selectedPayment?.label || "Limit Management"} // Ensure this is a string
+        title={selectedPayment?.label || "Limit Management"}
         confirmText="Proceed"
         onConfirm={handleConfirmLimitChange}
       >
