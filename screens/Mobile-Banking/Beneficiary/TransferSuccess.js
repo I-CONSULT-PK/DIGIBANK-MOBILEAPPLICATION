@@ -132,19 +132,19 @@ const TransferSuccess = ({ navigation, route }) => {
                                 <View className="mt-4">
                                     <View className="flex-row justify-between">
                                         <Text className="font-InterMedium text-gray-500">Payment:</Text>
-                                        <Text className="font-InterSemiBold text-gray-700">{currency} {amount}</Text>
+                                        <Text className="font-InterMedium text-gray-700">{currency} {amount}</Text>
                                     </View>
                                     <View className="flex-row justify-between mt-1">
                                         <Text className="font-InterMedium text-gray-500">Date / Time:</Text>
-                                        <Text className="font-InterSemiBold text-gray-700">{formatDateTime(dateTime)}</Text>
+                                        <Text className="font-InterMedium text-gray-700">{formatDateTime(dateTime)}</Text>
                                     </View>
                                     <View className="flex-row justify-between mt-1">
                                         <Text className="font-InterMedium text-gray-500">Transaction ID:</Text>
-                                        <Text className="font-InterSemiBold text-gray-700">{ref}</Text>
+                                        <Text className="font-InterMedium text-gray-700">{ref}</Text>
                                     </View>
                                     <View className="flex-row justify-between mt-1">
                                         <Text className="font-InterMedium text-gray-500">Fee:</Text>
-                                        <Text className="font-InterSemiBold text-gray-700">{currency} {bankCharges}</Text>
+                                        <Text className="font-InterMedium text-gray-700">{currency} {bankCharges}</Text>
                                     </View>
                                 </View>
                             </View>

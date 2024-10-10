@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { Text, View, ScrollView, TouchableOpacity, Image, Alert } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
 import { Entypo } from "@expo/vector-icons";
+import { useFocusEffect } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 
@@ -12,11 +13,15 @@ import Button from "../../../components/Button";
 
 const PayNow = ({ route, navigation }) => {
   const { userDetails, beneObj, amount, selected } = route.params || {};
+  const scrollRef = useRef();
 
   const [bankCharges, setBankCharges] = useState(userDetails.bankName === beneObj.beneficiaryBankName ? 0 : (parseFloat(amount) * 0.01));
   const [totalAmount, setTotalAmount] = useState(parseFloat(bankCharges) + parseFloat(amount));
+  const [loading, setLoading] = useState(false);
 
   const fundTransfer = async () => {
+    setLoading(true);
+
     try {
       const bearerToken = await AsyncStorage.getItem('token');
 
@@ -69,10 +74,14 @@ const PayNow = ({ route, navigation }) => {
       } else {
         Alert.alert('Error', error.message);
       }
+    } finally {
+      setLoading(false);
     }
   };
 
   const IBFT = async () => {
+    setLoading(true);
+
     try {
       const bearerToken = await AsyncStorage.getItem('token');
 
@@ -125,8 +134,19 @@ const PayNow = ({ route, navigation }) => {
       } else {
         Alert.alert('Error', error.message);
       }
+    } finally {
+      setLoading(false);
     }
   };
+
+  useFocusEffect(
+    React.useCallback(() => {
+      scrollRef.current?.scrollTo({
+        y: 0,
+        animated: true,
+      });
+    }, [])
+  );
 
   return (
     <SafeAreaView className="h-full flex-1 bg-[#F9FAFC]">
@@ -139,7 +159,7 @@ const PayNow = ({ route, navigation }) => {
         </View>
       </View>
 
-      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+      <ScrollView contentContainerStyle={{ flexGrow: 1 }} ref={scrollRef}>
         <View className="w-full h-full px-5">
           <View>
             <Text className="font-InterSemiBold">From Account</Text>
@@ -224,6 +244,7 @@ const PayNow = ({ route, navigation }) => {
             text="Pay Now"
             onPress={() => userDetails.bankName === beneObj.beneficiaryBankName ? fundTransfer() : IBFT()}
             styles="mt-10 mb-4"
+            loading={loading}
           />
         </View>
       </ScrollView>

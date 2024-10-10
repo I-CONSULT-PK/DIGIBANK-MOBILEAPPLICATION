@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Text, View, ScrollView, TouchableOpacity, Image, Alert, BackHandler } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
 import { Entypo } from "@expo/vector-icons";
-import { useNavigation } from "@react-navigation/native";
 import { SelectList } from "react-native-dropdown-select-list";
+import { useFocusEffect } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import { decrypt } from "../../../utils/crypto";
@@ -12,9 +12,9 @@ import Button from "../../../components/Button";
 import TextInput from "../../../components/TextInput";
 import Footer from "../../../components/Footer";
 
-const SendFromAccount = ({ route }) => {
-  const navigation = useNavigation();
+const SendFromAccount = ({ route, navigation }) => {
   const { beneObj, source } = route.params || {};
+  const scrollRef = useRef();
   
   const [userDetails, setUserDetails] = useState({
     userName: null,
@@ -102,6 +102,15 @@ const SendFromAccount = ({ route }) => {
     }
   };
 
+  useFocusEffect(
+    React.useCallback(() => {
+      scrollRef.current?.scrollTo({
+        y: 0,
+        animated: true,
+      });
+    }, [])
+  );
+
   return (
     <SafeAreaView className="h-full flex-1 bg-[#F9FAFC]">
       <View style={{ height: 90 }}>
@@ -117,7 +126,7 @@ const SendFromAccount = ({ route }) => {
         </View>
       </View>
 
-      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+      <ScrollView contentContainerStyle={{ flexGrow: 1 }} ref={scrollRef}>
         <View className="w-full h-full px-5">
           <View>
             <Text className="font-InterSemiBold">From Account</Text>

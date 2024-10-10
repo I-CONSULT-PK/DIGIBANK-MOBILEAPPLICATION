@@ -1,203 +1,490 @@
-import React, { useState, useEffect } from 'react'
-import { Text, View, Image, Keyboard, Alert, TouchableOpacity, ScrollView } from "react-native";
+import React, { useState, useEffect, useRef } from "react";
+import { View, Text, ScrollView, TouchableOpacity, Image, Alert, BackHandler } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { StatusBar } from 'expo-status-bar';
+import { StatusBar } from "expo-status-bar";
 import { Entypo } from "@expo/vector-icons";
+import { useFocusEffect } from "@react-navigation/native";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 
+import { decrypt } from "../../../utils/crypto";
+import { Color } from "../../../GlobalStyles";
 import API_BASE_URL from '../../../config';
-import TextInput from '../../../components/TextInput';
-import Button from '../../../components/Button';
-import Footer from '../../../components/Footer';
+import SearchBar from "../../../components/SearchBar";
+import OptionBox from "../../../components/OptionBox";
+import EditBeneficiaryModal from '../../../components/EditBeneficiaryModal';
+import CustomAlert from "../../../components/CustomAlert";
+import Footer from "../../../components/Footer";
 
-const Add_Beneficiary = ({ route, navigation }) => {
-  const { bankName, bankLogo, shortBank } = route.params || {};
+const BeneficiaryList = ({ navigation, route }) => {
+  const [searchQuery, setSearchQuery] = useState("");
+  const [beneficiaries, setBeneficiaries] = useState([]);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [selectedBeneficiary, setSelectedBeneficiary] = useState(null);
 
-  const [accountNumber, setAccountNumber] = useState('');
-  const [userBankName, setUserBankName] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [alertVisible, setAlertVisible] = useState(false);
+  const [alertObj, setAlertObj] = useState({
+    text: "",
+    subtext: "",
+    success: null,
+    onPress: null
+  });
+
+  const { source } = route.params || {};
+  const scrollRef = useRef();
+
+  const showAlert = (text, subtext, success) => {
+    setAlertObj({ text, subtext, success, onPress: null });
+    setAlertVisible(true);
+  };
 
   useEffect(() => {
-    const getUserBank = async () => {
-      const bankName = await AsyncStorage.getItem('bankName');
-      setUserBankName(bankName);
+    const handleBackPress = () => {
+      navigation.navigate("Home");
+      return true;
     };
 
-    getUserBank();
+    BackHandler.addEventListener("hardwareBackPress", handleBackPress);
+
+    return () => {
+      BackHandler.removeEventListener("hardwareBackPress", handleBackPress);
+    };
   }, []);
 
-  const fetchLocalAccountDetails = async () => {
-    if (accountNumber === '') {
-      Alert.alert('Error', 'Please provide a valid Account number / IBAN');
-    }
-    else {
-      setLoading(true);
+  const toggleModal = (beneficiary) => {
+    setSelectedBeneficiary(beneficiary);
+    setIsModalVisible(!isModalVisible);
+  };
 
-      try {
-        const bearerToken = await AsyncStorage.getItem('token');
+  const handleModalClose = () => {
+    setIsModalVisible(!isModalVisible);
+  };
 
-        if (bearerToken) {
-          const response = await axios.get(
-            `${API_BASE_URL}/v1/beneficiary/getLocalAccountTitle?senderAccountNumber=${accountNumber}`,
-            {
-              headers: {
-                Authorization: `Bearer ${bearerToken}`,
-              },
-            }
-          );
+  const fetchBeneficiaries = async () => {
+    try {
+      const customerId = await AsyncStorage.getItem('customerId');
+      const bearerToken = await AsyncStorage.getItem('token');
 
-          const dto = response.data;
-
-          if (dto && dto.success && dto.data) {
-            navigation.navigate('Fatch_Acc_Beneficiary', { details: dto.data, bankName, bankLogo });
+      if (customerId && bearerToken) {
+        const response = await axios.get(`${API_BASE_URL}/v1/beneficiary/getAllBeneficiary?customerId=${customerId}&flag=false`, {
+          headers: {
+            'Authorization': `Bearer ${bearerToken}`
           }
-          else {
-            if (dto.message) {
-              Alert.alert('Error', dto.message);
+        });
+
+        const dto = response.data;
+
+        if (dto && dto.success && dto.data) {
+          // Ensure dto.data is an array
+          const beneficiariesArray = Array.isArray(dto.data) ? dto.data : [dto.data];
+
+          const transformedBeneficiaries = beneficiariesArray.map(item => ({
+            ...item,
+            bankUrl: decrypt(item.bankUrl),
+            accountNumber: decrypt(item.accountNumber),
+            liked: item.flag
+          }));
+
+          // Sort beneficiaries first by flag (true first) and within that by id in descending order
+          transformedBeneficiaries.sort((a, b) => {
+            if (b.flag === a.flag) {
+              return b.id - a.id;
             }
-            else if (dto.errors && dto.errors.length > 0) {
-              Alert.alert('Error', dto.errors);
-            }
+            return b.flag - a.flag;
+          });
+
+          setBeneficiaries(transformedBeneficiaries);
+        } else {
+          if (dto.message) {
+            Alert.alert('Error', dto.message);
+          } else if (dto.errors && dto.errors.length > 0) {
+            Alert.alert('Error', dto.errors.join('\n'));
           }
         }
-        else {
-          Alert.alert('Error', 'Unexpected error occured. Try again later!');
-        }
-      } catch (error) {
-        if (error.response) {
-          const statusCode = error.response.status;
+      } else {
+        Alert.alert('Error', 'Unexpected error occurred. Try again later!');
+      }
+    } catch (error) {
+      if (error.response) {
+        const statusCode = error.response.status;
 
-          if (statusCode === 404) {
-            Alert.alert('Error', 'Server timed out. Try again later!');
-          } else if (statusCode === 503) {
-            Alert.alert('Error', 'Service unavailable. Please try again later.');
-          } else {
-            Alert.alert('Error', error.message);
-          }
-        } else if (error.request) {
-          Alert.alert('Error', 'No response from the server. Please check your connection.');
+        if (statusCode === 404) {
+          Alert.alert('Error', 'Server timed out. Try again later!');
+        } else if (statusCode === 503) {
+          Alert.alert('Error', 'Service unavailable. Please try again later.');
+        } else if (statusCode === 400) {
+          Alert.alert('Error', error.response.data.data.errors[0]);
         } else {
           Alert.alert('Error', error.message);
         }
-      } finally {
-        setLoading(false);
+      } else if (error.request) {
+        Alert.alert('Error', 'No response from the server. Please check your connection.');
+      } else {
+        Alert.alert('Error', error.message);
       }
     }
   };
 
-  const fetchOtherAccountDetails = async () => {
-    if (accountNumber === '') {
-      Alert.alert('Error', 'Please provide a valid Account number / IBAN');
+  useEffect(() => {
+    fetchBeneficiaries();
+  }, []);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      fetchBeneficiaries();
+    }, [])
+  );
+
+  const handleUpdateBeneficiary = async (nickname, mobileNumber, beneId, beneficiary) => {
+    if (nickname === "") {
+      Alert.alert('Error', 'Nickname cannot be null');
     }
     else {
-      setLoading(true);
+      if (nickname !== beneficiary.beneficiaryAlias || mobileNumber !== beneficiary.mobileNumber) {
+        try {
+          const bearerToken = await AsyncStorage.getItem('token');
+          const customerId = parseInt(await AsyncStorage.getItem('customerId'), 10);
 
-      try {
-        const bearerToken = await AsyncStorage.getItem('token');
+          if (bearerToken && customerId) {
+            const updateData = {
+              beneficiaryAlias: nickname,
+              mobileNumber: mobileNumber,
+              beneId: beneId,
+              customerId: customerId
+            };
 
-        if (bearerToken) {
-          const response = await axios.get(
-            `${API_BASE_URL}/v1/beneficiary/getAccount?accountNumber=${accountNumber}&bankName=${shortBank}`,
-            {
-              headers: {
-                Authorization: `Bearer ${bearerToken}`,
-              },
+            const response = await axios.post(`${API_BASE_URL}/v1/beneficiary/updateBeneficiary`,
+              updateData,
+              {
+                headers: {
+                  'Authorization': `Bearer ${bearerToken}`
+                }
+              }
+            );
+
+            const dto = response.data;
+
+            if (dto && dto.success && dto.data) {
+              fetchBeneficiaries();
+              handleModalClose();
+
+              Alert.alert('Success', 'Beneficiary updated successfully');
             }
-          );
-
-          const dto = response.data;
-
-          if (dto && dto.success && dto.data) {
-            navigation.navigate('Fatch_Acc_Beneficiary', { details: dto.data, bankName, bankLogo });
+            else {
+              if (dto.message) {
+                Alert.alert('Error', dto.message);
+              }
+              else if (dto.errors && dto.errors.length > 0) {
+                Alert.alert('Error', dto.errors);
+              }
+            }
+          } else {
+            Alert.alert('Error', 'Unexpected error occured. Try again later!');
           }
-          else {
-            if (dto.message) {
-              Alert.alert('Error', dto.message);
-            }
-            else if (dto.errors && dto.errors.length > 0) {
-              Alert.alert('Error', dto.errors);
-            }
-          }
-        }
-        else {
-          Alert.alert('Error', 'Unexpected error occured. Try again later!');
-        }
-      } catch (error) {
-        if (error.response) {
-          const statusCode = error.response.status;
+        } catch (error) {
+          if (error.response) {
+            const statusCode = error.response.status;
 
-          if (statusCode === 404) {
-            Alert.alert('Error', 'Server timed out. Try again later!');
-          } else if (statusCode === 503) {
-            Alert.alert('Error', 'Service unavailable. Please try again later.');
+            if (statusCode === 404) {
+              Alert.alert('Error', 'Server timed out. Try again later!');
+            } else if (statusCode === 503) {
+              Alert.alert('Error', 'Service unavailable. Please try again later.');
+            } else if (statusCode === 400) {
+              Alert.alert('Error', error.response.data.data.errors[0]);
+            } else {
+              Alert.alert('Error', error.message);
+            }
+          } else if (error.request) {
+            Alert.alert('Error', 'No response from the server. Please check your connection.');
           } else {
             Alert.alert('Error', error.message);
           }
-        } else if (error.request) {
-          Alert.alert('Error', 'No response from the server. Please check your connection.');
-        } else {
-          Alert.alert('Error', error.message);
         }
-      } finally {
-        setLoading(false);
+      }
+      else {
+        handleModalClose();
       }
     }
   };
+
+  const handleSearchChange = (query) => {
+    setSearchQuery(query);
+  };
+
+  const handleRemoveBeneficiary = async (id) => {
+    setBeneficiaries((prevBeneficiaries) =>
+      prevBeneficiaries.filter(b => b.id !== id)
+    );
+
+    try {
+      const bearerToken = await AsyncStorage.getItem('token');
+
+      if (bearerToken) {
+        const response = await axios.post(`${API_BASE_URL}/v1/beneficiary/deleteBene/${id}`, {}, {
+          headers: {
+            'Authorization': `Bearer ${bearerToken}`
+          }
+        });
+
+        const dto = response.data;
+
+        if (dto && dto.success) {
+          setAlertObj({
+            text: 'Success',
+            subtext: 'Beneficiary deleted successfully',
+            success: true,
+            onPress: null
+          });
+          setAlertVisible(true);
+        }
+        else {
+          if (dto.message) {
+            setAlertObj({
+              text: 'Error',
+              subtext: dto.message,
+              success: false,
+              onPress: null
+            });
+            setAlertVisible(true);
+          }
+          else {
+            setAlertObj({
+              text: 'Error',
+              subtext: 'Some unknown error occured. Try again!',
+              success: false,
+              onPress: null
+            });
+            setAlertVisible(true);
+          }
+        }
+      }
+      else {
+        setAlertObj({
+          text: 'Error',
+          subtext: 'Unexpected error occured. Try again later!',
+          success: false,
+          onPress: null
+        });
+        setAlertVisible(true);
+      }
+    }
+    catch (error) {
+      if (error.response) {
+        const statusCode = error.response.status;
+
+        if (statusCode === 404) {
+          setAlertObj({
+            text: 'Error',
+            subtext: 'Server timed out. Try again later!',
+            success: false,
+            onPress: null
+          });
+          setAlertVisible(true);
+        } else if (statusCode === 503) {
+          setAlertObj({
+            text: 'Error',
+            subtext: 'Service unavailable. Please try again later.',
+            success: false,
+            onPress: null
+          });
+          setAlertVisible(true);
+        } else {
+          setAlertObj({
+            text: 'Error',
+            subtext: error.message,
+            success: false,
+            onPress: null
+          });
+          setAlertVisible(true);
+        }
+      } else if (error.request) {
+        setAlertObj({
+          text: 'Error',
+          subtext: 'No response from the server. Please check your connection.',
+          success: false,
+          onPress: null
+        });
+        setAlertVisible(true);
+      } else {
+        setAlertObj({
+          text: 'Error',
+          subtext: error.message,
+          success: false,
+          onPress: null
+        });
+        setAlertVisible(true);
+      }
+    }
+  };
+
+  const handleLikeToggle = async (id) => {
+    setBeneficiaries((prevBeneficiaries) =>
+      prevBeneficiaries.map((b) =>
+        b.id === id ? { ...b, liked: !b.liked } : b
+      )
+    );
+
+    try {
+      const bearerToken = await AsyncStorage.getItem('token');
+      const customerId = await AsyncStorage.getItem('customerId');
+
+      if (bearerToken && customerId) {
+        const response = await axios.post(`${API_BASE_URL}/v1/beneficiary/addToFavourite?beneId=${id}&flag=true&customerId=${customerId}`, {}, {
+          headers: {
+            'Authorization': `Bearer ${bearerToken}`
+          }
+        });
+
+        const dto = response.data;
+
+        if (dto && dto.success && dto.data) {
+          fetchBeneficiaries();
+        }
+        else {
+          if (dto.message) {
+            Alert.alert('Error', dto.message);
+          }
+          else if (dto.errors && dto.errors.length > 0) {
+            Alert.alert('Error', dto.errors);
+          }
+        }
+      }
+      else {
+        Alert.alert('Error', 'Unexpected error occured. Try again later!');
+      }
+    }
+    catch (error) {
+      if (error.response) {
+        const statusCode = error.response.status;
+
+        if (statusCode === 404) {
+          Alert.alert('Error', 'Server timed out. Try again later!');
+        } else if (statusCode === 503) {
+          Alert.alert('Error', 'Service unavailable. Please try again later.');
+        } else if (statusCode === 400) {
+          Alert.alert('Error', error.response.data.data.errors[0]);
+        } else {
+          Alert.alert('Error', error.message);
+        }
+      } else if (error.request) {
+        Alert.alert('Error', 'No response from the server. Please check your connection.');
+      } else {
+        Alert.alert('Error', error.message);
+      }
+    }
+  };
+
+  const filteredBeneficiaries = beneficiaries.filter((beneficiary) =>
+    beneficiary.beneficiaryAlias.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  useFocusEffect(
+    React.useCallback(() => {
+      scrollRef.current?.scrollTo({
+        y: 0,
+        animated: true,
+      });
+    }, [])
+  );
 
   return (
-    <SafeAreaView className="h-full flex-1 bg-[#F9FAFC]">
-      <View style={{ height: 100 }}>
+    <SafeAreaView className="h-full flex-1" style={{ backgroundColor: Color.PrimaryWebOrient }}>
+      <View style={{ backgroundColor: Color.PrimaryWebOrient, height: 100 }}>
         <View className="flex-row items-center justify-center w-full h-full">
-          <TouchableOpacity onPress={() => navigation.goBack()} className="absolute left-5">
-            <Entypo name="chevron-left" size={25} color="black" />
+          <TouchableOpacity
+            onPress={() => {
+              source === 'beneficiary' || 'dashboard' ? navigation.navigate('Home') : navigation.goBack();
+            }}
+            className="absolute left-5"
+          >
+            <Entypo name="chevron-left" size={25} color="white" />
           </TouchableOpacity>
-          <Text className="text-black text-lg font-InterBold">Add Beneficiary</Text>
+          <Text className="text-white text-lg font-InterBold">
+            {source === 'payment' ? 'Payment' : 'Beneficiary'}
+          </Text>
         </View>
       </View>
 
-      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-        <View className="w-full h-full px-5">
-          <Text className="font-InterSemiBold">Personal Details</Text>
+      <View className="pt-6 pb-2 px-5 bg-[#F9FAFC]">
+        <SearchBar
+          placeholder="Search My Payees"
+          onChangeText={handleSearchChange}
+          value={searchQuery}
+        />
+      </View>
 
-          <View className="bg-white p-3 rounded-lg shadow-md shadow-slate-400 w-full mt-3">
-            <View className="d-flex flex-row items-center">
-              <Image
-                source={{ uri: bankLogo }}
-                className="w-12 h-12 rounded-lg"
-                resizeMode='contain'
-              />
-              <Text className="font-InterSemiBold ml-4">
-                {bankName}
-              </Text>
-            </View>
+      <ScrollView contentContainerStyle={{ flexGrow: 1 }} ref={scrollRef}>
+        <View className="w-full h-full px-5 bg-[#F9FAFC] pb-10">
+          <View className="mt-7">
+            <TouchableOpacity className="flex-row items-center">
+              <View className="p-3 rounded-lg shadow-lg shadow-gray-500 justify-center items-center" style={{ backgroundColor: Color.PrimaryWebOrient }}>
+                <Image
+                  source={require("../../../assets/own-account-icon.png")}
+                  resizeMode="contain"
+                  className="w-6 h-6"
+                />
+              </View>
+              <View className="ml-4 flex-1">
+                <Text className="font-InterSemiBold mb-0.5">Own Account</Text>
+              </View>
+            </TouchableOpacity>
+
+            {(source !== 'payment' && source !== 'dashboard') && (<View className="my-3 w-full border-b border-gray-300" />)}
+
+            {(source !== 'payment' && source !== 'dashboard') && (<TouchableOpacity
+              className="flex-row items-center"
+              onPress={() => navigation.navigate("BankList")}
+            >
+              <View className="p-3 rounded-lg shadow-lg shadow-gray-500 justify-center items-center" style={{ backgroundColor: Color.PrimaryWebOrient }}>
+                <Image
+                  source={require("../../../assets/add-icon.png")}
+                  resizeMode="contain"
+                  className="w-6 h-6"
+                />
+              </View>
+              <View className="ml-4 flex-1">
+                <Text className="font-InterSemiBold mb-0.5">
+                  Add New Beneficiary
+                </Text>
+              </View>
+            </TouchableOpacity>)}
+
+            {(source !== 'payment' && source !== 'dashboard') && (<View className="mt-3 mb-4 w-full border-b border-gray-300" />)}
+            {(source === 'payment' || source === 'dashboard') && (<View className="my-4 w-full border-b border-gray-300" />)}
+
+            {filteredBeneficiaries.map((beneficiary) => (
+              <React.Fragment key={beneficiary.id}>
+                <OptionBox
+                  beneObj={beneficiary}
+                  image={{ uri: beneficiary.bankUrl }}
+                  text={beneficiary.beneficiaryAlias}
+                  subtext={beneficiary.accountNumber}
+                  icon1={beneficiary.liked ? "heart" : "hearto"}
+                  icon2="trash-2"
+                  iconColor1={beneficiary.liked ? "red" : "darkgray"}
+                  iconColor2="darkgray"
+                  payment={beneficiary.payment}
+                  onPress1={() => handleLikeToggle(beneficiary.id)}
+                  onPress2={() => handleRemoveBeneficiary(beneficiary.id)}
+                  toggleModal={() => toggleModal(beneficiary)}
+                  beneficiary={true}
+                  navigation={navigation}
+                  source={source}
+                />
+                <View className="my-4 w-full border-b border-gray-300" />
+              </React.Fragment>
+            ))}
           </View>
-
-          <View className="mt-6">
-            <Text className="font-InterSemiBold">Account Number / IBAN</Text>
-            <TextInput
-              className="mt-3 border border-gray-300 rounded-lg text-base font-InterMedium"
-              placeholder="Account number / IBAN"
-              placeholderTextColor="#A5A7A8"
-              value={accountNumber}
-              onChange={(text) => setAccountNumber(text)}
-              onSubmitEditing={Keyboard.dismiss} />
-          </View>
-
-          <Button
-            text="Add"
-            styles="mt-8 mb-4"
-            onPress={() => {
-              bankName === userBankName ? fetchLocalAccountDetails() : fetchOtherAccountDetails();
-            }}
-            loading={loading}
-          />
         </View>
+
+        <EditBeneficiaryModal isModalVisible={isModalVisible} toggleModal={toggleModal} beneficiary={selectedBeneficiary} handleUpdateBeneficiary={handleUpdateBeneficiary} />
       </ScrollView>
       <Footer />
-      <StatusBar backgroundColor="#F9FAFC" style="dark" />
+      <StatusBar backgroundColor={Color.PrimaryWebOrient} style="light" />
+
+      <CustomAlert alertVisible={alertVisible} setAlertVisible={setAlertVisible} text={alertObj.text} subtext={alertObj.subtext} success={alertObj.success} onPress={alertObj.onPress} />
     </SafeAreaView>
   );
-}
+};
 
-export default Add_Beneficiary
+export default BeneficiaryList;

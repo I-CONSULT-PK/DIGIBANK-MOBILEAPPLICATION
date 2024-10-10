@@ -507,49 +507,6 @@
 
 //       <StatusBar backgroundColor={Color.PrimaryWebOrient} style="light" />
 
-//       {/* <Modal
-//         style={{ backgroundColor: 'rgba(0,0,0,0.5)', margin: 0 }}
-//         transparent={true}
-//         visible={modalVisible}
-//         animationType="slide"
-//         onRequestClose={() => setModalVisible(false)}
-//         onBackdropPress={() => setModalVisible(false)}
-//         hasBackdrop={true}
-//         backdropColor="black"
-//         backdropOpacity={0.5}
-//       >
-//           <View className="bg-white p-5 rounded-lg w-11/12 max-w-xs justify-center items-center self-center shadow-md shadow-slate-400">
-//             <Image
-//               source={require("../../assets/alerrt-icon.png")}
-//               className="w-16 h-14 mb-4"
-//             />
-//             <Text className="text-lg font-bold mb-2">Alert Notification</Text>
-//             <Text className="text-center text-gray-500 mb-6">
-//               Your device is not configured for Face ID. Please configure it
-//               from settings.
-//             </Text>
-//             <View className="flex-row justify-between">
-//               <TouchableOpacity
-//                 onPress={() => setModalVisible(false)}
-//                 className="flex-1 bg-white border border-gray-300 rounded-lg py-2 mr-2 items-center justify-center"
-//               >
-//                 <Text className="text-center text-black text-base">Cancel</Text>
-//               </TouchableOpacity>
-//               <Button
-//                 text="Ok"
-//                 onPress={() => {
-//                   setModalVisible(false);
-//                 }}
-//                 width="w-32"
-//                 backgroundColor="#1D4ED8"
-//                 textColor="#FFF"
-//                 fontSize="text-sm"
-//                 styles="mr-4"
-//               />
-//             </View>
-//           </View>
-//       </Modal> */}
-
 //       <Modal
 //         style={{ backgroundColor: 'rgba(0,0,0,0.5)', margin: 0 }}
 //         transparent={true}
@@ -1129,49 +1086,6 @@ const Login = ({ navigation }) => {
       </LinearGradient>
 
       <StatusBar backgroundColor={Color.PrimaryWebOrient} style="light" />
-
-      {/* <Modal
-        style={{ backgroundColor: 'rgba(0,0,0,0.5)', margin: 0 }}
-        transparent={true}
-        visible={modalVisible}
-        animationType="slide"
-        onRequestClose={() => setModalVisible(false)}
-        onBackdropPress={() => setModalVisible(false)}
-        hasBackdrop={true}
-        backdropColor="black"
-        backdropOpacity={0.5}
-      >
-          <View className="bg-white p-5 rounded-lg w-11/12 max-w-xs justify-center items-center self-center shadow-md shadow-slate-400">
-            <Image
-              source={require("../../assets/alerrt-icon.png")}
-              className="w-16 h-14 mb-4"
-            />
-            <Text className="text-lg font-bold mb-2">Alert Notification</Text>
-            <Text className="text-center text-gray-500 mb-6">
-              Your device is not configured for Face ID. Please configure it
-              from settings.
-            </Text>
-            <View className="flex-row justify-between">
-              <TouchableOpacity
-                onPress={() => setModalVisible(false)}
-                className="flex-1 bg-white border border-gray-300 rounded-lg py-2 mr-2 items-center justify-center"
-              >
-                <Text className="text-center text-black text-base">Cancel</Text>
-              </TouchableOpacity>
-              <Button
-                text="Ok"
-                onPress={() => {
-                  setModalVisible(false);
-                }}
-                width="w-32"
-                backgroundColor="#1D4ED8"
-                textColor="#FFF"
-                fontSize="text-sm"
-                styles="mr-4"
-              />
-            </View>
-          </View>
-      </Modal> */}
 
       <Modal
         style={{ backgroundColor: 'rgba(0,0,0,0.5)', margin: 0 }}

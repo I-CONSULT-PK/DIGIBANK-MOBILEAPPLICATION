@@ -1,8 +1,9 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, BackHandler } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
 import { Entypo } from "@expo/vector-icons";
+import { useFocusEffect } from "@react-navigation/native";
 
 import { Color } from "../../../GlobalStyles";
 import OptionBox from "../../../components/OptionBox";
@@ -12,6 +13,8 @@ import BankIcon from "../../../assets/bank-icon.png";
 import RaastIcon from "../../../assets/raast-icon.png";
 
 const SendBeneficiaryMoney = ({ navigation }) => {
+  const scrollRef = useRef();
+
   useEffect(() => {
     const handleBackPress = () => {
       navigation.navigate("Home");
@@ -24,6 +27,15 @@ const SendBeneficiaryMoney = ({ navigation }) => {
       BackHandler.removeEventListener("hardwareBackPress", handleBackPress);
     };
   }, []);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      scrollRef.current?.scrollTo({
+        y: 0,
+        animated: true,
+      });
+    }, [])
+  );
 
   return (
     <SafeAreaView className="h-full flex-1" style={{ backgroundColor: Color.PrimaryWebOrient }}>
@@ -39,7 +51,7 @@ const SendBeneficiaryMoney = ({ navigation }) => {
         </View>
       </View>
 
-      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+      <ScrollView contentContainerStyle={{ flexGrow: 1 }} ref={scrollRef}>
         <View className="w-full h-full px-5 bg-[#F9FAFC]">
           <View className="mt-8">
             <Text className="font-InterSemiBold text-base">Select Method</Text>

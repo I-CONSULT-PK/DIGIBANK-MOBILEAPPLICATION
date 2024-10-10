@@ -11,8 +11,7 @@ import axios from "axios";
 import API_BASE_URL from "../../../config";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { ProgressBar } from "react-native-paper";
-import { useFocusEffect } from "@react-navigation/native";
-
+import CustomAlert from "../../../components/CustomAlert";
 const LimitManagement = ({ navigation }) => {
   const [accountData, setAccountData] = useState(null);
   const [dailyLimits, setDailyLimits] = useState({});
@@ -21,6 +20,13 @@ const LimitManagement = ({ navigation }) => {
   const [selectedPayment, setSelectedPayment] = useState(null);
   const [maxLimit, setMaxLimit] = useState(0);
   const [progressData, setProgressData] = useState({});
+   const [alertVisible, setAlertVisible] = useState(false);
+  const [alertObj, setAlertObj] = useState({
+    text: "",
+    subtext: "",
+    success: null,
+    onPress: null
+  });
 
   const allowedValues = [50000, 100000, 250000, 500000, 1000000];
 
@@ -55,32 +61,33 @@ const LimitManagement = ({ navigation }) => {
       const response = await axios.get(
         `${API_BASE_URL}/v1/customer/getAccount?accountNumber=${accountNumber}`,
         {
-          headers: {
-            Authorization: `Bearer ${bearerToken}`,
-          },
+          headers: { Authorization: `Bearer ${bearerToken}` },
         }
       );
 
-      const dto = response.data;
-
-      if (dto.success) {
-        setAccountData(dto.data);
+      if (response.data.success) {
+        setAccountData(response.data.data);
         setDailyLimits({
-          transferToOtherBank: dto.data.singleDaySendToOtherBankLimit || 0,
-          transferToDigiBank: dto.data.singleDayLimit || 0,
-          transferToOwnAccount: dto.data.singleDayOwnLimit || 0,
-          mobilePayments: dto.data.singleDayTopUpLimit || 0,
-          utilityBills: dto.data.singleDayBillPayLimit || 0,
-          qrPayments: dto.data.singleDayQRLimit || 0,
+          transferToOtherBank:
+            response.data.data.singleDaySendToOtherBankLimit || 0,
+          transferToDigiBank: response.data.data.singleDayLimit || 0,
+          transferToOwnAccount: response.data.data.singleDayOwnLimit || 0,
+          mobilePayments: response.data.data.singleDayTopUpLimit || 0,
+          utilityBills: response.data.data.singleDayBillPayLimit || 0,
+          qrPayments: response.data.data.singleDayQRLimit || 0,
         });
       } else {
-        Alert.alert("Error", dto.message || "Failed to retrieve account data.");
+        Alert.alert(
+          "Error",
+          response.data.message || "Failed to retrieve account data."
+        );
       }
     } catch (error) {
       console.error("Fetch Account Data Error:", error);
       Alert.alert("Error", "Failed to fetch account data. Please try again.");
     }
   };
+
   const fetchProgressData = async () => {
     try {
       const bearerToken = await AsyncStorage.getItem("token");
@@ -89,41 +96,70 @@ const LimitManagement = ({ navigation }) => {
       const response = await axios.get(
         `http://192.168.0.63:8088/v1/account/limits?accountNumber=zanbeel-9447e65`,
         {
-          headers: {
-            Authorization: `Bearer ${bearerToken}`,
-          },
+          headers: { Authorization: `Bearer ${bearerToken}` },
         }
       );
 
       if (response.data.success) {
-        const { data } = response.data;
+        const data = response.data.data;
+        console.log("Fetched Data:", data);
+
         const newProgressData = {
-          mobilePayments: {
-            maxLimit: data.remainingTopUpLimit + data.availedTopUpLimit,
-            usedLimit: data.availedTopUpLimit,
+          transferToOtherBank: {
+            maxLimit:
+              data.remainingSendToOtherBankLimit +
+              data.availedSendToOtherBankLimit,
+            usedLimit: data.availedSendToOtherBankLimit,
+            percentage: (
+              (data.availedSendToOtherBankLimit /
+                (data.remainingSendToOtherBankLimit +
+                  data.availedSendToOtherBankLimit)) *
+              100
+            ).toFixed(2), 
           },
           utilityBills: {
             maxLimit: data.remainingBillPayLimit + data.availedBillPayLimit,
             usedLimit: data.availedBillPayLimit,
+            percentage: (
+              (data.availedBillPayLimit /
+                (data.remainingBillPayLimit + data.availedBillPayLimit)) *
+              100
+            ).toFixed(2),
           },
           transferToOwnAccount: {
             maxLimit: data.remainingOwnLimit + data.availedOwnLimit,
             usedLimit: data.availedOwnLimit,
+            percentage: (
+              (data.availedOwnLimit /
+                (data.remainingOwnLimit + data.availedOwnLimit)) *
+              100
+            ).toFixed(2),
           },
           transferToOtherBank: {
             maxLimit:
               data.remainingSendToOtherBankLimit +
               data.availedSendToOtherBankLimit,
             usedLimit: data.availedSendToOtherBankLimit,
+            percentage: (
+              (data.availedSendToOtherBankLimit /
+                (data.remainingSendToOtherBankLimit +
+                  data.availedSendToOtherBankLimit)) *
+              100
+            ).toFixed(2),
           },
           qrPayments: {
             maxLimit: data.remainingQRLimit + data.availedQRLimit,
             usedLimit: data.availedQRLimit,
+            percentage: (
+              (data.availedQRLimit /
+                (data.remainingQRLimit + data.availedQRLimit)) *
+              100
+            ).toFixed(2),
           },
         };
 
         setProgressData(newProgressData);
-        console.log("Progress Data Set:", newProgressData); // Log the progress data
+        console.log("Progress Data Set:", newProgressData);
       } else {
         Alert.alert(
           "Error",
@@ -131,10 +167,7 @@ const LimitManagement = ({ navigation }) => {
         );
       }
     } catch (error) {
-      console.error(
-        "Fetch Progress Data Error:",
-        error.response || error.message
-      );
+      console.error("Fetch Progress Data Error:", error);
       Alert.alert(
         "Error",
         "Failed to retrieve progress data. Please try again."
@@ -199,9 +232,7 @@ const LimitManagement = ({ navigation }) => {
         `${API_BASE_URL}/v1/settings/setDailyLimit?accountNumber=${accountNumber}&customerId=${customerId}&limitValue=${sliderValue}&limitType=${limitType}`,
         null,
         {
-          headers: {
-            Authorization: `Bearer ${bearerToken}`,
-          },
+          headers: { Authorization: `Bearer ${bearerToken}` },
         }
       );
 
@@ -211,7 +242,7 @@ const LimitManagement = ({ navigation }) => {
           `Daily limit updated successfully for ${selectedPayment}.`
         );
         fetchAccountData();
-        fetchProgressData(); // Refresh progress data after limit change
+        fetchProgressData(); 
       } else {
         Alert.alert(
           "Error",
@@ -227,19 +258,19 @@ const LimitManagement = ({ navigation }) => {
   };
 
   const calculateProgress = (limitKey) => {
-    const totalLimit = progressData[limitKey]?.maxLimit || 1; // Avoid division by zero
+    const totalLimit = progressData[limitKey]?.maxLimit || 1; 
     const usedLimit = progressData[limitKey]?.usedLimit || 0;
 
-    // Calculate percentage as a fraction of 1 (0 to 1)
-    return totalLimit > 0 ? usedLimit / totalLimit : 0; // Returns a fraction (0 to 1)
+    console.log(
+      `Calculating progress for ${limitKey}: usedLimit=${usedLimit}, totalLimit=${totalLimit}`
+    );
+    return totalLimit > 0 ? usedLimit / totalLimit : 0; 
   };
 
-  useFocusEffect(
-    React.useCallback(() => {
-      fetchAccountData();
-      fetchProgressData();
-    }, [])
-  );
+  useEffect(() => {
+    fetchAccountData();
+    fetchProgressData();
+  }, []);
 
   const selectedLimitKey = paymentTypes.find(
     (payment) => payment.label === selectedPayment
@@ -263,58 +294,64 @@ const LimitManagement = ({ navigation }) => {
       </View>
 
       <ScrollView>
-        {paymentTypes.map((payment, index) => (
-          <View key={index} className="w-full mt-5 px-4">
-            <Text className="text-base font-semibold text-gray-800">
-              {payment.label}
-            </Text>
-            <View className="z-10 p-4">
-              <View className="flex items-center px-4 py-3.5 bg-white rounded-xl">
-                <View className="flex flex-row justify-between w-full">
-                  <Text className="text-base font-semibold text-gray-800">
-                    Total Authorization (Per Day)
-                  </Text>
-                  <Text className="text-base font-semibold text-gray-800">
-                    {dailyLimits[payment.limitKey] !== undefined
-                      ? dailyLimits[payment.limitKey].toLocaleString()
-                      : "Loading..."}
-                  </Text>
-                </View>
-                <View className="flex flex-row justify-between w-full">
-                  <Text className="text-xs font-medium text-neutral-500 flex-1 text-left">
-                    Availed
-                  </Text>
-                  <Text className="text-xs font-medium text-neutral-500 flex-1 text-right">
-                    Remaining
-                  </Text>
-                </View>
-                <View className="flex flex-col mt-3 w-full rounded-xl relative">
-  <ProgressBar
-    className="h-2.5 rounded-full"
-    progress={calculateProgress(payment.limitKey)} 
-    color={Color.PrimaryWebOrient}
-  />
-</View>
+        {paymentTypes.map((payment, index) => {
+          const limitKey = payment.limitKey; 
 
-
-                <View className="flex flex-row items-center justify-between mt-4 w-full">
-                  <Text className="ml-2 text-md font-medium text-neutral-500">
-                    Per Transaction -
-                    {dailyLimits[payment.limitKey] !== undefined
-                      ? (dailyLimits[payment.limitKey] / 5).toLocaleString()
-                      : "Loading..."}
-                  </Text>
-                  <TouchableOpacity
-                    className="bg-primary w-8 h-8 rounded-full flex items-center justify-center"
-                    onPress={() => handleShowModal(payment.label)}
-                  >
-                    <Entypo name="edit" size={17} color="white" />
-                  </TouchableOpacity>
+          return (
+            <View key={index} className="w-full mt-5 px-4">
+              <Text className="text-base font-semibold text-gray-800">
+                {payment.label}
+              </Text>
+              <View className="z-10 p-4">
+                <View className="flex items-center px-4 py-3.5 bg-white rounded-xl">
+                  <View className="flex flex-row justify-between w-full">
+                    <Text className="text-base font-semibold text-gray-800">
+                      Total Authorization (Per Day)
+                    </Text>
+                    <Text className="text-base font-semibold text-gray-800">
+                      {dailyLimits[limitKey] !== undefined
+                        ? dailyLimits[limitKey].toLocaleString()
+                        : "Loading..."}
+                    </Text>
+                  </View>
+                  <View className="flex flex-row justify-between w-full">
+                    <Text className="text-xs font-medium text-neutral-500 flex-1 text-left">
+                      Availed
+                    </Text>
+                    <Text className="text-xs font-medium text-neutral-500 flex-1 text-right">
+                      Remaining
+                    </Text>
+                  </View>
+                  <View className="flex flex-col mt-3 w-full rounded-xl relative">
+                    <ProgressBar
+                      className="h-2.5 rounded-full"
+                      progress={
+                        progressData[limitKey]?.percentage
+                          ? parseFloat(progressData[limitKey].percentage) / 100
+                          : 0 
+                      }
+                      color={Color.PrimaryWebOrient}
+                    />
+                  </View>
+                  <View className="flex flex-row items-center justify-between mt-4 w-full">
+                    <Text className="ml-2 text-md font-medium text-neutral-500">
+                      Per Transaction -
+                      {dailyLimits[limitKey] !== undefined
+                        ? (dailyLimits[limitKey] / 5).toLocaleString()
+                        : "Loading..."}
+                    </Text>
+                    <TouchableOpacity
+                      className="bg-primary w-8 h-8 rounded-full flex items-center justify-center"
+                      onPress={() => handleShowModal(payment.label)}
+                    >
+                      <Entypo name="edit" size={17} color="white" />
+                    </TouchableOpacity>
+                  </View>
                 </View>
               </View>
             </View>
-          </View>
-        ))}
+          );
+        })}
       </ScrollView>
 
       <CustomModal
@@ -365,6 +402,14 @@ const LimitManagement = ({ navigation }) => {
           </View>
         </View>
       </CustomModal>
+      <CustomAlert
+        alertVisible={alertVisible}
+        setAlertVisible={setAlertVisible}
+        text={alertObj.text}
+        subtext={alertObj.subtext}
+        success={alertObj.success}
+        onPress={alertObj.onPress}
+      />
       <Footer />
       <StatusBar backgroundColor={Color.PrimaryWebOrient} style="light" />
     </SafeAreaView>
