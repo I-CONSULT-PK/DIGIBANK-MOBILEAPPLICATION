@@ -4,7 +4,6 @@ import {
   View,
   ScrollView,
   TouchableOpacity,
-  Alert,
   Platform,
 } from "react-native";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
@@ -17,6 +16,7 @@ import CustomButton from "../../../components/Button";
 import TextInput from "../../../components/TextInput";
 import API_BASE_URL from "../../../config";
 import CustomModal from "../../../components/CustomModal";
+import CustomAlert from "../../../components/CustomAlert"; // Import CustomAlert
 import * as Application from "expo-application";
 
 const DeactivatePin = () => {
@@ -29,6 +29,10 @@ const DeactivatePin = () => {
   const [otpLoading, setOtpLoading] = useState(false);
   const [otpDeliveryMethod, setOtpDeliveryMethod] = useState("EMAIL");
   const [modalVisible, setModalVisible] = useState(false);
+  const [alertVisible, setAlertVisible] = useState(false);
+  const [alertText, setAlertText] = useState("");
+  const [alertSubtext, setAlertSubtext] = useState("");
+  const [alertSuccess, setAlertSuccess] = useState(false);
 
   useEffect(() => {
     const fetchDeviceId = async () => {
@@ -67,10 +71,7 @@ const DeactivatePin = () => {
     const email = await AsyncStorage.getItem("email");
 
     if (!mobileNumber || !email) {
-      Alert.alert(
-        "Error",
-        "Unexpected error occurred. Please try again later."
-      );
+      showAlert("Error", "Unexpected error occurred. Please try again later.", false);
       return;
     }
 
@@ -93,9 +94,9 @@ const DeactivatePin = () => {
       const dto = response.data;
 
       if (dto && dto.success) {
-        Alert.alert("Success", "OTP has been sent successfully.");
+        showAlert("Success", "OTP has been sent successfully.", true);
       } else {
-        Alert.alert("Error", dto.message || "Failed to send OTP.");
+        showAlert("Error", dto.message || "Failed to send OTP.", false);
       }
     } catch (error) {
       handleError(error);
@@ -104,20 +105,21 @@ const DeactivatePin = () => {
     }
   };
 
+  const showAlert = (text, subtext, success) => {
+    setAlertText(text);
+    setAlertSubtext(subtext);
+    setAlertSuccess(success);
+    setAlertVisible(true);
+  };
+
   const handleError = (error) => {
     console.log(error);
     if (error.response) {
-      Alert.alert(
-        "Error",
-        error.response.data.message || "Something went wrong."
-      );
+      showAlert("Error", error.response.data.message || "Something went wrong.", false);
     } else if (error.request) {
-      Alert.alert(
-        "Error",
-        "No response from the server. Please check your connection."
-      );
+      showAlert("Error", "No response from the server. Please check your connection.", false);
     } else {
-      Alert.alert("Error", error.message);
+      showAlert("Error", error.message, false);
     }
   };
 
@@ -154,7 +156,7 @@ const DeactivatePin = () => {
         if (dto && dto.success) {
           setModalVisible(true);
         } else {
-          Alert.alert("Error", dto.message || "OTP verification failed.");
+          showAlert("Error", dto.message || "OTP verification failed.", false);
         }
       } catch (error) {
         handleError(error);
@@ -162,13 +164,13 @@ const DeactivatePin = () => {
         setOtpLoading(false);
       }
     } else {
-      Alert.alert("Error", "Please enter the required code.");
+      showAlert("Error", "Please enter the required code.", false);
     }
   };
 
   const handleDeactivatePin = async () => {
     if (!customerId || !deviceId) {
-      Alert.alert("Error", "Customer ID or Device ID is missing.");
+      showAlert("Error", "Customer ID or Device ID is missing.", false);
       return;
     }
 
@@ -185,11 +187,11 @@ const DeactivatePin = () => {
       const dto = response.data;
 
       if (dto && dto.success) {
-        Alert.alert("Success", "Your PIN has been deactivated.");
+        showAlert("Success", "Your PIN has been deactivated.", true);
         setModalVisible(false);
         navigation.navigate("Home");
       } else {
-        Alert.alert("Error", dto.message || "Failed to deactivate PIN.");
+        showAlert("Error", dto.message || "Failed to deactivate PIN.", false);
       }
     } catch (error) {
       handleError(error);
@@ -298,6 +300,13 @@ const DeactivatePin = () => {
         onConfirm={handleDeactivatePin}
         confirmText="Confirm"
         cancelText="Cancel"
+      />
+      <CustomAlert
+        text={alertText}
+        subtext={alertSubtext}
+        success={alertSuccess}
+        alertVisible={alertVisible}
+        setAlertVisible={setAlertVisible}
       />
     </SafeAreaView>
   );
