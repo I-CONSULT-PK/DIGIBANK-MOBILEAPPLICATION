@@ -823,7 +823,7 @@ const HomeScreen = ({ navigation }) => {
                   }}
                 >
                   <Icon
-                    name="attach-money"
+                    name="discount"
                     size={30}
                     color={
                       activeItem === "Discount"

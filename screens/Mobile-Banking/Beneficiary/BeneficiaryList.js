@@ -13,6 +13,7 @@ import API_BASE_URL from '../../../config';
 import SearchBar from "../../../components/SearchBar";
 import OptionBox from "../../../components/OptionBox";
 import EditBeneficiaryModal from '../../../components/EditBeneficiaryModal';
+import CustomAlert from "../../../components/CustomAlert";
 import Footer from "../../../components/Footer";
 
 const BeneficiaryList = ({ navigation, route }) => {
@@ -21,8 +22,21 @@ const BeneficiaryList = ({ navigation, route }) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedBeneficiary, setSelectedBeneficiary] = useState(null);
 
+  const [alertVisible, setAlertVisible] = useState(false);
+  const [alertObj, setAlertObj] = useState({
+    text: "",
+    subtext: "",
+    success: null,
+    onPress: null
+  });
+
   const { source } = route.params || {};
   const scrollRef = useRef();
+
+  const showAlert = (text, subtext, success) => {
+    setAlertObj({ text, subtext, success, onPress: null });
+    setAlertVisible(true);
+  };
 
   useEffect(() => {
     const handleBackPress = () => {
@@ -214,20 +228,44 @@ const BeneficiaryList = ({ navigation, route }) => {
 
         const dto = response.data;
 
-        if (dto && dto.success && dto.data) {
-          Alert.alert('Success', 'Beneficiary deleted successfully');
+        if (dto && dto.success) {
+          setAlertObj({
+            text: 'Success',
+            subtext: 'Beneficiary deleted successfully',
+            success: true,
+            onPress: null
+          });
+          setAlertVisible(true);
         }
         else {
           if (dto.message) {
-            Alert.alert('Error', dto.message);
+            setAlertObj({
+              text: 'Error',
+              subtext: dto.message,
+              success: false,
+              onPress: null
+            });
+            setAlertVisible(true);
           }
-          else if (dto.errors && dto.errors.length > 0) {
-            Alert.alert('Error', dto.errors);
+          else {
+            setAlertObj({
+              text: 'Error',
+              subtext: 'Some unknown error occured. Try again!',
+              success: false,
+              onPress: null
+            });
+            setAlertVisible(true);
           }
         }
       }
       else {
-        Alert.alert('Error', 'Unexpected error occured. Try again later!');
+        setAlertObj({
+          text: 'Error',
+          subtext: 'Unexpected error occured. Try again later!',
+          success: false,
+          onPress: null
+        });
+        setAlertVisible(true);
       }
     }
     catch (error) {
@@ -235,18 +273,46 @@ const BeneficiaryList = ({ navigation, route }) => {
         const statusCode = error.response.status;
 
         if (statusCode === 404) {
-          Alert.alert('Error', 'Server timed out. Try again later!');
+          setAlertObj({
+            text: 'Error',
+            subtext: 'Server timed out. Try again later!',
+            success: false,
+            onPress: null
+          });
+          setAlertVisible(true);
         } else if (statusCode === 503) {
-          Alert.alert('Error', 'Service unavailable. Please try again later.');
-        } else if (statusCode === 400) {
-          Alert.alert('Error', error.response.data.data.errors[0]);
+          setAlertObj({
+            text: 'Error',
+            subtext: 'Service unavailable. Please try again later.',
+            success: false,
+            onPress: null
+          });
+          setAlertVisible(true);
         } else {
-          Alert.alert('Error', error.message);
+          setAlertObj({
+            text: 'Error',
+            subtext: error.message,
+            success: false,
+            onPress: null
+          });
+          setAlertVisible(true);
         }
       } else if (error.request) {
-        Alert.alert('Error', 'No response from the server. Please check your connection.');
+        setAlertObj({
+          text: 'Error',
+          subtext: 'No response from the server. Please check your connection.',
+          success: false,
+          onPress: null
+        });
+        setAlertVisible(true);
       } else {
-        Alert.alert('Error', error.message);
+        setAlertObj({
+          text: 'Error',
+          subtext: error.message,
+          success: false,
+          onPress: null
+        });
+        setAlertVisible(true);
       }
     }
   };
@@ -415,6 +481,8 @@ const BeneficiaryList = ({ navigation, route }) => {
       </ScrollView>
       <Footer />
       <StatusBar backgroundColor={Color.PrimaryWebOrient} style="light" />
+
+      <CustomAlert alertVisible={alertVisible} setAlertVisible={setAlertVisible} text={alertObj.text} subtext={alertObj.subtext} success={alertObj.success} onPress={alertObj.onPress} />
     </SafeAreaView>
   );
 };

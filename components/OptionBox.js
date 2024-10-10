@@ -51,7 +51,7 @@ const OptionBox = ({ beneObj, image, text, subtext, payment, icon1, icon2, onPre
                     </View>
                 ) : (
                 <TouchableOpacity className="flex-row items-center flex-1" onPress={onPress1}>
-                    <View className="p-1 rounded-lg shadow-md shadow-slate-400 justify-center items-center bg-white">
+                    <View className="p-1.5 rounded-lg shadow-md shadow-slate-400 justify-center items-center bg-white">
                         <Image
                             source={image}
                             resizeMode="contain"
