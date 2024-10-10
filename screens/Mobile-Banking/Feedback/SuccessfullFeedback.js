@@ -13,8 +13,10 @@ import { Color } from "../../../GlobalStyles";
 import Footer from "../../../components/Footer";
 import { StatusBar } from "expo-status-bar";
 import CustomButton from "../../../components/Button";
-const SuccessfullFeedback = () => {
+
+const SuccessfullFeedback = ({ route }) => {
   const navigation = useNavigation();
+  const { successMessage, timestamp } = route.params;
   return (
     <SafeAreaView className="flex-1 bg-[#f9fafc]">
       <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
@@ -47,10 +49,10 @@ const SuccessfullFeedback = () => {
           </View>
           <View className="mt-10">
             <Text className="text-lg font-bold text-center mb-5">
-              Your Feedback Has Been Sent Successfully
+              {successMessage}
             </Text>
             <Text className="text-md text-black font-InterSemiBold  text-center mb-2">
-              16 September 2024 | 05:06 PM
+             {timestamp}
             </Text>
             <Text className="text-sm text-gray-600 text-center mb-5">
               Thanks! Your feedback is valuable and helps us provide you a
@@ -58,7 +60,7 @@ const SuccessfullFeedback = () => {
             </Text>
           </View>
           <View className="w-full">
-            <CustomButton text="Done" width="auto" styles="py-4" />
+            <CustomButton text="Done" width="auto" styles="py-4"onPress={()=>navigation.navigate("Home") } />
           </View>
         </View>
       </ScrollView>

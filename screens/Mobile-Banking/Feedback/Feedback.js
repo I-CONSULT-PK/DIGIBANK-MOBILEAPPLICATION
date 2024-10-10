@@ -5,21 +5,25 @@ import {
   TouchableOpacity,
   ScrollView,
   SafeAreaView,
-  TextInput
+  TextInput,
+  Alert,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { Entypo, Ionicons } from "@expo/vector-icons";
 import { Color } from "../../../GlobalStyles";
 import Footer from "../../../components/Footer";
 import { StatusBar } from "expo-status-bar";
-// import TextInput from "../../../components/TextInput";
 import CustomButton from "../../../components/Button";
+import axios from "axios";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import API_BASE_URL from "../../../config";
 
 const Feedback = () => {
   const navigation = useNavigation();
   const [rating, setRating] = useState(3.5);
   const [suggestion, setSuggestion] = useState("");
 
+  // Function to render stars
   const renderStars = () =>
     [...Array(5)].map((_, index) => (
       <TouchableOpacity key={index + 1} onPress={() => setRating(index + 1)}>
@@ -30,6 +34,63 @@ const Feedback = () => {
         />
       </TouchableOpacity>
     ));
+
+  // Function to handle feedback submission
+  const handleAddFeedback = async () => {
+    try {
+      const token = await AsyncStorage.getItem("token");
+      const customerId = await AsyncStorage.getItem("customerId");
+  
+      if (!token || !customerId) {
+        Alert.alert(
+          "Error",
+          "Missing account information. Please log in again."
+        );
+        return;
+      }
+  
+      const url = `${API_BASE_URL}/v1/feedback/createFeedback`;
+  
+      // Prepare the feedback data
+      const accountData = {
+        customerId: parseInt(customerId, 10), // Ensure customerId is an integer
+        message: suggestion,
+        rating: rating, // Pass the rating value
+      };
+  
+      // Log the data before making the API request
+      // console.log("Feedback data being sent:", accountData);
+  
+      const response = await axios.post(url, accountData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+  
+      if (response.status === 200 && response.data.success) {
+        const { message, data: { timestamp } } = response.data; // Extract message and timestamp
+        // Alert.alert("Success", message);
+  
+        // Navigate to the success screen with the message and timestamp
+        navigation.navigate("SuccessfullFeedback", {
+          successMessage: message,
+          timestamp: timestamp,
+        });
+      } else {
+        Alert.alert("Error", `Unexpected response: ${response.status}`);
+      }
+    } catch (error) {
+      if (error.response) {
+        const serverMessage =
+          error.response.data.message || "An unexpected error occurred.";
+        Alert.alert("Error", serverMessage);
+      } else {
+        Alert.alert("Error", error.message || "An unexpected error occurred.");
+      }
+    }
+  };
+  
 
   return (
     <SafeAreaView className="flex-1 bg-[#f9fafc]">
@@ -70,7 +131,7 @@ const Feedback = () => {
             <TextInput
               placeholder="Enter Here"
               value={suggestion}
-              onChangeText={setSuggestion} // Use onChangeText instead of onChange
+              onChangeText={setSuggestion}
               className="rounded-md p-2 w-72 text-base mb-5 border border-gray-300"
               multiline={true}
               numberOfLines={8}
@@ -82,7 +143,7 @@ const Feedback = () => {
               text="Send Now"
               width="auto"
               styles="py-4"
-              onPress={() => navigation.navigate("SuccessfullFeedback")}
+              onPress={handleAddFeedback}
             />
           </View>
         </View>
